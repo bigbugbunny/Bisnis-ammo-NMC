@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulasi Bisnis Ammo NMC</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen p-6">
+  <div class="max-w-xl mx-auto bg-gray-800 rounded-xl p-6 shadow-2xl border border-gray-700">
+    <h1 class="text-2xl font-bold text-center text-green-400 mb-6">⚡ Kalkulator & Pengelola Crafting Ammo</h1>
+    
+    <!-- Form Input -->
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium mb-1">Pilih Tipe Ammo</label>
+        <select id="ammoSelect" onchange="calculate()" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-2 focus:ring-green-500">
+          <option value="50AE">50AE (Umer: 20K)</option>
+          <option value="9MM">9MM (Umer: 60K)</option>
+          <option value="38LC">38LC (Umer: 70K)</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Jumlah Pack yang Ingin Dibuat</label>
+        <input type="number" id="packQty" value="1" min="1" oninput="calculate()" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-2 focus:ring-green-500">
+      </div>
+    </div>
+
+    <!-- Hasil Rincian Bahan -->
+    <div class="mt-6 bg-gray-900 p-4 rounded-lg border border-gray-700">
+      <h2 class="text-lg font-semibold text-gray-300 mb-3">Total Bahan yang Dibutuhkan:</h2>
+      <div class="space-y-2">
+        <div class="flex justify-between items-center bg-gray-800 p-3 rounded">
+          <span class="text-gray-400">🔩 Iron:</span>
+          <span id="totalIron" class="text-xl font-bold text-yellow-400">50</span>
+        </div>
+        <div class="flex justify-between items-center bg-gray-800 p-3 rounded">
+          <span class="text-gray-400">⬛ Carbon:</span>
+          <span id="totalCarbon" class="text-xl font-bold text-blue-400">50</span>
+        </div>
+        <div class="flex justify-between items-center bg-gray-800 p-3 rounded">
+          <span class="text-gray-400">💵 Umer:</span>
+          <span id="totalUmer" class="text-xl font-bold text-green-400">20.000</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const recipes = {
+      "50AE": { iron: 50, carbon: 50, umer: 20000 },
+      "9MM":  { iron: 50, carbon: 50, umer: 60000 },
+      "38LC": { iron: 50, carbon: 50, umer: 70000 }
+    };
+
+    function calculate() {
+      const type = document.getElementById("ammoSelect").value;
+      const qty = parseInt(document.getElementById("packQty").value) || 0;
+      
+      const iron = recipes[type].iron * qty;
+      const carbon = recipes[type].carbon * qty;
+      const umer = recipes[type].umer * qty;
+
+      document.getElementById("totalIron").innerText = iron.toLocaleString('id-ID');
+      document.getElementById("totalCarbon").innerText = carbon.toLocaleString('id-ID');
+      document.getElementById("totalUmer").innerText = umer.toLocaleString('id-ID');
+    }
+  </script>
+</body>
+</html>
