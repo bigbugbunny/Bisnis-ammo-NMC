@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NMC Ammo Crafting & Partner Hub</title>
+  <title>NMC x Mayans Business Hub</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
     body { background-color: #0b0f19; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .neon-border-green { box-shadow: 0 0 15px rgba(34, 197, 94, 0.25); border: 1px solid rgba(34, 197, 94, 0.4); }
     .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); }
   </style>
 </head>
@@ -19,270 +18,185 @@
     <!-- Header -->
     <div class="flex flex-col md:flex-row justify-between items-center bg-slate-800/80 p-6 rounded-2xl border border-slate-700 shadow-xl">
       <div>
-        <h1 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-200">
-          ⚡ NMC AMMO CRAFTING & PARTNER HUB
+        <h1 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-amber-400 to-green-400">
+          ⚡ NMC x MAYANS BUSINESS HUB
         </h1>
-        <p class="text-sm text-gray-400 mt-1">Sistem Kalkulasi Crafting & Manajemen Harga Kerjasama Partner</p>
+        <p class="text-sm text-gray-400 mt-1">Kalkulator Transaksi Ammo & Pembelian Senjata Mayans</p>
       </div>
       <div class="mt-4 md:mt-0">
-        <span class="bg-green-500/20 text-green-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-green-500/30 flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-green-400 animate-ping"></span> Multi-Partner Active
+        <span class="bg-red-500/20 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-500/30 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-red-400 animate-ping"></span> Partner: MAYANS
         </span>
       </div>
     </div>
 
-    <!-- Grid Utama -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- TABEL MASTER HARGA MAYANS -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       
-      <!-- Panel Input (1 Column) -->
-      <div class="space-y-6">
-        <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
-          <h2 class="text-lg font-bold text-green-400 flex items-center gap-2">
-            <i class="fa-solid fa-handshake"></i> Pilih Partner & Pesanan
-          </h2>
-
-          <!-- Dropdown Partner -->
-          <div>
-            <label class="block text-xs font-semibold text-amber-400 uppercase tracking-wider mb-1">Skema Partner / Kerjasama</label>
-            <select id="partnerSelect" onchange="applyPartnerPreset(); calculate();" class="w-full bg-slate-900 border border-amber-500/50 rounded-xl p-3 text-white font-semibold focus:outline-none focus:border-amber-400 transition">
-              <option value="umum">Umum / Harga Standar</option>
-              <option value="partnerA">Partner A (VIP / Diskon Bahan)</option>
-              <option value="partnerB">Partner B (Reseller Bulk)</option>
-            </select>
+      <!-- Harga Jual -->
+      <div class="glass-card p-5 rounded-2xl border border-slate-700">
+        <h2 class="text-md font-bold text-green-400 mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-tag"></i> HARGA JUAL AMMO (KE MAYANS)
+        </h2>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+            <span>9mm (1 pack)</span>
+            <span class="font-bold text-green-400">113.000</span>
           </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Tipe Ammo</label>
-            <select id="ammoSelect" onchange="calculate()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-green-500 transition">
-              <option value="50AE">50AE (Umer: 20K)</option>
-              <option value="9MM" selected>9MM (Umer: 60K)</option>
-              <option value="38LC">38LC (Umer: 70K)</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jumlah Pack</label>
-            <input type="number" id="packQty" value="10" min="1" oninput="calculate()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-green-500 transition">
-          </div>
-
-          <hr class="border-slate-700 my-3">
-
-          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Custom Harga (Bisa Diedit Manual)</h3>
-          
-          <div class="space-y-3">
-            <div>
-              <label class="block text-xs text-gray-400 mb-1">Harga Beli 1 Iron</label>
-              <input type="number" id="ironPrice" value="100" oninput="calculate()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-green-500">
-            </div>
-            <div>
-              <label class="block text-xs text-gray-400 mb-1">Harga Beli 1 Carbon</label>
-              <input type="number" id="carbonPrice" value="100" oninput="calculate()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-green-500">
-            </div>
-            <div>
-              <label class="block text-xs text-gray-400 mb-1">Harga Jual 1 Pack Ammo</label>
-              <input type="number" id="sellPrice" value="100000" oninput="calculate()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-green-500">
-            </div>
+          <div class="flex justify-between bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+            <span>38lc (1 pack)</span>
+            <span class="font-bold text-green-400">120.000</span>
           </div>
         </div>
       </div>
 
-      <!-- Panel Output (2 Columns) -->
-      <div class="lg:col-span-2 space-y-6">
-        
-        <!-- Total Kebutuhan Bahan -->
-        <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg neon-border-green">
-          <h2 class="text-lg font-bold text-green-400 mb-4 flex items-center justify-between">
-            <span><i class="fa-solid fa-boxes-stacked"></i> Kebutuhan Bahan Crafting</span>
-            <span id="badgeAmmo" class="text-xs bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full border border-emerald-500/30">9MM x10 Pack</span>
-          </h2>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800">
-              <span class="text-gray-400 text-sm">🔩 Total Iron</span>
-              <div id="totalIron" class="text-2xl font-black text-amber-400">500</div>
-              <div id="costIron" class="text-xs text-gray-500 mt-1">Modal: 50.000</div>
-            </div>
-
-            <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800">
-              <span class="text-gray-400 text-sm">⬛ Total Carbon</span>
-              <div id="totalCarbon" class="text-2xl font-black text-blue-400">500</div>
-              <div id="costCarbon" class="text-xs text-gray-500 mt-1">Modal: 50.000</div>
-            </div>
-
-            <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800">
-              <span class="text-gray-400 text-sm">💵 Biaya Umer</span>
-              <div id="totalUmer" class="text-2xl font-black text-emerald-400">600.000</div>
-              <div class="text-xs text-gray-500 mt-1">Biaya Crafting Game</div>
-            </div>
+      <!-- Harga Beli -->
+      <div class="glass-card p-5 rounded-2xl border border-slate-700">
+        <h2 class="text-md font-bold text-red-400 mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-cart-shopping"></i> HARGA BELI SENJATA (DARI MAYANS)
+        </h2>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+            <div class="text-gray-400">DA</div>
+            <div class="font-bold text-red-400">150.000 / PC</div>
+            <div class="text-[10px] text-amber-400 mt-0.5">Beli 10 Bonus 2</div>
+          </div>
+          <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+            <div class="text-gray-400">P50</div>
+            <div class="font-bold text-red-400">130.000 / PC</div>
+          </div>
+          <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+            <div class="text-gray-400">TAC9</div>
+            <div class="font-bold text-red-400">110.000 / PC</div>
+          </div>
+          <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+            <div class="text-gray-400">CERAMIC</div>
+            <div class="font-bold text-red-400">90.000 / PC</div>
           </div>
         </div>
-
-        <!-- Proyeksi Keuangan -->
-        <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg">
-          <h2 class="text-lg font-bold text-blue-400 mb-4 flex items-center gap-2">
-            <i class="fa-solid fa-calculator"></i> Ringkasan Modal & Keuntungan
-          </h2>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-              <div class="text-xs text-gray-400 mb-1">Total Modal</div>
-              <div id="totalCost" class="text-xl font-bold text-red-400">700.000</div>
-            </div>
-
-            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-              <div class="text-xs text-gray-400 mb-1">Total Omset Penjualan</div>
-              <div id="totalRevenue" class="text-xl font-bold text-blue-400">1.000.000</div>
-            </div>
-
-            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-              <div class="text-xs text-gray-400 mb-1">Untung Bersih</div>
-              <div id="netProfit" class="text-xl font-bold text-green-400">+300.000</div>
-            </div>
-          </div>
-
-          <div class="mt-4">
-            <button onclick="copySummary()" class="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-              <i class="fa-solid fa-copy"></i> Salin Ringkasan Pesanan Partner
-            </button>
-          </div>
-        </div>
-
       </div>
+
     </div>
 
-    <!-- TABEL MASTER SKEMA PARTNER -->
-    <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg mt-8">
-      <h2 class="text-lg font-bold text-amber-400 mb-4 flex items-center gap-2">
-        <i class="fa-solid fa-table-list"></i> Tabel Perbandingan Skema Harga Partner
+    <!-- KALKULATOR PENJUALAN AMMO -->
+    <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
+      <h2 class="text-lg font-bold text-green-400 flex items-center gap-2">
+        <i class="fa-solid fa-calculator"></i> KALKULATOR PENJUALAN AMMO
       </h2>
 
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm text-gray-300">
-          <thead class="bg-slate-900 text-xs text-gray-400 uppercase tracking-wider border-b border-slate-700">
-            <tr>
-              <th class="p-3">Kategori Partner</th>
-              <th class="p-3">Harga Iron (1 Pcs)</th>
-              <th class="p-3">Harga Carbon (1 Pcs)</th>
-              <th class="p-3">Harga Jual Ammo / Pack</th>
-              <th class="p-3">Keterangan / Catatan</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-800">
-            <tr class="hover:bg-slate-800/50">
-              <td class="p-3 font-semibold text-white">Umum / Standar</td>
-              <td class="p-3 text-amber-400">100</td>
-              <td class="p-3 text-blue-400">100</td>
-              <td class="p-3 text-emerald-400">100.000</td>
-              <td class="p-3 text-gray-400">Harga umum untuk pelanggan biasa</td>
-            </tr>
-            <tr class="hover:bg-slate-800/50 bg-amber-500/5">
-              <td class="p-3 font-semibold text-amber-300">Partner A (VIP)</td>
-              <td class="p-3 text-amber-400">80</td>
-              <td class="p-3 text-blue-400">80</td>
-              <td class="p-3 text-emerald-400">95.000</td>
-              <td class="p-3 text-gray-400">Suplai bahan lebih murah & diskon pack</td>
-            </tr>
-            <tr class="hover:bg-slate-800/50">
-              <td class="p-3 font-semibold text-blue-300">Partner B (Reseller)</td>
-              <td class="p-3 text-amber-400">90</td>
-              <td class="p-3 text-blue-400">90</td>
-              <td class="p-3 text-emerald-400">90.000</td>
-              <td class="p-3 text-gray-400">Khusus pembelian skala besar (Bulk Order)</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Tipe Ammo</label>
+          <select id="ammoType" onchange="calcAmmo()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-green-500">
+            <option value="9MM">9mm (113.000 / pack)</option>
+            <option value="38LC">38lc (120.000 / pack)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jumlah Pack</label>
+          <input type="number" id="ammoQty" value="10" min="1" oninput="calcAmmo()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-green-500">
+        </div>
+
+        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex flex-col justify-center">
+          <span class="text-xs text-gray-400">Total Tagihan Ke Mayans:</span>
+          <span id="totalAmmoPrice" class="text-2xl font-black text-green-400">1.130.000</span>
+        </div>
       </div>
     </div>
+
+    <!-- KALKULATOR PEMBELIAN SENJATA (DARI MAYANS) -->
+    <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
+      <h2 class="text-lg font-bold text-red-400 flex items-center gap-2">
+        <i class="fa-solid fa-gun"></i> KALKULATOR PEMBELIAN SENJATA
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jenis Senjata</label>
+          <select id="gunType" onchange="calcGun()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-red-500">
+            <option value="DA">DA (150.000/pc - Promo 10 Free 2)</option>
+            <option value="P50">P50 (130.000/pc)</option>
+            <option value="TAC9">TAC9 (110.000/pc)</option>
+            <option value="CERAMIC">CERAMIC (90.000/pc)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jumlah Beli (PC)</label>
+          <input type="number" id="gunQty" value="10" min="1" oninput="calcGun()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-red-500">
+        </div>
+
+        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex flex-col justify-center">
+          <span class="text-xs text-gray-400">Total Biaya Beli + Bonus:</span>
+          <span id="totalGunPrice" class="text-2xl font-black text-red-400">1.500.000</span>
+          <span id="bonusInfo" class="text-xs text-amber-400 mt-1">Dapat Total: 12 PC (Bonus 2)</span>
+        </div>
+      </div>
+    </div>
+
+    <button onclick="copyAllSummary()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+      <i class="fa-solid fa-copy"></i> Salin Format Transaksi Mayans
+    </button>
 
   </div>
 
   <script>
-    const recipes = {
-      "50AE": { iron: 50, carbon: 50, umer: 20000 },
-      "9MM":  { iron: 50, carbon: 50, umer: 60000 },
-      "38LC": { iron: 50, carbon: 50, umer: 70000 }
-    };
+    const ammoPrices = { "9MM": 113000, "38LC": 120000 };
+    const gunPrices = { "DA": 150000, "P50": 130000, "TAC9": 110000, "CERAMIC": 90000 };
 
-    // Setting Preset Harga Tiap Partner
-    const partnerPresets = {
-      "umum": { iron: 100, carbon: 100, sell: 100000 },
-      "partnerA": { iron: 80, carbon: 80, sell: 95000 },
-      "partnerB": { iron: 90, carbon: 90, sell: 90000 }
-    };
-
-    function applyPartnerPreset() {
-      const selectedPartner = document.getElementById("partnerSelect").value;
-      const preset = partnerPresets[selectedPartner];
-
-      document.getElementById("ironPrice").value = preset.iron;
-      document.getElementById("carbonPrice").value = preset.carbon;
-      document.getElementById("sellPrice").value = preset.sell;
+    function calcAmmo() {
+      const type = document.getElementById("ammoType").value;
+      const qty = parseInt(document.getElementById("ammoQty").value) || 0;
+      const total = ammoPrices[type] * qty;
+      document.getElementById("totalAmmoPrice").innerText = total.toLocaleString('id-ID');
     }
 
-    function calculate() {
-      const type = document.getElementById("ammoSelect").value;
-      const qty = parseInt(document.getElementById("packQty").value) || 0;
+    function calcGun() {
+      const type = document.getElementById("gunType").value;
+      const qty = parseInt(document.getElementById("gunQty").value) || 0;
+      const price = gunPrices[type];
       
-      const pIron = parseFloat(document.getElementById("ironPrice").value) || 0;
-      const pCarbon = parseFloat(document.getElementById("carbonPrice").value) || 0;
-      const pSell = parseFloat(document.getElementById("sellPrice").value) || 0;
+      let totalCost = price * qty;
+      let totalGot = qty;
+      let bonusText = "";
 
-      const ironQty = recipes[type].iron * qty;
-      const carbonQty = recipes[type].carbon * qty;
-      const umerQty = recipes[type].umer * qty;
+      if (type === "DA") {
+        const bonusSets = Math.floor(qty / 10);
+        const bonusPcs = bonusSets * 2;
+        totalGot = qty + bonusPcs;
+        bonusText = bonusPcs > 0 ? `Dapat Total: ${totalGot} PC (Bonus ${bonusPcs} PC)` : `Dapat Total: ${qty} PC`;
+      } else {
+        bonusText = `Dapat Total: ${qty} PC`;
+      }
 
-      const totalIronCost = ironQty * pIron;
-      const totalCarbonCost = carbonQty * pCarbon;
-      
-      const totalModal = totalIronCost + totalCarbonCost + umerQty;
-      const totalOmset = pSell * qty;
-      const netProfit = totalOmset - totalModal;
-
-      // Update Tampilan Bahan
-      document.getElementById("badgeAmmo").innerText = `${type} x${qty} Pack`;
-      document.getElementById("totalIron").innerText = ironQty.toLocaleString('id-ID');
-      document.getElementById("costIron").innerText = `Modal: ${totalIronCost.toLocaleString('id-ID')}`;
-      
-      document.getElementById("totalCarbon").innerText = carbonQty.toLocaleString('id-ID');
-      document.getElementById("costCarbon").innerText = `Modal: ${totalCarbonCost.toLocaleString('id-ID')}`;
-      
-      document.getElementById("totalUmer").innerText = umerQty.toLocaleString('id-ID');
-
-      // Update Finansial
-      document.getElementById("totalCost").innerText = totalModal.toLocaleString('id-ID');
-      document.getElementById("totalRevenue").innerText = totalOmset.toLocaleString('id-ID');
-      document.getElementById("netProfit").innerText = (netProfit >= 0 ? '+' : '') + netProfit.toLocaleString('id-ID');
+      document.getElementById("totalGunPrice").innerText = totalCost.toLocaleString('id-ID');
+      document.getElementById("bonusInfo").innerText = bonusText;
     }
 
-    function copySummary() {
-      const partner = document.getElementById("partnerSelect").options[document.getElementById("partnerSelect").selectedIndex].text;
-      const type = document.getElementById("ammoSelect").value;
-      const qty = document.getElementById("packQty").value;
-      const iron = document.getElementById("totalIron").innerText;
-      const carbon = document.getElementById("totalCarbon").innerText;
-      const umer = document.getElementById("totalUmer").innerText;
-      const modal = document.getElementById("totalCost").innerText;
-      const revenue = document.getElementById("totalRevenue").innerText;
-      const profit = document.getElementById("netProfit").innerText;
+    function copyAllSummary() {
+      const ammoType = document.getElementById("ammoType").value;
+      const ammoQty = document.getElementById("ammoQty").value;
+      const ammoTotal = document.getElementById("totalAmmoPrice").innerText;
 
-      const text = `📦 *PLANNING CRAFTING AMMO NMC*\n` +
-                   `🤝 *Skema:* ${partner}\n` +
-                   `• Tipe Ammo: ${type} (${qty} Pack)\n\n` +
-                   `🛒 *Bahan & Modal Beli:*\n` +
-                   `- Iron Needed: ${iron}\n` +
-                   `- Carbon Needed: ${carbon}\n` +
-                   `- Umer Fee: ${umer}\n` +
-                   `💸 *Total Modal Production:* ${modal}\n\n` +
-                   `💰 *Total Penjualan:* ${revenue}\n` +
-                   `📈 *Untung Bersih:* ${profit}`;
+      const gunType = document.getElementById("gunType").value;
+      const gunQty = document.getElementById("gunQty").value;
+      const gunTotal = document.getElementById("totalGunPrice").innerText;
+      const bonusInfo = document.getElementById("bonusInfo").innerText;
+
+      const text = `🤝 *TRANSAKSI PARTNER MAYANS*\n\n` +
+                   `📦 *Penjualan Ammo:*\n` +
+                   `- ${ammoType} (${ammoQty} Pack) = Rp ${ammoTotal}\n\n` +
+                   `🔫 *Pembelian Senjata:*\n` +
+                   `- ${gunType} (${gunQty} PC) = Rp ${gunTotal}\n` +
+                   `- Keterangan: ${bonusInfo}`;
 
       navigator.clipboard.writeText(text);
-      alert("Ringkasan pesanan & skema partner berhasil disalin!");
+      alert("Ringkasan transaksi Mayans berhasil disalin!");
     }
 
-    // Inisialisasi awal
-    applyPartnerPreset();
-    calculate();
+    calcAmmo();
+    calcGun();
   </script>
 </body>
 </html>
