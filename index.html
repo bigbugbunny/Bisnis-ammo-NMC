@@ -95,4 +95,115 @@
             </div>
 
             <!-- Carbon -->
-            <div class="bg-slate-900/90 p-
+            <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800">
+              <div class="flex items-center justify-between text-gray-400 text-sm mb-1">
+                <span>⬛ Carbon</span>
+                <span class="text-xs bg-slate-800 px-2 py-0.5 rounded text-gray-400">Req: 50/pack</span>
+              </div>
+              <div id="totalCarbon" class="text-2xl font-black text-blue-400">500</div>
+            </div>
+
+            <!-- Umer -->
+            <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800">
+              <div class="flex items-center justify-between text-gray-400 text-sm mb-1">
+                <span>💵 Umer</span>
+                <span class="text-xs bg-slate-800 px-2 py-0.5 rounded text-gray-400">Biaya Game</span>
+              </div>
+              <div id="totalUmer" class="text-2xl font-black text-emerald-400">600.000</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profit Analysis -->
+        <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg">
+          <h2 class="text-lg font-bold text-blue-400 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-chart-line"></i> Analisis Proyeksi Keuangan
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+              <div class="text-xs text-gray-400 mb-1">Total Biaya Production (Umer + Modal)</div>
+              <div id="totalCost" class="text-xl font-bold text-red-400">600.000</div>
+            </div>
+
+            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+              <div class="text-xs text-gray-400 mb-1">Total Omset / Pendapatan</div>
+              <div id="totalRevenue" class="text-xl font-bold text-blue-400">1.000.000</div>
+            </div>
+
+            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+              <div class="text-xs text-gray-400 mb-1">Estimasi Untung Bersih</div>
+              <div id="netProfit" class="text-xl font-bold text-green-400">+400.000</div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="mt-6 flex flex-wrap gap-3">
+            <button onclick="copySummary()" class="flex-1 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-copy"></i> Salin Rincian Pesanan
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const recipes = {
+      "50AE": { iron: 50, carbon: 50, umer: 20000 },
+      "9MM":  { iron: 50, carbon: 50, umer: 60000 },
+      "38LC": { iron: 50, carbon: 50, umer: 70000 }
+    };
+
+    function calculate() {
+      const type = document.getElementById("ammoSelect").value;
+      const qty = parseInt(document.getElementById("packQty").value) || 0;
+      const modal = parseFloat(document.getElementById("modalPrice").value) || 0;
+      const sell = parseFloat(document.getElementById("sellPrice").value) || 0;
+
+      const iron = recipes[type].iron * qty;
+      const carbon = recipes[type].carbon * qty;
+      const umer = recipes[type].umer * qty;
+
+      const cost = umer + (modal * qty);
+      const revenue = sell * qty;
+      const profit = revenue - cost;
+
+      // Update Bahan
+      document.getElementById("badgeAmmo").innerText = `${type} x${qty} Pack`;
+      document.getElementById("totalIron").innerText = iron.toLocaleString('id-ID');
+      document.getElementById("totalCarbon").innerText = carbon.toLocaleString('id-ID');
+      document.getElementById("totalUmer").innerText = umer.toLocaleString('id-ID');
+
+      // Update Keuangan
+      document.getElementById("totalCost").innerText = cost.toLocaleString('id-ID');
+      document.getElementById("totalRevenue").innerText = revenue.toLocaleString('id-ID');
+      document.getElementById("netProfit").innerText = (profit >= 0 ? '+' : '') + profit.toLocaleString('id-ID');
+    }
+
+    function copySummary() {
+      const type = document.getElementById("ammoSelect").value;
+      const qty = document.getElementById("packQty").value;
+      const iron = document.getElementById("totalIron").innerText;
+      const carbon = document.getElementById("totalCarbon").innerText;
+      const umer = document.getElementById("totalUmer").innerText;
+      const revenue = document.getElementById("totalRevenue").innerText;
+
+      const text = `📦 *RINCIAN CRAFTING AMMO NMC*\n` +
+                   `• Tipe Ammo: ${type}\n` +
+                   `• Jumlah: ${qty} Pack\n\n` +
+                   `🛠️ *Bahan Dibutuhkan:*\n` +
+                   `- Iron: ${iron}\n` +
+                   `- Carbon: ${carbon}\n` +
+                   `- Umer: ${umer}\n\n` +
+                   `💰 *Total Harga:* ${revenue}`;
+
+      navigator.clipboard.writeText(text);
+      alert("Rincian pesanan berhasil disalin! Tinggal paste ke WA/Discord.");
+    }
+
+    calculate();
+  </script>
+</body>
+</html>
