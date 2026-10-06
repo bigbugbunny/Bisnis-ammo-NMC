@@ -116,7 +116,7 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-blue-400"><span>Kelola Brankas</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
-        <!-- Card 4: Beli Bahan Warga (BARU & AKURAT) -->
+        <!-- Card 4: Beli Bahan Warga -->
         <div onclick="showSection('sectionBeliWarga')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between border border-emerald-500/30">
           <div>
             <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-emerald-500/30"><i class="fa-solid fa-basket-shopping"></i></div>
@@ -156,10 +156,20 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-emerald-400"><span>Kelola Member</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
+        <!-- Card 8: Coming Soon (Persiapan Klub / Divisi Lain) -->
+        <div onclick="alert('Menu klub atau divisi lain akan segera hadir (Coming Soon)!')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between border border-dashed border-gray-600 opacity-75 hover:opacity-100">
+          <div>
+            <div class="w-12 h-12 bg-gray-800 text-gray-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-gray-700"><i class="fa-solid fa-plus-circle"></i></div>
+            <h3 class="text-xl font-bold text-gray-300 mb-2">Divisi / Klub Lain</h3>
+            <p class="text-sm text-gray-500">Persiapan modul untuk organisasi atau klub tambahan di masa mendatang.</p>
+          </div>
+          <div class="mt-6 flex justify-between items-center text-xs font-semibold text-gray-400"><span>Coming Soon</span><i class="fa-solid fa-clock"></i></div>
+        </div>
+
       </div>
     </div>
 
-    <!-- ================= HALAMAN: BELI BAHAN WARGA (DENGAN KALKULASI Qty x Harga Satuan) ================= -->
+    <!-- ================= HALAMAN: BELI BAHAN WARGA ================= -->
     <div id="sectionBeliWarga" class="hidden space-y-6">
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
         <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-cart-plus"></i> Form Transaksi Beli Bahan dari Warga</h2>
@@ -595,7 +605,7 @@
       });
     }
 
-    // --- MODUL PEMBELIAN BAHAN DARI WARGA (DENGAN KALKULASI Qty x Harga Satuan) ---
+    // --- MODUL PEMBELIAN BAHAN DARI WARGA ---
     function tambahBarisBeli() {
       const container = document.getElementById("beliBahanRowsContainer");
       const rowHtml = `
@@ -674,10 +684,8 @@
           itemsDetail.push({ item, qty, totalHargaBaris: rowTotal });
           totalSemuaHarga += rowTotal;
 
-          // 1. Tambah stok brankas otomatis per item
           vaultStock[item] = (vaultStock[item] || 0) + qty;
 
-          // 2. Catat ke riwayat brankas
           vaultHistory.unshift({
             id: Date.now() + Math.random(),
             date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
@@ -695,7 +703,6 @@
         return;
       }
 
-      // 3. Catat pengeluaran kas Uang Putih otomatis di Data Bisnis
       businessHistory.unshift({
         id: Date.now(),
         date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
@@ -706,7 +713,6 @@
         author: admin
       });
 
-      // 4. Catat ke riwayat khusus pembelian warga
       beliWargaHistory.unshift({
         id: Date.now(),
         date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
@@ -718,7 +724,6 @@
 
       saveDataToCloud();
 
-      // Reset form
       document.getElementById("beliWargaNama").value = "";
       document.getElementById("beliWargaAdmin").value = "";
       document.getElementById("beliBahanRowsContainer").innerHTML = `
