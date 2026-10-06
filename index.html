@@ -21,7 +21,7 @@
         <h1 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-amber-300 to-emerald-400">
           ⚡ NMC MULTI-GROUP MANAGEMENT
         </h1>
-        <p class="text-sm text-gray-400 mt-1">Sistem Pengelola Transaksi 9 Kelompok Partner</p>
+        <p class="text-sm text-gray-400 mt-1">Sistem Pengelola Transaksi Multi-Item Partner</p>
       </div>
       
       <!-- Selector Kelompok -->
@@ -49,9 +49,7 @@
           <span><i class="fa-solid fa-tag"></i> HARGA JUAL AMMO</span>
           <span id="activeGroupNameBadge" class="text-xs bg-slate-800 text-amber-400 px-2.5 py-1 rounded-full border border-slate-700">Mayans</span>
         </h2>
-        <div id="ammoPriceList" class="space-y-2 text-sm">
-          <!-- Otomatis diisi lewat Javascript -->
-        </div>
+        <div id="ammoPriceList" class="space-y-2 text-sm"></div>
       </div>
 
       <!-- Harga Beli -->
@@ -59,60 +57,49 @@
         <h2 class="text-md font-bold text-red-400 mb-3 flex items-center justify-between">
           <span><i class="fa-solid fa-cart-shopping"></i> HARGA BELI / LAYANAN</span>
         </h2>
-        <div id="itemPriceList" class="grid grid-cols-2 gap-2 text-xs">
-          <!-- Otomatis diisi lewat Javascript -->
-        </div>
+        <div id="itemPriceList" class="grid grid-cols-2 gap-2 text-xs"></div>
       </div>
     </div>
 
-    <!-- KALKULATOR PENJUALAN AMMO -->
+    <!-- KALKULATOR PENJUALAN AMMO (MULTI-ITEM) -->
     <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
-      <h2 class="text-lg font-bold text-green-400 flex items-center gap-2">
-        <i class="fa-solid fa-calculator"></i> KALKULATOR PENJUALAN AMMO
-      </h2>
+      <div class="flex justify-between items-center">
+        <h2 class="text-lg font-bold text-green-400 flex items-center gap-2">
+          <i class="fa-solid fa-calculator"></i> KALKULATOR PENJUALAN AMMO
+        </h2>
+        <button onclick="addAmmoRow()" class="bg-green-600/80 hover:bg-green-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1">
+          <i class="fa-solid fa-plus"></i> Tambah Ammo
+        </button>
+      </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Tipe Ammo</label>
-          <select id="ammoType" onchange="calcAmmo()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-green-500">
-          </select>
-        </div>
+      <div id="ammoRowsContainer" class="space-y-3">
+        <!-- Baris-baris Ammo dimasukkan lewat Javascript -->
+      </div>
 
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jumlah Pack</label>
-          <input type="number" id="ammoQty" value="10" min="1" oninput="calcAmmo()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-green-500">
-        </div>
-
-        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex flex-col justify-center">
-          <span class="text-xs text-gray-400">Total Tagihan Ammo:</span>
-          <span id="totalAmmoPrice" class="text-2xl font-black text-green-400">0</span>
-        </div>
+      <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex justify-between items-center">
+        <span class="text-sm text-gray-400">Total Seluruh Tagihan Ammo:</span>
+        <span id="grandTotalAmmo" class="text-2xl font-black text-green-400">0</span>
       </div>
     </div>
 
-    <!-- KALKULATOR PEMBELIAN BARANG/SENJATA -->
+    <!-- KALKULATOR PEMBELIAN BARANG / LAYANAN (MULTI-ITEM) -->
     <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
-      <h2 class="text-lg font-bold text-red-400 flex items-center gap-2">
-        <i class="fa-solid fa-gun"></i> KALKULATOR PEMBELIAN / LAYANAN
-      </h2>
+      <div class="flex justify-between items-center">
+        <h2 class="text-lg font-bold text-red-400 flex items-center gap-2">
+          <i class="fa-solid fa-gun"></i> KALKULATOR PEMBELIAN / LAYANAN
+        </h2>
+        <button onclick="addItemRow()" class="bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1">
+          <i class="fa-solid fa-plus"></i> Tambah Barang
+        </button>
+      </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jenis Barang/Layanan</label>
-          <select id="itemType" onchange="calcItem()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-red-500">
-          </select>
-        </div>
+      <div id="itemRowsContainer" class="space-y-3">
+        <!-- Baris-baris Barang dimasukkan lewat Javascript -->
+      </div>
 
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jumlah / Nomimal</label>
-          <input type="number" id="itemQty" value="10" min="1" oninput="calcItem()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-red-500">
-        </div>
-
-        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex flex-col justify-center">
-          <span class="text-xs text-gray-400">Total Biaya Beli / Fee:</span>
-          <span id="totalItemPrice" class="text-2xl font-black text-red-400">0</span>
-          <span id="bonusInfo" class="text-xs text-amber-400 mt-1">Dapat Total: 10 PC</span>
-        </div>
+      <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex justify-between items-center">
+        <span class="text-sm text-gray-400">Total Seluruh Pembelian / Fee:</span>
+        <span id="grandTotalItem" class="text-2xl font-black text-red-400">0</span>
       </div>
     </div>
 
@@ -123,7 +110,6 @@
   </div>
 
   <script>
-    // DATABASE 9 KELOMPOK LENGKAP
     const groupsData = {
       "th21": {
         name: "21TH",
@@ -203,110 +189,198 @@
 
       document.getElementById("activeGroupNameBadge").innerText = group.name;
 
-      // Render Harga Ammo
+      // Render Rincian Harga Ammo
       const ammoListDiv = document.getElementById("ammoPriceList");
-      const ammoSelect = document.getElementById("ammoType");
       ammoListDiv.innerHTML = "";
-      ammoSelect.innerHTML = "";
-
       for (let ammo in group.ammo) {
-        const price = group.ammo[ammo];
         ammoListDiv.innerHTML += `
           <div class="flex justify-between bg-slate-900/80 p-3 rounded-xl border border-slate-800">
             <span>${ammo} (1 pack)</span>
-            <span class="font-bold text-green-400">${price.toLocaleString('id-ID')}</span>
+            <span class="font-bold text-green-400">${group.ammo[ammo].toLocaleString('id-ID')}</span>
           </div>`;
-        ammoSelect.innerHTML += `<option value="${ammo}">${ammo} (${price.toLocaleString('id-ID')}/pack)</option>`;
       }
 
-      // Render Harga Barang/Layanan
+      // Render Rincian Harga Barang/Layanan
       const itemListDiv = document.getElementById("itemPriceList");
-      const itemSelect = document.getElementById("itemType");
       itemListDiv.innerHTML = "";
-      itemSelect.innerHTML = "";
-
       for (let item in group.items) {
         const data = group.items[item];
         const displayPrice = data.isRate ? `${data.price * 100}%` : `${data.price.toLocaleString('id-ID')} / PC`;
-
         itemListDiv.innerHTML += `
           <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
             <div class="text-gray-400">${item}</div>
             <div class="font-bold text-red-400">${displayPrice}</div>
             ${data.promo ? `<div class="text-[10px] text-amber-400 mt-0.5">${data.promo}</div>` : ''}
           </div>`;
-        
-        itemSelect.innerHTML += `<option value="${item}">${item} (${displayPrice})</option>`;
       }
 
-      calcAmmo();
-      calcItem();
+      // Reset Container Row
+      document.getElementById("ammoRowsContainer").innerHTML = "";
+      document.getElementById("itemRowsContainer").innerHTML = "";
+
+      addAmmoRow();
+      addItemRow();
     }
 
-    function calcAmmo() {
+    function addAmmoRow() {
       const group = groupsData[currentGroupKey];
-      const type = document.getElementById("ammoType").value;
-      const qty = parseInt(document.getElementById("ammoQty").value) || 0;
-      
-      if (!type || !group.ammo[type]) {
-        document.getElementById("totalAmmoPrice").innerText = "0";
-        return;
+      const container = document.getElementById("ammoRowsContainer");
+      const rowId = "ammo_row_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4);
+
+      let optionsHTML = "";
+      for (let ammo in group.ammo) {
+        optionsHTML += `<option value="${ammo}">${ammo} (${group.ammo[ammo].toLocaleString('id-ID')}/pack)</option>`;
       }
 
-      const total = group.ammo[type] * qty;
-      document.getElementById("totalAmmoPrice").innerText = total.toLocaleString('id-ID');
+      const rowHTML = `
+        <div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+          <div class="md:col-span-5">
+            <select class="ammo-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-green-500" onchange="calculateAll()">
+              ${optionsHTML}
+            </select>
+          </div>
+          <div class="md:col-span-3">
+            <input type="number" value="10" min="1" class="ammo-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-green-500" placeholder="Qty Pack" oninput="calculateAll()">
+          </div>
+          <div class="md:col-span-3 text-right font-bold text-green-400 text-sm">
+            Rp <span class="ammo-row-total">0</span>
+          </div>
+          <div class="md:col-span-1 text-center">
+            <button onclick="removeRow('${rowId}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>`;
+
+      container.insertAdjacentHTML('beforeend', rowHTML);
+      calculateAll();
     }
 
-    function calcItem() {
+    function addItemRow() {
       const group = groupsData[currentGroupKey];
-      const type = document.getElementById("itemType").value;
-      const qty = parseFloat(document.getElementById("itemQty").value) || 0;
+      const container = document.getElementById("itemRowsContainer");
+      const rowId = "item_row_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4);
 
-      if (!type || !group.items[type]) {
-        document.getElementById("totalItemPrice").innerText = "0";
-        document.getElementById("bonusInfo").innerText = "Dapat Total: 0";
-        return;
+      let optionsHTML = "";
+      for (let item in group.items) {
+        const data = group.items[item];
+        const displayPrice = data.isRate ? `${data.price * 100}%` : `${data.price.toLocaleString('id-ID')}/pc`;
+        optionsHTML += `<option value="${item}">${item} (${displayPrice})</option>`;
       }
 
-      const data = group.items[type];
-      let totalCost = 0;
-      let bonusText = `Dapat Total: ${qty} PC`;
+      if (Object.keys(group.items).length === 0) {
+        optionsHTML = `<option value="">(Tidak Ada Barang)</option>`;
+      }
 
-      if (data.isRate) {
-        totalCost = qty * data.price;
-        bonusText = `Fee (${data.price * 100}%): ${totalCost.toLocaleString('id-ID')}`;
-      } else {
-        totalCost = data.price * qty;
-        if (type === "DA" && data.promo.includes("10 Free 2")) {
-          const bonusPcs = Math.floor(qty / 10) * 2;
-          bonusText = bonusPcs > 0 ? `Dapat Total: ${qty + bonusPcs} PC (Bonus ${bonusPcs} PC)` : `Dapat Total: ${qty} PC`;
+      const rowHTML = `
+        <div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+          <div class="md:col-span-5">
+            <select class="item-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-red-500" onchange="calculateAll()">
+              ${optionsHTML}
+            </select>
+          </div>
+          <div class="md:col-span-3">
+            <input type="number" value="10" min="1" class="item-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-red-500" placeholder="Jumlah / Nomimal" oninput="calculateAll()">
+          </div>
+          <div class="md:col-span-3 text-right font-bold text-red-400 text-sm">
+            <div class="item-row-total-text">Rp <span class="item-row-total">0</span></div>
+            <div class="item-row-bonus text-[10px] text-amber-400"></div>
+          </div>
+          <div class="md:col-span-1 text-center">
+            <button onclick="removeRow('${rowId}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>`;
+
+      container.insertAdjacentHTML('beforeend', rowHTML);
+      calculateAll();
+    }
+
+    function removeRow(rowId) {
+      const row = document.getElementById(rowId);
+      if (row) {
+        row.remove();
+        calculateAll();
+      }
+    }
+
+    function calculateAll() {
+      const group = groupsData[currentGroupKey];
+
+      // Hitung Ammo Rows
+      let totalAmmoSum = 0;
+      const ammoRows = document.querySelectorAll("#ammoRowsContainer > div");
+      ammoRows.forEach(row => {
+        const type = row.querySelector(".ammo-type-select").value;
+        const qty = parseFloat(row.querySelector(".ammo-qty-input").value) || 0;
+        const price = (group.ammo && group.ammo[type]) ? group.ammo[type] : 0;
+        const rowTotal = price * qty;
+        totalAmmoSum += rowTotal;
+        row.querySelector(".ammo-row-total").innerText = rowTotal.toLocaleString('id-ID');
+      });
+      document.getElementById("grandTotalAmmo").innerText = totalAmmoSum.toLocaleString('id-ID');
+
+      // Hitung Item Rows
+      let totalItemSum = 0;
+      const itemRows = document.querySelectorAll("#itemRowsContainer > div");
+      itemRows.forEach(row => {
+        const type = row.querySelector(".item-type-select").value;
+        const qty = parseFloat(row.querySelector(".item-qty-input").value) || 0;
+        const data = (group.items && group.items[type]) ? group.items[type] : null;
+
+        if (!data) {
+          row.querySelector(".item-row-total").innerText = "0";
+          row.querySelector(".item-row-bonus").innerText = "";
+          return;
         }
-      }
 
-      document.getElementById("totalItemPrice").innerText = totalCost.toLocaleString('id-ID');
-      document.getElementById("bonusInfo").innerText = bonusText;
+        let rowTotal = 0;
+        let bonusText = "";
+
+        if (data.isRate) {
+          rowTotal = qty * data.price;
+          bonusText = `Fee: ${data.price * 100}%`;
+        } else {
+          rowTotal = data.price * qty;
+          if (type === "DA" && data.promo.includes("10 Free 2")) {
+            const bonusPcs = Math.floor(qty / 10) * 2;
+            bonusText = bonusPcs > 0 ? `Bonus: ${bonusPcs} PC (Tot: ${qty + bonusPcs})` : "";
+          }
+        }
+
+        totalItemSum += rowTotal;
+        row.querySelector(".item-row-total").innerText = rowTotal.toLocaleString('id-ID');
+        row.querySelector(".item-row-bonus").innerText = bonusText;
+      });
+      document.getElementById("grandTotalItem").innerText = totalItemSum.toLocaleString('id-ID');
     }
 
     function copySummary() {
       const groupName = groupsData[currentGroupKey].name;
-      const ammoType = document.getElementById("ammoType").value || "-";
-      const ammoQty = document.getElementById("ammoQty").value || 0;
-      const ammoTotal = document.getElementById("totalAmmoPrice").innerText;
+      const group = groupsData[currentGroupKey];
 
-      const itemType = document.getElementById("itemType").value || "-";
-      const itemQty = document.getElementById("itemQty").value || 0;
-      const itemTotal = document.getElementById("totalItemPrice").innerText;
-      const bonusInfo = document.getElementById("bonusInfo").innerText;
+      let text = `🤝 *TRANSAKSI PARTNER: ${groupName.toUpperCase()}*\n\n📦 *Penjualan Ammo:*\n`;
 
-      const text = `🤝 *TRANSAKSI PARTNER: ${groupName.toUpperCase()}*\n\n` +
-                   `📦 *Penjualan Ammo:*\n` +
-                   `- ${ammoType} (${ammoQty} Pack) = Rp ${ammoTotal}\n\n` +
-                   `🛒 *Pembelian / Layanan:*\n` +
-                   `- ${itemType} (${itemQty}) = Rp ${itemTotal}\n` +
-                   `- Detail: ${bonusInfo}`;
+      const ammoRows = document.querySelectorAll("#ammoRowsContainer > div");
+      if (ammoRows.length === 0) text += `- Tidak ada\n`;
+      ammoRows.forEach(row => {
+        const type = row.querySelector(".ammo-type-select").value;
+        const qty = row.querySelector(".ammo-qty-input").value || 0;
+        const total = row.querySelector(".ammo-row-total").innerText;
+        text += `- ${type} (${qty} Pack) = Rp ${total}\n`;
+      });
+      text += `*Total Tagihan Ammo:* Rp ${document.getElementById("grandTotalAmmo").innerText}\n\n🛒 *Pembelian / Layanan:*\n`;
+
+      const itemRows = document.querySelectorAll("#itemRowsContainer > div");
+      if (itemRows.length === 0) text += `- Tidak ada\n`;
+      itemRows.forEach(row => {
+        const type = row.querySelector(".item-type-select").value;
+        const qty = row.querySelector(".item-qty-input").value || 0;
+        const total = row.querySelector(".item-row-total").innerText;
+        const bonus = row.querySelector(".item-row-bonus").innerText;
+        text += `- ${type} (${qty}) = Rp ${total} ${bonus ? `[${bonus}]` : ''}\n`;
+      });
+      text += `*Total Pembelian/Fee:* Rp ${document.getElementById("grandTotalItem").innerText}`;
 
       navigator.clipboard.writeText(text);
-      alert(`Ringkasan transaksi untuk ${groupName} berhasil disalin!`);
+      alert(`Ringkasan seluruh transaksi untuk ${groupName} berhasil disalin!`);
     }
 
     // Initial load
