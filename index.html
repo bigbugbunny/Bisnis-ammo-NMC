@@ -531,8 +531,8 @@
     const DISCORD_WEBHOOK_MEMBER    = "https://discordapp.com/api/webhooks/1557148223884496916/fnxfMm7Z_Pk0w5zQuSOwF_DNu9vrUIbkx6QN8pMSZeVmef9EkHb4ucTkQOr95X37Vyma";
 
     const ACCOUNTS = {
-      "viewer": { pass: "viewer123", role: "Viewer (Hanya Melihat)" },
-      "editor": { pass: "editor123", role: "Editor (Akses Penuh)" }
+      "Member": { pass: "123", role: "Viewer (Hanya Melihat)" },
+      "HighRank": { pass: "505", role: "Editor (Akses Penuh)" }
     };
 
     function handleLogin() {
@@ -630,7 +630,7 @@
         btnBack.classList.remove('hidden');
         
         if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
-        else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner (9 Kelompok)";
+        else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner Kelompok";
         else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris & Riwayat)";
         else if(sectionId === 'sectionBeliWarga') subtitle.innerText = "Modul Pembelian Bahan dari Warga (Uang Putih)";
         else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Data Bisnis (Kas Uang Merah & Putih)";
@@ -1219,12 +1219,12 @@
     const groupsData = {
       "th21": { name: "21TH", ammo: { "50AE": 80000, "9MM": 115000, "38LC": 145000 }, items: { "Baju Hangat": { price: 100000, promo: "Max 100 Pcs/Minggu", isRate: false } } },
       "voldemort": { name: "Voldemort", ammo: { "50AE": 75000, "9MM": 120000, "38LC": 140000 }, items: { "Baju Hangat": { price: 110000, promo: "Max 50 Pcs", isRate: false } } },
-      "mugen": { name: "Mugen", ammo: { "50AE": 75000, "9MM": 115000, "38LC": 130000 }, items: { "Cuci Uang (20%)": { price: 0.20, promo: "Max 15 Juta", isRate: true }, "Cuci Uang (30%)": { price: 0.30, promo: "Tanpa Max", isRate: true } } },
+      "mugen": { name: "Mugen", ammo: { "50AE": 75000, "9MM": 115000, "38LC": 130000 }, items: { "Cuci Uang (20%)": { price: 0.80, promo: "Max 15 Juta", isRate: true }, "Cuci Uang (30%)": { price: 0.70, promo: "Tanpa Max", isRate: true } } },
       "atlanta": { name: "Atlanta", ammo: { "50AE": 100000, "9MM": 150000, "38LC": 145000 }, items: { "Kecubung": { price: 23000, promo: "", isRate: false }, "Jamur": { price: 23000, promo: "", isRate: false }, "Wide": { price: 23000, promo: "", isRate: false } } },
       "brooklyn": { name: "Brooklyn", ammo: { "50AE": 75000, "9MM": 110000, "38LC": 140000 }, items: { "Kecubung": { price: 20000, promo: "", isRate: false }, "Jamur": { price: 20000, promo: "", isRate: false }, "Wide": { price: 20000, promo: "", isRate: false } } },
       "s90": { name: "90S", ammo: { "50AE": 80000, "9MM": 115000, "38LC": 140000 }, items: { "Baju Hangat": { price: 100000, promo: "", isRate: false } } },
       "angker": { name: "Angker", ammo: { "50AE": 80000, "9MM": 120000, "38LC": 155000 }, items: { "Kecubung": { price: 23000, promo: "", isRate: false }, "Jamur": { price: 23000, promo: "", isRate: false }, "Wide": { price: 23000, promo: "", isRate: false } } },
-      "white_tiger": { name: "White Tiger", ammo: { "50AE": 70000, "9MM": 110000, "38LC": 140000 }, items: { "Umer ke Putih (15%)": { price: 0.15, promo: "", isRate: true }, "Putih ke Umer (18%)": { price: 0.18, promo: "", isRate: true } } },
+      "white_tiger": { name: "White Tiger", ammo: { "50AE": 70000, "9MM": 110000, "38LC": 140000 }, items: { "Umer ke Putih (15%)": { price: 0.85, promo: "", isRate: true }, "Putih ke Umer (18%)": { price: 0.82, promo: "", isRate: true } } },
       "mayans": { name: "Mayans", ammo: { "9MM": 113000, "38LC": 120000 }, items: { "DA": { price: 150000, promo: "10 Free 2", isRate: false }, "P50": { price: 130000, promo: "", isRate: false }, "TAC9": { price: 110000, promo: "", isRate: false }, "CERAMIC": { price: 90000, promo: "", isRate: false } } }
     };
     let currentGroupKey = "mayans";
