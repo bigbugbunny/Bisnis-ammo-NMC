@@ -32,19 +32,10 @@
       </div>
       
       <div class="mt-4 md:mt-0 flex items-center gap-2">
-        <span class="bg-green-500/20 text-green-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-green-500/30 flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-green-400 animate-ping"></span> Discord Sync Ready
+        <span class="bg-indigo-500/20 text-indigo-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-indigo-500/30 flex items-center gap-2">
+          <i class="fa-brands fa-discord"></i> Discord Connected
         </span>
       </div>
-    </div>
-
-    <!-- SETTING DISCORD WEBHOOK URL -->
-    <div class="glass-card p-4 rounded-2xl border border-slate-700">
-      <label class="block text-xs font-bold text-indigo-400 uppercase tracking-wider mb-1">
-        <i class="fa-brands fa-discord"></i> Discord Webhook URL (Isi Sekali Sahaja):
-      </label>
-      <input type="text" id="webhookInput" onchange="saveWebhook()" placeholder="https://discord.com/api/webhooks/..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
-      <p class="text-[11px] text-gray-400 mt-1">Webhook URL tersimpan otomatis di browser kamu.</p>
     </div>
 
     <!-- ================= HALAMAN 1: MENU UTAMA ================= -->
@@ -359,16 +350,8 @@
   </div>
 
   <script>
-    // WEBHOOK STORAGE
-    function saveWebhook() {
-      const url = document.getElementById("webhookInput").value;
-      localStorage.setItem("nmc_discord_webhook", url);
-    }
-
-    function loadWebhook() {
-      const saved = localStorage.getItem("nmc_discord_webhook");
-      if(saved) document.getElementById("webhookInput").value = saved;
-    }
+    // WEBHOOK DISCORD UTAMA (Satu untuk Seluruh Website)
+    const DISCORD_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1556822834104504402/QZaTVOPAMlfxHEKP2hJFRPI7Y7EHmYPNjFJnpn7rAcizFxKGsGSmVhIDiZGaBM7dfBBi";
 
     // NAVIGASI
     function showSection(sectionId) {
@@ -461,9 +444,6 @@
     }
 
     function sendCraftToDiscord() {
-      const webhookUrl = localStorage.getItem("nmc_discord_webhook");
-      if(!webhookUrl) { alert("Harap isi Discord Webhook URL terlebih dahulu di bagian atas website!"); return; }
-
       const type = document.getElementById("craftAmmoType").value;
       const qty = document.getElementById("craftPackQty").value;
       const iron = document.getElementById("craftTotalIron").innerText;
@@ -474,29 +454,29 @@
       const profit = document.getElementById("craftNetProfit").innerText;
 
       const payload = {
-        username: "NMC Crafting System",
+        username: "NMC Crafting Bot",
         embeds: [{
-          title: "🛠️ PENGINGAT BAHAN CRAFTING AMMO",
+          title: "🛠️ LOG BAHAN CRAFTING AMMO",
           color: 16753920,
           fields: [
-            { name: "📦 Target Production", value: `${type} (${qty} Pack)`, inline: true },
-            { name: "🔩 Iron Needed", value: `${iron} pcs`, inline: true },
-            { name: "⬛ Carbon Needed", value: `${carbon} pcs`, inline: true },
+            { name: "📦 Target Crafting", value: `${type} (${qty} Pack)`, inline: true },
+            { name: "🔩 Total Iron Needed", value: `${iron} pcs`, inline: true },
+            { name: "⬛ Total Carbon Needed", value: `${carbon} pcs`, inline: true },
             { name: "💵 Fee Umer", value: `Rp ${umer}`, inline: true },
             { name: "💸 Total Modal", value: `Rp ${modal}`, inline: true },
-            { name: "📈 Estimasi Profit", value: `Rp ${profit}`, inline: true }
+            { name: "📈 Estimasi Net Profit", value: `Rp ${profit}`, inline: true }
           ],
           timestamp: new Date().toISOString()
         }]
       };
 
-      fetch(webhookUrl, {
+      fetch(DISCORD_WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       }).then(res => {
-        if(res.ok) alert("Bukti crafting berhasil terkirim ke Discord!");
-        else alert("Gagal mengirim ke Discord. Cek Webhook URL kamu.");
+        if(res.ok) alert("Bukti crafting berhasil dikirim otomatis ke Discord!");
+        else alert("Gagal mengirim ke Discord. Pastikan koneksi aman.");
       });
     }
 
@@ -696,9 +676,6 @@
     }
 
     function sendGroupToDiscord() {
-      const webhookUrl = localStorage.getItem("nmc_discord_webhook");
-      if(!webhookUrl) { alert("Harap isi Discord Webhook URL terlebih dahulu di bagian atas website!"); return; }
-
       const groupName = groupsData[currentGroupKey].name;
       let ammoDetail = "";
       document.querySelectorAll("#ammoRowsContainer > div").forEach(row => {
@@ -732,18 +709,17 @@
         }]
       };
 
-      fetch(webhookUrl, {
+      fetch(DISCORD_WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       }).then(res => {
         if(res.ok) alert(`Bukti transaksi ${groupName} berhasil terkirim ke Discord!`);
-        else alert("Gagal mengirim ke Discord. Cek Webhook URL kamu.");
+        else alert("Gagal mengirim ke Discord. Cek koneksi internet kamu.");
       });
     }
 
     // Initial Load
-    loadWebhook();
     calcBahan();
     loadGroupData();
   </script>
