@@ -528,6 +528,7 @@
     const DISCORD_WEBHOOK_PENJUALAN = "https://discordapp.com/api/webhooks/1557014106060623913/LQEqIw427dgWz1nEb2f8ihXhYH_rkl7a_ApywtffJFR31y07KkIzrDcGchuP9PO82-If";
     const DISCORD_WEBHOOK_PEMBELIAN = "https://discordapp.com/api/webhooks/1557138906586292345/guf2IGdXyXLP7yH3gu7l7OGtbOHspcT5zdAd63ZpDIYplCB7FZLYyqAfR7S6bFMQQFk_";
     const DISCORD_WEBHOOK_SETORAN   = "https://discordapp.com/api/webhooks/1557139282802774127/cw05EPU60q_Uyor3_HEpNVs-XTvnXvOD4LLTWkkZjfiw8SANBTsQjNWEkmmniu0q1DSr";
+    const DISCORD_WEBHOOK_MEMBER    = "https://discordapp.com/api/webhooks/1557148223884496916/fnxfMm7Z_Pk0w5zQuSOwF_DNu9vrUIbkx6QN8pMSZeVmef9EkHb4ucTkQOr95X37Vyma";
 
     const ACCOUNTS = {
       "viewer": { pass: "viewer123", role: "Viewer (Hanya Melihat)" },
@@ -1185,7 +1186,7 @@
 
       navigator.clipboard.writeText(text);
 
-      fetch(DISCORD_WEBHOOK_BRANKAS, {
+      fetch(DISCORD_WEBHOOK_MEMBER, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: text })
