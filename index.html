@@ -57,7 +57,7 @@
           <i class="fa-solid fa-arrow-left"></i>
         </button>
         <div class="flex items-center gap-3">
-          <!-- Logo Club dari Gambar -->
+          <!-- Logo Club berformat Nakama.png -->
           <img src="Nakama.png" alt="Nakama MC Logo" class="w-12 h-12 object-contain rounded-xl border border-red-600/50 bg-black p-1 shadow-md" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
           <div>
             <h1 class="text-2xl md:text-3xl font-black tracking-wide mc-gradient-text">
@@ -116,7 +116,17 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-blue-400"><span>Kelola Brankas</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
-        <!-- Card 4 -->
+        <!-- Card 4: Beli Bahan Warga (BARU) -->
+        <div onclick="showSection('sectionBeliWarga')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between border border-emerald-500/30">
+          <div>
+            <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-emerald-500/30"><i class="fa-solid fa-basket-shopping"></i></div>
+            <h3 class="text-xl font-bold text-white mb-2">Beli Bahan (Warga)</h3>
+            <p class="text-sm text-gray-400">Beli bahan dari warga menggunakan Uang Putih & otomatis masuk Brankas.</p>
+          </div>
+          <div class="mt-6 flex justify-between items-center text-xs font-semibold text-emerald-400"><span>Buka Pembelian</span><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+
+        <!-- Card 5 -->
         <div onclick="showSection('sectionBisnis')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between">
           <div>
             <div class="w-12 h-12 bg-purple-500/20 text-purple-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-purple-500/30"><i class="fa-solid fa-chart-line"></i></div>
@@ -126,7 +136,7 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-purple-400"><span>Lihat Laporan</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
-        <!-- Card 5: Data Setoran -->
+        <!-- Card 6: Data Setoran -->
         <div onclick="showSection('sectionSetoran')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between">
           <div>
             <div class="w-12 h-12 bg-pink-500/20 text-pink-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-pink-500/30"><i class="fa-solid fa-hand-holding-dollar"></i></div>
@@ -136,7 +146,7 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-pink-400"><span>Rekap Setoran</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
-        <!-- Card 6: Data Member -->
+        <!-- Card 7: Data Member -->
         <div onclick="showSection('sectionMember')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between">
           <div>
             <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-emerald-500/30"><i class="fa-solid fa-users"></i></div>
@@ -146,6 +156,68 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-emerald-400"><span>Kelola Member</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
+      </div>
+    </div>
+
+    <!-- ================= HALAMAN: BELI BAHAN WARGA (BARU) ================= -->
+    <div id="sectionBeliWarga" class="hidden space-y-6">
+      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
+        <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-cart-plus"></i> Form Transaksi Beli Bahan dari Warga</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nama Warga (Penjual)</label>
+            <input type="text" id="beliWargaNama" placeholder="Nama warga..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-400 text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Pilih Bahan</label>
+            <select id="beliWargaItem" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-400 text-sm">
+              <option value="Iron">Iron</option>
+              <option value="Carbon">Carbon</option>
+              <option value="Glass">Glass</option>
+              <option value="Rubber">Rubber</option>
+              <option value="Plastik">Plastik</option>
+              <option value="Box Recycle">Box Recycle</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jumlah (Qty)</label>
+            <input type="number" id="beliWargaQty" min="1" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-400 text-sm" placeholder="0">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Total Harga (Uang Putih)</label>
+            <input type="number" id="beliWargaTotalHarga" min="0" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-400 text-sm" placeholder="Total harga bayar">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Anggota Klub (Pembeli)</label>
+            <input type="text" id="beliWargaAdmin" placeholder="Nama Anda / Anggota" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-400 text-sm">
+          </div>
+        </div>
+        <button onclick="prosesBeliBahanWarga()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-check-to-slot"></i> Bayar Pakai Uang Putih, Masuk Brankas & Catat Kas
+        </button>
+      </div>
+
+      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
+        <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2">
+          <i class="fa-solid fa-history"></i> Riwayat Pembelian Bahan dari Warga
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase">
+                <th class="p-3">Waktu</th>
+                <th class="p-3">Nama Warga</th>
+                <th class="p-3">Bahan</th>
+                <th class="p-3 text-right">Jumlah</th>
+                <th class="p-3 text-right">Total Biaya (Uang Putih)</th>
+                <th class="p-3">Perwakilan Klub</th>
+              </tr>
+            </thead>
+            <tbody id="beliWargaTableBody" class="divide-y divide-slate-800 text-sm">
+              <tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat pembelian.</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -254,7 +326,7 @@
       </div>
     </div>
 
-    <!-- ================= MODUL 5: DATA BISNIS ================= -->
+    <!-- ================= HALAMAN 5: DATA BISNIS ================= -->
     <div id="sectionBisnis" class="hidden space-y-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="glass-card p-6 shadow-lg bg-gradient-to-br from-slate-900 to-red-950/20">
@@ -283,7 +355,7 @@
       </div>
     </div>
 
-    <!-- ================= MODUL 6: DATA SETORAN MINGGUAN ================= -->
+    <!-- ================= HALAMAN 6: DATA SETORAN MINGGUAN ================= -->
     <div id="sectionSetoran" class="hidden space-y-6">
       <div class="glass-card p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
         <div class="w-full md:w-auto flex items-center gap-3">
@@ -306,7 +378,7 @@
       </div>
     </div>
 
-    <!-- ================= MODUL 7: DATA MEMBER & HIERARKI RANK ================= -->
+    <!-- ================= HALAMAN 7: DATA MEMBER & HIERARKI RANK ================= -->
     <div id="sectionMember" class="hidden space-y-6">
       <div class="glass-card p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
         <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
@@ -374,8 +446,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const DISCORD_WEBHOOK_PENJUALAN = "https://discordapp.com/api/webhooks/1556822834104504402/QZaTVOPAMlfxHEKP2hJFRPI7Y7EHmYPNjFJnpn7rAcizFxKGsGSmVhIDiZGaBM7dfBBi"; 
-    const DISCORD_WEBHOOK_PEMBELIAN = "https://discordapp.com/api/webhooks/1556822834104504402/QZaTVOPAMlfxHEKP2hJFRPI7Y7EHmYPNjFJnpn7rAcizFxKGsGSmVhIDiZGaBM7dfBBi"; 
     const DISCORD_WEBHOOK_BRANKAS = "https://discordapp.com/api/webhooks/1556822834104504402/QZaTVOPAMlfxHEKP2hJFRPI7Y7EHmYPNjFJnpn7rAcizFxKGsGSmVhIDiZGaBM7dfBBi";
 
     const ACCOUNTS = {
@@ -393,7 +463,6 @@
         applyRoleAccess(user);
         document.getElementById("loginModal").classList.add("hidden");
       } else {
-        errorDiv.classList.add("hidden"); // reset
         errorDiv.classList.remove("hidden");
       }
     }
@@ -429,6 +498,7 @@
       document.getElementById('sectionBahan').classList.add('hidden');
       document.getElementById('sectionKalkulator').classList.add('hidden');
       document.getElementById('sectionBrankas').classList.add('hidden');
+      document.getElementById('sectionBeliWarga').classList.add('hidden');
       document.getElementById('sectionBisnis').classList.add('hidden');
       document.getElementById('sectionSetoran').classList.add('hidden');
       document.getElementById('sectionMember').classList.add('hidden');
@@ -446,6 +516,7 @@
         if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
         else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner (9 Kelompok)";
         else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris & Riwayat)";
+        else if(sectionId === 'sectionBeliWarga') subtitle.innerText = "Modul Pembelian Bahan dari Warga (Uang Putih)";
         else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Data Bisnis (Kas Uang Merah & Putih)";
         else if(sectionId === 'sectionSetoran') subtitle.innerText = "Modul Data Setoran Bahan Mingguan Klub";
         else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Data Anggota, Hierarki Rank & Status Keaktifan";
@@ -462,6 +533,7 @@
     let vaultStock = { ...defaultVaultStock };
     let vaultHistory = [];
     let businessHistory = [];
+    let beliWargaHistory = [];
     let setoranData = { "Minggu 1": {} };
     let memberList = {};
     let activeMinggu = "Minggu 1";
@@ -472,14 +544,16 @@
         vaultStock = { ...defaultVaultStock, ...(data.inventory || {}) };
         vaultHistory = data.history || [];
         businessHistory = data.business || [];
+        beliWargaHistory = data.beli_warga || [];
         setoranData = data.setoran || { "Minggu 1": {} };
         memberList = data.club_members || {};
       } else {
-        db.ref('nmc_data').set({ inventory: defaultVaultStock, history: [], business: [], setoran: { "Minggu 1": {} }, club_members: {} });
+        db.ref('nmc_data').set({ inventory: defaultVaultStock, history: [], business: [], beli_warga: [], setoran: { "Minggu 1": {} }, club_members: {} });
       }
       renderVaultInventory();
       renderVaultHistory();
       renderBusinessData();
+      renderBeliWargaHistory();
       renderSetoranTable();
       renderMemberTable();
     });
@@ -489,8 +563,89 @@
         inventory: vaultStock,
         history: vaultHistory,
         business: businessHistory,
+        beli_warga: beliWargaHistory,
         setoran: setoranData,
         club_members: memberList
+      });
+    }
+
+    // --- MODUL PEMBELIAN BAHAN DARI WARGA ---
+    function prosesBeliBahanWarga() {
+      const namaWarga = document.getElementById("beliWargaNama").value.trim();
+      const item = document.getElementById("beliWargaItem").value;
+      const qty = parseInt(document.getElementById("beliWargaQty").value) || 0;
+      const totalHarga = parseInt(document.getElementById("beliWargaTotalHarga").value) || 0;
+      const admin = document.getElementById("beliWargaAdmin").value.trim();
+
+      if (!namaWarga || qty <= 0 || totalHarga < 0 || !admin) {
+        alert("Semua field wajib diisi dengan benar!");
+        return;
+      }
+
+      // 1. Tambah stok brankas otomatis
+      vaultStock[item] = (vaultStock[item] || 0) + qty;
+
+      // 2. Catat ke riwayat brankas
+      vaultHistory.unshift({
+        id: Date.now(),
+        date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        item: item,
+        action: "ADD",
+        diff: `+${qty}`,
+        desc: `Beli dari Warga (${namaWarga})`,
+        author: admin
+      });
+
+      // 3. Catat pengeluaran kas Uang Putih otomatis di Data Bisnis
+      businessHistory.unshift({
+        id: Date.now(),
+        date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        currency: "Uang Putih",
+        type: "OUT",
+        amount: totalHarga,
+        desc: `Beli ${qty} ${item} dari warga (${namaWarga})`,
+        author: admin
+      });
+
+      // 4. Catat ke riwayat khusus pembelian warga
+      beliWargaHistory.unshift({
+        id: Date.now(),
+        date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        namaWarga,
+        item,
+        qty,
+        totalHarga,
+        admin
+      });
+
+      saveDataToCloud();
+
+      // Reset form input
+      document.getElementById("beliWargaNama").value = "";
+      document.getElementById("beliWargaQty").value = "1";
+      document.getElementById("beliWargaTotalHarga").value = "0";
+      document.getElementById("beliWargaAdmin").value = "";
+
+      alert(`Berhasil! Membeli ${qty} ${item} seharga Rp ${totalHarga.toLocaleString('id-ID')} menggunakan Uang Putih. Stok brankas bertambah & kas terpotong otomatis!`);
+    }
+
+    function renderBeliWargaHistory() {
+      const tbody = document.getElementById("beliWargaTableBody");
+      tbody.innerHTML = "";
+      if (beliWargaHistory.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat pembelian.</td></tr>`;
+        return;
+      }
+      beliWargaHistory.forEach(b => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="p-3 text-gray-400 text-xs">${b.date}</td>
+            <td class="p-3 text-white font-bold">${b.namaWarga}</td>
+            <td class="p-3 text-emerald-400 font-semibold">${b.item}</td>
+            <td class="p-3 text-right font-black text-amber-400">+${b.qty}</td>
+            <td class="p-3 text-right font-black text-red-400">Rp ${b.totalHarga.toLocaleString('id-ID')} (⚪)</td>
+            <td class="p-3 text-gray-300 text-sm">${b.admin}</td>
+          </tr>`;
       });
     }
 
