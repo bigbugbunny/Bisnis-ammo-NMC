@@ -408,11 +408,11 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="glass-card p-6 shadow-lg bg-gradient-to-br from-slate-900 to-red-950/20">
           <div class="flex justify-between items-center mb-2"><span class="text-sm font-bold text-red-400">🔴 Total Saldo Uang Merah</span><i class="fa-solid fa-wallet text-red-400 text-xl"></i></div>
-          <div id="totalUangMerah" class="text-3xl font-black text-white">Rp.0</div>
+          <div id="totalUangMerah" class="text-3xl font-black text-white">0</div>
         </div>
         <div class="glass-card p-6 shadow-lg bg-gradient-to-br from-slate-900 to-slate-800/20">
           <div class="flex justify-between items-center mb-2"><span class="text-sm font-bold text-gray-300">⚪ Total Saldo Uang Putih</span><i class="fa-solid fa-wallet text-gray-300 text-xl"></i></div>
-          <div id="totalUangPutih" class="text-3xl font-black text-white">Rp.0</div>
+          <div id="totalUangPutih" class="text-3xl font-black text-white">0</div>
         </div>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
@@ -938,7 +938,7 @@
     }
 
     function renderBusinessData() {
-      let saldoMerah = Rp.0, saldoPutih = Rp.0;
+      let saldoMerah = 0, saldoPutih = 0;
       const tbody = document.getElementById("businessHistoryTableBody");
       tbody.innerHTML = "";
       if (businessHistory.length === 0) {
