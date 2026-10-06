@@ -307,8 +307,8 @@
           <h2 class="text-lg font-bold text-pink-400 flex items-center gap-2">
             <i class="fa-solid fa-hand-holding-dollar"></i> Rekap Setoran Bahan (<span id="currentMingguLabel">Minggu 1</span>)
           </h2>
-          <button onclick="copySetoranSummary()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1">
-            <i class="fa-solid fa-copy"></i> Salin Rekap untuk Discord
+          <button onclick="sendSetoranToDiscord()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
+            <i class="fa-brands fa-discord"></i> Kirim Rekap ke Discord & Salin
           </button>
         </div>
 
@@ -617,16 +617,35 @@
       if (isViewer) document.querySelectorAll(".editor-only").forEach(el => el.style.display = "none");
     }
 
-    function copySetoranSummary() {
+    function sendSetoranToDiscord() {
       const currentList = setoranData[activeMinggu] || {};
-      let text = `📋 *REKAP SETORAN BAHAN (${activeMinggu.toUpperCase()})*\n\n`;
+      let text = `📋 **REKAP SETORAN BAHAN (${activeMinggu.toUpperCase()})**\n\n`;
+      let totalIron = 0, totalCarbon = 0, totalGlass = 0, totalRubber = 0, totalPlastik = 0;
+
       for (let name in currentList) {
         const item = currentList[name];
         const status = item.lunas ? "Lunas ✅" : "Belum Lunas ❌";
-        text += `- *${name}* | Iron: ${item.iron} | Carbon: ${item.carbon} | Glass: ${item.glass} | Rubber: ${item.rubber} | Plastik: ${item.plastik} | [${status}]\n`;
+        totalIron += item.iron;
+        totalCarbon += item.carbon;
+        totalGlass += item.glass;
+        totalRubber += item.rubber;
+        totalPlastik += item.plastik;
+        text += `• **${name}** | Iron: ${item.iron} | Carbon: ${item.carbon} | Glass: ${item.glass} | Rubber: ${item.rubber} | Plastik: ${item.plastik} | [${status}]\n`;
       }
+
+      text += `\n📊 **TOTAL KESELURUHAN BAHAN:**\n`;
+      text += `• Iron: ${totalIron} | Carbon: ${totalCarbon} | Glass: ${totalGlass} | Rubber: ${totalRubber} | Plastik: ${totalPlastik}`;
+
       navigator.clipboard.writeText(text);
-      alert(`Rekap setoran bahan ${activeMinggu} berhasil disalin untuk Discord!`);
+
+      // Kirim ke Webhook Discord
+      fetch(DISCORD_WEBHOOK_BRANKAS, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: text })
+      })
+      .then(() => alert(`Rekap setoran ${activeMinggu} berhasil dikirim ke Discord dan disalin!`))
+      .catch(() => alert("Gagal mengirim ke Discord, tapi teks sudah disalin ke clipboard!"));
     }
 
     // --- LOGIC LAINNYA ---
