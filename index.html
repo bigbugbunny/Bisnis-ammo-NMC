@@ -280,6 +280,7 @@
         </div>
       </div>
 
+      <!-- KALKULATOR PENJUALAN AMMO -->
       <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
         <div class="flex justify-between items-center">
           <h2 class="text-lg font-bold text-green-400 flex items-center gap-2">
@@ -294,8 +295,13 @@
           <span class="text-sm text-gray-400">Total Tagihan Ammo:</span>
           <span id="grandTotalAmmo" class="text-2xl font-black text-green-400">0</span>
         </div>
+        <!-- TOMBOL SEND DISCORD KHUSUS PENJUALAN AMMO -->
+        <button onclick="sendPenjualanToDiscord()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+          <i class="fa-brands fa-discord"></i> Kirim Log Penjualan ke Discord
+        </button>
       </div>
 
+      <!-- KALKULATOR PEMBELIAN / LAYANAN -->
       <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
         <div class="flex justify-between items-center">
           <h2 class="text-lg font-bold text-red-400 flex items-center gap-2">
@@ -310,16 +316,15 @@
           <span class="text-sm text-gray-400">Total Pembelian / Fee:</span>
           <span id="grandTotalItem" class="text-2xl font-black text-red-400">0</span>
         </div>
+        <!-- TOMBOL SEND DISCORD KHUSUS PEMBELIAN BARANG -->
+        <button onclick="sendPembelianToDiscord()" class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+          <i class="fa-brands fa-discord"></i> Kirim Log Pembelian ke Discord
+        </button>
       </div>
 
-      <div class="flex gap-3">
-        <button onclick="copySummary()" class="flex-1 bg-green-600 hover:bg-green-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-          <i class="fa-solid fa-copy"></i> Salin Ringkasan
-        </button>
-        <button onclick="sendGroupToDiscord()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-          <i class="fa-brands fa-discord"></i> Kirim Bukti ke Discord
-        </button>
-      </div>
+      <button onclick="copySummary()" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+        <i class="fa-solid fa-copy"></i> Salin Ringkasan Transaksi Gabungan
+      </button>
     </div>
 
     <!-- OTHER MODULE PLACEHOLDERS -->
@@ -350,7 +355,7 @@
   </div>
 
   <script>
-    // WEBHOOK DISCORD UTAMA (Satu untuk Seluruh Website)
+    // WEBHOOK DISCORD UTAMA
     const DISCORD_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1556822834104504402/QZaTVOPAMlfxHEKP2hJFRPI7Y7EHmYPNjFJnpn7rAcizFxKGsGSmVhIDiZGaBM7dfBBi";
 
     // NAVIGASI
@@ -431,7 +436,7 @@
 
       const text = `📦 *RINCIAN BAHAN CRAFTING AMMO*\n` +
                    `• Tipe Ammo: ${type} (${qty} Pack)\n\n` +
-                   `🛠️ *Kebutuhan Bahan Dasar:*\n` +
+                   `🛠️️ *Kebutuhan Bahan Dasar:*\n` +
                    `- Iron: ${iron}\n` +
                    `- Carbon: ${carbon}\n` +
                    `- Umer: ${umer}\n\n` +
@@ -476,7 +481,7 @@
         body: JSON.stringify(payload)
       }).then(res => {
         if(res.ok) alert("Bukti crafting berhasil dikirim otomatis ke Discord!");
-        else alert("Gagal mengirim ke Discord. Pastikan koneksi aman.");
+        else alert("Gagal mengirim ke Discord. Cek koneksi internet.");
       });
     }
 
@@ -484,7 +489,7 @@
     const groupsData = {
       "th21": { name: "21TH", ammo: { "50AE": 80000, "9MM": 115000, "38LC": 145000 }, items: { "Baju Hangat": { price: 100000, promo: "Max 100 Pcs/Minggu", isRate: false } } },
       "voldemort": { name: "Voldemort", ammo: { "50AE": 75000, "9MM": 120000, "38LC": 140000 }, items: { "Baju Hangat": { price: 110000, promo: "Max 50 Pcs", isRate: false } } },
-      "mugen": { name: "Mugen", ammo: { "50AE": 75000, "9MM": 115000, "38LC": 130000 }, items: { "Cuci Uang (20%)": { price: 0.80, promo: "Max 15 Juta", isRate: true }, "Cuci Uang (30%)": { price: 0.70, promo: "Tanpa Max", isRate: true } } },
+      "mugen": { name: "Mugen", ammo: { "50AE": 75000, "9MM": 115000, "38LC": 130000 }, items: { "Cuci Uang (20%)": { price: 0.20, promo: "Max 15 Juta", isRate: true }, "Cuci Uang (30%)": { price: 0.30, promo: "Tanpa Max", isRate: true } } },
       "atlanta": { name: "Atlanta", ammo: { "50AE": 100000, "9MM": 150000, "38LC": 145000 }, items: { "Kecubung": { price: 23000, promo: "", isRate: false }, "Jamur": { price: 23000, promo: "", isRate: false }, "Wide": { price: 23000, promo: "", isRate: false } } },
       "brooklyn": { name: "Brooklyn", ammo: { "50AE": 75000, "9MM": 110000, "38LC": 140000 }, items: { "Kecubung": { price: 20000, promo: "", isRate: false }, "Jamur": { price: 20000, promo: "", isRate: false }, "Wide": { price: 20000, promo: "", isRate: false } } },
       "s90": { name: "90S", ammo: { "50AE": 80000, "9MM": 115000, "38LC": 140000 }, items: { "Baju Hangat": { price: 100000, promo: "", isRate: false } } },
@@ -675,35 +680,34 @@
       alert(`Ringkasan transaksi untuk ${groupName} berhasil disalin!`);
     }
 
-    function sendGroupToDiscord() {
+    // DISCORD LOG KHUSUS PENJUALAN AMMO
+    function sendPenjualanToDiscord() {
       const groupName = groupsData[currentGroupKey].name;
       let ammoDetail = "";
-      document.querySelectorAll("#ammoRowsContainer > div").forEach(row => {
+      const rows = document.querySelectorAll("#ammoRowsContainer > div");
+
+      if (rows.length === 0) {
+        alert("Pilih minimal 1 ammo yang dijual sebelum mengirim log!");
+        return;
+      }
+
+      rows.forEach(row => {
         const type = row.querySelector(".ammo-type-select").value;
         const qty = row.querySelector(".ammo-qty-input").value || 0;
         const total = row.querySelector(".ammo-row-total").innerText;
         ammoDetail += `• ${type} (${qty} Pack) = Rp ${total}\n`;
       });
 
-      let itemDetail = "";
-      document.querySelectorAll("#itemRowsContainer > div").forEach(row => {
-        const type = row.querySelector(".item-type-select").value;
-        const qty = row.querySelector(".item-qty-input").value || 0;
-        const total = row.querySelector(".item-row-total").innerText;
-        const bonus = row.querySelector(".item-row-bonus").innerText;
-        itemDetail += `• ${type} (${qty}) = Rp ${total} ${bonus ? `[${bonus}]` : ''}\n`;
-      });
+      const totalTagihan = document.getElementById("grandTotalAmmo").innerText;
 
       const payload = {
-        username: "NMC Business Bot",
+        username: "NMC Sales Bot",
         embeds: [{
-          title: `🤝 LOG TRANSAKSI: ${groupName.toUpperCase()}`,
-          color: 5763719,
+          title: `📦 LOG PENJUALAN AMMO: ${groupName.toUpperCase()}`,
+          color: 5763719, // Hijau Emerald
           fields: [
-            { name: "📦 Penjualan Ammo", value: ammoDetail || "Tidak ada", inline: false },
-            { name: "💰 Total Tagihan Ammo", value: `Rp ${document.getElementById("grandTotalAmmo").innerText}`, inline: true },
-            { name: "🛒 Pembelian / Layanan", value: itemDetail || "Tidak ada", inline: false },
-            { name: "💸 Total Pembelian/Fee", value: `Rp ${document.getElementById("grandTotalItem").innerText}`, inline: true }
+            { name: "📦 Rincian Penjualan Ammo", value: ammoDetail, inline: false },
+            { name: "💰 Total Tagihan Ammo", value: `Rp ${totalTagihan}`, inline: false }
           ],
           timestamp: new Date().toISOString()
         }]
@@ -714,8 +718,53 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       }).then(res => {
-        if(res.ok) alert(`Bukti transaksi ${groupName} berhasil terkirim ke Discord!`);
-        else alert("Gagal mengirim ke Discord. Cek koneksi internet kamu.");
+        if(res.ok) alert(`Log Penjualan Ammo untuk ${groupName} berhasil terkirim ke Discord!`);
+        else alert("Gagal mengirim log ke Discord.");
+      });
+    }
+
+    // DISCORD LOG KHUSUS PEMBELIAN BARANG
+    function sendPembelianToDiscord() {
+      const groupName = groupsData[currentGroupKey].name;
+      let itemDetail = "";
+      const rows = document.querySelectorAll("#itemRowsContainer > div");
+
+      if (rows.length === 0) {
+        alert("Pilih minimal 1 barang/layanan sebelum mengirim log!");
+        return;
+      }
+
+      rows.forEach(row => {
+        const type = row.querySelector(".item-type-select").value;
+        if(!type) return;
+        const qty = row.querySelector(".item-qty-input").value || 0;
+        const total = row.querySelector(".item-row-total").innerText;
+        const bonus = row.querySelector(".item-row-bonus").innerText;
+        itemDetail += `• ${type} (${qty}) = Rp ${total} ${bonus ? `[${bonus}]` : ''}\n`;
+      });
+
+      const totalPembelian = document.getElementById("grandTotalItem").innerText;
+
+      const payload = {
+        username: "NMC Purchase Bot",
+        embeds: [{
+          title: `🛒 LOG PEMBELIAN / LAYANAN: ${groupName.toUpperCase()}`,
+          color: 15548997, // Merah
+          fields: [
+            { name: "🛒 Rincian Pembelian / Layanan", value: itemDetail || "Tidak ada barang", inline: false },
+            { name: "💸 Total Biaya Pembelian / Fee", value: `Rp ${totalPembelian}`, inline: false }
+          ],
+          timestamp: new Date().toISOString()
+        }]
+      };
+
+      fetch(DISCORD_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).then(res => {
+        if(res.ok) alert(`Log Pembelian untuk ${groupName} berhasil terkirim ke Discord!`);
+        else alert("Gagal mengirim log ke Discord.");
       });
     }
 
