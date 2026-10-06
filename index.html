@@ -3,30 +3,134 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NMC Multi-Group Business Hub</title>
+  <title>NMC Management System</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
     body { background-color: #0b0f19; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); }
+    .menu-card { transition: all 0.3s ease; }
+    .menu-card:hover { transform: translateY(-5px); border-color: rgba(59, 130, 246, 0.6); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3); }
   </style>
 </head>
 <body class="text-gray-100 min-h-screen p-4 md:p-8">
 
-  <div class="max-w-5xl mx-auto space-y-6">
+  <div class="max-w-6xl mx-auto space-y-6">
     
-    <!-- Header & Pilihan Kelompok -->
+    <!-- HEADER ATAS (Tampil di Semua Halaman) -->
     <div class="flex flex-col md:flex-row justify-between items-center bg-slate-800/80 p-6 rounded-2xl border border-slate-700 shadow-xl">
-      <div>
-        <h1 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-amber-300 to-emerald-400">
-          ⚡ NMC MULTI-GROUP MANAGEMENT
-        </h1>
-        <p class="text-sm text-gray-400 mt-1">Sistem Pengelola Transaksi Multi-Item Partner</p>
+      <div class="flex items-center gap-4">
+        <button id="btnBackMenu" onclick="showSection('mainMenu')" class="hidden bg-slate-700 hover:bg-slate-600 text-white p-3 rounded-xl transition">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <div>
+          <h1 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-amber-300 to-emerald-400">
+            ⚡ NMC MANAGEMENT SYSTEM
+          </h1>
+          <p class="text-sm text-gray-400 mt-0.5" id="headerSubtitle">Pusat Navigasi & Pengelolaan Bisnis NMC</p>
+        </div>
       </div>
       
-      <!-- Selector Kelompok -->
-      <div class="mt-4 md:mt-0 w-full md:w-auto">
-        <label class="block text-xs font-bold text-amber-400 uppercase tracking-wider mb-1">Pilih Kelompok / Partner:</label>
+      <div class="mt-4 md:mt-0 flex items-center gap-2">
+        <span class="bg-green-500/20 text-green-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-green-500/30 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-green-400 animate-ping"></span> System Online
+        </span>
+      </div>
+    </div>
+
+    <!-- ================= HALAMAN 1: MENU UTAMA (LANDING PAGE) ================= -->
+    <div id="sectionMainMenu" class="space-y-6">
+      <h2 class="text-lg font-bold text-gray-300 flex items-center gap-2">
+        <i class="fa-solid fa-grip"></i> PILIH MODUL MANAJEMEN
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Card 1: Kalkulasi Multi-Group & Ammo -->
+        <div onclick="showSection('sectionKalkulator')" class="menu-card glass-card p-6 rounded-2xl border border-slate-700 cursor-pointer flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 bg-green-500/20 text-green-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-green-500/30">
+              <i class="fa-solid fa-calculator"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Kalkulasi Bisnis & Partner</h3>
+            <p class="text-sm text-gray-400">Hitung otomatis tagihan ammo, pembelian barang, dan jasa untuk 9 kelompok partner.</p>
+          </div>
+          <div class="mt-6 flex justify-between items-center text-xs font-semibold text-green-400">
+            <span>Buka Kalkulator</span>
+            <i class="fa-solid fa-chevron-right"></i>
+          </div>
+        </div>
+
+        <!-- Card 2: Data Brankas -->
+        <div onclick="showSection('sectionBrankas')" class="menu-card glass-card p-6 rounded-2xl border border-slate-700 cursor-pointer flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 bg-amber-500/20 text-amber-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-amber-500/30">
+              <i class="fa-solid fa-vault"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Data Brankas</h3>
+            <p class="text-sm text-gray-400">Pencatatan kas masuk, kas keluar, dan monitoring total saldo brankas utama.</p>
+          </div>
+          <div class="mt-6 flex justify-between items-center text-xs font-semibold text-amber-400">
+            <span>Kelola Brankas</span>
+            <i class="fa-solid fa-chevron-right"></i>
+          </div>
+        </div>
+
+        <!-- Card 3: Data Bisnis -->
+        <div onclick="showSection('sectionBisnis')" class="menu-card glass-card p-6 rounded-2xl border border-slate-700 cursor-pointer flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-blue-500/30">
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Data Bisnis</h3>
+            <p class="text-sm text-gray-400">Laporan keuntungan bulanan, pengeluaran operasional, dan performa bisnis.</p>
+          </div>
+          <div class="mt-6 flex justify-between items-center text-xs font-semibold text-blue-400">
+            <span>Lihat Laporan</span>
+            <i class="fa-solid fa-chevron-right"></i>
+          </div>
+        </div>
+
+        <!-- Card 4: Data Setoran -->
+        <div onclick="showSection('sectionSetoran')" class="menu-card glass-card p-6 rounded-2xl border border-slate-700 cursor-pointer flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 bg-purple-500/20 text-purple-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-purple-500/30">
+              <i class="fa-solid fa-hand-holding-dollar"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Data Setoran</h3>
+            <p class="text-sm text-gray-400">Rekapitulasi setoran dari anggota/divisi beserta status pelunasan.</p>
+          </div>
+          <div class="mt-6 flex justify-between items-center text-xs font-semibold text-purple-400">
+            <span>Rekap Setoran</span>
+            <i class="fa-solid fa-chevron-right"></i>
+          </div>
+        </div>
+
+        <!-- Card 5: Data Member Hadir -->
+        <div onclick="showSection('sectionMember')" class="menu-card glass-card p-6 rounded-2xl border border-slate-700 cursor-pointer flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-emerald-500/30">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Data Member Hadir</h3>
+            <p class="text-sm text-gray-400">Sistem absensi, data anggota aktif, dan rekap partisipasi kegiatan.</p>
+          </div>
+          <div class="mt-6 flex justify-between items-center text-xs font-semibold text-emerald-400">
+            <span>Absensi Member</span>
+            <i class="fa-solid fa-chevron-right"></i>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ================= HALAMAN 2: KALKULATOR BISNIS & PARTNER ================= -->
+    <div id="sectionKalkulator" class="hidden space-y-6">
+      
+      <!-- Select Group Bar -->
+      <div class="glass-card p-4 rounded-2xl border border-slate-700 flex flex-col md:flex-row justify-between items-center gap-4">
+        <span class="text-sm font-bold text-amber-400"><i class="fa-solid fa-handshake"></i> PILIH KELOMPOK PARTNER:</span>
         <select id="groupSelect" onchange="loadGroupData()" class="w-full md:w-64 bg-slate-900 border border-amber-500/50 rounded-xl p-2.5 text-white font-bold focus:outline-none focus:border-amber-400">
           <option value="th21">1. 21TH</option>
           <option value="voldemort">2. Voldemort</option>
@@ -39,146 +143,133 @@
           <option value="mayans" selected>9. Mayans</option>
         </select>
       </div>
+
+      <!-- Price Table -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="glass-card p-5 rounded-2xl border border-slate-700">
+          <h2 class="text-md font-bold text-green-400 mb-3 flex items-center justify-between">
+            <span><i class="fa-solid fa-tag"></i> HARGA JUAL AMMO</span>
+            <span id="activeGroupNameBadge" class="text-xs bg-slate-800 text-amber-400 px-2.5 py-1 rounded-full border border-slate-700">Mayans</span>
+          </h2>
+          <div id="ammoPriceList" class="space-y-2 text-sm"></div>
+        </div>
+
+        <div class="glass-card p-5 rounded-2xl border border-slate-700">
+          <h2 class="text-md font-bold text-red-400 mb-3 flex items-center justify-between">
+            <span><i class="fa-solid fa-cart-shopping"></i> HARGA BELI / LAYANAN</span>
+          </h2>
+          <div id="itemPriceList" class="grid grid-cols-2 gap-2 text-xs"></div>
+        </div>
+      </div>
+
+      <!-- Multi Ammo Calc -->
+      <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
+        <div class="flex justify-between items-center">
+          <h2 class="text-lg font-bold text-green-400 flex items-center gap-2">
+            <i class="fa-solid fa-calculator"></i> KALKULATOR PENJUALAN AMMO
+          </h2>
+          <button onclick="addAmmoRow()" class="bg-green-600/80 hover:bg-green-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1">
+            <i class="fa-solid fa-plus"></i> Tambah Ammo
+          </button>
+        </div>
+        <div id="ammoRowsContainer" class="space-y-3"></div>
+        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex justify-between items-center">
+          <span class="text-sm text-gray-400">Total Tagihan Ammo:</span>
+          <span id="grandTotalAmmo" class="text-2xl font-black text-green-400">0</span>
+        </div>
+      </div>
+
+      <!-- Multi Item Calc -->
+      <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
+        <div class="flex justify-between items-center">
+          <h2 class="text-lg font-bold text-red-400 flex items-center gap-2">
+            <i class="fa-solid fa-gun"></i> KALKULATOR PEMBELIAN / LAYANAN
+          </h2>
+          <button onclick="addItemRow()" class="bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1">
+            <i class="fa-solid fa-plus"></i> Tambah Barang
+          </button>
+        </div>
+        <div id="itemRowsContainer" class="space-y-3"></div>
+        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex justify-between items-center">
+          <span class="text-sm text-gray-400">Total Pembelian / Fee:</span>
+          <span id="grandTotalItem" class="text-2xl font-black text-red-400">0</span>
+        </div>
+      </div>
+
+      <button onclick="copySummary()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+        <i class="fa-solid fa-copy"></i> Salin Ringkasan Transaksi Kelompok
+      </button>
     </div>
 
-    <!-- RINCIAN HARGA KELOMPOK AKTIF -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- Harga Jual -->
-      <div class="glass-card p-5 rounded-2xl border border-slate-700">
-        <h2 class="text-md font-bold text-green-400 mb-3 flex items-center justify-between">
-          <span><i class="fa-solid fa-tag"></i> HARGA JUAL AMMO</span>
-          <span id="activeGroupNameBadge" class="text-xs bg-slate-800 text-amber-400 px-2.5 py-1 rounded-full border border-slate-700">Mayans</span>
-        </h2>
-        <div id="ammoPriceList" class="space-y-2 text-sm"></div>
-      </div>
 
-      <!-- Harga Beli -->
-      <div class="glass-card p-5 rounded-2xl border border-slate-700">
-        <h2 class="text-md font-bold text-red-400 mb-3 flex items-center justify-between">
-          <span><i class="fa-solid fa-cart-shopping"></i> HARGA BELI / LAYANAN</span>
-        </h2>
-        <div id="itemPriceList" class="grid grid-cols-2 gap-2 text-xs"></div>
-      </div>
+    <!-- ================= HALAMAN PLACEHOLDER UNTUK MODUL LAIN ================= -->
+    <div id="sectionBrankas" class="hidden glass-card p-8 rounded-2xl border border-slate-700 text-center space-y-4">
+      <div class="text-4xl text-amber-400"><i class="fa-solid fa-vault"></i></div>
+      <h2 class="text-2xl font-bold">Modul Data Brankas</h2>
+      <p class="text-gray-400 text-sm max-w-md mx-auto">Area pencatatan saldo brankas utama & arus kas. (Siap diintegrasikan dengan data kamu).</p>
     </div>
 
-    <!-- KALKULATOR PENJUALAN AMMO (MULTI-ITEM) -->
-    <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
-      <div class="flex justify-between items-center">
-        <h2 class="text-lg font-bold text-green-400 flex items-center gap-2">
-          <i class="fa-solid fa-calculator"></i> KALKULATOR PENJUALAN AMMO
-        </h2>
-        <button onclick="addAmmoRow()" class="bg-green-600/80 hover:bg-green-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1">
-          <i class="fa-solid fa-plus"></i> Tambah Ammo
-        </button>
-      </div>
-
-      <div id="ammoRowsContainer" class="space-y-3">
-        <!-- Baris-baris Ammo dimasukkan lewat Javascript -->
-      </div>
-
-      <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex justify-between items-center">
-        <span class="text-sm text-gray-400">Total Seluruh Tagihan Ammo:</span>
-        <span id="grandTotalAmmo" class="text-2xl font-black text-green-400">0</span>
-      </div>
+    <div id="sectionBisnis" class="hidden glass-card p-8 rounded-2xl border border-slate-700 text-center space-y-4">
+      <div class="text-4xl text-blue-400"><i class="fa-solid fa-chart-line"></i></div>
+      <h2 class="text-2xl font-bold">Modul Data Bisnis</h2>
+      <p class="text-gray-400 text-sm max-w-md mx-auto">Area monitoring keuangan & profit bulanan organisasi NMC.</p>
     </div>
 
-    <!-- KALKULATOR PEMBELIAN BARANG / LAYANAN (MULTI-ITEM) -->
-    <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
-      <div class="flex justify-between items-center">
-        <h2 class="text-lg font-bold text-red-400 flex items-center gap-2">
-          <i class="fa-solid fa-gun"></i> KALKULATOR PEMBELIAN / LAYANAN
-        </h2>
-        <button onclick="addItemRow()" class="bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1">
-          <i class="fa-solid fa-plus"></i> Tambah Barang
-        </button>
-      </div>
-
-      <div id="itemRowsContainer" class="space-y-3">
-        <!-- Baris-baris Barang dimasukkan lewat Javascript -->
-      </div>
-
-      <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex justify-between items-center">
-        <span class="text-sm text-gray-400">Total Seluruh Pembelian / Fee:</span>
-        <span id="grandTotalItem" class="text-2xl font-black text-red-400">0</span>
-      </div>
+    <div id="sectionSetoran" class="hidden glass-card p-8 rounded-2xl border border-slate-700 text-center space-y-4">
+      <div class="text-4xl text-purple-400"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+      <h2 class="text-2xl font-bold">Modul Data Setoran</h2>
+      <p class="text-gray-400 text-sm max-w-md mx-auto">Area rekapitulasi setoran masuk dari member & divisi.</p>
     </div>
 
-    <button onclick="copySummary()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-      <i class="fa-solid fa-copy"></i> Salin Ringkasan Transaksi Kelompok
-    </button>
+    <div id="sectionMember" class="hidden glass-card p-8 rounded-2xl border border-slate-700 text-center space-y-4">
+      <div class="text-4xl text-emerald-400"><i class="fa-solid fa-users"></i></div>
+      <h2 class="text-2xl font-bold">Modul Data Member Hadir</h2>
+      <p class="text-gray-400 text-sm max-w-md mx-auto">Area daftar hadir & absensi kegiatan anggota NMC.</p>
+    </div>
 
   </div>
 
   <script>
-    const groupsData = {
-      "th21": {
-        name: "21TH",
-        ammo: { "50AE": 80000, "9MM": 115000, "38LC": 145000 },
-        items: { "Baju Hangat": { price: 100000, promo: "Max 100 Pcs/Minggu", isRate: false } }
-      },
-      "voldemort": {
-        name: "Voldemort",
-        ammo: { "50AE": 75000, "9MM": 120000, "38LC": 140000 },
-        items: { "Baju Hangat": { price: 110000, promo: "Max 50 Pcs", isRate: false } }
-      },
-      "mugen": {
-        name: "Mugen",
-        ammo: { "50AE": 75000, "9MM": 115000, "38LC": 130000 },
-        items: {
-          "Cuci Uang (20%)": { price: 0.20, promo: "Max 15 Juta", isRate: true },
-          "Cuci Uang (30%)": { price: 0.30, promo: "Tanpa Max", isRate: true }
-        }
-      },
-      "atlanta": {
-        name: "Atlanta",
-        ammo: { "50AE": 100000, "9MM": 150000, "38LC": 145000 },
-        items: {
-          "Kecubung": { price: 23000, promo: "", isRate: false },
-          "Jamur": { price: 23000, promo: "", isRate: false },
-          "Wide": { price: 23000, promo: "", isRate: false }
-        }
-      },
-      "brooklyn": {
-        name: "Brooklyn",
-        ammo: { "50AE": 75000, "9MM": 110000, "38LC": 140000 },
-        items: {
-          "Kecubung": { price: 20000, promo: "", isRate: false },
-          "Jamur": { price: 20000, promo: "", isRate: false },
-          "Wide": { price: 20000, promo: "", isRate: false }
-        }
-      },
-      "s90": {
-        name: "90S",
-        ammo: { "50AE": 80000, "9MM": 115000, "38LC": 140000 },
-        items: { "Baju Hangat": { price: 100000, promo: "", isRate: false } }
-      },
-      "angker": {
-        name: "Angker",
-        ammo: { "50AE": 80000, "9MM": 120000, "38LC": 155000 },
-        items: {
-          "Kecubung": { price: 23000, promo: "", isRate: false },
-          "Jamur": { price: 23000, promo: "", isRate: false },
-          "Wide": { price: 23000, promo: "", isRate: false }
-        }
-      },
-      "white_tiger": {
-        name: "White Tiger",
-        ammo: { "50AE": 70000, "9MM": 110000, "38LC": 140000 },
-        items: {
-          "Umer ke Putih (15%)": { price: 0.15, promo: "", isRate: true },
-          "Putih ke Umer (18%)": { price: 0.18, promo: "", isRate: true }
-        }
-      },
-      "mayans": {
-        name: "Mayans",
-        ammo: { "9MM": 113000, "38LC": 120000 },
-        items: {
-          "DA": { price: 150000, promo: "10 Free 2", isRate: false },
-          "P50": { price: 130000, promo: "", isRate: false },
-          "TAC9": { price: 110000, promo: "", isRate: false },
-          "CERAMIC": { price: 90000, promo: "", isRate: false }
-        }
+    // FUNGSI NAVIGASI PINDAH HALAMAN
+    function showSection(sectionId) {
+      // Sembunyikan semua section
+      document.getElementById('sectionMainMenu').classList.add('hidden');
+      document.getElementById('sectionKalkulator').classList.add('hidden');
+      document.getElementById('sectionBrankas').classList.add('hidden');
+      document.getElementById('sectionBisnis').classList.add('hidden');
+      document.getElementById('sectionSetoran').classList.add('hidden');
+      document.getElementById('sectionMember').classList.add('hidden');
+
+      const btnBack = document.getElementById('btnBackMenu');
+      const subtitle = document.getElementById('headerSubtitle');
+
+      if (sectionId === 'mainMenu') {
+        document.getElementById('sectionMainMenu').classList.remove('hidden');
+        btnBack.classList.add('hidden');
+        subtitle.innerText = "Pusat Navigasi & Pengelolaan Bisnis NMC";
+      } else {
+        document.getElementById(sectionId).classList.remove('hidden');
+        btnBack.classList.remove('hidden');
+
+        if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Kalkulator Multi-Group & Ammo";
+        else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Pengelolaan Data Brankas";
+        else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Laporan & Data Bisnis";
+        else if(sectionId === 'sectionSetoran') subtitle.innerText = "Modul Rekapitulasi Data Setoran";
+        else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Kehadiran & Data Member";
       }
+    }
+
+    // DATABASE 9 KELOMPOK
+    const groupsData = {
+      "th21": { name: "21TH", ammo: { "50AE": 80000, "9MM": 115000, "38LC": 145000 }, items: { "Baju Hangat": { price: 100000, promo: "Max 100 Pcs/Minggu", isRate: false } } },
+      "voldemort": { name: "Voldemort", ammo: { "50AE": 75000, "9MM": 120000, "38LC": 140000 }, items: { "Baju Hangat": { price: 110000, promo: "Max 50 Pcs", isRate: false } } },
+      "mugen": { name: "Mugen", ammo: { "50AE": 75000, "9MM": 115000, "38LC": 130000 }, items: { "Cuci Uang (20%)": { price: 0.20, promo: "Max 15 Juta", isRate: true }, "Cuci Uang (30%)": { price: 0.30, promo: "Tanpa Max", isRate: true } } },
+      "atlanta": { name: "Atlanta", ammo: { "50AE": 100000, "9MM": 150000, "38LC": 145000 }, items: { "Kecubung": { price: 23000, promo: "", isRate: false }, "Jamur": { price: 23000, promo: "", isRate: false }, "Wide": { price: 23000, promo: "", isRate: false } } },
+      "brooklyn": { name: "Brooklyn", ammo: { "50AE": 75000, "9MM": 110000, "38LC": 140000 }, items: { "Kecubung": { price: 20000, promo: "", isRate: false }, "Jamur": { price: 20000, promo: "", isRate: false }, "Wide": { price: 20000, promo: "", isRate: false } } },
+      "s90": { name: "90S", ammo: { "50AE": 80000, "9MM": 115000, "38LC": 140000 }, items: { "Baju Hangat": { price: 100000, promo: "", isRate: false } } },
+      "angker": { name: "Angker", ammo: { "50AE": 80000, "9MM": 120000, "38LC": 155000 }, items: { "Kecubung": { price: 23000, promo: "", isRate: false }, "Jamur": { price: 23000, promo: "", isRate: false }, "Wide": { price: 23000, promo: "", isRate: false } } },
+      "white_tiger": { name: "White Tiger", ammo: { "50AE": 70000, "9MM": 110000, "38LC": 140000 }, items: { "Umer ke Putih (15%)": { price: 0.15, promo: "", isRate: true }, "Putih ke Umer (18%)": { price: 0.18, promo: "", isRate: true } } },
+      "mayans": { name: "Mayans", ammo: { "9MM": 113000, "38LC": 120000 }, items: { "DA": { price: 150000, promo: "10 Free 2", isRate: false }, "P50": { price: 130000, promo: "", isRate: false }, "TAC9": { price: 110000, promo: "", isRate: false }, "CERAMIC": { price: 90000, promo: "", isRate: false } } }
     };
 
     let currentGroupKey = "mayans";
@@ -186,10 +277,8 @@
     function loadGroupData() {
       currentGroupKey = document.getElementById("groupSelect").value;
       const group = groupsData[currentGroupKey];
-
       document.getElementById("activeGroupNameBadge").innerText = group.name;
 
-      // Render Rincian Harga Ammo
       const ammoListDiv = document.getElementById("ammoPriceList");
       ammoListDiv.innerHTML = "";
       for (let ammo in group.ammo) {
@@ -200,7 +289,6 @@
           </div>`;
       }
 
-      // Render Rincian Harga Barang/Layanan
       const itemListDiv = document.getElementById("itemPriceList");
       itemListDiv.innerHTML = "";
       for (let item in group.items) {
@@ -214,10 +302,8 @@
           </div>`;
       }
 
-      // Reset Container Row
       document.getElementById("ammoRowsContainer").innerHTML = "";
       document.getElementById("itemRowsContainer").innerHTML = "";
-
       addAmmoRow();
       addItemRow();
     }
@@ -266,9 +352,7 @@
         optionsHTML += `<option value="${item}">${item} (${displayPrice})</option>`;
       }
 
-      if (Object.keys(group.items).length === 0) {
-        optionsHTML = `<option value="">(Tidak Ada Barang)</option>`;
-      }
+      if (Object.keys(group.items).length === 0) optionsHTML = `<option value="">(Tidak Ada Barang)</option>`;
 
       const rowHTML = `
         <div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
@@ -295,19 +379,14 @@
 
     function removeRow(rowId) {
       const row = document.getElementById(rowId);
-      if (row) {
-        row.remove();
-        calculateAll();
-      }
+      if (row) { row.remove(); calculateAll(); }
     }
 
     function calculateAll() {
       const group = groupsData[currentGroupKey];
 
-      // Hitung Ammo Rows
       let totalAmmoSum = 0;
-      const ammoRows = document.querySelectorAll("#ammoRowsContainer > div");
-      ammoRows.forEach(row => {
+      document.querySelectorAll("#ammoRowsContainer > div").forEach(row => {
         const type = row.querySelector(".ammo-type-select").value;
         const qty = parseFloat(row.querySelector(".ammo-qty-input").value) || 0;
         const price = (group.ammo && group.ammo[type]) ? group.ammo[type] : 0;
@@ -317,10 +396,8 @@
       });
       document.getElementById("grandTotalAmmo").innerText = totalAmmoSum.toLocaleString('id-ID');
 
-      // Hitung Item Rows
       let totalItemSum = 0;
-      const itemRows = document.querySelectorAll("#itemRowsContainer > div");
-      itemRows.forEach(row => {
+      document.querySelectorAll("#itemRowsContainer > div").forEach(row => {
         const type = row.querySelector(".item-type-select").value;
         const qty = parseFloat(row.querySelector(".item-qty-input").value) || 0;
         const data = (group.items && group.items[type]) ? group.items[type] : null;
@@ -354,13 +431,9 @@
 
     function copySummary() {
       const groupName = groupsData[currentGroupKey].name;
-      const group = groupsData[currentGroupKey];
-
       let text = `🤝 *TRANSAKSI PARTNER: ${groupName.toUpperCase()}*\n\n📦 *Penjualan Ammo:*\n`;
 
-      const ammoRows = document.querySelectorAll("#ammoRowsContainer > div");
-      if (ammoRows.length === 0) text += `- Tidak ada\n`;
-      ammoRows.forEach(row => {
+      document.querySelectorAll("#ammoRowsContainer > div").forEach(row => {
         const type = row.querySelector(".ammo-type-select").value;
         const qty = row.querySelector(".ammo-qty-input").value || 0;
         const total = row.querySelector(".ammo-row-total").innerText;
@@ -368,9 +441,7 @@
       });
       text += `*Total Tagihan Ammo:* Rp ${document.getElementById("grandTotalAmmo").innerText}\n\n🛒 *Pembelian / Layanan:*\n`;
 
-      const itemRows = document.querySelectorAll("#itemRowsContainer > div");
-      if (itemRows.length === 0) text += `- Tidak ada\n`;
-      itemRows.forEach(row => {
+      document.querySelectorAll("#itemRowsContainer > div").forEach(row => {
         const type = row.querySelector(".item-type-select").value;
         const qty = row.querySelector(".item-qty-input").value || 0;
         const total = row.querySelector(".item-row-total").innerText;
@@ -380,10 +451,10 @@
       text += `*Total Pembelian/Fee:* Rp ${document.getElementById("grandTotalItem").innerText}`;
 
       navigator.clipboard.writeText(text);
-      alert(`Ringkasan seluruh transaksi untuk ${groupName} berhasil disalin!`);
+      alert(`Ringkasan transaksi untuk ${groupName} berhasil disalin!`);
     }
 
-    // Initial load
+    // Load Pertama
     loadGroupData();
   </script>
 </body>
