@@ -87,7 +87,7 @@
     <div id="sectionWelcome" class="space-y-6 py-8">
       <div class="text-center space-y-2">
         <h2 class="text-3xl font-black tracking-wider text-white">WELCOME TO TRIAD COMMUNITY</h2>
-        <p class="text-sm text-gray-400">Silakan pilih divisi atau klub organisasi di bawah ini untuk mengakses sistem management.</p>
+        <p class="text-sm text-gray-400">Silakan pilih divisi atau klub organisasi di bawah ini untuk mengakses sistem manajemen.</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto pt-6">
@@ -100,7 +100,7 @@
             </div>
             <div>
               <h3 class="text-2xl font-bold text-white mb-2">Nakama MC Blaine County</h3>
-              <p class="text-sm text-gray-400">Modul management lengkap: Kalkulator bahan, transaksi partner, brankas, kas bisnis, setoran & data member.</p>
+              <p class="text-sm text-gray-400">Modul manajemen lengkap: Kalkulator bahan, transaksi partner, brankas, kas bisnis, setoran & data member.</p>
             </div>
           </div>
           <div class="mt-8 flex justify-between items-center text-sm font-bold text-red-400">
@@ -132,7 +132,7 @@
     <!-- ================= 2. HALAMAN MENU UTAMA NAKAMA MC ================= -->
     <div id="sectionMainMenu" class="hidden space-y-6">
       <h2 class="text-sm font-bold text-red-400 tracking-widest uppercase flex items-center gap-2">
-        <i class="fa-solid fa-bars"></i> NAKAMA MC BLAINE COUNTY - PILIH MODUL MANAGEMENT
+        <i class="fa-solid fa-bars"></i> NAKAMA MC BLAINE COUNTY - PILIH MODUL MANAJEMEN
       </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -151,8 +151,8 @@
         <div onclick="showSection('sectionKalkulator')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between">
           <div>
             <div class="w-12 h-12 bg-red-500/20 text-red-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-red-500/30"><i class="fa-solid fa-handshake"></i></div>
-            <h3 class="text-xl font-bold text-white mb-2">Transaksi Partner</h3>
-            <p class="text-sm text-gray-400">Hitung tagihan ammo & barang/layanan dari kelompok partner.</p>
+            <h3 class="text-xl font-bold text-white mb-2">Transaksi Partner (9 Kelompok)</h3>
+            <p class="text-sm text-gray-400">Hitung tagihan ammo & barang/layanan dari 9 kelompok partner.</p>
           </div>
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-red-400"><span>Buka Transaksi</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
@@ -316,7 +316,7 @@
             <input type="number" id="craftPackQty" value="0" min="0" oninput="calcBahan()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-amber-400" placeholder="0">
           </div>
           <hr class="border-slate-700 my-3">
-          <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider">🛒 Modal Belanja</h3>
+          <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider">🛒 Cost / Modal Belanja</h3>
           <div class="space-y-3">
             <div><label class="block text-xs text-gray-400 mb-1">Harga Beli 1 Iron</label><input type="number" id="craftIronPrice" value="0" oninput="calcBahan()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-400" placeholder="0"></div>
             <div><label class="block text-xs text-gray-400 mb-1">Harga Beli 1 Carbon</label><input type="number" id="craftCarbonPrice" value="0" oninput="calcBahan()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-400" placeholder="0"></div>
@@ -329,7 +329,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800"><span class="text-gray-400 text-sm">🔩 Total Iron</span><div id="craftTotalIron" class="text-2xl font-black text-amber-400">0</div><div id="craftCostIron" class="text-xs text-gray-500 mt-1">Modal: 0</div></div>
               <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800"><span class="text-gray-400 text-sm">⬛ Total Carbon</span><div id="craftTotalCarbon" class="text-2xl font-black text-blue-400">0</div><div id="craftCostCarbon" class="text-xs text-gray-500 mt-1">Modal: 0</div></div>
-              <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800"><span class="text-gray-400 text-sm">💵 Biaya Umer</span><div id="craftTotalUmer" class="text-2xl font-black text-emerald-400">0</div><div class="text-xs text-gray-500 mt-1">Fee Crafting</div></div>
+              <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800"><span class="text-gray-400 text-sm">💵 Biaya Umer</span><div id="craftTotalUmer" class="text-2xl font-black text-emerald-400">0</div><div class="text-xs text-gray-500 mt-1">Fee Game</div></div>
             </div>
           </div>
           <div class="glass-card p-6 rounded-2xl shadow-lg">
@@ -381,7 +381,6 @@
             <select id="vaultItemName" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400">
               <optgroup label="Bahan Dasar & Lainnya"><option value="Iron">Iron</option><option value="Carbon">Carbon</option><option value="Glass">Glass</option><option value="Rubber">Rubber</option><option value="Plastik">Plastik</option><option value="Box Recycle">Box Recycle</option></optgroup>
               <optgroup label="Pack Ammo"><option value="Pack Ammo 38LC">Pack Ammo 38LC</option><option value="Pack Ammo 9MM">Pack Ammo 9MM</option><option value="Pack Ammo 50AE">Pack Ammo 50AE</option></optgroup>
-              <optgroup label="Butiran Ammo"><option value="Ammo 38LC">Pack Ammo 38LC</option><option value="Ammo 9MM">Ammo 9MM</option><option value="Ammo 50AE">Ammo 50AE</option></optgroup>
               <optgroup label="Senjata, Vest & Item"><option value="Vest">Vest</option><option value="Senjata DA">Senjata DA</option><option value="Senjata P50">Senjata P50</option><option value="Senjata TAC9">Senjata TAC9</option><option value="Senjata Ceramic">Senjata Ceramic</option><option value="Senjata DE">Senjata DE</option></optgroup>
             </select>
           </div>
@@ -524,12 +523,15 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const DISCORD_WEBHOOK_BRANKAS = "https://discordapp.com/api/webhooks/1557009048807800852/l82FqtdPoEUwzfGTSxCC_fVYYrtEJozTFKMXgpGDdiudHFyD7BB6TONGERVL2BL3kdnN";
+    // ================= DISCORD WEBHOOKS TERPISAH =================
+    const DISCORD_WEBHOOK_BRANKAS   = "https://discordapp.com/api/webhooks/1557009048807800852/l82FqtdPoEUwzfGTSxCC_fVYYrtEJozTFKMXgpGDdiudHFyD7BB6TONGERVL2BL3kdnN";
     const DISCORD_WEBHOOK_PENJUALAN = "https://discordapp.com/api/webhooks/1557014106060623913/LQEqIw427dgWz1nEb2f8ihXhYH_rkl7a_ApywtffJFR31y07KkIzrDcGchuP9PO82-If";
+    const DISCORD_WEBHOOK_PEMBELIAN = "https://discordapp.com/api/webhooks/1557138906586292345/guf2IGdXyXLP7yH3gu7l7OGtbOHspcT5zdAd63ZpDIYplCB7FZLYyqAfR7S6bFMQQFk_";
+    const DISCORD_WEBHOOK_SETORAN   = "https://discordapp.com/api/webhooks/1557139282802774127/cw05EPU60q_Uyor3_HEpNVs-XTvnXvOD4LLTWkkZjfiw8SANBTsQjNWEkmmniu0q1DSr";
 
     const ACCOUNTS = {
-      "Triad": { pass: "1", role: "Viewer (Hanya Melihat)" },
-      "HighRank": { pass: "505", role: "Editor (Akses Penuh)" }
+      "viewer": { pass: "viewer123", role: "Viewer (Hanya Melihat)" },
+      "editor": { pass: "editor123", role: "Editor (Akses Penuh)" }
     };
 
     function handleLogin() {
@@ -624,7 +626,7 @@
       } else {
         document.getElementById(sectionId).classList.remove('hidden');
         btnHome.classList.remove('hidden');
-        btnBack.classList.remove('hidden'); // Menampilkan tombol back panah kiri (<)
+        btnBack.classList.remove('hidden');
         
         if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
         else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner (9 Kelompok)";
@@ -640,7 +642,6 @@
     const defaultVaultStock = {
       "Iron": 0, "Carbon": 0, "Glass": 0, "Rubber": 0, "Plastik": 0, "Box Recycle": 0,
       "Pack Ammo 38LC": 0, "Pack Ammo 9MM": 0, "Pack Ammo 50AE": 0,
-      "Ammo 38LC": 0, "Ammo 9MM": 0, "Ammo 50AE": 0,
       "Vest": 0, "Senjata DA": 0, "Senjata P50": 0, "Senjata TAC9": 0, "Senjata Ceramic": 0, "Senjata DE": 0
     };
 
@@ -890,6 +891,21 @@
       });
     }
 
+    function sendVaultToDiscord() {
+      let text = `📦 **LAPORAN STOK BRANKAS NAKAMA MC**\n\n`;
+      for (let item in vaultStock) {
+        text += `• **${item}**: ${vaultStock[item].toLocaleString('id-ID')}\n`;
+      }
+
+      fetch(DISCORD_WEBHOOK_BRANKAS, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: text })
+      })
+      .then(() => alert("Laporan brankas berhasil dikirim ke Discord!"))
+      .catch(() => alert("Gagal mengirim laporan ke Discord!"));
+    }
+
     // --- MODUL DATA BISNIS ---
     function addBusinessTransaction() {
       const currency = document.getElementById("businessCurrency").value;
@@ -1015,7 +1031,7 @@
 
       navigator.clipboard.writeText(text);
 
-      fetch(DISCORD_WEBHOOK_BRANKAS, {
+      fetch(DISCORD_WEBHOOK_SETORAN, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: text })
@@ -1203,10 +1219,57 @@
       document.getElementById("grandTotalItem").innerText = tItem.toLocaleString('id-ID');
     }
 
+    // Fungsi Kirim Penjualan & Pembelian ke Discord
+    function sendPenjualanToDiscord() {
+      const group = groupsData[currentGroupKey];
+      let text = `🛒 **LOG PENJUALAN AMMO (${group.name})**\n\n`;
+      let total = 0;
+      document.querySelectorAll("#ammoRowsContainer > div").forEach(r => {
+        const t = r.querySelector(".ammo-type-select").value;
+        const q = parseFloat(r.querySelector(".ammo-qty-input").value) || 0;
+        if(q > 0) {
+          const tot = (group.ammo[t]||0)*q;
+          total += tot;
+          text += `• ${t} x${q} Pack = Rp ${tot.toLocaleString('id-ID')}\n`;
+        }
+      });
+      text += `\n💵 **Total Tagihan Ammo: Rp ${total.toLocaleString('id-ID')}**`;
+
+      fetch(DISCORD_WEBHOOK_PENJUALAN, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: text })
+      })
+      .then(() => alert("Log penjualan berhasil dikirim ke Discord!"))
+      .catch(() => alert("Gagal mengirim log penjualan ke Discord!"));
+    }
+
+    function sendPembelianToDiscord() {
+      const group = groupsData[currentGroupKey];
+      let text = `🔫 **LOG PEMBELIAN / LAYANAN (${group.name})**\n\n`;
+      let total = 0;
+      document.querySelectorAll("#itemRowsContainer > div").forEach(r => {
+        const t = r.querySelector(".item-type-select").value;
+        const q = parseFloat(r.querySelector(".item-qty-input").value) || 0;
+        const d = group.items[t];
+        if(q > 0 && d) {
+          const tot = d.isRate ? q * d.price : d.price * q;
+          total += tot;
+          text += `• ${t} x${q} = Rp ${tot.toLocaleString('id-ID')}\n`;
+        }
+      });
+      text += `\n💵 **Total Pembelian / Fee: Rp ${total.toLocaleString('id-ID')}**`;
+
+      fetch(DISCORD_WEBHOOK_PEMBELIAN, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: text })
+      })
+      .then(() => alert("Log pembelian berhasil dikirim ke Discord!"))
+      .catch(() => alert("Gagal mengirim log pembelian ke Discord!"));
+    }
+
     function copySummary() { alert("Ringkasan disalin!"); }
-    function sendPenjualanToDiscord() { alert("Log penjualan terkirim!"); }
-    function sendPembelianToDiscord() { alert("Log pembelian terkirim!"); }
-    function sendVaultToDiscord() { alert("Laporan brankas terkirim!"); }
 
     calcBahan(); loadGroupData();
   </script>
