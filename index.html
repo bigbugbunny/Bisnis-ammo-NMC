@@ -336,22 +336,23 @@
                 <option value="Rubber">Rubber</option>
                 <option value="Plastik">Plastik</option>
                 <option value="Box Recycle">Box Recycle</option>
-              </optgroup>
+                 </optgroup>
               <optgroup label="Money">
-                <option value="Umer">Uang Merah</option>
+                <option value="Uang Merah">Uang Merah</option>
+                <option value="Uang Putih">Uang Putih</option>
               </optgroup>
               <optgroup label="Pack Ammo">
                 <option value="Pack Ammo 38LC">Pack Ammo 38LC</option>
                 <option value="Pack Ammo 9MM">Pack Ammo 9MM</option>
                 <option value="Pack Ammo 50AE">Pack Ammo 50AE</option>
               </optgroup>
-              <optgroup label="Senjata & Item">
+              <optgroup label="Senjata, Vest & Item">
+                <option value="Vest">Vest</option>
                 <option value="Senjata DA">Senjata DA</option>
                 <option value="Senjata P50">Senjata P50</option>
                 <option value="Senjata TAC9">Senjata TAC9</option>
                 <option value="Senjata Ceramic">Senjata Ceramic</option>
                 <option value="Senjata DE">Senjata DE</option>
-                <option value="Vest">Vest</option>
               </optgroup>
             </select>
           </div>
@@ -480,12 +481,14 @@
 
     // --- LOGIC MODUL BRANKAS (INVENTORY & HISTORY) ---
     const defaultVaultStock = {
-      "Iron": 0, "Carbon": 0, "Glass": 0, "Rubber": 0, "Plastik": 0, "Umer": 0, "Box Recycle": 0,
+      "Iron": 0, "Carbon": 0, "Glass": 0, "Rubber": 0, "Plastik": 0, "Box Recycle": 0,
+      "Uang Merah": 0, "Uang Putih": 0,
       "Pack Ammo 38LC": 0, "Pack Ammo 9MM": 0, "Pack Ammo 50AE": 0,
-      "Senjata DA": 0, "Senjata P50": 0, "Senjata TAC9": 0, "Senjata Ceramic": 0, "Senjata DE": 0, "Vest": 0
+      "Vest": 0, "Senjata DA": 0, "Senjata P50": 0, "Senjata TAC9": 0, "Senjata Ceramic": 0, "Senjata DE": 0
     };
 
-    let vaultStock = JSON.parse(localStorage.getItem('nmc_vault_inventory')) || defaultVaultStock;
+    let savedVaultStock = JSON.parse(localStorage.getItem('nmc_vault_inventory')) || {};
+    let vaultStock = { ...defaultVaultStock, ...savedVaultStock };
     let vaultHistory = JSON.parse(localStorage.getItem('nmc_vault_history')) || [];
 
     function saveVaultData() {
@@ -523,7 +526,6 @@
         diffText = `Set: ${qty}`;
       }
 
-      // Catat ke history (aman tersimpan, tidak bisa hilang kecuali browser di-clear data-nya)
       const newHistory = {
         id: Date.now(),
         date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
@@ -537,7 +539,6 @@
       vaultHistory.unshift(newHistory);
       saveVaultData();
 
-      // Reset form input
       document.getElementById("vaultQty").value = "0";
       document.getElementById("vaultDesc").value = "";
       document.getElementById("vaultAuthor").value = "";
