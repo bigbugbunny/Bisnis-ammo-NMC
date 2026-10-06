@@ -316,7 +316,7 @@
       </button>
     </div>
 
-    <!-- ================= MODUL 3: DATA BRANKAS (INVENTORY STOK) ================= -->
+    <!-- ================= MODUL 3: DATA BRANKAS (INVENTORY & HISTORY) ================= -->
     <div id="sectionBrankas" class="hidden space-y-6">
       
       <!-- Panel Kontrol Update Stok -->
@@ -325,9 +325,9 @@
           <i class="fa-solid fa-boxes-packing"></i> Update Stok Barang Brankas
         </h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Pilih / Nama Barang</label>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nama Barang</label>
             <select id="vaultItemName" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400">
               <optgroup label="Bahan Dasar & Lainnya">
                 <option value="Iron">Iron</option>
@@ -353,42 +353,68 @@
             </select>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Aksi</label>
-            <select id="vaultAction" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400">
-              <option value="ADD">Tambah Stok (+)</option>
-              <option value="SUB">Kurangi Stok (-)</option>
-              <option value="SET">Set / Ubah Stok Langsung</option>
-            </select>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Aksi & Qty</label>
+            <div class="flex gap-2">
+              <select id="vaultAction" class="bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400 text-sm">
+                <option value="ADD">Masuk (+)</option>
+                <option value="SUB">Keluar (-)</option>
+                <option value="SET">Set</option>
+              </select>
+              <input type="number" id="vaultQty" min="0" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400" placeholder="0">
+            </div>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jumlah / Qty</label>
-            <input type="number" id="vaultQty" min="0" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400" placeholder="0">
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Keterangan / Sumber</label>
+            <input type="text" id="vaultDesc" placeholder="Contoh: Hasil Crafting / Ambil Jual" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nama Pelapor</label>
+            <input type="text" id="vaultAuthor" placeholder="Nama Anggota" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400">
           </div>
         </div>
 
         <div class="flex gap-3 pt-2">
           <button onclick="updateVaultStock()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-            <i class="fa-solid fa-check"></i> Perbarui Stok Brankas
+            <i class="fa-solid fa-check"></i> Perbarui & Simpan History
           </button>
           <button onclick="sendVaultToDiscord()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-            <i class="fa-brands fa-discord"></i> Kirim Laporan Stok ke Discord
+            <i class="fa-brands fa-discord"></i> Kirim Laporan ke Discord
           </button>
         </div>
       </div>
 
-      <!-- Tabel Daftar Stok Brankas -->
+      <!-- Ringkasan Stok Brankas -->
       <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
-        <div class="flex justify-between items-center">
-          <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2">
-            <i class="fa-solid fa-vault"></i> Inventaris Stok Brankas Saat Ini
-          </h2>
-          <button onclick="resetVaultStock()" class="text-xs bg-red-500/20 text-red-400 hover:bg-red-500/30 px-3 py-1.5 rounded-xl border border-red-500/30 transition">
-            <i class="fa-solid fa-rotate-right"></i> Reset Semua Stok
-          </button>
-        </div>
+        <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2">
+          <i class="fa-solid fa-vault"></i> Inventaris Stok Brankas Saat Ini
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="vaultInventoryGrid"></div>
+      </div>
+
+      <!-- Tabel History Perubahan Stok Brankas -->
+      <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
+        <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2">
+          <i class="fa-solid fa-history"></i> Riwayat (History) Keluar Masuk Barang Brankas
+        </h2>
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="vaultInventoryGrid">
-          <!-- Render via JavaScript -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase">
+                <th class="p-3">Waktu</th>
+                <th class="p-3">Barang</th>
+                <th class="p-3">Aksi</th>
+                <th class="p-3 text-right">Jumlah</th>
+                <th class="p-3">Keterangan</th>
+                <th class="p-3">Pelapor</th>
+              </tr>
+            </thead>
+            <tbody id="vaultHistoryTableBody" class="divide-y divide-slate-800 text-sm">
+              <tr>
+                <td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat aktivitas brankas.</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -442,67 +468,77 @@
 
         if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
         else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner (9 Kelompok)";
-        else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris Stok)";
+        else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris & Riwayat)";
         else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Laporan & Data Bisnis";
         else if(sectionId === 'sectionSetoran') subtitle.innerText = "Modul Rekapitulasi Data Setoran";
         else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Kehadiran & Data Member";
       }
     }
 
-    // --- LOGIC MODUL BRANKAS (INVENTORI STOK) ---
+    // --- LOGIC MODUL BRANKAS (INVENTORY & HISTORY) ---
     const defaultVaultStock = {
-      "Iron": 0,
-      "Carbon": 0,
-      "Glass": 0,
-      "Rubber": 0,
-      "Plastik": 0,
-      "Umer": 0,
-      "Box Recycle": 0,
-      "Pack Ammo 38LC": 0,
-      "Pack Ammo 9MM": 0,
-      "Pack Ammo 50AE": 0,
-      "Senjata DA": 0,
-      "Senjata P50": 0,
-      "Senjata TAC9": 0,
-      "Senjata Ceramic": 0,
-      "Senjata DE": 0
+      "Iron": 0, "Carbon": 0, "Glass": 0, "Rubber": 0, "Plastik": 0, "Umer": 0, "Box Recycle": 0,
+      "Pack Ammo 38LC": 0, "Pack Ammo 9MM": 0, "Pack Ammo 50AE": 0,
+      "Senjata DA": 0, "Senjata P50": 0, "Senjata TAC9": 0, "Senjata Ceramic": 0, "Senjata DE": 0
     };
 
     let vaultStock = JSON.parse(localStorage.getItem('nmc_vault_inventory')) || defaultVaultStock;
+    let vaultHistory = JSON.parse(localStorage.getItem('nmc_vault_history')) || [];
 
-    function saveVaultStock() {
+    function saveVaultData() {
       localStorage.setItem('nmc_vault_inventory', JSON.stringify(vaultStock));
+      localStorage.setItem('nmc_vault_history', JSON.stringify(vaultHistory));
       renderVaultInventory();
+      renderVaultHistory();
     }
 
     function updateVaultStock() {
       const itemName = document.getElementById("vaultItemName").value;
       const action = document.getElementById("vaultAction").value;
       const qty = parseInt(document.getElementById("vaultQty").value) || 0;
+      const desc = document.getElementById("vaultDesc").value.trim();
+      const author = document.getElementById("vaultAuthor").value.trim();
 
       if (qty < 0) {
         alert("Jumlah tidak boleh negatif!");
         return;
       }
+      if (!desc || !author) {
+        alert("Keterangan dan Nama Pelapor wajib diisi!");
+        return;
+      }
 
+      let diffText = "";
       if (action === "ADD") {
         vaultStock[itemName] = (vaultStock[itemName] || 0) + qty;
+        diffText = `+${qty}`;
       } else if (action === "SUB") {
         vaultStock[itemName] = Math.max(0, (vaultStock[itemName] || 0) - qty);
+        diffText = `-${qty}`;
       } else if (action === "SET") {
         vaultStock[itemName] = qty;
+        diffText = `Set: ${qty}`;
       }
 
-      saveVaultStock();
+      // Catat ke history (aman tersimpan, tidak bisa hilang kecuali browser di-clear data-nya)
+      const newHistory = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        item: itemName,
+        action: action,
+        diff: diffText,
+        desc: desc,
+        author: author
+      };
+
+      vaultHistory.unshift(newHistory);
+      saveVaultData();
+
+      // Reset form input
       document.getElementById("vaultQty").value = "0";
-      alert(`Stok ${itemName} berhasil diperbarui!`);
-    }
-
-    function resetVaultStock() {
-      if(confirm("Yakin ingin mereset seluruh stok barang di brankas menjadi 0?")) {
-        vaultStock = JSON.parse(JSON.stringify(defaultVaultStock));
-        saveVaultStock();
-      }
+      document.getElementById("vaultDesc").value = "";
+      document.getElementById("vaultAuthor").value = "";
+      alert(`Stok ${itemName} berhasil diperbarui dan dicatat ke riwayat!`);
     }
 
     function renderVaultInventory() {
@@ -519,20 +555,58 @@
       }
     }
 
-    function sendVaultToDiscord() {
-      let inventoryList = "";
-      for (let item in vaultStock) {
-        inventoryList += `• **${item}**: ${vaultStock[item].toLocaleString('id-ID')} pcs\n`;
+    function renderVaultHistory() {
+      const tbody = document.getElementById("vaultHistoryTableBody");
+      tbody.innerHTML = "";
+
+      if (vaultHistory.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat aktivitas brankas.</td></tr>`;
+        return;
       }
 
+      vaultHistory.forEach(h => {
+        let actionBadge = "";
+        let colorClass = "";
+        if(h.action === 'ADD') {
+          actionBadge = `<span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded-md text-xs font-bold">Masuk (+)</span>`;
+          colorClass = "text-green-400";
+        } else if(h.action === 'SUB') {
+          actionBadge = `<span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded-md text-xs font-bold">Keluar (-)</span>`;
+          colorClass = "text-red-400";
+        } else {
+          actionBadge = `<span class="bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-md text-xs font-bold">Set</span>`;
+          colorClass = "text-blue-400";
+        }
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="p-3 text-gray-400 text-xs">${h.date}</td>
+            <td class="p-3 text-white font-bold">${h.item}</td>
+            <td class="p-3">${actionBadge}</td>
+            <td class="p-3 text-right font-black ${colorClass}">${h.diff}</td>
+            <td class="p-3 text-gray-300 text-sm">${h.desc}</td>
+            <td class="p-3 text-gray-300 text-sm font-medium">${h.author}</td>
+          </tr>`;
+      });
+    }
+
+    function sendVaultToDiscord() {
+      if (vaultHistory.length === 0) {
+        alert("Belum ada data history untuk dikirim ke Discord!");
+        return;
+      }
+
+      const latest = vaultHistory[0];
       const payload = {
         username: "NMC Vault Inventory Bot",
         embeds: [{
-          title: `🏛️ LAPORAN STOK BRANKAS NMC`,
+          title: `🏛️ UPDATE STOK BRANKAS: ${latest.item.toUpperCase()}`,
           color: 3447003,
-          description: "Berikut adalah rekapitulasi stok fisik terbaru yang ada di dalam brankas:",
           fields: [
-            { name: "📦 Rincian Stok Barang", value: inventoryList, inline: false }
+            { name: "📦 Barang", value: latest.item, inline: true },
+            { name: "🔄 Perubahan", value: latest.diff, inline: true },
+            { name: "📝 Keterangan", value: latest.desc, inline: false },
+            { name: "👤 Pelapor", value: latest.author, inline: true }
           ],
           timestamp: new Date().toISOString()
         }]
@@ -543,7 +617,7 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       }).then(res => {
-        if(res.ok) alert("Laporan stok brankas berhasil dikirim ke Discord!");
+        if(res.ok) alert("Laporan update stok berhasil dikirim ke Discord!");
         else alert("Gagal mengirim ke Discord.");
       });
     }
@@ -867,6 +941,7 @@
     calcBahan();
     loadGroupData();
     renderVaultInventory();
+    renderVaultHistory();
   </script>
 </body>
 </html>
