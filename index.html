@@ -47,7 +47,7 @@
     </div>
   </div>
 
-  <div class="max-w-6xl mx-auto space-y-6">
+  <div class="max-w-7xl mx-auto space-y-6">
     
     <!-- HEADER -->
     <div class="flex flex-col md:flex-row justify-between items-center bg-slate-800/80 p-6 rounded-2xl border border-slate-700 shadow-xl">
@@ -126,7 +126,7 @@
           <div>
             <div class="w-12 h-12 bg-pink-500/20 text-pink-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-pink-500/30"><i class="fa-solid fa-hand-holding-dollar"></i></div>
             <h3 class="text-xl font-bold text-white mb-2">Data Setoran</h3>
-            <p class="text-sm text-gray-400">Rekapitulasi setoran mingguan anggota klub, nominal Uang Merah/Putih & status lunas.</p>
+            <p class="text-sm text-gray-400">Rekapitulasi setoran mingguan bahan crafting anggota klub & status lunas.</p>
           </div>
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-pink-400"><span>Rekap Setoran</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
@@ -278,7 +278,7 @@
       </div>
     </div>
 
-    <!-- ================= MODUL 6: DATA SETORAN MINGGUAN ================= -->
+    <!-- ================= MODUL 6: DATA SETORAN MINGGUAN (BAHAN CRAFTING) ================= -->
     <div id="sectionSetoran" class="hidden space-y-6">
       
       <!-- Kontrol Minggu & Tambah Anggota -->
@@ -301,11 +301,11 @@
         </div>
       </div>
 
-      <!-- Tabel Rekap Setoran Anggota -->
+      <!-- Tabel Rekap Setoran Bahan Crafting -->
       <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
         <div class="flex justify-between items-center">
           <h2 class="text-lg font-bold text-pink-400 flex items-center gap-2">
-            <i class="fa-solid fa-hand-holding-dollar"></i> Rekap Setoran Klub (<span id="currentMingguLabel">Minggu 1</span>)
+            <i class="fa-solid fa-hand-holding-dollar"></i> Rekap Setoran Bahan (<span id="currentMingguLabel">Minggu 1</span>)
           </h2>
           <button onclick="copySetoranSummary()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1">
             <i class="fa-solid fa-copy"></i> Salin Rekap untuk Discord
@@ -317,14 +317,17 @@
             <thead>
               <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase">
                 <th class="p-3">Nama Anggota</th>
-                <th class="p-3 text-right">Uang Merah 🔴</th>
-                <th class="p-3 text-right">Uang Putih ⚪</th>
+                <th class="p-3 text-right">Iron 🔩</th>
+                <th class="p-3 text-right">Carbon ⬛</th>
+                <th class="p-3 text-right">Glass 🧊</th>
+                <th class="p-3 text-right">Rubber 🛞</th>
+                <th class="p-3 text-right">Plastik 🧪</th>
                 <th class="p-3 text-center">Status</th>
                 <th class="p-3 text-center editor-only">Aksi</th>
               </tr>
             </thead>
             <tbody id="setoranTableBody" class="divide-y divide-slate-800 text-sm">
-              <tr><td colspan="5" class="p-4 text-center text-gray-500">Memuat data setoran...</td></tr>
+              <tr><td colspan="8" class="p-4 text-center text-gray-500">Memuat data setoran bahan...</td></tr>
             </tbody>
           </table>
         </div>
@@ -427,7 +430,7 @@
         else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner (9 Kelompok)";
         else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris & Riwayat)";
         else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Data Bisnis (Kas Uang Merah & Putih)";
-        else if(sectionId === 'sectionSetoran') subtitle.innerText = "Modul Data Setoran Mingguan Klub";
+        else if(sectionId === 'sectionSetoran') subtitle.innerText = "Modul Data Setoran Bahan Mingguan Klub";
         else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Kehadiran & Data Member";
       }
     }
@@ -539,7 +542,7 @@
       document.getElementById("totalUangPutih").innerText = saldoPutih.toLocaleString('id-ID');
     }
 
-    // --- MODUL DATA SETORAN MINGGUAN ---
+    // --- MODUL DATA SETORAN BAHAN MINGGUAN ---
     function changeActiveMinggu() {
       activeMinggu = document.getElementById("selectMinggu").value;
       document.getElementById("currentMingguLabel").innerText = activeMinggu;
@@ -552,16 +555,16 @@
       if (!setoranData[activeMinggu]) setoranData[activeMinggu] = {};
       if (setoranData[activeMinggu][name]) { alert("Anggota sudah ada di daftar minggu ini!"); return; }
 
-      setoranData[activeMinggu][name] = { merah: 0, putih: 0, lunas: false };
+      setoranData[activeMinggu][name] = { iron: 0, carbon: 0, glass: 0, rubber: 0, plastik: 0, lunas: false };
       saveDataToCloud();
       document.getElementById("newMemberName").value = "";
       renderSetoranTable();
     }
 
-    function updateSetoranVal(name, type, val) {
+    function updateSetoranBahan(name, bahan, val) {
       const num = parseInt(val) || 0;
-      if (!setoranData[activeMinggu][name]) setoranData[activeMinggu][name] = { merah: 0, putih: 0, lunas: false };
-      setoranData[activeMinggu][name][type] = num;
+      if (!setoranData[activeMinggu][name]) setoranData[activeMinggu][name] = { iron: 0, carbon: 0, glass: 0, rubber: 0, plastik: 0, lunas: false };
+      setoranData[activeMinggu][name][bahan] = num;
       saveDataToCloud();
     }
 
@@ -587,7 +590,7 @@
       const memberNames = Object.keys(currentList);
 
       if (memberNames.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-500">Belum ada anggota dalam rekap ${activeMinggu}.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-gray-500">Belum ada anggota dalam rekap ${activeMinggu}.</td></tr>`;
         return;
       }
 
@@ -602,16 +605,13 @@
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
             <td class="p-3 text-white font-bold">${name}</td>
-            <td class="p-3 text-right">
-              <input type="number" ${isViewer ? 'disabled' : ''} value="${item.merah}" oninput="updateSetoranVal('${name}', 'merah', this.value)" class="w-28 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-red-400 font-bold text-sm focus:outline-none focus:border-pink-400">
-            </td>
-            <td class="p-3 text-right">
-              <input type="number" ${isViewer ? 'disabled' : ''} value="${item.putih}" oninput="updateSetoranVal('${name}', 'putih', this.value)" class="w-28 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-gray-200 font-bold text-sm focus:outline-none focus:border-pink-400">
-            </td>
+            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.iron}" oninput="updateSetoranBahan('${name}', 'iron', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-amber-400 font-bold text-sm focus:outline-none focus:border-pink-400"></td>
+            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.carbon}" oninput="updateSetoranBahan('${name}', 'carbon', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-blue-400 font-bold text-sm focus:outline-none focus:border-pink-400"></td>
+            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.glass}" oninput="updateSetoranBahan('${name}', 'glass', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-cyan-400 font-bold text-sm focus:outline-none focus:border-pink-400"></td>
+            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.rubber}" oninput="updateSetoranBahan('${name}', 'rubber', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-purple-400 font-bold text-sm focus:outline-none focus:border-pink-400"></td>
+            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.plastik}" oninput="updateSetoranBahan('${name}', 'plastik', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-emerald-400 font-bold text-sm focus:outline-none focus:border-pink-400"></td>
             <td class="p-3 text-center">${statusBadge}</td>
-            <td class="p-3 text-center editor-only">
-              <button onclick="removeSetoranMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button>
-            </td>
+            <td class="p-3 text-center editor-only"><button onclick="removeSetoranMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></td>
           </tr>`;
       });
       if (isViewer) document.querySelectorAll(".editor-only").forEach(el => el.style.display = "none");
@@ -619,14 +619,14 @@
 
     function copySetoranSummary() {
       const currentList = setoranData[activeMinggu] || {};
-      let text = `📋 *REKAP SETORAN KLUB (${activeMinggu.toUpperCase()})*\n\n`;
+      let text = `📋 *REKAP SETORAN BAHAN (${activeMinggu.toUpperCase()})*\n\n`;
       for (let name in currentList) {
         const item = currentList[name];
         const status = item.lunas ? "Lunas ✅" : "Belum Lunas ❌";
-        text += `- *${name}* | Merah: ${item.merah.toLocaleString('id-ID')} | Putih: ${item.putih.toLocaleString('id-ID')} | [${status}]\n`;
+        text += `- *${name}* | Iron: ${item.iron} | Carbon: ${item.carbon} | Glass: ${item.glass} | Rubber: ${item.rubber} | Plastik: ${item.plastik} | [${status}]\n`;
       }
       navigator.clipboard.writeText(text);
-      alert(`Rekap setoran ${activeMinggu} berhasil disalin untuk Discord!`);
+      alert(`Rekap setoran bahan ${activeMinggu} berhasil disalin untuk Discord!`);
     }
 
     // --- LOGIC LAINNYA ---
@@ -674,7 +674,7 @@
       itemListDiv.innerHTML = "";
       for (let item in group.items) {
         const data = group.items[item];
-        itemListDiv.innerHTML += `<div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800"><div class="text-gray-400">${item}</div><div class="font-bold text-red-400">${data.isRate ? data.price*100+'%' : data.price.toLocaleString('id-ID')+' / PC'}</div></div>`;
+        itemListDiv.innerHTML += `<div class="glass-card p-2.5 rounded-xl border border-slate-800"><div class="text-gray-400">${item}</div><div class="font-bold text-red-400">${data.isRate ? data.price*100+'%' : data.price.toLocaleString('id-ID')+' / PC'}</div></div>`;
       }
       document.getElementById("ammoRowsContainer").innerHTML = "";
       document.getElementById("itemRowsContainer").innerHTML = "";
