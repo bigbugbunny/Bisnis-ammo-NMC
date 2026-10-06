@@ -6,6 +6,9 @@
   <title>NMC Management System</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
   <style>
     body { background-color: #0b0f19; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); }
@@ -14,6 +17,40 @@
   </style>
 </head>
 <body class="text-gray-100 min-h-screen p-4 md:p-8">
+
+  <!-- ================= MODAL LOGIN ================= -->
+  <div id="loginModal" class="fixed inset-0 bg-slate-950/90 z-50 flex items-center justify-center p-4">
+    <div class="glass-card p-8 rounded-2xl border border-slate-700 shadow-2xl w-full max-w-md space-y-6">
+      <div class="text-center space-y-2">
+        <div class="w-16 h-16 bg-blue-500/20 text-blue-400 rounded-2xl flex items-center justify-center text-3xl mx-auto border border-blue-500/30">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+        <h2 class="text-2xl font-black text-white">NMC ACCESS CONTROL</h2>
+        <p class="text-xs text-gray-400">Silakan login untuk masuk ke sistem manajemen</p>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Username</label>
+          <input type="text" id="loginUsername" placeholder="Masukkan username..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Password</label>
+          <input type="password" id="loginPassword" placeholder="Masukkan password..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400 text-sm">
+        </div>
+        <div id="loginError" class="text-xs text-red-400 text-center hidden">Username atau password salah!</div>
+
+        <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-right-to-bracket"></i> Masuk Sistem
+        </button>
+      </div>
+
+      <div class="text-[11px] text-gray-500 text-center space-y-1">
+        <p>💡 <b>Viewer</b>: Username: <code>viewer</code> | Password: <code>viewer123</code></p>
+        <p>💡 <b>Editor</b>: Username: <code>editor</code> | Password: <code>editor123</code></p>
+      </div>
+    </div>
+  </div>
 
   <div class="max-w-6xl mx-auto space-y-6">
     
@@ -31,10 +68,13 @@
         </div>
       </div>
       
-      <div class="mt-4 md:mt-0 flex items-center gap-2">
-        <span class="bg-indigo-500/20 text-indigo-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-indigo-500/30 flex items-center gap-2">
-          <i class="fa-brands fa-discord"></i> Multi-Webhook Connected
+      <div class="mt-4 md:mt-0 flex items-center gap-3">
+        <span id="userRoleBadge" class="bg-indigo-500/20 text-indigo-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-indigo-500/30 flex items-center gap-2">
+          <i class="fa-solid fa-user-shield"></i> Role: -
         </span>
+        <button onclick="handleLogout()" class="bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-500/30 transition flex items-center gap-1">
+          <i class="fa-solid fa-right-from-bracket"></i> Keluar
+        </button>
       </div>
     </div>
 
@@ -277,7 +317,7 @@
           <h2 class="text-lg font-bold text-green-400 flex items-center gap-2">
             <i class="fa-solid fa-calculator"></i> KALKULATOR PENJUALAN AMMO
           </h2>
-          <button onclick="addAmmoRow()" class="bg-green-600/80 hover:bg-green-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1">
+          <button onclick="addAmmoRow()" class="editor-only bg-green-600/80 hover:bg-green-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1">
             <i class="fa-solid fa-plus"></i> Tambah Ammo
           </button>
         </div>
@@ -286,7 +326,7 @@
           <span class="text-sm text-gray-400">Total Tagihan Ammo:</span>
           <span id="grandTotalAmmo" class="text-2xl font-black text-green-400">0</span>
         </div>
-        <button onclick="sendPenjualanToDiscord()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+        <button onclick="sendPenjualanToDiscord()" class="editor-only w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
           <i class="fa-brands fa-discord"></i> Kirim Log Penjualan ke Discord
         </button>
       </div>
@@ -297,7 +337,7 @@
           <h2 class="text-lg font-bold text-red-400 flex items-center gap-2">
             <i class="fa-solid fa-gun"></i> KALKULATOR PEMBELIAN / LAYANAN
           </h2>
-          <button onclick="addItemRow()" class="bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1">
+          <button onclick="addItemRow()" class="editor-only bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1">
             <i class="fa-solid fa-plus"></i> Tambah Barang
           </button>
         </div>
@@ -306,7 +346,7 @@
           <span class="text-sm text-gray-400">Total Pembelian / Fee:</span>
           <span id="grandTotalItem" class="text-2xl font-black text-red-400">0</span>
         </div>
-        <button onclick="sendPembelianToDiscord()" class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+        <button onclick="sendPembelianToDiscord()" class="editor-only w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
           <i class="fa-brands fa-discord"></i> Kirim Log Pembelian ke Discord
         </button>
       </div>
@@ -320,7 +360,7 @@
     <div id="sectionBrankas" class="hidden space-y-6">
       
       <!-- Panel Kontrol Update Stok -->
-      <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
+      <div id="vaultControlPanel" class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4 editor-only">
         <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2">
           <i class="fa-solid fa-boxes-packing"></i> Update Stok Barang Brankas
         </h2>
@@ -341,11 +381,6 @@
                 <option value="Pack Ammo 38LC">Pack Ammo 38LC</option>
                 <option value="Pack Ammo 9MM">Pack Ammo 9MM</option>
                 <option value="Pack Ammo 50AE">Pack Ammo 50AE</option>
-              </optgroup>
-              <optgroup label="Butiran Ammo">
-                <option value="Ammo 38LC">Pack Ammo 38LC</option>
-                <option value="Ammo 9MM">Pack Ammo 9MM</option>
-                <option value="Ammo 50AE">Pack Ammo 50AE</option>
               </optgroup>
               <optgroup label="Senjata, Vest & Item">
                 <option value="Vest">Vest</option>
@@ -416,7 +451,7 @@
             </thead>
             <tbody id="vaultHistoryTableBody" class="divide-y divide-slate-800 text-sm">
               <tr>
-                <td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat aktivitas brankas.</td>
+                <td colspan="6" class="p-4 text-center text-gray-500">Memuat data dari Cloud...</td>
               </tr>
             </tbody>
           </table>
@@ -447,9 +482,73 @@
   </div>
 
   <script>
+    // --- KONFIGURASI FIREBASE ANDA ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyBWZzjpvghve0zG9COIORa1i1SZJ4mLIoA",
+      authDomain: "nmc-management.firebaseapp.com",
+      databaseURL: "https://nmc-management-default-rtdb.firebaseio.com",
+      projectId: "nmc-management",
+      storageBucket: "nmc-management.firebasestorage.app",
+      messagingSenderId: "551684270539",
+      appId: "1:551684270539:web:0706d854b3ce6f731e6e4e"
+    };
+
+    // Inisialisasi Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
     const DISCORD_WEBHOOK_PENJUALAN = "https://discordapp.com/api/webhooks/1556822834104504402/QZaTVOPAMlfxHEKP2hJFRPI7Y7EHmYPNjFJnpn7rAcizFxKGsGSmVhIDiZGaBM7dfBBi"; 
     const DISCORD_WEBHOOK_PEMBELIAN = "https://discordapp.com/api/webhooks/1556822834104504402/QZaTVOPAMlfxHEKP2hJFRPI7Y7EHmYPNjFJnpn7rAcizFxKGsGSmVhIDiZGaBM7dfBBi"; 
     const DISCORD_WEBHOOK_BRANKAS = "https://discordapp.com/api/webhooks/1556822834104504402/QZaTVOPAMlfxHEKP2hJFRPI7Y7EHmYPNjFJnpn7rAcizFxKGsGSmVhIDiZGaBM7dfBBi";
+
+    // --- SYSTEM LOGIN & ROLES ---
+    const ACCOUNTS = {
+      "viewer": { pass: "viewer123", role: "Viewer (Hanya Melihat)" },
+      "editor": { pass: "editor123", role: "Editor (Akses Penuh)" }
+    };
+
+    function handleLogin() {
+      const user = document.getElementById("loginUsername").value.trim();
+      const pass = document.getElementById("loginPassword").value.trim();
+      const errorDiv = document.getElementById("loginError");
+
+      if (ACCOUNTS[user] && ACCOUNTS[user].pass === pass) {
+        localStorage.setItem("nmc_logged_user", user);
+        localStorage.setItem("nmc_user_role", ACCOUNTS[user].role);
+        applyRoleAccess(user);
+        document.getElementById("loginModal").classList.add("hidden");
+      } else {
+        errorDiv.classList.remove("hidden");
+      }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem("nmc_logged_user");
+      localStorage.removeItem("nmc_user_role");
+      location.reload();
+    }
+
+    function applyRoleAccess(user) {
+      const roleBadge = document.getElementById("userRoleBadge");
+      const roleName = ACCOUNTS[user].role;
+      roleBadge.innerHTML = `<i class="fa-solid fa-user-shield"></i> Role: ${roleName}`;
+
+      if (user === "viewer") {
+        document.querySelectorAll(".editor-only").forEach(el => el.style.display = "none");
+      } else {
+        document.querySelectorAll(".editor-only").forEach(el => el.style.display = "block");
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const loggedUser = localStorage.getItem("nmc_logged_user");
+      if (loggedUser && ACCOUNTS[loggedUser]) {
+        document.getElementById("loginModal").classList.add("hidden");
+        applyRoleAccess(loggedUser);
+      } else {
+        document.getElementById("loginModal").classList.remove("hidden");
+      }
+    });
 
     function showSection(sectionId) {
       document.getElementById('sectionMainMenu').classList.add('hidden');
@@ -480,26 +579,35 @@
       }
     }
 
-    // --- LOGIC MODUL BRANKAS (INVENTORY & HISTORY) ---
+    // --- REALTIME DATABASE BRANKAS (FIREBASE) ---
     const defaultVaultStock = {
       "Iron": 0, "Carbon": 0, "Glass": 0, "Rubber": 0, "Plastik": 0, "Box Recycle": 0,
-      "Ammo 38LC": 0, "Ammo 9MM": 0, "Ammo 50AE": 0,
       "Pack Ammo 38LC": 0, "Pack Ammo 9MM": 0, "Pack Ammo 50AE": 0,
       "Vest": 0, "Senjata DA": 0, "Senjata P50": 0, "Senjata TAC9": 0, "Senjata Ceramic": 0, "Senjata DE": 0
     };
 
-    let savedVaultStock = JSON.parse(localStorage.getItem('nmc_vault_inventory')) || {};
-    // Hapus Umer dari data lama jika sempat tersimpan
-    delete savedVaultStock["Umer"];
-    
-    let vaultStock = { ...defaultVaultStock, ...savedVaultStock };
-    let vaultHistory = JSON.parse(localStorage.getItem('nmc_vault_history')) || [];
+    let vaultStock = { ...defaultVaultStock };
+    let vaultHistory = [];
 
-    function saveVaultData() {
-      localStorage.setItem('nmc_vault_inventory', JSON.stringify(vaultStock));
-      localStorage.setItem('nmc_vault_history', JSON.stringify(vaultHistory));
+    // Mendengarkan perubahan data secara real-time dari Firebase Database
+    db.ref('brankas').on('value', (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        vaultStock = { ...defaultVaultStock, ...(data.inventory || {}) };
+        vaultHistory = data.history || [];
+      } else {
+        // Jika database masih kosong, set data default ke cloud
+        db.ref('brankas').set({ inventory: defaultVaultStock, history: [] });
+      }
       renderVaultInventory();
       renderVaultHistory();
+    });
+
+    function saveVaultDataToCloud() {
+      db.ref('brankas').set({
+        inventory: vaultStock,
+        history: vaultHistory
+      });
     }
 
     function updateVaultStock() {
@@ -541,12 +649,12 @@
       };
 
       vaultHistory.unshift(newHistory);
-      saveVaultData();
+      saveVaultDataToCloud(); // Simpan ke Firebase (otomatis sync ke semua perangkat)
 
       document.getElementById("vaultQty").value = "0";
       document.getElementById("vaultDesc").value = "";
       document.getElementById("vaultAuthor").value = "";
-      alert(`Stok ${itemName} berhasil diperbarui dan dicatat ke riwayat!`);
+      alert(`Stok ${itemName} berhasil diperbarui secara global!`);
     }
 
     function renderVaultInventory() {
@@ -736,7 +844,7 @@
           <div class="md:col-span-3 text-right font-bold text-green-400 text-sm">
             Rp <span class="ammo-row-total">0</span>
           </div>
-          <div class="md:col-span-1 text-center">
+          <div class="md:col-span-1 text-center editor-only">
             <button onclick="removeRow('${rowId}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button>
           </div>
         </div>`;
@@ -773,7 +881,7 @@
             <div class="item-row-total-text">Rp <span class="item-row-total">0</span></div>
             <div class="item-row-bonus text-[10px] text-amber-400"></div>
           </div>
-          <div class="md:col-span-1 text-center">
+          <div class="md:col-span-1 text-center editor-only">
             <button onclick="removeRow('${rowId}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button>
           </div>
         </div>`;
@@ -948,8 +1056,6 @@
     // Initial Load
     calcBahan();
     loadGroupData();
-    renderVaultInventory();
-    renderVaultHistory();
   </script>
 </body>
 </html>
