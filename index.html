@@ -232,15 +232,6 @@
                 <div id="craftNetProfit" class="text-xl font-bold text-green-400">+430.000</div>
               </div>
             </div>
-
-            <div class="flex gap-3 mt-6">
-              <button onclick="copyCraftSummary()" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-                <i class="fa-solid fa-copy"></i> Salin Rincian
-              </button>
-              <button onclick="sendCraftToDiscord()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-                <i class="fa-brands fa-discord"></i> Kirim ke Discord
-              </button>
-            </div>
           </div>
         </div>
       </div>
@@ -295,7 +286,6 @@
           <span class="text-sm text-gray-400">Total Tagihan Ammo:</span>
           <span id="grandTotalAmmo" class="text-2xl font-black text-green-400">0</span>
         </div>
-        <!-- TOMBOL SEND DISCORD KHUSUS PENJUALAN AMMO -->
         <button onclick="sendPenjualanToDiscord()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
           <i class="fa-brands fa-discord"></i> Kirim Log Penjualan ke Discord
         </button>
@@ -316,7 +306,6 @@
           <span class="text-sm text-gray-400">Total Pembelian / Fee:</span>
           <span id="grandTotalItem" class="text-2xl font-black text-red-400">0</span>
         </div>
-        <!-- TOMBOL SEND DISCORD KHUSUS PEMBELIAN BARANG -->
         <button onclick="sendPembelianToDiscord()" class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
           <i class="fa-brands fa-discord"></i> Kirim Log Pembelian ke Discord
         </button>
@@ -355,11 +344,9 @@
   </div>
 
   <script>
-    // WEBHOOK DISCORD DIBEDAKAN (Ganti link di bawah ini sesuai channel masing-masing)
     const DISCORD_WEBHOOK_PENJUALAN = "https://discordapp.com/api/webhooks/1556822834104504402/QZaTVOPAMlfxHEKP2hJFRPI7Y7EHmYPNjFJnpn7rAcizFxKGsGSmVhIDiZGaBM7dfBBi"; 
-    const DISCORD_WEBHOOK_PEMBELIAN = "https://discordapp.com/api/webhooks/1556827823560196096/NZziAcHN_0mBCrP_gwkrIzWOB1x8f4sNE3LVj6Grbodv1AHVtrXzon26b5z4gVTGKAV4";
+    const DISCORD_WEBHOOK_PEMBELIAN = "https://discordapp.com/api/webhooks/1556822834104504402/QZaTVOPAMlfxHEKP2hJFRPI7Y7EHmYPNjFJnpn7rAcizFxKGsGSmVhIDiZGaBM7dfBBi"; 
 
-    // NAVIGASI
     function showSection(sectionId) {
       document.getElementById('sectionMainMenu').classList.add('hidden');
       document.getElementById('sectionBahan').classList.add('hidden');
@@ -389,7 +376,6 @@
       }
     }
 
-    // CRAFTING BAHAN LOGIC
     const craftRecipes = {
       "50AE": { iron: 50, carbon: 50, umer: 20000 },
       "9MM":  { iron: 50, carbon: 50, umer: 60000 },
@@ -425,68 +411,6 @@
       document.getElementById("craftNetProfit").innerText = (netProfit >= 0 ? '+' : '') + netProfit.toLocaleString('id-ID');
     }
 
-    function copyCraftSummary() {
-      const type = document.getElementById("craftAmmoType").value;
-      const qty = document.getElementById("craftPackQty").value;
-      const iron = document.getElementById("craftTotalIron").innerText;
-      const carbon = document.getElementById("craftTotalCarbon").innerText;
-      const umer = document.getElementById("craftTotalUmer").innerText;
-      const modal = document.getElementById("craftTotalModal").innerText;
-      const omset = document.getElementById("craftTotalOmset").innerText;
-      const profit = document.getElementById("craftNetProfit").innerText;
-
-      const text = `📦 *RINCIAN BAHAN CRAFTING AMMO*\n` +
-                   `• Tipe Ammo: ${type} (${qty} Pack)\n\n` +
-                   `🛠️ *Kebutuhan Bahan Dasar:*\n` +
-                   `- Iron: ${iron}\n` +
-                   `- Carbon: ${carbon}\n` +
-                   `- Umer: ${umer}\n\n` +
-                   `💸 *Total Modal Production:* ${modal}\n` +
-                   `💰 *Estimasi Omset Jual:* ${omset}\n` +
-                   `📈 *Untung Bersih:* ${profit}`;
-
-      navigator.clipboard.writeText(text);
-      alert("Rincian kebutuhan bahan crafting berhasil disalin!");
-    }
-
-    function sendCraftToDiscord() {
-      const type = document.getElementById("craftAmmoType").value;
-      const qty = document.getElementById("craftPackQty").value;
-      const iron = document.getElementById("craftTotalIron").innerText;
-      const carbon = document.getElementById("craftTotalCarbon").innerText;
-      const umer = document.getElementById("craftTotalUmer").innerText;
-      const modal = document.getElementById("craftTotalModal").innerText;
-      const omset = document.getElementById("craftTotalOmset").innerText;
-      const profit = document.getElementById("craftNetProfit").innerText;
-
-      const payload = {
-        username: "NMC Crafting Bot",
-        embeds: [{
-          title: "🛠️ LOG BAHAN CRAFTING AMMO",
-          color: 16753920,
-          fields: [
-            { name: "📦 Target Crafting", value: `${type} (${qty} Pack)`, inline: true },
-            { name: "🔩 Total Iron Needed", value: `${iron} pcs`, inline: true },
-            { name: "⬛ Total Carbon Needed", value: `${carbon} pcs`, inline: true },
-            { name: "💵 Fee Umer", value: `Rp ${umer}`, inline: true },
-            { name: "💸 Total Modal", value: `Rp ${modal}`, inline: true },
-            { name: "📈 Estimasi Net Profit", value: `Rp ${profit}`, inline: true }
-          ],
-          timestamp: new Date().toISOString()
-        }]
-      };
-
-      fetch(DISCORD_WEBHOOK_PENJUALAN, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      }).then(res => {
-        if(res.ok) alert("Bukti crafting berhasil dikirim otomatis ke Discord!");
-        else alert("Gagal mengirim ke Discord. Cek koneksi internet.");
-      });
-    }
-
-    // MULTI GROUP LOGIC
     const groupsData = {
       "th21": { name: "21TH", ammo: { "50AE": 80000, "9MM": 115000, "38LC": 145000 }, items: { "Baju Hangat": { price: 100000, promo: "Max 100 Pcs/Minggu", isRate: false } } },
       "voldemort": { name: "Voldemort", ammo: { "50AE": 75000, "9MM": 120000, "38LC": 140000 }, items: { "Baju Hangat": { price: 110000, promo: "Max 50 Pcs", isRate: false } } },
@@ -681,7 +605,6 @@
       alert(`Ringkasan transaksi untuk ${groupName} berhasil disalin!`);
     }
 
-    // DISCORD LOG KHUSUS PENJUALAN AMMO
     function sendPenjualanToDiscord() {
       const groupName = groupsData[currentGroupKey].name;
       let ammoDetail = "";
@@ -705,7 +628,7 @@
         username: "NMC Sales Bot",
         embeds: [{
           title: `📦 LOG PENJUALAN AMMO: ${groupName.toUpperCase()}`,
-          color: 5763719, // Hijau Emerald
+          color: 5763719,
           fields: [
             { name: "📦 Rincian Penjualan Ammo", value: ammoDetail, inline: false },
             { name: "💰 Total Tagihan Ammo", value: `Rp ${totalTagihan}`, inline: false }
@@ -724,7 +647,6 @@
       });
     }
 
-    // DISCORD LOG KHUSUS PEMBELIAN BARANG
     function sendPembelianToDiscord() {
       const groupName = groupsData[currentGroupKey].name;
       let itemDetail = "";
@@ -750,7 +672,7 @@
         username: "NMC Purchase Bot",
         embeds: [{
           title: `🛒 LOG PEMBELIAN / LAYANAN: ${groupName.toUpperCase()}`,
-          color: 15548997, // Merah
+          color: 15548997,
           fields: [
             { name: "🛒 Rincian Pembelian / Layanan", value: itemDetail || "Tidak ada barang", inline: false },
             { name: "💸 Total Biaya Pembelian / Fee", value: `Rp ${totalPembelian}`, inline: false }
@@ -769,7 +691,6 @@
       });
     }
 
-    // Initial Load
     calcBahan();
     loadGroupData();
   </script>
