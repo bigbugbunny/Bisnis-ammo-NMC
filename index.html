@@ -408,11 +408,11 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="glass-card p-6 shadow-lg bg-gradient-to-br from-slate-900 to-red-950/20">
           <div class="flex justify-between items-center mb-2"><span class="text-sm font-bold text-red-400">🔴 Total Saldo Uang Merah</span><i class="fa-solid fa-wallet text-red-400 text-xl"></i></div>
-          <div id="totalUangMerah" class="text-3xl font-black text-white">Rp0</div>
+          <div id="totalUangMerah" class="text-3xl font-black text-white">Rp.0</div>
         </div>
         <div class="glass-card p-6 shadow-lg bg-gradient-to-br from-slate-900 to-slate-800/20">
           <div class="flex justify-between items-center mb-2"><span class="text-sm font-bold text-gray-300">⚪ Total Saldo Uang Putih</span><i class="fa-solid fa-wallet text-gray-300 text-xl"></i></div>
-          <div id="totalUangPutih" class="text-3xl font-black text-white">Rp0</div>
+          <div id="totalUangPutih" class="text-3xl font-black text-white">Rp.0</div>
         </div>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
@@ -420,7 +420,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jenis Uang</label><select id="businessCurrency" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400"><option value="Uang Merah">Uang Merah 🔴</option><option value="Uang Putih">Uang Putih ⚪</option></select></div>
           <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Tipe</label><select id="businessType" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400"><option value="IN">Pemasukan (+)</option><option value="OUT">Pengeluaran (-)</option></select></div>
-          <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nominal</label><input type="number" id="businessAmount" min="0" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400" placeholder="0"></div>
+          <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nominal</label><input type="number" id="businessAmount" min="Rp.0" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400" placeholder="0"></div>
           <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Keterangan</label><input type="text" id="businessDesc" placeholder="Contoh: Jual barang" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400"></div>
           <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Pelapor</label><input type="text" id="businessAuthor" placeholder="Nama" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400"></div>
         </div>
