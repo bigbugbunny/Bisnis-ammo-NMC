@@ -1045,6 +1045,11 @@
 
     // --- MODUL 7: DATA MEMBER & HIERARKI RANK ---
     function addClubMember() {
+      const loggedUser = localStorage.getItem("nmc_logged_user");
+  if (loggedUser === "viewer") {
+    alert("Akses ditolak! Akun Viewer hanya dapat melihat data.");
+     return;
+   }
       const name = document.getElementById("clubMemberName").value.trim();
       const rank = document.getElementById("clubMemberRank").value;
       if (!name) { alert("Masukkan nama anggota!"); return; }
