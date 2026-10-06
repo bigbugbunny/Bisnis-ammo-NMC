@@ -53,9 +53,15 @@
     <!-- HEADER -->
     <div class="flex flex-col md:flex-row justify-between items-center bg-slate-900/90 p-6 rounded-2xl border border-red-900/40 shadow-2xl">
       <div class="flex items-center gap-4">
-        <button id="btnBackWelcome" onclick="showWelcomeScreen()" class="hidden bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700">
+        <!-- Tombol Home (Kembali ke Pilih Komunitas Triad) -->
+        <button id="btnHome" onclick="showWelcomeScreen()" class="bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700" title="Kembali ke Home Triad Community">
           <i class="fa-solid fa-house"></i>
         </button>
+        <!-- Tombol Back (Kembali ke Menu Utama Nakama MC dari Modul) -->
+        <button id="btnBackMenu" onclick="showSection('mainMenu')" class="hidden bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700" title="Kembali ke Menu Nakama MC">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+
         <div class="flex items-center gap-3">
           <img src="Nakama.png" alt="Logo" class="w-12 h-12 object-contain rounded-xl border border-red-600/50 bg-black p-1 shadow-md" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
           <div>
@@ -576,7 +582,8 @@
       document.getElementById('sectionSetoran').classList.add('hidden');
       document.getElementById('sectionMember').classList.add('hidden');
 
-      document.getElementById('btnBackWelcome').classList.add('hidden');
+      document.getElementById('btnHome').classList.remove('hidden');
+      document.getElementById('btnBackMenu').classList.add('hidden');
       document.getElementById('headerTitleText').innerText = "TRIAD COMMUNITY";
       document.getElementById('headerSubtitle').innerText = "SYSTEM MANAGEMENT & DASHBOARD";
     }
@@ -585,7 +592,8 @@
       if (type === 'nakama') {
         document.getElementById('sectionWelcome').classList.add('hidden');
         document.getElementById('sectionMainMenu').classList.remove('hidden');
-        document.getElementById('btnBackWelcome').classList.remove('hidden');
+        document.getElementById('btnHome').classList.remove('hidden');
+        document.getElementById('btnBackMenu').classList.add('hidden');
         document.getElementById('headerTitleText').innerText = "NAKAMA MC BLAINE COUNTY";
         document.getElementById('headerSubtitle').innerText = "SYSTEM MANAGEMENT & CLUB HOUSE";
       }
@@ -602,19 +610,28 @@
       document.getElementById('sectionSetoran').classList.add('hidden');
       document.getElementById('sectionMember').classList.add('hidden');
 
-      const btnBack = document.getElementById('btnBackWelcome');
+      const btnHome = document.getElementById('btnHome');
+      const btnBack = document.getElementById('btnBackMenu');
       const subtitle = document.getElementById('headerSubtitle');
 
-      document.getElementById(sectionId).classList.remove('hidden');
-      btnBack.classList.remove('hidden');
-      
-      if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
-      else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner (9 Kelompok)";
-      else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris & Riwayat)";
-      else if(sectionId === 'sectionBeliWarga') subtitle.innerText = "Modul Pembelian Bahan dari Warga (Uang Putih)";
-      else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Data Bisnis (Kas Uang Merah & Putih)";
-      else if(sectionId === 'sectionSetoran') subtitle.innerText = "Modul Data Setoran Bahan Mingguan Klub";
-      else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Data Anggota, Hierarki Rank & Status Keaktifan";
+      if (sectionId === 'mainMenu') {
+        document.getElementById('sectionMainMenu').classList.remove('hidden');
+        btnHome.classList.remove('hidden');
+        btnBack.classList.add('hidden');
+        subtitle.innerText = "SYSTEM MANAGEMENT & CLUB HOUSE";
+      } else {
+        document.getElementById(sectionId).classList.remove('hidden');
+        btnHome.classList.remove('hidden');
+        btnBack.classList.remove('hidden'); // Menampilkan tombol back panah kiri (<)
+        
+        if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
+        else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner (9 Kelompok)";
+        else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris & Riwayat)";
+        else if(sectionId === 'sectionBeliWarga') subtitle.innerText = "Modul Pembelian Bahan dari Warga (Uang Putih)";
+        else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Data Bisnis (Kas Uang Merah & Putih)";
+        else if(sectionId === 'sectionSetoran') subtitle.innerText = "Modul Data Setoran Bahan Mingguan Klub";
+        else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Data Anggota, Hierarki Rank & Status Keaktifan";
+      }
     }
 
     // --- REALTIME DATABASE (FIREBASE) ---
