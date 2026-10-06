@@ -131,14 +131,14 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-pink-400"><span>Rekap Setoran</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
-        <!-- Card 6: Data Member Hadir -->
+        <!-- Card 6: Data Member -->
         <div onclick="showSection('sectionMember')" class="menu-card glass-card p-6 rounded-2xl border border-slate-700 cursor-pointer flex flex-col justify-between">
           <div>
             <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-emerald-500/30"><i class="fa-solid fa-users"></i></div>
-            <h3 class="text-xl font-bold text-white mb-2">Data Member Hadir</h3>
-            <p class="text-sm text-gray-400">Sistem absensi, hierarki rank, dan kehadiran anggota klub.</p>
+            <h3 class="text-xl font-bold text-white mb-2">Data Member</h3>
+            <p class="text-sm text-gray-400">Daftar anggota aktif klub, hierarki rank, dan status keaktifan.</p>
           </div>
-          <div class="mt-6 flex justify-between items-center text-xs font-semibold text-emerald-400"><span>Absensi Member</span><i class="fa-solid fa-chevron-right"></i></div>
+          <div class="mt-6 flex justify-between items-center text-xs font-semibold text-emerald-400"><span>Kelola Member</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
       </div>
@@ -301,18 +301,15 @@
       </div>
     </div>
 
-    <!-- ================= MODUL 7: DATA MEMBER & ABSENSI ================= -->
+    <!-- ================= MODUL 7: DATA MEMBER & HIERARKI RANK ================= -->
     <div id="sectionMember" class="hidden space-y-6">
       <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
-        <div class="w-full md:w-auto flex items-center gap-3">
-          <label class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Periode Absen:</label>
-          <select id="selectAbsenMinggu" onchange="changeAbsenMinggu()" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-bold focus:outline-none focus:border-emerald-400 text-sm">
-            <option value="Minggu 1">Minggu 1</option><option value="Minggu 2">Minggu 2</option><option value="Minggu 3">Minggu 3</option><option value="Minggu 4">Minggu 4</option>
-          </select>
-        </div>
+        <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
+          <i class="fa-solid fa-id-badge"></i> Tambah Anggota Klub
+        </h2>
         <div class="w-full md:w-auto flex flex-wrap items-center gap-2 editor-only">
-          <input type="text" id="absentMemberName" placeholder="Nama Anggota..." class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
-          <select id="absentMemberRank" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
+          <input type="text" id="clubMemberName" placeholder="Nama Anggota..." class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
+          <select id="clubMemberRank" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
             <option value="President">1. President</option>
             <option value="Vice President">2. Vice President</option>
             <option value="Sergeant at Arms">3. Sergeant at Arms</option>
@@ -324,17 +321,17 @@
             <option value="Prospect" selected>9. Prospect</option>
             <option value="Hangaround">10. Hangaround</option>
           </select>
-          <button onclick="addClubMember()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-user-plus"></i> Tambah Member</button>
+          <button onclick="addClubMember()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-user-plus"></i> Tambah</button>
         </div>
       </div>
 
       <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
         <div class="flex justify-between items-center">
           <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
-            <i class="fa-solid fa-users"></i> Absensi & Hierarki Klub (<span id="currentAbsenLabel">Minggu 1</span>)
+            <i class="fa-solid fa-users"></i> Daftar Anggota Aktif & Hierarki Klub
           </h2>
-          <button onclick="sendAbsenToDiscord()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
-            <i class="fa-brands fa-discord"></i> Kirim Absensi ke Discord & Salin
+          <button onclick="sendMembersToDiscord()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
+            <i class="fa-brands fa-discord"></i> Kirim Daftar Anggota ke Discord & Salin
           </button>
         </div>
 
@@ -344,12 +341,12 @@
               <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase">
                 <th class="p-3">Nama Anggota</th>
                 <th class="p-3">Rank / Jabatan</th>
-                <th class="p-3 text-center">Kehadiran (Absen)</th>
+                <th class="p-3 text-center">Status Keaktifan</th>
                 <th class="p-3 text-center editor-only">Aksi</th>
               </tr>
             </thead>
             <tbody id="memberTableBody" class="divide-y divide-slate-800 text-sm">
-              <tr><td colspan="4" class="p-4 text-center text-gray-500">Memuat data member...</td></tr>
+              <tr><td colspan="4" class="p-4 text-center text-gray-500">Memuat data anggota...</td></tr>
             </tbody>
           </table>
         </div>
@@ -445,7 +442,7 @@
         else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris & Riwayat)";
         else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Data Bisnis (Kas Uang Merah & Putih)";
         else if(sectionId === 'sectionSetoran') subtitle.innerText = "Modul Data Setoran Bahan Mingguan Klub";
-        else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Data Member, Hierarki Rank & Absensi";
+        else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Data Anggota, Hierarki Rank & Status Keaktifan";
       }
     }
 
@@ -460,9 +457,8 @@
     let vaultHistory = [];
     let businessHistory = [];
     let setoranData = { "Minggu 1": {} };
-    let memberData = { "Minggu 1": {} };
+    let memberList = {};
     let activeMinggu = "Minggu 1";
-    let activeAbsenMinggu = "Minggu 1";
 
     db.ref('nmc_data').on('value', (snapshot) => {
       const data = snapshot.val();
@@ -471,9 +467,9 @@
         vaultHistory = data.history || [];
         businessHistory = data.business || [];
         setoranData = data.setoran || { "Minggu 1": {} };
-        memberData = data.members || { "Minggu 1": {} };
+        memberList = data.club_members || {};
       } else {
-        db.ref('nmc_data').set({ inventory: defaultVaultStock, history: [], business: [], setoran: { "Minggu 1": {} }, members: { "Minggu 1": {} } });
+        db.ref('nmc_data').set({ inventory: defaultVaultStock, history: [], business: [], setoran: { "Minggu 1": {} }, club_members: {} });
       }
       renderVaultInventory();
       renderVaultHistory();
@@ -488,7 +484,7 @@
         history: vaultHistory,
         business: businessHistory,
         setoran: setoranData,
-        members: memberData
+        club_members: memberList
       });
     }
 
@@ -552,7 +548,7 @@
         businessHistory.forEach(b => {
           if (b.currency === "Uang Merah") { if (b.type === "IN") saldoMerah += b.amount; else saldoMerah -= b.amount; }
           else { if (b.type === "IN") saldoPutih += b.amount; else saldoPutih -= b.amount; }
-          let typeBadge = b.type === 'IN' ? '<span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs font-bold">Masuk (+)</span>' : '<span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs font-bold">Keluar (-)</span>';
+          let typeBadge = b.type === 'IN' ? '<span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs font-bold">Masuk (+)</span>' : '<span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs font-bold">Pengeluaran (-)</span>';
           let currLabel = b.currency === "Uang Merah" ? '<span class="text-red-400 font-bold">Uang Merah 🔴</span>' : '<span class="text-gray-300 font-bold">Uang Putih ⚪</span>';
           tbody.innerHTML += `<tr class="hover:bg-slate-800/40 transition"><td class="p-3 text-gray-400 text-xs">${b.date}</td><td class="p-3">${currLabel}</td><td class="p-3">${typeBadge}</td><td class="p-3 text-right font-black ${b.type==='IN'?'text-green-400':'text-red-400'}">${b.type==='IN'?'+':'-'}${b.amount.toLocaleString('id-ID')}</td><td class="p-3 text-gray-300 text-sm">${b.desc}</td><td class="p-3 text-gray-300 text-sm font-medium">${b.author}</td></tr>`;
         });
@@ -662,42 +658,35 @@
       .catch(() => alert("Gagal mengirim ke Discord, tapi teks sudah disalin ke clipboard!"));
     }
 
-    // --- MODUL 7: DATA MEMBER & ABSENSI ---
-    function changeAbsenMinggu() {
-      activeAbsenMinggu = document.getElementById("selectAbsenMinggu").value;
-      document.getElementById("currentAbsenLabel").innerText = activeAbsenMinggu;
-      renderMemberTable();
-    }
-
+    // --- MODUL 7: DATA MEMBER & HIERARKI RANK ---
     function addClubMember() {
-      const name = document.getElementById("absentMemberName").value.trim();
-      const rank = document.getElementById("absentMemberRank").value;
+      const name = document.getElementById("clubMemberName").value.trim();
+      const rank = document.getElementById("clubMemberRank").value;
       if (!name) { alert("Masukkan nama anggota!"); return; }
-      if (!memberData[activeAbsenMinggu]) memberData[activeAbsenMinggu] = {};
-      if (memberData[activeAbsenMinggu][name]) { alert("Anggota sudah terdaftar di minggu ini!"); return; }
+      if (memberList[name]) { alert("Anggota sudah terdaftar!"); return; }
 
-      memberData[activeAbsenMinggu][name] = { rank: rank, hadir: false };
+      memberList[name] = { rank: rank, status: "Aktif" };
       saveDataToCloud();
-      document.getElementById("absentMemberName").value = "";
+      document.getElementById("clubMemberName").value = "";
       renderMemberTable();
     }
 
-    function toggleMemberHadir(name) {
-      if (!memberData[activeAbsenMinggu][name]) return;
-      memberData[activeAbsenMinggu][name].hadir = !memberData[activeAbsenMinggu][name].hadir;
+    function toggleMemberStatus(name) {
+      if (!memberList[name]) return;
+      memberList[name].status = memberList[name].status === "Aktif" ? "Inactive" : "Aktif";
       saveDataToCloud();
       renderMemberTable();
     }
 
     function updateMemberRank(name, newRank) {
-      if (!memberData[activeAbsenMinggu][name]) return;
-      memberData[activeAbsenMinggu][name].rank = newRank;
+      if (!memberList[name]) return;
+      memberList[name].rank = newRank;
       saveDataToCloud();
     }
 
     function removeClubMember(name) {
-      if (confirm(`Hapus ${name} dari daftar absensi ${activeAbsenMinggu}?`)) {
-        delete memberData[activeAbsenMinggu][name];
+      if (confirm(`Hapus ${name} dari daftar anggota klub?`)) {
+        delete memberList[name];
         saveDataToCloud();
         renderMemberTable();
       }
@@ -706,11 +695,10 @@
     function renderMemberTable() {
       const tbody = document.getElementById("memberTableBody");
       tbody.innerHTML = "";
-      const currentList = memberData[activeAbsenMinggu] || {};
-      const memberNames = Object.keys(currentList);
+      const memberNames = Object.keys(memberList);
 
       if (memberNames.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">Belum ada anggota terdaftar di ${activeAbsenMinggu}.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">Belum ada anggota terdaftar.</td></tr>`;
         return;
       }
 
@@ -721,15 +709,15 @@
       ];
 
       memberNames.forEach(name => {
-        const item = currentList[name];
+        const item = memberList[name];
         let rankOptions = "";
         ranksList.forEach(r => {
           rankOptions += `<option value="${r}" ${item.rank === r ? 'selected' : ''}>${r}</option>`;
         });
 
-        let hadirBadge = item.hadir ? 
-          `<span onclick="toggleMemberHadir('${name}')" class="cursor-pointer bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30 hover:bg-green-500/30">Hadir (Present) ✅</span>` : 
-          `<span onclick="toggleMemberHadir('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30 hover:bg-red-500/30">Alpha / Tidak Hadir ❌</span>`;
+        let statusBadge = item.status === "Aktif" ? 
+          `<span onclick="toggleMemberStatus('${name}')" class="cursor-pointer bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30 hover:bg-green-500/30">Aktif ✅</span>` : 
+          `<span onclick="toggleMemberStatus('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30 hover:bg-red-500/30">Inactive ❌</span>`;
 
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
@@ -739,7 +727,7 @@
                 ${rankOptions}
               </select>
             </td>
-            <td class="p-3 text-center">${hadirBadge}</td>
+            <td class="p-3 text-center">${statusBadge}</td>
             <td class="p-3 text-center editor-only">
               <button onclick="removeClubMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button>
             </td>
@@ -748,21 +736,19 @@
       if (isViewer) document.querySelectorAll(".editor-only").forEach(el => el.style.display = "none");
     }
 
-    function sendAbsenToDiscord() {
-      const currentList = memberData[activeAbsenMinggu] || {};
-      let text = `👥 **REKAP ABSENSI & HIERARKI KLUB (${activeAbsenMinggu.toUpperCase()})**\n\n`;
-      let totalHadir = 0, totalMember = 0;
+    function sendMembersToDiscord() {
+      const memberNames = Object.keys(memberList);
+      let text = `👥 **DAFTAR ANGGOTA & HIERARKI KLUB NMC**\n\n`;
+      let totalAktif = 0, totalInactive = 0;
 
-      for (let name in currentList) {
-        const item = currentList[name];
-        totalMember++;
-        if (item.hadir) totalHadir++;
-        const status = item.hadir ? "Hadir ✅" : "Alpha ❌";
-        text += `• **${name}** | *${item.rank}* | [${status}]\n`;
-      }
+      memberNames.forEach(name => {
+        const item = memberList[name];
+        if (item.status === "Aktif") totalAktif++; else totalInactive++;
+        text += `• **${name}** | *${item.rank}* | [${item.status}]\n`;
+      });
 
-      text += `\n📊 **RINGKASAN KEHADIRAN:**\n`;
-      text += `• Total Hadir: ${totalHadir} dari ${totalMember} Anggota`;
+      text += `\n📊 **RINGKASAN ANGGOTA:**\n`;
+      text += `• Aktif: ${totalAktif} | Inactive: ${totalInactive} | Total: ${memberNames.length}`;
 
       navigator.clipboard.writeText(text);
 
@@ -771,7 +757,7 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: text })
       })
-      .then(() => alert(`Rekap absensi ${activeAbsenMinggu} berhasil dikirim ke Discord dan disalin!`))
+      .then(() => alert("Daftar anggota berhasil dikirim ke Discord dan disalin!"))
       .catch(() => alert("Gagal mengirim ke Discord, tapi teks sudah disalin ke clipboard!"));
     }
 
