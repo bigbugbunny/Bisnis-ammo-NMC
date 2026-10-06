@@ -116,12 +116,12 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-blue-400"><span>Kelola Brankas</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
-        <!-- Card 4: Beli Bahan Warga (BARU) -->
+        <!-- Card 4: Beli Bahan Warga (BARU & LEBIH SIMPEL DENGAN TOMBOL +) -->
         <div onclick="showSection('sectionBeliWarga')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between border border-emerald-500/30">
           <div>
             <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-emerald-500/30"><i class="fa-solid fa-basket-shopping"></i></div>
             <h3 class="text-xl font-bold text-white mb-2">Beli Bahan (Warga)</h3>
-            <p class="text-sm text-gray-400">Beli bahan dari warga menggunakan Uang Putih & otomatis masuk Brankas.</p>
+            <p class="text-sm text-gray-400">Beli banyak bahan dari warga sekaligus pakai Uang Putih & otomatis masuk Brankas.</p>
           </div>
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-emerald-400"><span>Buka Pembelian</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
@@ -159,42 +159,66 @@
       </div>
     </div>
 
-    <!-- ================= HALAMAN: BELI BAHAN WARGA (BARU) ================= -->
+    <!-- ================= HALAMAN: BELI BAHAN WARGA (DENGAN TOMBOL + & KALKULASI) ================= -->
     <div id="sectionBeliWarga" class="hidden space-y-6">
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
         <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-cart-plus"></i> Form Transaksi Beli Bahan dari Warga</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-2 border-b border-slate-700">
           <div>
             <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nama Warga (Penjual)</label>
             <input type="text" id="beliWargaNama" placeholder="Nama warga..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-400 text-sm">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Pilih Bahan</label>
-            <select id="beliWargaItem" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-400 text-sm">
-              <option value="Iron">Iron</option>
-              <option value="Carbon">Carbon</option>
-              <option value="Glass">Glass</option>
-              <option value="Rubber">Rubber</option>
-              <option value="Plastik">Plastik</option>
-              <option value="Box Recycle">Box Recycle</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jumlah (Qty)</label>
-            <input type="number" id="beliWargaQty" min="1" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-400 text-sm" placeholder="0">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Total Harga (Uang Putih)</label>
-            <input type="number" id="beliWargaTotalHarga" min="0" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-400 text-sm" placeholder="Total harga bayar">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Anggota Klub (Pembeli)</label>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Anggota Klub (Pembeli / Perwakilan)</label>
             <input type="text" id="beliWargaAdmin" placeholder="Nama Anda / Anggota" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-400 text-sm">
           </div>
         </div>
-        <button onclick="prosesBeliBahanWarga()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-          <i class="fa-solid fa-check-to-slot"></i> Bayar Pakai Uang Putih, Masuk Brankas & Catat Kas
-        </button>
+
+        <!-- Daftar Baris Bahan dengan Tombol + -->
+        <div class="space-y-3 pt-2">
+          <label class="block text-xs font-semibold text-emerald-400 uppercase tracking-wider">Daftar Bahan yang Dibeli:</label>
+          <div id="beliBahanRowsContainer" class="space-y-3">
+            <!-- Baris Default Pertama -->
+            <div class="beli-row grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+              <div class="md:col-span-4">
+                <select class="row-item w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none">
+                  <option value="Iron">Iron</option>
+                  <option value="Carbon">Carbon</option>
+                  <option value="Glass">Glass</option>
+                  <option value="Rubber">Rubber</option>
+                  <option value="Plastik">Plastik</option>
+                  <option value="Box Recycle">Box Recycle</option>
+                </select>
+              </div>
+              <div class="md:col-span-3">
+                <input type="number" min="1" value="1" placeholder="Qty" class="row-qty w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()">
+              </div>
+              <div class="md:col-span-4">
+                <input type="number" min="0" value="0" placeholder="Total Harga (Uang Putih)" class="row-price w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()">
+              </div>
+              <div class="md:col-span-1 text-center">
+                <button type="button" onclick="hapusBarisBeli(this)" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tombol Tambah Baris (+) -->
+          <button type="button" onclick="tambahBarisBeli()" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/40 text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2">
+            <i class="fa-solid fa-plus"></i> Tambah Bahan Lain (+)
+          </button>
+        </div>
+
+        <!-- Grand Total & Tombol Bayar -->
+        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 mt-4">
+          <div>
+            <span class="text-xs text-gray-400 block">Total Keseluruhan Pembayaran:</span>
+            <span id="grandTotalBeliText" class="text-2xl font-black text-emerald-400">Rp 0 (⚪ Uang Putih)</span>
+          </div>
+          <button onclick="prosesBeliBahanWarga()" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-check-to-slot"></i> Bayar, Masuk Brankas & Catat Kas
+          </button>
+        </div>
       </div>
 
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
@@ -207,14 +231,13 @@
               <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase">
                 <th class="p-3">Waktu</th>
                 <th class="p-3">Nama Warga</th>
-                <th class="p-3">Bahan</th>
-                <th class="p-3 text-right">Jumlah</th>
+                <th class="p-3">Daftar Bahan & Qty</th>
                 <th class="p-3 text-right">Total Biaya (Uang Putih)</th>
                 <th class="p-3">Perwakilan Klub</th>
               </tr>
             </thead>
             <tbody id="beliWargaTableBody" class="divide-y divide-slate-800 text-sm">
-              <tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat pembelian.</td></tr>
+              <tr><td colspan="5" class="p-4 text-center text-gray-500">Belum ada riwayat pembelian.</td></tr>
             </tbody>
           </table>
         </div>
@@ -569,32 +592,97 @@
       });
     }
 
-    // --- MODUL PEMBELIAN BAHAN DARI WARGA ---
+    // --- MODUL PEMBELIAN BAHAN DARI WARGA (DENGAN TOMBOL + & KALKULASI) ---
+    function tambahBarisBeli() {
+      const container = document.getElementById("beliBahanRowsContainer");
+      const rowHtml = `
+        <div class="beli-row grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+          <div class="md:col-span-4">
+            <select class="row-item w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none">
+              <option value="Iron">Iron</option>
+              <option value="Carbon">Carbon</option>
+              <option value="Glass">Glass</option>
+              <option value="Rubber">Rubber</option>
+              <option value="Plastik">Plastik</option>
+              <option value="Box Recycle">Box Recycle</option>
+            </select>
+          </div>
+          <div class="md:col-span-3">
+            <input type="number" min="1" value="1" placeholder="Qty" class="row-qty w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()">
+          </div>
+          <div class="md:col-span-4">
+            <input type="number" min="0" value="0" placeholder="Total Harga (Uang Putih)" class="row-price w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()">
+          </div>
+          <div class="md:col-span-1 text-center">
+            <button type="button" onclick="hapusBarisBeli(this)" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>`;
+      container.insertAdjacentHTML('beforeend', rowHtml);
+    }
+
+    function hapusBarisBeli(btn) {
+      const rows = document.querySelectorAll(".beli-row");
+      if (rows.length > 1) {
+        btn.closest(".beli-row").remove();
+        hitungTotalBeliWarga();
+      } else {
+        alert("Minimal harus ada 1 baris bahan!");
+      }
+    }
+
+    function hitungTotalBeliWarga() {
+      const rows = document.querySelectorAll(".beli-row");
+      let grandTotal = 0;
+      rows.forEach(r => {
+        const price = parseFloat(r.querySelector(".row-price").value) || 0;
+        grandTotal += price;
+      });
+      document.getElementById("grandTotalBeliText").innerText = `Rp ${grandTotal.toLocaleString('id-ID')} (⚪ Uang Putih)`;
+      return grandTotal;
+    }
+
     function prosesBeliBahanWarga() {
       const namaWarga = document.getElementById("beliWargaNama").value.trim();
-      const item = document.getElementById("beliWargaItem").value;
-      const qty = parseInt(document.getElementById("beliWargaQty").value) || 0;
-      const totalHarga = parseInt(document.getElementById("beliWargaTotalHarga").value) || 0;
       const admin = document.getElementById("beliWargaAdmin").value.trim();
 
-      if (!namaWarga || qty <= 0 || totalHarga < 0 || !admin) {
-        alert("Semua field wajib diisi dengan benar!");
+      if (!namaWarga || !admin) {
+        alert("Nama Warga dan Nama Anggota Klub wajib diisi!");
         return;
       }
 
-      // 1. Tambah stok brankas otomatis
-      vaultStock[item] = (vaultStock[item] || 0) + qty;
+      const rows = document.querySelectorAll(".beli-row");
+      let itemsDetail = [];
+      let totalSemuaHarga = 0;
 
-      // 2. Catat ke riwayat brankas
-      vaultHistory.unshift({
-        id: Date.now(),
-        date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-        item: item,
-        action: "ADD",
-        diff: `+${qty}`,
-        desc: `Beli dari Warga (${namaWarga})`,
-        author: admin
+      rows.forEach(r => {
+        const item = r.querySelector(".row-item").value;
+        const qty = parseInt(r.querySelector(".row-qty").value) || 0;
+        const price = parseFloat(r.querySelector(".row-price").value) || 0;
+
+        if (qty > 0) {
+          itemsDetail.push({ item, qty, price });
+          totalSemuaHarga += price;
+
+          // 1. Tambah stok brankas otomatis per item
+          vaultStock[item] = (vaultStock[item] || 0) + qty;
+
+          // 2. Catat ke riwayat brankas
+          vaultHistory.unshift({
+            id: Date.now() + Math.random(),
+            date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+            item: item,
+            action: "ADD",
+            diff: `+${qty}`,
+            desc: `Beli dari Warga (${namaWarga})`,
+            author: admin
+          });
+        }
       });
+
+      if (itemsDetail.length === 0 || totalSemuaHarga <= 0) {
+        alert("Masukkan jumlah dan harga bahan dengan benar!");
+        return;
+      }
 
       // 3. Catat pengeluaran kas Uang Putih otomatis di Data Bisnis
       businessHistory.unshift({
@@ -602,8 +690,8 @@
         date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
         currency: "Uang Putih",
         type: "OUT",
-        amount: totalHarga,
-        desc: `Beli ${qty} ${item} dari warga (${namaWarga})`,
+        amount: totalSemuaHarga,
+        desc: `Beli bahan dari warga (${namaWarga})`,
         author: admin
       });
 
@@ -612,37 +700,57 @@
         id: Date.now(),
         date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
         namaWarga,
-        item,
-        qty,
-        totalHarga,
+        itemsDetail,
+        totalHarga: totalSemuaHarga,
         admin
       });
 
       saveDataToCloud();
 
-      // Reset form input
+      // Reset form
       document.getElementById("beliWargaNama").value = "";
-      document.getElementById("beliWargaQty").value = "1";
-      document.getElementById("beliWargaTotalHarga").value = "0";
       document.getElementById("beliWargaAdmin").value = "";
+      document.getElementById("beliBahanRowsContainer").innerHTML = `
+        <div class="beli-row grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+          <div class="md:col-span-4">
+            <select class="row-item w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none">
+              <option value="Iron">Iron</option>
+              <option value="Carbon">Carbon</option>
+              <option value="Glass">Glass</option>
+              <option value="Rubber">Rubber</option>
+              <option value="Plastik">Plastik</option>
+              <option value="Box Recycle">Box Recycle</option>
+            </select>
+          </div>
+          <div class="md:col-span-3">
+            <input type="number" min="1" value="1" placeholder="Qty" class="row-qty w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()">
+          </div>
+          <div class="md:col-span-4">
+            <input type="number" min="0" value="0" placeholder="Total Harga (Uang Putih)" class="row-price w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()">
+          </div>
+          <div class="md:col-span-1 text-center">
+            <button type="button" onclick="hapusBarisBeli(this)" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>`;
+      hitungTotalBeliWarga();
 
-      alert(`Berhasil! Membeli ${qty} ${item} seharga Rp ${totalHarga.toLocaleString('id-ID')} menggunakan Uang Putih. Stok brankas bertambah & kas terpotong otomatis!`);
+      alert(`Berhasil! Pembelian bahan dari ${namaWarga} seharga Rp ${totalSemuaHarga.toLocaleString('id-ID')} dicatat. Stok brankas bertambah & kas Uang Putih terpotong otomatis!`);
     }
 
     function renderBeliWargaHistory() {
       const tbody = document.getElementById("beliWargaTableBody");
       tbody.innerHTML = "";
       if (beliWargaHistory.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat pembelian.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-500">Belum ada riwayat pembelian.</td></tr>`;
         return;
       }
       beliWargaHistory.forEach(b => {
+        let itemsStr = b.itemsDetail.map(i => `<span class="text-emerald-400 font-semibold">${i.item} (+${i.qty})</span>`).join(', ');
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
             <td class="p-3 text-gray-400 text-xs">${b.date}</td>
             <td class="p-3 text-white font-bold">${b.namaWarga}</td>
-            <td class="p-3 text-emerald-400 font-semibold">${b.item}</td>
-            <td class="p-3 text-right font-black text-amber-400">+${b.qty}</td>
+            <td class="p-3">${itemsStr}</td>
             <td class="p-3 text-right font-black text-red-400">Rp ${b.totalHarga.toLocaleString('id-ID')} (⚪)</td>
             <td class="p-3 text-gray-300 text-sm">${b.admin}</td>
           </tr>`;
