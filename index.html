@@ -316,7 +316,7 @@
             <input type="number" id="craftPackQty" value="0" min="0" oninput="calcBahan()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-amber-400" placeholder="0">
           </div>
           <hr class="border-slate-700 my-3">
-          <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider">🛒 Cost / Modal Belanja</h3>
+          <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider">🛒 Modal Belanja</h3>
           <div class="space-y-3">
             <div><label class="block text-xs text-gray-400 mb-1">Harga Beli 1 Iron</label><input type="number" id="craftIronPrice" value="0" oninput="calcBahan()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-400" placeholder="0"></div>
             <div><label class="block text-xs text-gray-400 mb-1">Harga Beli 1 Carbon</label><input type="number" id="craftCarbonPrice" value="0" oninput="calcBahan()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-400" placeholder="0"></div>
@@ -409,11 +409,11 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="glass-card p-6 shadow-lg bg-gradient-to-br from-slate-900 to-red-950/20">
           <div class="flex justify-between items-center mb-2"><span class="text-sm font-bold text-red-400">🔴 Total Saldo Uang Merah</span><i class="fa-solid fa-wallet text-red-400 text-xl"></i></div>
-          <div id="totalUangMerah" class="text-3xl font-black text-white">0</div>
+          <div id="totalUangMerah" class="text-3xl font-black text-white">Rp.0</div>
         </div>
         <div class="glass-card p-6 shadow-lg bg-gradient-to-br from-slate-900 to-slate-800/20">
           <div class="flex justify-between items-center mb-2"><span class="text-sm font-bold text-gray-300">⚪ Total Saldo Uang Putih</span><i class="fa-solid fa-wallet text-gray-300 text-xl"></i></div>
-          <div id="totalUangPutih" class="text-3xl font-black text-white">0</div>
+          <div id="totalUangPutih" class="text-3xl font-black text-white">Rp.0</div>
         </div>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
@@ -428,7 +428,7 @@
         <button onclick="addBusinessTransaction()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2"><i class="fa-solid fa-plus"></i> Simpan Catatan Kas</button>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-        <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-history"></i> Riwayat Arus Kas Bisnis</h2>
+        <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-history"></i> Riwayat Kas Bisnis</h2>
         <div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead><tr class="border-b border-slate-700 text-xs text-gray-400 uppercase"><th class="p-3">Waktu</th><th class="p-3">Jenis Uang</th><th class="p-3">Status</th><th class="p-3 text-right">Nominal</th><th class="p-3">Keterangan</th><th class="p-3">Pelapor</th></tr></thead><tbody id="businessHistoryTableBody" class="divide-y divide-slate-800 text-sm"><tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada data.</td></tr></tbody></table></div>
       </div>
     </div>
@@ -1170,12 +1170,12 @@
     const groupsData = {
       "th21": { name: "21TH", ammo: { "50AE": 80000, "9MM": 115000, "38LC": 145000 }, items: { "Baju Hangat": { price: 100000, promo: "Max 100 Pcs/Minggu", isRate: false } } },
       "voldemort": { name: "Voldemort", ammo: { "50AE": 75000, "9MM": 120000, "38LC": 140000 }, items: { "Baju Hangat": { price: 110000, promo: "Max 50 Pcs", isRate: false } } },
-      "mugen": { name: "Mugen", ammo: { "50AE": 75000, "9MM": 115000, "38LC": 130000 }, items: { "Cuci Uang (20%)": { price: 0.20, promo: "Max 15 Juta", isRate: true }, "Cuci Uang (30%)": { price: 0.30, promo: "Tanpa Max", isRate: true } } },
+      "mugen": { name: "Mugen", ammo: { "50AE": 75000, "9MM": 115000, "38LC": 130000 }, items: { "Cuci Uang (20%)": { price: 0.80, promo: "Max 15 Juta", isRate: true }, "Cuci Uang (30%)": { price: 0.70, promo: "Tanpa Max", isRate: true } } },
       "atlanta": { name: "Atlanta", ammo: { "50AE": 100000, "9MM": 150000, "38LC": 145000 }, items: { "Kecubung": { price: 23000, promo: "", isRate: false }, "Jamur": { price: 23000, promo: "", isRate: false }, "Wide": { price: 23000, promo: "", isRate: false } } },
       "brooklyn": { name: "Brooklyn", ammo: { "50AE": 75000, "9MM": 110000, "38LC": 140000 }, items: { "Kecubung": { price: 20000, promo: "", isRate: false }, "Jamur": { price: 20000, promo: "", isRate: false }, "Wide": { price: 20000, promo: "", isRate: false } } },
       "s90": { name: "90S", ammo: { "50AE": 80000, "9MM": 115000, "38LC": 140000 }, items: { "Baju Hangat": { price: 100000, promo: "", isRate: false } } },
       "angker": { name: "Angker", ammo: { "50AE": 80000, "9MM": 120000, "38LC": 155000 }, items: { "Kecubung": { price: 23000, promo: "", isRate: false }, "Jamur": { price: 23000, promo: "", isRate: false }, "Wide": { price: 23000, promo: "", isRate: false } } },
-      "white_tiger": { name: "White Tiger", ammo: { "50AE": 70000, "9MM": 110000, "38LC": 140000 }, items: { "Umer ke Putih (15%)": { price: 0.15, promo: "", isRate: true }, "Putih ke Umer (18%)": { price: 0.18, promo: "", isRate: true } } },
+      "white_tiger": { name: "White Tiger", ammo: { "50AE": 70000, "9MM": 110000, "38LC": 140000 }, items: { "Umer ke Putih (15%)": { price: 0.85, promo: "", isRate: true }, "Putih ke Umer (18%)": { price: 0.82, promo: "", isRate: true } } },
       "mayans": { name: "Mayans", ammo: { "9MM": 113000, "38LC": 120000 }, items: { "DA": { price: 150000, promo: "10 Free 2", isRate: false }, "P50": { price: 130000, promo: "", isRate: false }, "TAC9": { price: 110000, promo: "", isRate: false }, "CERAMIC": { price: 90000, promo: "", isRate: false } } }
     };
     let currentGroupKey = "mayans";
