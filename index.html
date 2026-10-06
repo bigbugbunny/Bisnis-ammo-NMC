@@ -17,7 +17,7 @@
 
   <div class="max-w-6xl mx-auto space-y-6">
     
-    <!-- HEADER ATAS -->
+    <!-- HEADER -->
     <div class="flex flex-col md:flex-row justify-between items-center bg-slate-800/80 p-6 rounded-2xl border border-slate-700 shadow-xl">
       <div class="flex items-center gap-4">
         <button id="btnBackMenu" onclick="showSection('mainMenu')" class="hidden bg-slate-700 hover:bg-slate-600 text-white p-3 rounded-xl transition">
@@ -33,9 +33,18 @@
       
       <div class="mt-4 md:mt-0 flex items-center gap-2">
         <span class="bg-green-500/20 text-green-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-green-500/30 flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-green-400 animate-ping"></span> System Online
+          <span class="w-2 h-2 rounded-full bg-green-400 animate-ping"></span> Discord Sync Ready
         </span>
       </div>
+    </div>
+
+    <!-- SETTING DISCORD WEBHOOK URL -->
+    <div class="glass-card p-4 rounded-2xl border border-slate-700">
+      <label class="block text-xs font-bold text-indigo-400 uppercase tracking-wider mb-1">
+        <i class="fa-brands fa-discord"></i> Discord Webhook URL (Isi Sekali Sahaja):
+      </label>
+      <input type="text" id="webhookInput" onchange="saveWebhook()" placeholder="https://discord.com/api/webhooks/..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+      <p class="text-[11px] text-gray-400 mt-1">Webhook URL tersimpan otomatis di browser kamu.</p>
     </div>
 
     <!-- ================= HALAMAN 1: MENU UTAMA ================= -->
@@ -53,7 +62,7 @@
               <i class="fa-solid fa-boxes-stacked"></i>
             </div>
             <h3 class="text-xl font-bold text-white mb-2">Kalkulasi Bahan Crafting</h3>
-            <p class="text-sm text-gray-400">Hitung total kebutuhan bahan dasar Iron, Carbon, Umer, serta proyeksi modal & profit bersih.</p>
+            <p class="text-sm text-gray-400">Hitung total kebutuhan bahan dasar Iron, Carbon, Umer, serta modal & profit.</p>
           </div>
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-amber-400">
             <span>Hitung Bahan</span>
@@ -68,7 +77,7 @@
               <i class="fa-solid fa-handshake"></i>
             </div>
             <h3 class="text-xl font-bold text-white mb-2">Transaksi Partner (9 Kelompok)</h3>
-            <p class="text-sm text-gray-400">Hitung tagihan penjualan ammo & pembelian barang/layanan dari 9 kelompok partner.</p>
+            <p class="text-sm text-gray-400">Hitung tagihan ammo & barang/layanan dari 9 kelompok partner.</p>
           </div>
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-green-400">
             <span>Buka Transaksi</span>
@@ -83,7 +92,7 @@
               <i class="fa-solid fa-vault"></i>
             </div>
             <h3 class="text-xl font-bold text-white mb-2">Data Brankas</h3>
-            <p class="text-sm text-gray-400">Pencatatan kas masuk, kas keluar, dan monitoring total saldo brankas utama.</p>
+            <p class="text-sm text-gray-400">Pencatatan kas masuk, kas keluar, dan monitoring total saldo brankas.</p>
           </div>
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-blue-400">
             <span>Kelola Brankas</span>
@@ -98,7 +107,7 @@
               <i class="fa-solid fa-chart-line"></i>
             </div>
             <h3 class="text-xl font-bold text-white mb-2">Data Bisnis</h3>
-            <p class="text-sm text-gray-400">Laporan keuntungan bulanan, pengeluaran operasional, dan performa bisnis.</p>
+            <p class="text-sm text-gray-400">Laporan keuntungan bulanan, operasional, dan performa bisnis.</p>
           </div>
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-purple-400">
             <span>Lihat Laporan</span>
@@ -164,7 +173,7 @@
           </div>
 
           <hr class="border-slate-700 my-3">
-          <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider">🛒 Cost / Modal Belanja (Opsional)</h3>
+          <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider">🛒 Cost / Modal Belanja</h3>
           
           <div class="space-y-3">
             <div>
@@ -218,24 +227,29 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                <div class="text-xs text-gray-400 mb-1">Total Modal (Bahan + Umer)</div>
+                <div class="text-xs text-gray-400 mb-1">Total Modal</div>
                 <div id="craftTotalModal" class="text-xl font-bold text-red-400">700.000</div>
               </div>
 
               <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                <div class="text-xs text-gray-400 mb-1">Total Penjualan</div>
+                <div class="text-xs text-gray-400 mb-1">Total Omset</div>
                 <div id="craftTotalOmset" class="text-xl font-bold text-blue-400">1.130.000</div>
               </div>
 
               <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                <div class="text-xs text-gray-400 mb-1">Untung Bersih (Net Profit)</div>
+                <div class="text-xs text-gray-400 mb-1">Untung Bersih</div>
                 <div id="craftNetProfit" class="text-xl font-bold text-green-400">+430.000</div>
               </div>
             </div>
 
-            <button onclick="copyCraftSummary()" class="w-full mt-6 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-              <i class="fa-solid fa-copy"></i> Salin Rincian Bahan Crafting
-            </button>
+            <div class="flex gap-3 mt-6">
+              <button onclick="copyCraftSummary()" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-copy"></i> Salin Rincian
+              </button>
+              <button onclick="sendCraftToDiscord()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                <i class="fa-brands fa-discord"></i> Kirim ke Discord
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -307,9 +321,14 @@
         </div>
       </div>
 
-      <button onclick="copySummary()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-        <i class="fa-solid fa-copy"></i> Salin Ringkasan Transaksi Kelompok
-      </button>
+      <div class="flex gap-3">
+        <button onclick="copySummary()" class="flex-1 bg-green-600 hover:bg-green-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-copy"></i> Salin Ringkasan
+        </button>
+        <button onclick="sendGroupToDiscord()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+          <i class="fa-brands fa-discord"></i> Kirim Bukti ke Discord
+        </button>
+      </div>
     </div>
 
     <!-- OTHER MODULE PLACEHOLDERS -->
@@ -340,7 +359,18 @@
   </div>
 
   <script>
-    // FUNGSI PINDAH HALAMAN
+    // WEBHOOK STORAGE
+    function saveWebhook() {
+      const url = document.getElementById("webhookInput").value;
+      localStorage.setItem("nmc_discord_webhook", url);
+    }
+
+    function loadWebhook() {
+      const saved = localStorage.getItem("nmc_discord_webhook");
+      if(saved) document.getElementById("webhookInput").value = saved;
+    }
+
+    // NAVIGASI
     function showSection(sectionId) {
       document.getElementById('sectionMainMenu').classList.add('hidden');
       document.getElementById('sectionBahan').classList.add('hidden');
@@ -428,6 +458,46 @@
 
       navigator.clipboard.writeText(text);
       alert("Rincian kebutuhan bahan crafting berhasil disalin!");
+    }
+
+    function sendCraftToDiscord() {
+      const webhookUrl = localStorage.getItem("nmc_discord_webhook");
+      if(!webhookUrl) { alert("Harap isi Discord Webhook URL terlebih dahulu di bagian atas website!"); return; }
+
+      const type = document.getElementById("craftAmmoType").value;
+      const qty = document.getElementById("craftPackQty").value;
+      const iron = document.getElementById("craftTotalIron").innerText;
+      const carbon = document.getElementById("craftTotalCarbon").innerText;
+      const umer = document.getElementById("craftTotalUmer").innerText;
+      const modal = document.getElementById("craftTotalModal").innerText;
+      const omset = document.getElementById("craftTotalOmset").innerText;
+      const profit = document.getElementById("craftNetProfit").innerText;
+
+      const payload = {
+        username: "NMC Crafting System",
+        embeds: [{
+          title: "🛠️ PENGINGAT BAHAN CRAFTING AMMO",
+          color: 16753920,
+          fields: [
+            { name: "📦 Target Production", value: `${type} (${qty} Pack)`, inline: true },
+            { name: "🔩 Iron Needed", value: `${iron} pcs`, inline: true },
+            { name: "⬛ Carbon Needed", value: `${carbon} pcs`, inline: true },
+            { name: "💵 Fee Umer", value: `Rp ${umer}`, inline: true },
+            { name: "💸 Total Modal", value: `Rp ${modal}`, inline: true },
+            { name: "📈 Estimasi Profit", value: `Rp ${profit}`, inline: true }
+          ],
+          timestamp: new Date().toISOString()
+        }]
+      };
+
+      fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).then(res => {
+        if(res.ok) alert("Bukti crafting berhasil terkirim ke Discord!");
+        else alert("Gagal mengirim ke Discord. Cek Webhook URL kamu.");
+      });
     }
 
     // MULTI GROUP LOGIC
@@ -625,7 +695,55 @@
       alert(`Ringkasan transaksi untuk ${groupName} berhasil disalin!`);
     }
 
+    function sendGroupToDiscord() {
+      const webhookUrl = localStorage.getItem("nmc_discord_webhook");
+      if(!webhookUrl) { alert("Harap isi Discord Webhook URL terlebih dahulu di bagian atas website!"); return; }
+
+      const groupName = groupsData[currentGroupKey].name;
+      let ammoDetail = "";
+      document.querySelectorAll("#ammoRowsContainer > div").forEach(row => {
+        const type = row.querySelector(".ammo-type-select").value;
+        const qty = row.querySelector(".ammo-qty-input").value || 0;
+        const total = row.querySelector(".ammo-row-total").innerText;
+        ammoDetail += `• ${type} (${qty} Pack) = Rp ${total}\n`;
+      });
+
+      let itemDetail = "";
+      document.querySelectorAll("#itemRowsContainer > div").forEach(row => {
+        const type = row.querySelector(".item-type-select").value;
+        const qty = row.querySelector(".item-qty-input").value || 0;
+        const total = row.querySelector(".item-row-total").innerText;
+        const bonus = row.querySelector(".item-row-bonus").innerText;
+        itemDetail += `• ${type} (${qty}) = Rp ${total} ${bonus ? `[${bonus}]` : ''}\n`;
+      });
+
+      const payload = {
+        username: "NMC Business Bot",
+        embeds: [{
+          title: `🤝 LOG TRANSAKSI: ${groupName.toUpperCase()}`,
+          color: 5763719,
+          fields: [
+            { name: "📦 Penjualan Ammo", value: ammoDetail || "Tidak ada", inline: false },
+            { name: "💰 Total Tagihan Ammo", value: `Rp ${document.getElementById("grandTotalAmmo").innerText}`, inline: true },
+            { name: "🛒 Pembelian / Layanan", value: itemDetail || "Tidak ada", inline: false },
+            { name: "💸 Total Pembelian/Fee", value: `Rp ${document.getElementById("grandTotalItem").innerText}`, inline: true }
+          ],
+          timestamp: new Date().toISOString()
+        }]
+      };
+
+      fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).then(res => {
+        if(res.ok) alert(`Bukti transaksi ${groupName} berhasil terkirim ke Discord!`);
+        else alert("Gagal mengirim ke Discord. Cek Webhook URL kamu.");
+      });
+    }
+
     // Initial Load
+    loadWebhook();
     calcBahan();
     loadGroupData();
   </script>
