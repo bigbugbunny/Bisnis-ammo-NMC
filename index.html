@@ -33,7 +33,7 @@
       
       <div class="mt-4 md:mt-0 flex items-center gap-2">
         <span class="bg-indigo-500/20 text-indigo-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-indigo-500/30 flex items-center gap-2">
-          <i class="fa-brands fa-discord"></i> Discord Connected
+          <i class="fa-brands fa-discord"></i> Multi-Webhook Connected
         </span>
       </div>
     </div>
@@ -355,8 +355,9 @@
   </div>
 
   <script>
-    // WEBHOOK DISCORD UTAMA
-    const DISCORD_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1556822834104504402/QZaTVOPAMlfxHEKP2hJFRPI7Y7EHmYPNjFJnpn7rAcizFxKGsGSmVhIDiZGaBM7dfBBi";
+    // WEBHOOK DISCORD DIBEDAKAN (Ganti link di bawah ini sesuai channel masing-masing)
+    const DISCORD_WEBHOOK_PENJUALAN = "https://discordapp.com/api/webhooks/1556822834104504402/QZaTVOPAMlfxHEKP2hJFRPI7Y7EHmYPNjFJnpn7rAcizFxKGsGSmVhIDiZGaBM7dfBBi"; 
+    const DISCORD_WEBHOOK_PEMBELIAN = "https://discordapp.com/api/webhooks/1556827823560196096/NZziAcHN_0mBCrP_gwkrIzWOB1x8f4sNE3LVj6Grbodv1AHVtrXzon26b5z4gVTGKAV4";
 
     // NAVIGASI
     function showSection(sectionId) {
@@ -436,7 +437,7 @@
 
       const text = `📦 *RINCIAN BAHAN CRAFTING AMMO*\n` +
                    `• Tipe Ammo: ${type} (${qty} Pack)\n\n` +
-                   `🛠️️ *Kebutuhan Bahan Dasar:*\n` +
+                   `🛠️ *Kebutuhan Bahan Dasar:*\n` +
                    `- Iron: ${iron}\n` +
                    `- Carbon: ${carbon}\n` +
                    `- Umer: ${umer}\n\n` +
@@ -475,7 +476,7 @@
         }]
       };
 
-      fetch(DISCORD_WEBHOOK_URL, {
+      fetch(DISCORD_WEBHOOK_PENJUALAN, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -713,7 +714,7 @@
         }]
       };
 
-      fetch(DISCORD_WEBHOOK_URL, {
+      fetch(DISCORD_WEBHOOK_PENJUALAN, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -758,7 +759,7 @@
         }]
       };
 
-      fetch(DISCORD_WEBHOOK_URL, {
+      fetch(DISCORD_WEBHOOK_PEMBELIAN, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
