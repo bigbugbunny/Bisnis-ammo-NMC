@@ -131,12 +131,12 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-pink-400"><span>Rekap Setoran</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
-        <!-- Card 6 -->
+        <!-- Card 6: Data Member Hadir -->
         <div onclick="showSection('sectionMember')" class="menu-card glass-card p-6 rounded-2xl border border-slate-700 cursor-pointer flex flex-col justify-between">
           <div>
             <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-emerald-500/30"><i class="fa-solid fa-users"></i></div>
             <h3 class="text-xl font-bold text-white mb-2">Data Member Hadir</h3>
-            <p class="text-sm text-gray-400">Sistem absensi, data anggota aktif, dan rekap partisipasi kegiatan.</p>
+            <p class="text-sm text-gray-400">Sistem absensi, hierarki rank, dan kehadiran anggota klub.</p>
           </div>
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-emerald-400"><span>Absensi Member</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
@@ -278,37 +278,63 @@
       </div>
     </div>
 
-    <!-- ================= MODUL 6: DATA SETORAN MINGGUAN (BAHAN CRAFTING) ================= -->
+    <!-- ================= MODUL 6: DATA SETORAN MINGGUAN ================= -->
     <div id="sectionSetoran" class="hidden space-y-6">
-      
-      <!-- Kontrol Minggu & Tambah Anggota -->
       <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
         <div class="w-full md:w-auto flex items-center gap-3">
           <label class="text-xs font-bold text-pink-400 uppercase tracking-wider">Pilih Minggu:</label>
           <select id="selectMinggu" onchange="changeActiveMinggu()" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-bold focus:outline-none focus:border-pink-400 text-sm">
-            <option value="Minggu 1">Minggu 1</option>
-            <option value="Minggu 2">Minggu 2</option>
-            <option value="Minggu 3">Minggu 3</option>
-            <option value="Minggu 4">Minggu 4</option>
+            <option value="Minggu 1">Minggu 1</option><option value="Minggu 2">Minggu 2</option><option value="Minggu 3">Minggu 3</option><option value="Minggu 4">Minggu 4</option>
           </select>
         </div>
-
         <div class="w-full md:w-auto flex items-center gap-2 editor-only">
           <input type="text" id="newMemberName" placeholder="Nama Anggota Baru..." class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-pink-400">
-          <button onclick="addNewMember()" class="bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1">
-            <i class="fa-solid fa-user-plus"></i> Tambah Anggota
-          </button>
+          <button onclick="addNewMember()" class="bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-user-plus"></i> Tambah Anggota</button>
+        </div>
+      </div>
+      <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
+        <div class="flex justify-between items-center">
+          <h2 class="text-lg font-bold text-pink-400 flex items-center gap-2"><i class="fa-solid fa-hand-holding-dollar"></i> Rekap Setoran Bahan (<span id="currentMingguLabel">Minggu 1</span>)</h2>
+          <button onclick="sendSetoranToDiscord()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg"><i class="fa-brands fa-discord"></i> Kirim Rekap ke Discord & Salin</button>
+        </div>
+        <div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead><tr class="border-b border-slate-700 text-xs text-gray-400 uppercase"><th class="p-3">Nama Anggota</th><th class="p-3 text-right">Iron 🔩</th><th class="p-3 text-right">Carbon ⬛</th><th class="p-3 text-right">Glass 🧊</th><th class="p-3 text-right">Rubber 🛞</th><th class="p-3 text-right">Plastik 🧪</th><th class="p-3 text-center">Status</th><th class="p-3 text-center editor-only">Aksi</th></tr></thead><tbody id="setoranTableBody" class="divide-y divide-slate-800 text-sm"><tr><td colspan="8" class="p-4 text-center text-gray-500">Memuat data...</td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ================= MODUL 7: DATA MEMBER & ABSENSI ================= -->
+    <div id="sectionMember" class="hidden space-y-6">
+      <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="w-full md:w-auto flex items-center gap-3">
+          <label class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Periode Absen:</label>
+          <select id="selectAbsenMinggu" onchange="changeAbsenMinggu()" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-bold focus:outline-none focus:border-emerald-400 text-sm">
+            <option value="Minggu 1">Minggu 1</option><option value="Minggu 2">Minggu 2</option><option value="Minggu 3">Minggu 3</option><option value="Minggu 4">Minggu 4</option>
+          </select>
+        </div>
+        <div class="w-full md:w-auto flex flex-wrap items-center gap-2 editor-only">
+          <input type="text" id="absentMemberName" placeholder="Nama Anggota..." class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
+          <select id="absentMemberRank" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
+            <option value="President">1. President</option>
+            <option value="Vice President">2. Vice President</option>
+            <option value="Sergeant at Arms">3. Sergeant at Arms</option>
+            <option value="Road Captain">4. Road Captain</option>
+            <option value="Secretary">5. Secretary</option>
+            <option value="Treasurer">6. Treasurer</option>
+            <option value="Enforcer">7. Enforcer</option>
+            <option value="Member / Patched">8. Member / Patched</option>
+            <option value="Prospect" selected>9. Prospect</option>
+            <option value="Hangaround">10. Hangaround</option>
+          </select>
+          <button onclick="addClubMember()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-user-plus"></i> Tambah Member</button>
         </div>
       </div>
 
-      <!-- Tabel Rekap Setoran Bahan Crafting -->
       <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
         <div class="flex justify-between items-center">
-          <h2 class="text-lg font-bold text-pink-400 flex items-center gap-2">
-            <i class="fa-solid fa-hand-holding-dollar"></i> Rekap Setoran Bahan (<span id="currentMingguLabel">Minggu 1</span>)
+          <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
+            <i class="fa-solid fa-users"></i> Absensi & Hierarki Klub (<span id="currentAbsenLabel">Minggu 1</span>)
           </h2>
-          <button onclick="sendSetoranToDiscord()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
-            <i class="fa-brands fa-discord"></i> Kirim Rekap ke Discord & Salin
+          <button onclick="sendAbsenToDiscord()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
+            <i class="fa-brands fa-discord"></i> Kirim Absensi ke Discord & Salin
           </button>
         </div>
 
@@ -317,29 +343,17 @@
             <thead>
               <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase">
                 <th class="p-3">Nama Anggota</th>
-                <th class="p-3 text-right">Iron 🔩</th>
-                <th class="p-3 text-right">Carbon ⬛</th>
-                <th class="p-3 text-right">Glass 🧊</th>
-                <th class="p-3 text-right">Rubber 🛞</th>
-                <th class="p-3 text-right">Plastik 🧪</th>
-                <th class="p-3 text-center">Status</th>
+                <th class="p-3">Rank / Jabatan</th>
+                <th class="p-3 text-center">Kehadiran (Absen)</th>
                 <th class="p-3 text-center editor-only">Aksi</th>
               </tr>
             </thead>
-            <tbody id="setoranTableBody" class="divide-y divide-slate-800 text-sm">
-              <tr><td colspan="8" class="p-4 text-center text-gray-500">Memuat data setoran bahan...</td></tr>
+            <tbody id="memberTableBody" class="divide-y divide-slate-800 text-sm">
+              <tr><td colspan="4" class="p-4 text-center text-gray-500">Memuat data member...</td></tr>
             </tbody>
           </table>
         </div>
       </div>
-
-    </div>
-
-    <!-- OTHER MODULE -->
-    <div id="sectionMember" class="hidden glass-card p-8 rounded-2xl border border-slate-700 text-center space-y-4">
-      <div class="text-4xl text-emerald-400"><i class="fa-solid fa-users"></i></div>
-      <h2 class="text-2xl font-bold">Modul Data Member Hadir</h2>
-      <p class="text-gray-400 text-sm max-w-md mx-auto">Area daftar hadir & absensi kegiatan anggota NMC.</p>
     </div>
 
   </div>
@@ -431,7 +445,7 @@
         else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris & Riwayat)";
         else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Data Bisnis (Kas Uang Merah & Putih)";
         else if(sectionId === 'sectionSetoran') subtitle.innerText = "Modul Data Setoran Bahan Mingguan Klub";
-        else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Kehadiran & Data Member";
+        else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Data Member, Hierarki Rank & Absensi";
       }
     }
 
@@ -446,7 +460,9 @@
     let vaultHistory = [];
     let businessHistory = [];
     let setoranData = { "Minggu 1": {} };
+    let memberData = { "Minggu 1": {} };
     let activeMinggu = "Minggu 1";
+    let activeAbsenMinggu = "Minggu 1";
 
     db.ref('nmc_data').on('value', (snapshot) => {
       const data = snapshot.val();
@@ -455,13 +471,15 @@
         vaultHistory = data.history || [];
         businessHistory = data.business || [];
         setoranData = data.setoran || { "Minggu 1": {} };
+        memberData = data.members || { "Minggu 1": {} };
       } else {
-        db.ref('nmc_data').set({ inventory: defaultVaultStock, history: [], business: [], setoran: { "Minggu 1": {} } });
+        db.ref('nmc_data').set({ inventory: defaultVaultStock, history: [], business: [], setoran: { "Minggu 1": {} }, members: { "Minggu 1": {} } });
       }
       renderVaultInventory();
       renderVaultHistory();
       renderBusinessData();
       renderSetoranTable();
+      renderMemberTable();
     });
 
     function saveDataToCloud() {
@@ -469,7 +487,8 @@
         inventory: vaultStock,
         history: vaultHistory,
         business: businessHistory,
-        setoran: setoranData
+        setoran: setoranData,
+        members: memberData
       });
     }
 
@@ -625,11 +644,7 @@
       for (let name in currentList) {
         const item = currentList[name];
         const status = item.lunas ? "Lunas ✅" : "Belum Lunas ❌";
-        totalIron += item.iron;
-        totalCarbon += item.carbon;
-        totalGlass += item.glass;
-        totalRubber += item.rubber;
-        totalPlastik += item.plastik;
+        totalIron += item.iron; totalCarbon += item.carbon; totalGlass += item.glass; totalRubber += item.rubber; totalPlastik += item.plastik;
         text += `• **${name}** | Iron: ${item.iron} | Carbon: ${item.carbon} | Glass: ${item.glass} | Rubber: ${item.rubber} | Plastik: ${item.plastik} | [${status}]\n`;
       }
 
@@ -638,13 +653,125 @@
 
       navigator.clipboard.writeText(text);
 
-      // Kirim ke Webhook Discord
       fetch(DISCORD_WEBHOOK_BRANKAS, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: text })
       })
       .then(() => alert(`Rekap setoran ${activeMinggu} berhasil dikirim ke Discord dan disalin!`))
+      .catch(() => alert("Gagal mengirim ke Discord, tapi teks sudah disalin ke clipboard!"));
+    }
+
+    // --- MODUL 7: DATA MEMBER & ABSENSI ---
+    function changeAbsenMinggu() {
+      activeAbsenMinggu = document.getElementById("selectAbsenMinggu").value;
+      document.getElementById("currentAbsenLabel").innerText = activeAbsenMinggu;
+      renderMemberTable();
+    }
+
+    function addClubMember() {
+      const name = document.getElementById("absentMemberName").value.trim();
+      const rank = document.getElementById("absentMemberRank").value;
+      if (!name) { alert("Masukkan nama anggota!"); return; }
+      if (!memberData[activeAbsenMinggu]) memberData[activeAbsenMinggu] = {};
+      if (memberData[activeAbsenMinggu][name]) { alert("Anggota sudah terdaftar di minggu ini!"); return; }
+
+      memberData[activeAbsenMinggu][name] = { rank: rank, hadir: false };
+      saveDataToCloud();
+      document.getElementById("absentMemberName").value = "";
+      renderMemberTable();
+    }
+
+    function toggleMemberHadir(name) {
+      if (!memberData[activeAbsenMinggu][name]) return;
+      memberData[activeAbsenMinggu][name].hadir = !memberData[activeAbsenMinggu][name].hadir;
+      saveDataToCloud();
+      renderMemberTable();
+    }
+
+    function updateMemberRank(name, newRank) {
+      if (!memberData[activeAbsenMinggu][name]) return;
+      memberData[activeAbsenMinggu][name].rank = newRank;
+      saveDataToCloud();
+    }
+
+    function removeClubMember(name) {
+      if (confirm(`Hapus ${name} dari daftar absensi ${activeAbsenMinggu}?`)) {
+        delete memberData[activeAbsenMinggu][name];
+        saveDataToCloud();
+        renderMemberTable();
+      }
+    }
+
+    function renderMemberTable() {
+      const tbody = document.getElementById("memberTableBody");
+      tbody.innerHTML = "";
+      const currentList = memberData[activeAbsenMinggu] || {};
+      const memberNames = Object.keys(currentList);
+
+      if (memberNames.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">Belum ada anggota terdaftar di ${activeAbsenMinggu}.</td></tr>`;
+        return;
+      }
+
+      const isViewer = localStorage.getItem("nmc_logged_user") === "viewer";
+      const ranksList = [
+        "President", "Vice President", "Sergeant at Arms", "Road Captain", 
+        "Secretary", "Treasurer", "Enforcer", "Member / Patched", "Prospect", "Hangaround"
+      ];
+
+      memberNames.forEach(name => {
+        const item = currentList[name];
+        let rankOptions = "";
+        ranksList.forEach(r => {
+          rankOptions += `<option value="${r}" ${item.rank === r ? 'selected' : ''}>${r}</option>`;
+        });
+
+        let hadirBadge = item.hadir ? 
+          `<span onclick="toggleMemberHadir('${name}')" class="cursor-pointer bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30 hover:bg-green-500/30">Hadir (Present) ✅</span>` : 
+          `<span onclick="toggleMemberHadir('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30 hover:bg-red-500/30">Alpha / Tidak Hadir ❌</span>`;
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="p-3 text-white font-bold">${name}</td>
+            <td class="p-3">
+              <select ${isViewer ? 'disabled' : ''} onchange="updateMemberRank('${name}', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs text-amber-300 font-bold focus:outline-none focus:border-emerald-400">
+                ${rankOptions}
+              </select>
+            </td>
+            <td class="p-3 text-center">${hadirBadge}</td>
+            <td class="p-3 text-center editor-only">
+              <button onclick="removeClubMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>`;
+      });
+      if (isViewer) document.querySelectorAll(".editor-only").forEach(el => el.style.display = "none");
+    }
+
+    function sendAbsenToDiscord() {
+      const currentList = memberData[activeAbsenMinggu] || {};
+      let text = `👥 **REKAP ABSENSI & HIERARKI KLUB (${activeAbsenMinggu.toUpperCase()})**\n\n`;
+      let totalHadir = 0, totalMember = 0;
+
+      for (let name in currentList) {
+        const item = currentList[name];
+        totalMember++;
+        if (item.hadir) totalHadir++;
+        const status = item.hadir ? "Hadir ✅" : "Alpha ❌";
+        text += `• **${name}** | *${item.rank}* | [${status}]\n`;
+      }
+
+      text += `\n📊 **RINGKASAN KEHADIRAN:**\n`;
+      text += `• Total Hadir: ${totalHadir} dari ${totalMember} Anggota`;
+
+      navigator.clipboard.writeText(text);
+
+      fetch(DISCORD_WEBHOOK_BRANKAS, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: text })
+      })
+      .then(() => alert(`Rekap absensi ${activeAbsenMinggu} berhasil dikirim ke Discord dan disalin!`))
       .catch(() => alert("Gagal mengirim ke Discord, tapi teks sudah disalin ke clipboard!"));
     }
 
