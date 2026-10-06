@@ -336,15 +336,16 @@
                 <option value="Rubber">Rubber</option>
                 <option value="Plastik">Plastik</option>
                 <option value="Box Recycle">Box Recycle</option>
-                 </optgroup>
-              <optgroup label="Money">
-                <option value="Uang Merah">Uang Merah</option>
-                <option value="Uang Putih">Uang Putih</option>
               </optgroup>
               <optgroup label="Pack Ammo">
                 <option value="Pack Ammo 38LC">Pack Ammo 38LC</option>
                 <option value="Pack Ammo 9MM">Pack Ammo 9MM</option>
                 <option value="Pack Ammo 50AE">Pack Ammo 50AE</option>
+              </optgroup>
+              <optgroup label="Butiran Ammo">
+                <option value="Ammo 38LC">Pack Ammo 38LC</option>
+                <option value="Ammo 9MM">Pack Ammo 9MM</option>
+                <option value="Ammo 50AE">Pack Ammo 50AE</option>
               </optgroup>
               <optgroup label="Senjata, Vest & Item">
                 <option value="Vest">Vest</option>
@@ -482,12 +483,15 @@
     // --- LOGIC MODUL BRANKAS (INVENTORY & HISTORY) ---
     const defaultVaultStock = {
       "Iron": 0, "Carbon": 0, "Glass": 0, "Rubber": 0, "Plastik": 0, "Box Recycle": 0,
-      "Uang Merah": 0, "Uang Putih": 0,
+      "Ammo 38LC": 0, "Ammo 9MM": 0, "Ammo 50AE": 0,
       "Pack Ammo 38LC": 0, "Pack Ammo 9MM": 0, "Pack Ammo 50AE": 0,
       "Vest": 0, "Senjata DA": 0, "Senjata P50": 0, "Senjata TAC9": 0, "Senjata Ceramic": 0, "Senjata DE": 0
     };
 
     let savedVaultStock = JSON.parse(localStorage.getItem('nmc_vault_inventory')) || {};
+    // Hapus Umer dari data lama jika sempat tersimpan
+    delete savedVaultStock["Umer"];
+    
     let vaultStock = { ...defaultVaultStock, ...savedVaultStock };
     let vaultHistory = JSON.parse(localStorage.getItem('nmc_vault_history')) || [];
 
