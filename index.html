@@ -316,13 +316,93 @@
       </button>
     </div>
 
-    <!-- OTHER MODULE PLACEHOLDERS -->
-    <div id="sectionBrankas" class="hidden glass-card p-8 rounded-2xl border border-slate-700 text-center space-y-4">
-      <div class="text-4xl text-blue-400"><i class="fa-solid fa-vault"></i></div>
-      <h2 class="text-2xl font-bold">Modul Data Brankas</h2>
-      <p class="text-gray-400 text-sm max-w-md mx-auto">Area pencatatan saldo brankas utama & arus kas.</p>
+    <!-- ================= MODUL 3: DATA BRANKAS ================= -->
+    <div id="sectionBrankas" class="hidden space-y-6">
+      
+      <!-- Ringkasan Saldo -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass-card p-6 rounded-2xl border border-blue-500/30 bg-blue-950/20">
+          <div class="text-xs text-blue-400 font-bold uppercase mb-1">💵 Total Saldo Brankas</div>
+          <div id="vaultTotalSaldo" class="text-3xl font-black text-white">Rp 0</div>
+        </div>
+        <div class="glass-card p-6 rounded-2xl border border-green-500/30 bg-green-950/20">
+          <div class="text-xs text-green-400 font-bold uppercase mb-1">📈 Total Kas Masuk</div>
+          <div id="vaultTotalMasuk" class="text-3xl font-black text-green-400">Rp 0</div>
+        </div>
+        <div class="glass-card p-6 rounded-2xl border border-red-500/30 bg-red-950/20">
+          <div class="text-xs text-red-400 font-bold uppercase mb-1">📉 Total Kas Keluar</div>
+          <div id="vaultTotalKeluar" class="text-3xl font-black text-red-400">Rp 0</div>
+        </div>
+      </div>
+
+      <!-- Form Tambah Transaksi Brankas -->
+      <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
+        <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2">
+          <i class="fa-solid fa-plus-circle"></i> Catat Kas Brankas Baru
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Tipe Transaksi</label>
+            <select id="vaultType" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400">
+              <option value="IN">Kas Masuk (+)</option>
+              <option value="OUT">Kas Keluar (-)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nominal (Rp)</label>
+            <input type="number" id="vaultNominal" min="0" placeholder="Contoh: 500000" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Keterangan / Sumber</label>
+            <input type="text" id="vaultDesc" placeholder="Contoh: Setoran Penjualan 9MM" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nama Pelapor</label>
+            <input type="text" id="vaultAuthor" placeholder="Nama Anggota" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400">
+          </div>
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <button onclick="addVaultTransaction()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-save"></i> Simpan Catatan Brankas
+          </button>
+          <button onclick="sendVaultToDiscord()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+            <i class="fa-brands fa-discord"></i> Kirim Log Brankas Terakhir ke Discord
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabel Riwayat Brankas -->
+      <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
+        <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2">
+          <i class="fa-solid fa-history"></i> Riwayat Arus Kas Brankas
+        </h2>
+        
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase">
+                <th class="p-3">Waktu</th>
+                <th class="p-3">Tipe</th>
+                <th class="p-3">Keterangan</th>
+                <th class="p-3">Pelapor</th>
+                <th class="p-3 text-right">Nominal</th>
+                <th class="p-3 text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="vaultTableBody" class="divide-y divide-slate-800 text-sm">
+              <tr>
+                <td colspan="6" class="p-4 text-center text-gray-500">Belum ada catatan transaksi brankas.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
 
+    <!-- OTHER MODULE PLACEHOLDERS -->
     <div id="sectionBisnis" class="hidden glass-card p-8 rounded-2xl border border-slate-700 text-center space-y-4">
       <div class="text-4xl text-purple-400"><i class="fa-solid fa-chart-line"></i></div>
       <h2 class="text-2xl font-bold">Modul Data Bisnis</h2>
@@ -345,7 +425,9 @@
 
   <script>
     const DISCORD_WEBHOOK_PENJUALAN = "https://discordapp.com/api/webhooks/1556822834104504402/QZaTVOPAMlfxHEKP2hJFRPI7Y7EHmYPNjFJnpn7rAcizFxKGsGSmVhIDiZGaBM7dfBBi"; 
-    const DISCORD_WEBHOOK_PEMBELIAN = "https://discordapp.com/api/webhooks/1556827823560196096/NZziAcHN_0mBCrP_gwkrIzWOB1x8f4sNE3LVj6Grbodv1AHVtrXzon26b5z4gVTGKAV4"; 
+    const DISCORD_WEBHOOK_PEMBELIAN = "https://discordapp.com/api/webhooks/1556822834104504402/QZaTVOPAMlfxHEKP2hJFRPI7Y7EHmYPNjFJnpn7rAcizFxKGsGSmVhIDiZGaBM7dfBBi"; 
+    // Kamu bisa bedakan webhook brankas jika punya channel khusus brankas:
+    const DISCORD_WEBHOOK_BRANKAS = "https://discordapp.com/api/webhooks/1556822834104504402/QZaTVOPAMlfxHEKP2hJFRPI7Y7EHmYPNjFJnpn7rAcizFxKGsGSmVhIDiZGaBM7dfBBi";
 
     function showSection(sectionId) {
       document.getElementById('sectionMainMenu').classList.add('hidden');
@@ -376,6 +458,135 @@
       }
     }
 
+    // --- LOGIC MODUL BRANKAS ---
+    let vaultTransactions = JSON.parse(localStorage.getItem('nmc_vault_data')) || [];
+
+    function saveVaultData() {
+      localStorage.setItem('nmc_vault_data', JSON.stringify(vaultTransactions));
+      renderVaultTable();
+    }
+
+    function addVaultTransaction() {
+      const type = document.getElementById("vaultType").value;
+      const nominal = parseFloat(document.getElementById("vaultNominal").value) || 0;
+      const desc = document.getElementById("vaultDesc").value.trim();
+      const author = document.getElementById("vaultAuthor").value.trim();
+
+      if (nominal <= 0) {
+        alert("Masukkan nominal transaksi yang valid!");
+        return;
+      }
+      if (!desc || !author) {
+        alert("Keterangan dan Nama Pelapor wajib diisi!");
+        return;
+      }
+
+      const newTx = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        type: type,
+        nominal: nominal,
+        desc: desc,
+        author: author
+      };
+
+      vaultTransactions.unshift(newTx);
+      saveVaultData();
+
+      // Reset input form
+      document.getElementById("vaultNominal").value = "";
+      document.getElementById("vaultDesc").value = "";
+      document.getElementById("vaultAuthor").value = "";
+      alert("Catatan brankas berhasil disimpan!");
+    }
+
+    function deleteVaultTx(id) {
+      if(confirm("Hapus catatan transaksi ini?")) {
+        vaultTransactions = vaultTransactions.filter(tx => tx.id !== id);
+        saveVaultData();
+      }
+    }
+
+    function renderVaultTable() {
+      const tbody = document.getElementById("vaultTableBody");
+      tbody.innerHTML = "";
+
+      let totalIn = 0;
+      let totalOut = 0;
+
+      if (vaultTransactions.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada catatan transaksi brankas.</td></tr>`;
+      } else {
+        vaultTransactions.forEach(tx => {
+          if (tx.type === 'IN') totalIn += tx.nominal;
+          else totalOut += tx.nominal;
+
+          const typeBadge = tx.type === 'IN' 
+            ? `<span class="bg-green-500/20 text-green-400 px-2.5 py-1 rounded-full text-xs font-bold border border-green-500/30">Kas Masuk</span>`
+            : `<span class="bg-red-500/20 text-red-400 px-2.5 py-1 rounded-full text-xs font-bold border border-red-500/30">Kas Keluar</span>`;
+          
+          const nominalColor = tx.type === 'IN' ? 'text-green-400' : 'text-red-400';
+          const prefixSign = tx.type === 'IN' ? '+' : '-';
+
+          tbody.innerHTML += `
+            <tr class="hover:bg-slate-800/40 transition">
+              <td class="p-3 text-gray-400 text-xs">${tx.date}</td>
+              <td class="p-3">${typeBadge}</td>
+              <td class="p-3 text-white font-medium">${tx.desc}</td>
+              <td class="p-3 text-gray-300">${tx.author}</td>
+              <td class="p-3 text-right font-bold ${nominalColor}">${prefixSign} Rp ${tx.nominal.toLocaleString('id-ID')}</td>
+              <td class="p-3 text-center">
+                <button onclick="deleteVaultTx(${tx.id})" class="text-red-400 hover:text-red-300 p-1.5"><i class="fa-solid fa-trash"></i></button>
+              </td>
+            </tr>`;
+        });
+      }
+
+      const saldoAkhir = totalIn - totalOut;
+      document.getElementById("vaultTotalSaldo").innerText = `Rp ${saldoAkhir.toLocaleString('id-ID')}`;
+      document.getElementById("vaultTotalMasuk").innerText = `Rp ${totalIn.toLocaleString('id-ID')}`;
+      document.getElementById("vaultTotalKeluar").innerText = `Rp ${totalOut.toLocaleString('id-ID')}`;
+    }
+
+    function sendVaultToDiscord() {
+      if (vaultTransactions.length === 0) {
+        alert("Belum ada data transaksi untuk dikirim ke Discord!");
+        return;
+      }
+
+      const latest = vaultTransactions[0];
+      const saldoAkhir = vaultTransactions.reduce((acc, tx) => tx.type === 'IN' ? acc + tx.nominal : acc - tx.nominal, 0);
+
+      const typeText = latest.type === 'IN' ? '📈 Kas Masuk (+)' : '📉 Kas Keluar (-)';
+      const colorCode = latest.type === 'IN' ? 5763719 : 15548997;
+
+      const payload = {
+        username: "NMC Vault Bot",
+        embeds: [{
+          title: `🏛️ LOG ARUS KAS BRANKAS NMC`,
+          color: colorCode,
+          fields: [
+            { name: "Jenis Transaksi", value: typeText, inline: true },
+            { name: "Nominal", value: `Rp ${latest.nominal.toLocaleString('id-ID')}`, inline: true },
+            { name: "Keterangan", value: latest.desc, inline: false },
+            { name: "Pelapor", value: latest.author, inline: true },
+            { name: "Sisa Saldo Brankas", value: `Rp ${saldoAkhir.toLocaleString('id-ID')}`, inline: true }
+          ],
+          timestamp: new Date().toISOString()
+        }]
+      };
+
+      fetch(DISCORD_WEBHOOK_BRANKAS, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).then(res => {
+        if(res.ok) alert("Log transaksi brankas berhasil dikirim ke Discord!");
+        else alert("Gagal mengirim ke Discord.");
+      });
+    }
+
+    // --- LOGIC MODUL LAINNYA ---
     const craftRecipes = {
       "50AE": { iron: 50, carbon: 50, umer: 20000 },
       "9MM":  { iron: 50, carbon: 50, umer: 60000 },
@@ -690,8 +901,10 @@
       });
     }
 
+    // Initial Load
     calcBahan();
     loadGroupData();
+    renderVaultTable();
   </script>
 </body>
 </html>
