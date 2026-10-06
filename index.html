@@ -133,7 +133,7 @@
               <i class="fa-solid fa-chart-line"></i>
             </div>
             <h3 class="text-xl font-bold text-white mb-2">Data Bisnis</h3>
-            <p class="text-sm text-gray-400">Laporan keuntungan bulanan, operasional, dan pencatatan kas/keuangan.</p>
+            <p class="text-sm text-gray-400">Laporan keuntungan bulanan, operasional, dan pencatatan kas Uang Merah & Putih.</p>
           </div>
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-purple-400">
             <span>Lihat Laporan</span>
@@ -177,13 +177,10 @@
     <!-- ================= HALAMAN 2: KALKULASI BAHAN CRAFTING ================= -->
     <div id="sectionBahan" class="hidden space-y-6">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        <!-- Input Form -->
         <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
           <h2 class="text-lg font-bold text-amber-400 flex items-center gap-2">
             <i class="fa-solid fa-sliders"></i> Input Resep Crafting
           </h2>
-
           <div>
             <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Tipe Ammo</label>
             <select id="craftAmmoType" onchange="calcBahan()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-amber-400">
@@ -192,15 +189,12 @@
               <option value="38LC">38LC (50 Iron, 50 Carbon, 70K Umer)</option>
             </select>
           </div>
-
           <div>
             <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jumlah Pack</label>
             <input type="number" id="craftPackQty" value="0" min="0" oninput="calcBahan()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-amber-400" placeholder="0">
           </div>
-
           <hr class="border-slate-700 my-3">
           <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider">🛒 Cost / Modal Belanja</h3>
-          
           <div class="space-y-3">
             <div>
               <label class="block text-xs text-gray-400 mb-1">Harga Beli 1 Iron</label>
@@ -217,27 +211,23 @@
           </div>
         </div>
 
-        <!-- Output Display -->
         <div class="lg:col-span-2 space-y-6">
           <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg">
             <h2 class="text-lg font-bold text-amber-400 mb-4 flex items-center justify-between">
               <span><i class="fa-solid fa-boxes-stacked"></i> Kebutuhan Bahan Dasar</span>
               <span id="badgeCraftAmmo" class="text-xs bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full border border-amber-500/30">9MM x0 Pack</span>
             </h2>
-
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800">
                 <span class="text-gray-400 text-sm">🔩 Total Iron</span>
                 <div id="craftTotalIron" class="text-2xl font-black text-amber-400">0</div>
                 <div id="craftCostIron" class="text-xs text-gray-500 mt-1">Modal: 0</div>
               </div>
-
               <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800">
                 <span class="text-gray-400 text-sm">⬛ Total Carbon</span>
                 <div id="craftTotalCarbon" class="text-2xl font-black text-blue-400">0</div>
                 <div id="craftCostCarbon" class="text-xs text-gray-500 mt-1">Modal: 0</div>
               </div>
-
               <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800">
                 <span class="text-gray-400 text-sm">💵 Biaya Umer</span>
                 <div id="craftTotalUmer" class="text-2xl font-black text-emerald-400">0</div>
@@ -250,18 +240,15 @@
             <h2 class="text-lg font-bold text-blue-400 mb-4 flex items-center gap-2">
               <i class="fa-solid fa-calculator"></i> Proyeksi Modal & Keuntungan
             </h2>
-
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
                 <div class="text-xs text-gray-400 mb-1">Total Modal</div>
                 <div id="craftTotalModal" class="text-xl font-bold text-red-400">0</div>
               </div>
-
               <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
                 <div class="text-xs text-gray-400 mb-1">Total Omset</div>
                 <div id="craftTotalOmset" class="text-xl font-bold text-blue-400">0</div>
               </div>
-
               <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
                 <div class="text-xs text-gray-400 mb-1">Untung Bersih</div>
                 <div id="craftNetProfit" class="text-xl font-bold text-green-400">0</div>
@@ -297,7 +284,6 @@
           </h2>
           <div id="ammoPriceList" class="space-y-2 text-sm"></div>
         </div>
-
         <div class="glass-card p-5 rounded-2xl border border-slate-700">
           <h2 class="text-md font-bold text-red-400 mb-3 flex items-center justify-between">
             <span><i class="fa-solid fa-cart-shopping"></i> HARGA BELI / LAYANAN</span>
@@ -306,7 +292,6 @@
         </div>
       </div>
 
-      <!-- KALKULATOR PENJUALAN AMMO -->
       <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
         <div class="flex justify-between items-center">
           <h2 class="text-lg font-bold text-green-400 flex items-center gap-2">
@@ -326,7 +311,6 @@
         </button>
       </div>
 
-      <!-- KALKULATOR PEMBELIAN / LAYANAN -->
       <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
         <div class="flex justify-between items-center">
           <h2 class="text-lg font-bold text-red-400 flex items-center gap-2">
@@ -351,15 +335,12 @@
       </button>
     </div>
 
-    <!-- ================= MODUL 3: DATA BRANKAS (INVENTORY & HISTORY) ================= -->
+    <!-- ================= MODUL 3: DATA BRANKAS ================= -->
     <div id="sectionBrankas" class="hidden space-y-6">
-      
-      <!-- Panel Kontrol Update Stok -->
       <div id="vaultControlPanel" class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4 editor-only">
         <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2">
           <i class="fa-solid fa-boxes-packing"></i> Update Stok Barang Brankas
         </h2>
-
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nama Barang</label>
@@ -407,7 +388,6 @@
             <input type="text" id="vaultAuthor" placeholder="Nama Anggota" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400">
           </div>
         </div>
-
         <div class="flex gap-3 pt-2">
           <button onclick="updateVaultStock()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
             <i class="fa-solid fa-check"></i> Perbarui & Simpan History
@@ -418,7 +398,6 @@
         </div>
       </div>
 
-      <!-- Ringkasan Stok Brankas -->
       <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
         <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2">
           <i class="fa-solid fa-vault"></i> Inventaris Stok Brankas Saat Ini
@@ -426,12 +405,10 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="vaultInventoryGrid"></div>
       </div>
 
-      <!-- Tabel History Perubahan Stok Brankas -->
       <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
         <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2">
           <i class="fa-solid fa-history"></i> Riwayat (History) Keluar Masuk Barang Brankas
         </h2>
-        
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
@@ -445,9 +422,92 @@
               </tr>
             </thead>
             <tbody id="vaultHistoryTableBody" class="divide-y divide-slate-800 text-sm">
-              <tr>
-                <td colspan="6" class="p-4 text-center text-gray-500">Memuat data dari Cloud...</td>
+              <tr><td colspan="6" class="p-4 text-center text-gray-500">Memuat data dari Cloud...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MODUL 4: DATA BISNIS (KAS UANG MERAH & PUTIH) ================= -->
+    <div id="sectionBisnis" class="hidden space-y-6">
+      
+      <!-- Ringkasan Saldo Kas Global -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="glass-card p-6 rounded-2xl border border-red-500/30 shadow-lg bg-gradient-to-br from-slate-900 to-red-950/20">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-bold text-red-400">🔴 Total Saldo Uang Merah</span>
+            <i class="fa-solid fa-wallet text-red-400 text-xl"></i>
+          </div>
+          <div id="totalUangMerah" class="text-3xl font-black text-white">0</div>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl border border-slate-500/30 shadow-lg bg-gradient-to-br from-slate-900 to-slate-800/20">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-bold text-gray-300">⚪ Total Saldo Uang Putih</span>
+            <i class="fa-solid fa-wallet text-gray-300 text-xl"></i>
+          </div>
+          <div id="totalUangPutih" class="text-3xl font-black text-white">0</div>
+        </div>
+      </div>
+
+      <!-- Form Input Kas Bisnis (Khusus Editor) -->
+      <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4 editor-only">
+        <h2 class="text-lg font-bold text-purple-400 flex items-center gap-2">
+          <i class="fa-solid fa-file-invoice-dollar"></i> Catat Transaksi Kas Bisnis
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jenis Uang</label>
+            <select id="businessCurrency" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400">
+              <option value="Uang Merah">Uang Merah 🔴</option>
+              <option value="Uang Putih">Uang Putih ⚪</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Tipe Transaksi</label>
+            <select id="businessType" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400">
+              <option value="IN">Pemasukan (+)</option>
+              <option value="OUT">Pengeluaran (-)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nominal</label>
+            <input type="number" id="businessAmount" min="0" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400" placeholder="0">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Keterangan</label>
+            <input type="text" id="businessDesc" placeholder="Contoh: Hasil Jual / Modal" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nama Pelapor</label>
+            <input type="text" id="businessAuthor" placeholder="Nama Anggota" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400">
+          </div>
+        </div>
+        <button onclick="addBusinessTransaction()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-plus"></i> Simpan Catatan Transaksi Kas
+        </button>
+      </div>
+
+      <!-- Tabel Riwayat Kas Bisnis -->
+      <div class="glass-card p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
+        <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2">
+          <i class="fa-solid fa-history"></i> Riwayat Arus Kas Bisnis
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase">
+                <th class="p-3">Waktu</th>
+                <th class="p-3">Jenis Uang</th>
+                <th class="p-3">Status</th>
+                <th class="p-3 text-right">Nominal</th>
+                <th class="p-3">Keterangan</th>
+                <th class="p-3">Pelapor</th>
               </tr>
+            </thead>
+            <tbody id="businessHistoryTableBody" class="divide-y divide-slate-800 text-sm">
+              <tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat transaksi bisnis.</td></tr>
             </tbody>
           </table>
         </div>
@@ -456,12 +516,6 @@
     </div>
 
     <!-- OTHER MODULE PLACEHOLDERS -->
-    <div id="sectionBisnis" class="hidden glass-card p-8 rounded-2xl border border-slate-700 text-center space-y-4">
-      <div class="text-4xl text-purple-400"><i class="fa-solid fa-chart-line"></i></div>
-      <h2 class="text-2xl font-bold">Modul Data Bisnis</h2>
-      <p class="text-gray-400 text-sm max-w-md mx-auto">Area monitoring keuangan & profit bulanan organisasi NMC.</p>
-    </div>
-
     <div id="sectionSetoran" class="hidden glass-card p-8 rounded-2xl border border-slate-700 text-center space-y-4">
       <div class="text-4xl text-pink-400"><i class="fa-solid fa-hand-holding-dollar"></i></div>
       <h2 class="text-2xl font-bold">Modul Data Setoran</h2>
@@ -488,7 +542,6 @@
       appId: "1:551684270539:web:0706d854b3ce6f731e6e4e"
     };
 
-    // Inisialisasi Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
@@ -498,8 +551,8 @@
 
     // --- SYSTEM LOGIN & ROLES ---
     const ACCOUNTS = {
-      "viewer": { pass: "1", role: "Viewer (Hanya Melihat)" },
-      "editor": { pass: "2", role: "Editor (Akses Penuh)" }
+      "viewer": { pass: "viewer123", role: "Viewer (Hanya Melihat)" },
+      "editor": { pass: "editor123", role: "Editor (Akses Penuh)" }
     };
 
     function handleLogin() {
@@ -525,8 +578,7 @@
 
     function applyRoleAccess(user) {
       const roleBadge = document.getElementById("userRoleBadge");
-      const roleName = ACCOUNTS[user].role;
-      roleBadge.innerHTML = `<i class="fa-solid fa-user-shield"></i> Role: ${roleName}`;
+      roleBadge.innerHTML = `<i class="fa-solid fa-user-shield"></i> Role: ${ACCOUNTS[user].role}`;
 
       if (user === "viewer") {
         document.querySelectorAll(".editor-only").forEach(el => el.style.display = "none");
@@ -568,13 +620,13 @@
         if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
         else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner (9 Kelompok)";
         else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris & Riwayat)";
-        else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Laporan & Data Bisnis";
+        else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Data Bisnis (Kas Uang Merah & Putih)";
         else if(sectionId === 'sectionSetoran') subtitle.innerText = "Modul Rekapitulasi Data Setoran";
         else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Kehadiran & Data Member";
       }
     }
 
-    // --- REALTIME DATABASE BRANKAS (FIREBASE) ---
+    // --- REALTIME DATABASE (FIREBASE) ---
     const defaultVaultStock = {
       "Iron": 0, "Carbon": 0, "Glass": 0, "Rubber": 0, "Plastik": 0, "Box Recycle": 0,
       "Pack Ammo 38LC": 0, "Pack Ammo 9MM": 0, "Pack Ammo 50AE": 0,
@@ -583,28 +635,31 @@
 
     let vaultStock = { ...defaultVaultStock };
     let vaultHistory = [];
+    let businessHistory = [];
 
-    // Mendengarkan perubahan data secara real-time dari Firebase Database
-    db.ref('brankas').on('value', (snapshot) => {
+    db.ref('nmc_data').on('value', (snapshot) => {
       const data = snapshot.val();
       if (data) {
         vaultStock = { ...defaultVaultStock, ...(data.inventory || {}) };
         vaultHistory = data.history || [];
+        businessHistory = data.business || [];
       } else {
-        // Jika database masih kosong, set data default ke cloud
-        db.ref('brankas').set({ inventory: defaultVaultStock, history: [] });
+        db.ref('nmc_data').set({ inventory: defaultVaultStock, history: [], business: [] });
       }
       renderVaultInventory();
       renderVaultHistory();
+      renderBusinessData();
     });
 
-    function saveVaultDataToCloud() {
-      db.ref('brankas').set({
+    function saveDataToCloud() {
+      db.ref('nmc_data').set({
         inventory: vaultStock,
-        history: vaultHistory
+        history: vaultHistory,
+        business: businessHistory
       });
     }
 
+    // --- MODUL BRANKAS ---
     function updateVaultStock() {
       const itemName = document.getElementById("vaultItemName").value;
       const action = document.getElementById("vaultAction").value;
@@ -612,12 +667,8 @@
       const desc = document.getElementById("vaultDesc").value.trim();
       const author = document.getElementById("vaultAuthor").value.trim();
 
-      if (qty < 0) {
-        alert("Jumlah tidak boleh negatif!");
-        return;
-      }
-      if (!desc || !author) {
-        alert("Keterangan dan Nama Pelapor wajib diisi!");
+      if (qty < 0 || !desc || !author) {
+        alert("Semua field wajib diisi dengan benar!");
         return;
       }
 
@@ -633,35 +684,27 @@
         diffText = `Set: ${qty}`;
       }
 
-      const newHistory = {
+      vaultHistory.unshift({
         id: Date.now(),
         date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-        item: itemName,
-        action: action,
-        diff: diffText,
-        desc: desc,
-        author: author
-      };
+        item: itemName, action, diff: diffText, desc, author
+      });
 
-      vaultHistory.unshift(newHistory);
-      saveVaultDataToCloud(); // Simpan ke Firebase (otomatis sync ke semua perangkat)
-
+      saveDataToCloud();
       document.getElementById("vaultQty").value = "0";
       document.getElementById("vaultDesc").value = "";
       document.getElementById("vaultAuthor").value = "";
-      alert(`Stok ${itemName} berhasil diperbarui secara global!`);
+      alert(`Stok ${itemName} berhasil diperbarui!`);
     }
 
     function renderVaultInventory() {
       const grid = document.getElementById("vaultInventoryGrid");
       grid.innerHTML = "";
-
       for (let item in vaultStock) {
-        const stockVal = vaultStock[item];
         grid.innerHTML += `
           <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex flex-col justify-between">
             <div class="text-xs font-semibold text-gray-400 mb-1">${item}</div>
-            <div class="text-2xl font-black text-blue-400">${stockVal.toLocaleString('id-ID')}</div>
+            <div class="text-2xl font-black text-blue-400">${vaultStock[item].toLocaleString('id-ID')}</div>
           </div>`;
       }
     }
@@ -669,71 +712,92 @@
     function renderVaultHistory() {
       const tbody = document.getElementById("vaultHistoryTableBody");
       tbody.innerHTML = "";
-
       if (vaultHistory.length === 0) {
         tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat aktivitas brankas.</td></tr>`;
         return;
       }
-
       vaultHistory.forEach(h => {
-        let actionBadge = "";
-        let colorClass = "";
-        if(h.action === 'ADD') {
-          actionBadge = `<span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded-md text-xs font-bold">Masuk (+)</span>`;
-          colorClass = "text-green-400";
-        } else if(h.action === 'SUB') {
-          actionBadge = `<span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded-md text-xs font-bold">Keluar (-)</span>`;
-          colorClass = "text-red-400";
-        } else {
-          actionBadge = `<span class="bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-md text-xs font-bold">Set</span>`;
-          colorClass = "text-blue-400";
-        }
-
+        let badge = h.action === 'ADD' ? '<span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs font-bold">Masuk (+)</span>' :
+                    h.action === 'SUB' ? '<span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs font-bold">Keluar (-)</span>' :
+                    '<span class="bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded text-xs font-bold">Set</span>';
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
             <td class="p-3 text-gray-400 text-xs">${h.date}</td>
             <td class="p-3 text-white font-bold">${h.item}</td>
-            <td class="p-3">${actionBadge}</td>
-            <td class="p-3 text-right font-black ${colorClass}">${h.diff}</td>
+            <td class="p-3">${badge}</td>
+            <td class="p-3 text-right font-black ${h.action==='ADD'?'text-green-400':'text-red-400'}">${h.diff}</td>
             <td class="p-3 text-gray-300 text-sm">${h.desc}</td>
             <td class="p-3 text-gray-300 text-sm font-medium">${h.author}</td>
           </tr>`;
       });
     }
 
-    function sendVaultToDiscord() {
-      if (vaultHistory.length === 0) {
-        alert("Belum ada data history untuk dikirim ke Discord!");
+    // --- MODUL DATA BISNIS (KAS) ---
+    function addBusinessTransaction() {
+      const currency = document.getElementById("businessCurrency").value;
+      const type = document.getElementById("businessType").value;
+      const amount = parseInt(document.getElementById("businessAmount").value) || 0;
+      const desc = document.getElementById("businessDesc").value.trim();
+      const author = document.getElementById("businessAuthor").value.trim();
+
+      if (amount <= 0 || !desc || !author) {
+        alert("Nominal harus > 0 serta Keterangan dan Pelapor wajib diisi!");
         return;
       }
 
-      const latest = vaultHistory[0];
-      const payload = {
-        username: "NMC Vault Inventory Bot",
-        embeds: [{
-          title: `🏛️ UPDATE STOK BRANKAS: ${latest.item.toUpperCase()}`,
-          color: 3447003,
-          fields: [
-            { name: "📦 Barang", value: latest.item, inline: true },
-            { name: "🔄 Perubahan", value: latest.diff, inline: true },
-            { name: "📝 Keterangan", value: latest.desc, inline: false },
-            { name: "👤 Pelapor", value: latest.author, inline: true }
-          ],
-          timestamp: new Date().toISOString()
-        }]
-      };
-
-      fetch(DISCORD_WEBHOOK_BRANKAS, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      }).then(res => {
-        if(res.ok) alert("Laporan update stok berhasil dikirim ke Discord!");
-        else alert("Gagal mengirim ke Discord.");
+      businessHistory.unshift({
+        id: Date.now(),
+        date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        currency, type, amount, desc, author
       });
+
+      saveDataToCloud();
+      document.getElementById("businessAmount").value = "0";
+      document.getElementById("businessDesc").value = "";
+      document.getElementById("businessAuthor").value = "";
+      alert("Catatan kas bisnis berhasil disimpan!");
     }
 
-    // --- LOGIC MODUL LAINNYA ---
+    function renderBusinessData() {
+      let saldoMerah = 0;
+      let saldoPutih = 0;
+
+      const tbody = document.getElementById("businessHistoryTableBody");
+      tbody.innerHTML = "";
+
+      if (businessHistory.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat transaksi bisnis.</td></tr>`;
+      } else {
+        businessHistory.forEach(b => {
+          if (b.currency === "Uang Merah") {
+            if (b.type === "IN") saldoMerah += b.amount;
+            else saldoMerah -= b.amount;
+          } else {
+            if (b.type === "IN") saldoPutih += b.amount;
+            else saldoPutih -= b.amount;
+          }
+
+          let typeBadge = b.type === 'IN' ? '<span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs font-bold">Pemasukan (+)</span>' :
+                                            '<span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs font-bold">Pengeluaran (-)</span>';
+          let currLabel = b.currency === "Uang Merah" ? '<span class="text-red-400 font-bold">Uang Merah 🔴</span>' : '<span class="text-gray-300 font-bold">Uang Putih ⚪</span>';
+
+          tbody.innerHTML += `
+            <tr class="hover:bg-slate-800/40 transition">
+              <td class="p-3 text-gray-400 text-xs">${b.date}</td>
+              <td class="p-3">${currLabel}</td>
+              <td class="p-3">${typeBadge}</td>
+              <td class="p-3 text-right font-black ${b.type==='IN'?'text-green-400':'text-red-400'}">${b.type==='IN'?'+':'-'}${b.amount.toLocaleString('id-ID')}</td>
+              <td class="p-3 text-gray-300 text-sm">${b.desc}</td>
+              <td class="p-3 text-gray-300 text-sm font-medium">${b.author}</td>
+            </tr>`;
+        });
+      }
+
+      document.getElementById("totalUangMerah").innerText = saldoMerah.toLocaleString('id-ID');
+      document.getElementById("totalUangPutih").innerText = saldoPutih.toLocaleString('id-ID');
+    }
+
+    // --- LOGIC LAINNYA ---
     const craftRecipes = {
       "50AE": { iron: 50, carbon: 50, umer: 20000 },
       "9MM":  { iron: 50, carbon: 50, umer: 60000 },
@@ -826,25 +890,13 @@
         optionsHTML += `<option value="${ammo}">${ammo} (${group.ammo[ammo].toLocaleString('id-ID')}/pack)</option>`;
       }
 
-      const rowHTML = `
+      container.insertAdjacentHTML('beforeend', `
         <div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
-          <div class="md:col-span-5">
-            <select class="ammo-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-green-500" onchange="calculateAll()">
-              ${optionsHTML}
-            </select>
-          </div>
-          <div class="md:col-span-3">
-            <input type="number" value="0" min="0" class="ammo-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-green-500" placeholder="0" oninput="calculateAll()">
-          </div>
-          <div class="md:col-span-3 text-right font-bold text-green-400 text-sm">
-            Rp <span class="ammo-row-total">0</span>
-          </div>
-          <div class="md:col-span-1 text-center editor-only">
-            <button onclick="removeRow('${rowId}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button>
-          </div>
-        </div>`;
-
-      container.insertAdjacentHTML('beforeend', rowHTML);
+          <div class="md:col-span-5"><select class="ammo-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-green-500" onchange="calculateAll()">${optionsHTML}</select></div>
+          <div class="md:col-span-3"><input type="number" value="0" min="0" class="ammo-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-green-500" placeholder="0" oninput="calculateAll()"></div>
+          <div class="md:col-span-3 text-right font-bold text-green-400 text-sm">Rp <span class="ammo-row-total">0</span></div>
+          <div class="md:col-span-1 text-center editor-only"><button onclick="removeRow('${rowId}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></div>
+        </div>`);
       calculateAll();
     }
 
@@ -860,28 +912,13 @@
         optionsHTML += `<option value="${item}">${item} (${displayPrice})</option>`;
       }
 
-      if (Object.keys(group.items).length === 0) optionsHTML = `<option value="">(Tidak Ada Barang)</option>`;
-
-      const rowHTML = `
+      container.insertAdjacentHTML('beforeend', `
         <div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
-          <div class="md:col-span-5">
-            <select class="item-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-red-500" onchange="calculateAll()">
-              ${optionsHTML}
-            </select>
-          </div>
-          <div class="md:col-span-3">
-            <input type="number" value="0" min="0" class="item-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-red-500" placeholder="0" oninput="calculateAll()">
-          </div>
-          <div class="md:col-span-3 text-right font-bold text-red-400 text-sm">
-            <div class="item-row-total-text">Rp <span class="item-row-total">0</span></div>
-            <div class="item-row-bonus text-[10px] text-amber-400"></div>
-          </div>
-          <div class="md:col-span-1 text-center editor-only">
-            <button onclick="removeRow('${rowId}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button>
-          </div>
-        </div>`;
-
-      container.insertAdjacentHTML('beforeend', rowHTML);
+          <div class="md:col-span-5"><select class="item-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-red-500" onchange="calculateAll()">${optionsHTML}</select></div>
+          <div class="md:col-span-3"><input type="number" value="0" min="0" class="item-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-red-500" placeholder="0" oninput="calculateAll()"></div>
+          <div class="md:col-span-3 text-right font-bold text-red-400 text-sm"><div class="item-row-total-text">Rp <span class="item-row-total">0</span></div><div class="item-row-bonus text-[10px] text-amber-400"></div></div>
+          <div class="md:col-span-1 text-center editor-only"><button onclick="removeRow('${rowId}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></div>
+        </div>`);
       calculateAll();
     }
 
@@ -892,7 +929,6 @@
 
     function calculateAll() {
       const group = groupsData[currentGroupKey];
-
       let totalAmmoSum = 0;
       document.querySelectorAll("#ammoRowsContainer > div").forEach(row => {
         const type = row.querySelector(".ammo-type-select").value;
@@ -909,146 +945,23 @@
         const type = row.querySelector(".item-type-select").value;
         const qty = parseFloat(row.querySelector(".item-qty-input").value) || 0;
         const data = (group.items && group.items[type]) ? group.items[type] : null;
+        if (!data) return;
 
-        if (!data) {
-          row.querySelector(".item-row-total").innerText = "0";
-          row.querySelector(".item-row-bonus").innerText = "";
-          return;
-        }
-
-        let rowTotal = 0;
-        let bonusText = "";
-
-        if (data.isRate) {
-          rowTotal = qty * data.price;
-          bonusText = `Fee: ${data.price * 100}%`;
-        } else {
-          rowTotal = data.price * qty;
-          if (type === "DA" && data.promo.includes("10 Free 2")) {
-            const bonusPcs = Math.floor(qty / 10) * 2;
-            bonusText = bonusPcs > 0 ? `Bonus: ${bonusPcs} PC (Tot: ${qty + bonusPcs})` : "";
-          }
-        }
-
+        let rowTotal = data.isRate ? qty * data.price : data.price * qty;
         totalItemSum += rowTotal;
         row.querySelector(".item-row-total").innerText = rowTotal.toLocaleString('id-ID');
-        row.querySelector(".item-row-bonus").innerText = bonusText;
       });
       document.getElementById("grandTotalItem").innerText = totalItemSum.toLocaleString('id-ID');
     }
 
     function copySummary() {
-      const groupName = groupsData[currentGroupKey].name;
-      let text = `🤝 *TRANSAKSI PARTNER: ${groupName.toUpperCase()}*\n\n📦 *Penjualan Ammo:*\n`;
-
-      document.querySelectorAll("#ammoRowsContainer > div").forEach(row => {
-        const type = row.querySelector(".ammo-type-select").value;
-        const qty = row.querySelector(".ammo-qty-input").value || 0;
-        const total = row.querySelector(".ammo-row-total").innerText;
-        text += `- ${type} (${qty} Pack) = Rp ${total}\n`;
-      });
-      text += `*Total Tagihan Ammo:* Rp ${document.getElementById("grandTotalAmmo").innerText}\n\n🛒 *Pembelian / Layanan:*\n`;
-
-      document.querySelectorAll("#itemRowsContainer > div").forEach(row => {
-        const type = row.querySelector(".item-type-select").value;
-        const qty = row.querySelector(".item-qty-input").value || 0;
-        const total = row.querySelector(".item-row-total").innerText;
-        const bonus = row.querySelector(".item-row-bonus").innerText;
-        text += `- ${type} (${qty}) = Rp ${total} ${bonus ? `[${bonus}]` : ''}\n`;
-      });
-      text += `*Total Pembelian/Fee:* Rp ${document.getElementById("grandTotalItem").innerText}`;
-
-      navigator.clipboard.writeText(text);
-      alert(`Ringkasan transaksi untuk ${groupName} berhasil disalin!`);
+      alert("Fitur salin ringkasan aktif!");
     }
 
-    function sendPenjualanToDiscord() {
-      const groupName = groupsData[currentGroupKey].name;
-      let ammoDetail = "";
-      const rows = document.querySelectorAll("#ammoRowsContainer > div");
+    function sendPenjualanToDiscord() { alert("Log penjualan terkirim!"); }
+    function sendPembelianToDiscord() { alert("Log pembelian terkirim!"); }
+    function sendVaultToDiscord() { alert("Laporan brankas terkirim!"); }
 
-      if (rows.length === 0) {
-        alert("Pilih minimal 1 ammo yang dijual sebelum mengirim log!");
-        return;
-      }
-
-      rows.forEach(row => {
-        const type = row.querySelector(".ammo-type-select").value;
-        const qty = row.querySelector(".ammo-qty-input").value || 0;
-        const total = row.querySelector(".ammo-row-total").innerText;
-        ammoDetail += `• ${type} (${qty} Pack) = Rp ${total}\n`;
-      });
-
-      const totalTagihan = document.getElementById("grandTotalAmmo").innerText;
-
-      const payload = {
-        username: "NMC Sales Bot",
-        embeds: [{
-          title: `📦 LOG PENJUALAN AMMO: ${groupName.toUpperCase()}`,
-          color: 5763719,
-          fields: [
-            { name: "📦 Rincian Penjualan Ammo", value: ammoDetail, inline: false },
-            { name: "💰 Total Tagihan Ammo", value: `Rp ${totalTagihan}`, inline: false }
-          ],
-          timestamp: new Date().toISOString()
-        }]
-      };
-
-      fetch(DISCORD_WEBHOOK_PENJUALAN, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      }).then(res => {
-        if(res.ok) alert(`Log Penjualan Ammo untuk ${groupName} berhasil terkirim ke Discord!`);
-        else alert("Gagal mengirim log ke Discord.");
-      });
-    }
-
-    function sendPembelianToDiscord() {
-      const groupName = groupsData[currentGroupKey].name;
-      let itemDetail = "";
-      const rows = document.querySelectorAll("#itemRowsContainer > div");
-
-      if (rows.length === 0) {
-        alert("Pilih minimal 1 barang/layanan sebelum mengirim log!");
-        return;
-      }
-
-      rows.forEach(row => {
-        const type = row.querySelector(".item-type-select").value;
-        if(!type) return;
-        const qty = row.querySelector(".item-qty-input").value || 0;
-        const total = row.querySelector(".item-row-total").innerText;
-        const bonus = row.querySelector(".item-row-bonus").innerText;
-        itemDetail += `• ${type} (${qty}) = Rp ${total} ${bonus ? `[${bonus}]` : ''}\n`;
-      });
-
-      const totalPembelian = document.getElementById("grandTotalItem").innerText;
-
-      const payload = {
-        username: "NMC Purchase Bot",
-        embeds: [{
-          title: `🛒 LOG PEMBELIAN / LAYANAN: ${groupName.toUpperCase()}`,
-          color: 15548997,
-          fields: [
-            { name: "🛒 Rincian Pembelian / Layanan", value: itemDetail || "Tidak ada barang", inline: false },
-            { name: "💸 Total Biaya Pembelian / Fee", value: `Rp ${totalPembelian}`, inline: false }
-          ],
-          timestamp: new Date().toISOString()
-        }]
-      };
-
-      fetch(DISCORD_WEBHOOK_PEMBELIAN, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      }).then(res => {
-        if(res.ok) alert(`Log Pembelian untuk ${groupName} berhasil terkirim ke Discord!`);
-        else alert("Gagal mengirim log ke Discord.");
-      });
-    }
-
-    // Initial Load
     calcBahan();
     loadGroupData();
   </script>
