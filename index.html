@@ -1169,12 +1169,9 @@
       }
 
       console.log("Tombol Masukkan ke Brankas diklik. Minggu aktif:", activeMinggu);
-      console.log("Data setoran saat ini:", setoranData[activeMinggu]);
-
       const currentList = setoranData[activeMinggu] || {};
       let totalIron = 0, totalCarbon = 0, totalGlass = 0, totalRubber = 0, totalPlastik = 0;
 
-      // Hitung total keseluruhan bahan
       for (let name in currentList) {
         const item = currentList[name];
         if (item) {
@@ -1195,14 +1192,12 @@
 
       if (confirm(`Konfirmasi: Masukkan total keseluruhan setoran ${activeMinggu} (${totalIron} Iron, ${totalCarbon} Carbon, ${totalGlass} Glass, ${totalRubber} Rubber, ${totalPlastik} Plastik) langsung ke dalam stok Brankas?`)) {
         
-        // 1. Tambahkan ke stok brankas utama
         vaultStock["Iron"] = (vaultStock["Iron"] || 0) + totalIron;
         vaultStock["Carbon"] = (vaultStock["Carbon"] || 0) + totalCarbon;
         vaultStock["Glass"] = (vaultStock["Glass"] || 0) + totalGlass;
         vaultStock["Rubber"] = (vaultStock["Rubber"] || 0) + totalRubber;
         vaultStock["Plastik"] = (vaultStock["Plastik"] || 0) + totalPlastik;
 
-        // 2. Catat riwayat (history)
         const timestamp = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
         const authorName = "Sistem Setoran (" + activeMinggu + ")";
 
@@ -1212,7 +1207,6 @@
         if (totalRubber > 0) vaultHistory.unshift({ id: Date.now() + 4, date: timestamp, item: "Rubber", action: "ADD", diff: `+${totalRubber}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
         if (totalPlastik > 0) vaultHistory.unshift({ id: Date.now() + 5, date: timestamp, item: "Plastik", action: "ADD", diff: `+${totalPlastik}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
 
-        // 3. Simpan ke Firebase
         saveDataToCloud();
         renderVaultInventory();
         renderVaultHistory();
