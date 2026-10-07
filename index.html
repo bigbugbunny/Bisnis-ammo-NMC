@@ -100,6 +100,7 @@
   </style>
 </head>
 <body class="min-h-screen p-4 md:p-8">
+  <div class="bg-ambient-glow"></div>
 
   <!-- ================= MODAL LOGIN ================= -->
   <div id="loginModal" class="fixed inset-0 bg-slate-950/95 z-50 flex items-center justify-center p-4">
@@ -135,11 +136,11 @@
     <!-- HEADER -->
     <div class="flex flex-col md:flex-row justify-between items-center bg-slate-900/90 p-6 rounded-2xl border border-red-900/40 shadow-2xl">
       <div class="flex items-center gap-4">
-        <!-- Tombol Home (Kembali ke Pilih Komunitas Triad) -->
+        <!-- Tombol Home -->
         <button id="btnHome" onclick="showWelcomeScreen()" class="bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700" title="Kembali ke Home Triad Community">
           <i class="fa-solid fa-house"></i>
         </button>
-        <!-- Tombol Back (Kembali ke Menu Utama Nakama MC dari Modul) -->
+        <!-- Tombol Back -->
         <button id="btnBackMenu" onclick="showSection('mainMenu')" class="hidden bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700" title="Kembali ke Menu Nakama MC">
           <i class="fa-solid fa-arrow-left"></i>
         </button>
@@ -173,7 +174,9 @@
         <span class="bg-red-950/50 text-red-400 text-xs font-bold px-4 py-1.5 rounded-full border border-red-800/40 tracking-widest uppercase inline-flex items-center gap-2 shadow-inner">
           <i class="fa-solid fa-shield-halved"></i> Pusat Data Triad Community
         </span>
-        <h2 class="text-6xl md:text-6xl font-black tracking-wider welcome-title-glow">WELCOME TO <br> TRIAD COMMUNITY</h2>
+        <h2 class="text-4xl md:text-6xl font-black tracking-wider welcome-title-glow leading-tight">
+          WELCOME TO <br> TRIAD COMMUNITY
+        </h2>
         <p class="text-sm text-gray-400">Silakan pilih divisi atau klub organisasi di bawah ini untuk mengakses sistem management by bunny.</p>
       </div>
 
@@ -319,7 +322,6 @@
         <div class="space-y-3 pt-2">
           <label class="block text-xs font-semibold text-emerald-400 uppercase tracking-wider">Daftar Bahan yang Dibeli:</label>
           <div id="beliBahanRowsContainer" class="space-y-3">
-            <!-- Baris Default Pertama -->
             <div class="beli-row grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
               <div class="md:col-span-4">
                 <select class="row-item w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none">
@@ -346,13 +348,11 @@
             </div>
           </div>
 
-          <!-- Tombol Tambah Baris (+) -->
           <button type="button" onclick="tambahBarisBeli()" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/40 text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2">
             <i class="fa-solid fa-plus"></i> Tambah Bahan Lain (+)
           </button>
         </div>
 
-        <!-- Grand Total & Tombol Bayar -->
         <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 mt-4">
           <div>
             <span class="text-xs text-gray-400 block">Total Keseluruhan Pembayaran:</span>
@@ -540,7 +540,7 @@
        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <h2 class="text-lg font-bold text-red-400 flex items-center gap-2"><i class="fa-solid fa-hand-holding-dollar"></i> Rekap Setoran Bahan (<span id="currentMingguLabel">Minggu 1</span>)</h2>
           <div class="flex flex-wrap items-center gap-2">
-            <!-- Tombol Baru: Masuk ke Brankas -->
+            <!-- Tombol Masuk ke Brankas -->
             <button onclick="masukkanSetoranKeBrankas()" class="editor-only bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
               <i class="fa-solid fa-vault"></i> Masukkan ke Brankas
             </button>
@@ -1149,26 +1149,13 @@
       if (isViewer) document.querySelectorAll(".editor-only").forEach(el => el.style.display = "none");
     }
 
-    function sendSetoranToDiscord() {
-      const currentList = setoranData[activeMinggu] || {};
-      let text = `📋 **REKAP SETORAN BAHAN (${activeMinggu.toUpperCase()})**\n\n`;
-      let totalIron = 0, totalCarbon = 0, totalGlass = 0, totalRubber = 0, totalPlastik = 0;
-
-      for (let name in currentList) {
-        const item = currentList[name];
-        const status = item.lunas ? "Lunas ✅" : "Belum Lunas ❌";
-        totalIron += item.iron; totalCarbon += item.carbon; totalGlass += item.glass; totalRubber += item.rubber; totalPlastik += item.plastik;
-        text += `• **${name}** | Iron: ${item.iron} | Carbon: ${item.carbon} | Glass: ${item.glass} | Rubber: ${item.rubber} | Plastik: ${item.plastik} | [${status}]\n`;
-      }
-
-      // Fungsi Eksekusi: Masukkan Seluruh Setoran Bahan ke Brankas & Riwayat
+    // --- FUNGSI EKSEKUSI: MASUKKAN SETORAN KE BRANKAS (Ditempatkan di Luar) ---
     function masukkanSetoranKeBrankas() {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
         alert("Akses ditolak! Akun Viewer tidak memiliki izin memasukkan setoran ke brankas.");
         return;
       }
 
-      console.log("Tombol Masukkan ke Brankas diklik. Minggu aktif:", activeMinggu);
       const currentList = setoranData[activeMinggu] || {};
       let totalIron = 0, totalCarbon = 0, totalGlass = 0, totalRubber = 0, totalPlastik = 0;
 
@@ -1182,8 +1169,6 @@
           totalPlastik += parseInt(item.plastik || item.Plastik || 0) || 0;
         }
       }
-
-      console.log("Total terhitung -> Iron:", totalIron, "Carbon:", totalCarbon, "Glass:", totalGlass, "Rubber:", totalRubber, "Plastik:", totalPlastik);
 
       if (totalIron === 0 && totalCarbon === 0 && totalGlass === 0 && totalRubber === 0 && totalPlastik === 0) {
         alert("Total bahan bernilai 0 semua! Masukkan minimal angka bahan pada salah satu anggota terlebih dahulu.");
@@ -1214,6 +1199,18 @@
         alert(`Berhasil! Seluruh bahan dari rekap ${activeMinggu} telah ditambahkan ke dalam stok Brankas.`);
       }
     }
+
+    function sendSetoranToDiscord() {
+      const currentList = setoranData[activeMinggu] || {};
+      let text = `📋 **REKAP SETORAN BAHAN (${activeMinggu.toUpperCase()})**\n\n`;
+      let totalIron = 0, totalCarbon = 0, totalGlass = 0, totalRubber = 0, totalPlastik = 0;
+
+      for (let name in currentList) {
+        const item = currentList[name];
+        const status = item.lunas ? "Lunas ✅" : "Belum Lunas ❌";
+        totalIron += item.iron; totalCarbon += item.carbon; totalGlass += item.glass; totalRubber += item.rubber; totalPlastik += item.plastik;
+        text += `• **${name}** | Iron: ${item.iron} | Carbon: ${item.carbon} | Glass: ${item.glass} | Rubber: ${item.rubber} | Plastik: ${item.plastik} | [${status}]\n`;
+      }
       
       text += `\n📊 **TOTAL KESELURUHAN BAHAN:**\n`;
       text += `• Iron: ${totalIron} | Carbon: ${totalCarbon} | Glass: ${totalGlass} | Rubber: ${totalRubber} | Plastik: ${totalPlastik}`;
@@ -1431,7 +1428,6 @@
       document.getElementById("grandTotalItem").innerText = tItem.toLocaleString('id-ID');
     }
 
-    // Fungsi Kirim Penjualan & Pembelian ke Discord
     function sendPenjualanToDiscord() {
       const group = groupsData[currentGroupKey];
       let text = `🛒 **LOG PENJUALAN AMMO (${group.name})**\n\n`;
