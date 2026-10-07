@@ -996,8 +996,7 @@
         tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-500">Belum ada riwayat pembelian.</td></tr>`;
         return;
       }
-      const recentBeli = beliWargaHistory.slice(0, 10);
-      recentBeli.forEach(b => {
+      beliWargaHistory.forEach(b => {
         let itemsStr = b.itemsDetail.map(i => `<span class="text-emerald-400 font-semibold">${i.item} (+${i.qty})</span>`).join(', ');
         let currBadge = b.currency === "Uang Merah" ? "🔴" : "⚪";
         tbody.innerHTML += `
@@ -1052,8 +1051,7 @@
         tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat.</td></tr>`; 
         return; 
       }
-      const recentHistory = vaultHistory.slice(0, 10);
-      recentHistory.forEach(h => {
+      vaultHistory.forEach(h => {
         let badge = h.action === 'ADD' ? '<span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs font-bold">Masuk (+)</span>' : h.action === 'SUB' ? '<span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs font-bold">Keluar (-)</span>' : '<span class="bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded text-xs font-bold">Set</span>';
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
@@ -1111,10 +1109,7 @@
         businessHistory.forEach(b => {
           if (b.currency === "Uang Merah") { if (b.type === "IN") saldoMerah += b.amount; else saldoMerah -= b.amount; }
           else { if (b.type === "IN") saldoPutih += b.amount; else saldoPutih -= b.amount; }
-        });
 
-        const recentBusiness = businessHistory.slice(0, 10);
-        recentBusiness.forEach(b => {
           let typeBadge = b.type === 'IN' ? '<span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs font-bold">Masuk (+)</span>' : '<span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs font-bold">Keluar (-)</span>';
           let currLabel = b.currency === "Uang Merah" ? '<span class="text-red-400 font-bold text-xs">Uang Merah 🔴</span>' : '<span class="text-gray-300 font-bold text-xs">Uang Putih ⚪</span>';
           
