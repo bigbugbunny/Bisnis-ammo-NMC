@@ -1172,19 +1172,21 @@
       let totalIron = 0, totalCarbon = 0, totalGlass = 0, totalRubber = 0, totalPlastik = 0;
       let hasData = false;
 
-      // Hitung total keseluruhan bahan dari semua anggota di minggu aktif
+      // Iterasi data anggota dengan aman (mendukung berbagai format penulisan huruf)
       for (let name in currentList) {
         const item = currentList[name];
-        totalIron += item.iron || 0;
-        totalCarbon += item.carbon || 0;
-        totalGlass += item.glass || 0;
-        totalRubber += item.rubber || 0;
-        totalPlastik += item.plastik || 0;
-        hasData = true;
+        if (item) {
+          totalIron += parseInt(item.iron || item.Iron || item.IRON) || 0;
+          totalCarbon += parseInt(item.carbon || item.Carbon || item.CARBON) || 0;
+          totalGlass += parseInt(item.glass || item.Glass || item.GLASS) || 0;
+          totalRubber += parseInt(item.rubber || item.Rubber || item.RUBBER) || 0;
+          totalPlastik += parseInt(item.plastik || item.Plastik || item.PLASTIK) || 0;
+          hasData = true;
+        }
       }
 
       if (!hasData || (totalIron === 0 && totalCarbon === 0 && totalGlass === 0 && totalRubber === 0 && totalPlastik === 0)) {
-        alert("Tidak ada data bahan setoran yang bisa dimasukkan (semua masih 0)!");
+        alert("Tidak ada data bahan setoran yang valid atau jumlahnya masih 0 semua!");
         return;
       }
 
@@ -1217,8 +1219,10 @@
           vaultHistory.unshift({ id: Date.now() + 5, date: timestamp, item: "Plastik", action: "ADD", diff: `+${totalPlastik}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
         }
 
-        // 3. Simpan otomatis ke database Firebase
+        // 3. Simpan dan perbarui tampilan secara real-time
         saveDataToCloud();
+        renderVaultInventory();
+        renderVaultHistory();
 
         alert(`Berhasil! Seluruh bahan dari rekap ${activeMinggu} telah ditambahkan ke dalam stok Brankas dan tercatat di riwayat.`);
       }
