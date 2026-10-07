@@ -264,7 +264,7 @@
           <div>
             <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-emerald-500/30"><i class="fa-solid fa-basket-shopping"></i></div>
             <h3 class="text-xl font-bold text-white mb-2">Beli Bahan (Warga)</h3>
-            <p class="text-sm text-gray-400">Beli bahan dari warga dengan kalkulasi otomatis Qty x Harga Satuan & Uang Putih.</p>
+            <p class="text-sm text-gray-400">Beli bahan dari warga dengan kalkulasi otomatis Qty x Harga Satuan & Uang Putih/Merah.</p>
           </div>
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-emerald-400"><span>Buka Pembelian</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
@@ -307,7 +307,7 @@
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
         <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-cart-plus"></i> Form Transaksi Beli Bahan dari Warga</h2>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-2 border-b border-slate-700">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pb-2 border-b border-slate-700">
           <div>
             <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nama Warga (Penjual)</label>
             <input type="text" id="beliWargaNama" placeholder="Nama warga..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-400 text-sm">
@@ -315,6 +315,13 @@
           <div>
             <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Anggota Klub (Pembeli / Perwakilan)</label>
             <input type="text" id="beliWargaAdmin" placeholder="Nama Anda / Anggota" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-400 text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jenis Pembayaran (Kas)</label>
+            <select id="beliWargaCurrency" onchange="hitungTotalBeliWarga()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-400 text-sm">
+              <option value="Uang Putih">Uang Putih ⚪</option>
+              <option value="Uang Merah">Uang Merah 🔴</option>
+            </select>
           </div>
         </div>
 
@@ -368,15 +375,15 @@
         <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2">
           <i class="fa-solid fa-history"></i> Riwayat Pembelian Bahan dari Warga
         </h2>
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto max-h-96 overflow-y-auto">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase">
-                <th class="p-3">Waktu</th>
-                <th class="p-3">Nama Warga</th>
-                <th class="p-3">Daftar Bahan & Qty</th>
-                <th class="p-3 text-right">Total Biaya (Uang Putih)</th>
-                <th class="p-3">Perwakilan Klub</th>
+              <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase sticky top-0 bg-slate-900/95 backdrop-blur z-10">
+                <th class="p-2.5">Waktu</th>
+                <th class="p-2.5">Nama Warga</th>
+                <th class="p-2.5">Daftar Bahan & Qty</th>
+                <th class="p-2.5 text-right">Total Biaya & Jenis Kas</th>
+                <th class="p-2.5">Perwakilan Klub</th>
               </tr>
             </thead>
             <tbody id="beliWargaTableBody" class="divide-y divide-slate-800 text-sm">
@@ -485,11 +492,27 @@
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
         <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-vault"></i> Inventaris Stok Brankas Saat Ini</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="vaultInventoryGrid"></div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3" id="vaultInventoryGrid"></div>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
         <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-history"></i> Riwayat (History) Keluar Masuk Barang Brankas</h2>
-        <div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead><tr class="border-b border-slate-700 text-xs text-gray-400 uppercase"><th class="p-3">Waktu</th><th class="p-3">Barang</th><th class="p-3">Aksi</th><th class="p-3 text-right">Jumlah</th><th class="p-3">Keterangan</th><th class="p-3">Pelapor</th></tr></thead><tbody id="vaultHistoryTableBody" class="divide-y divide-slate-800 text-sm"><tr><td colspan="6" class="p-4 text-center text-gray-500">Memuat data...</td></tr></tbody></table></div>
+        <div class="overflow-x-auto max-h-96 overflow-y-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase sticky top-0 bg-slate-900/95 backdrop-blur z-10">
+                <th class="p-2.5">Waktu</th>
+                <th class="p-2.5">Barang</th>
+                <th class="p-2.5">Aksi</th>
+                <th class="p-2.5 text-right">Jumlah</th>
+                <th class="p-2.5">Keterangan</th>
+                <th class="p-2.5">Pelapor</th>
+              </tr>
+            </thead>
+            <tbody id="vaultHistoryTableBody" class="divide-y divide-slate-800 text-sm">
+              <tr><td colspan="6" class="p-4 text-center text-gray-500">Memuat data...</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -518,7 +541,23 @@
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
         <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-history"></i> Riwayat Arus Kas Bisnis</h2>
-        <div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead><tr class="border-b border-slate-700 text-xs text-gray-400 uppercase"><th class="p-3">Waktu</th><th class="p-3">Jenis Uang</th><th class="p-3">Status</th><th class="p-3 text-right">Nominal</th><th class="p-3">Keterangan</th><th class="p-3">Pelapor</th></tr></thead><tbody id="businessHistoryTableBody" class="divide-y divide-slate-800 text-sm"><tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada data.</td></tr></tbody></table></div>
+        <div class="overflow-x-auto max-h-96 overflow-y-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase sticky top-0 bg-slate-900/95 backdrop-blur z-10">
+                <th class="p-2.5">Waktu</th>
+                <th class="p-2.5">Jenis Uang</th>
+                <th class="p-2.5">Status</th>
+                <th class="p-2.5 text-right">Nominal</th>
+                <th class="p-2.5">Keterangan</th>
+                <th class="p-2.5">Pelapor</th>
+              </tr>
+            </thead>
+            <tbody id="businessHistoryTableBody" class="divide-y divide-slate-800 text-sm">
+              <tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada data.</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -731,7 +770,7 @@
         if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
         else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner Kelompok";
         else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris & Riwayat)";
-        else if(sectionId === 'sectionBeliWarga') subtitle.innerText = "Modul Pembelian Bahan dari Warga (Uang Putih)";
+        else if(sectionId === 'sectionBeliWarga') subtitle.innerText = "Modul Pembelian Bahan dari Warga";
         else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Data Bisnis (Kas Uang Merah & Putih)";
         else if(sectionId === 'sectionSetoran') subtitle.innerText = "Modul Data Setoran Bahan Mingguan Klub";
         else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Data Anggota, Hierarki Rank & Status Keaktifan";
@@ -833,7 +872,10 @@
 
     function hitungTotalBeliWarga() {
       const rows = document.querySelectorAll(".beli-row");
+      const currency = document.getElementById("beliWargaCurrency").value;
+      const currSymbol = currency === "Uang Merah" ? "🔴 Uang Merah" : "⚪ Uang Putih";
       let grandTotal = 0;
+      
       rows.forEach(r => {
         const qty = parseFloat(r.querySelector(".row-qty").value) || 0;
         const price = parseFloat(r.querySelector(".row-price").value) || 0;
@@ -842,7 +884,7 @@
         r.querySelector(".row-total-text").innerText = rowTotal.toLocaleString('id-ID');
         grandTotal += rowTotal;
       });
-      document.getElementById("grandTotalBeliText").innerText = `Rp ${grandTotal.toLocaleString('id-ID')} (⚪ Uang Putih)`;
+      document.getElementById("grandTotalBeliText").innerText = `Rp ${grandTotal.toLocaleString('id-ID')} (${currSymbol})`;
       return grandTotal;
     }
 
@@ -853,6 +895,7 @@
       }
       const namaWarga = document.getElementById("beliWargaNama").value.trim();
       const admin = document.getElementById("beliWargaAdmin").value.trim();
+      const currency = document.getElementById("beliWargaCurrency").value;
 
       if (!namaWarga || !admin) {
         alert("Nama Warga dan Nama Anggota Klub wajib diisi!");
@@ -895,7 +938,7 @@
       businessHistory.unshift({
         id: Date.now(),
         date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-        currency: "Uang Putih",
+        currency: currency,
         type: "OUT",
         amount: totalSemuaHarga,
         desc: `Beli bahan dari warga (${namaWarga})`,
@@ -908,6 +951,7 @@
         namaWarga,
         itemsDetail,
         totalHarga: totalSemuaHarga,
+        currency,
         admin
       });
 
@@ -942,7 +986,7 @@
         </div>`;
       hitungTotalBeliWarga();
 
-      alert(`Berhasil! Pembelian bahan dari ${namaWarga} seharga Rp ${totalSemuaHarga.toLocaleString('id-ID')} dicatat.`);
+      alert(`Berhasil! Pembelian bahan dari ${namaWarga} seharga Rp ${totalSemuaHarga.toLocaleString('id-ID')} (${currency}) dicatat.`);
     }
 
     function renderBeliWargaHistory() {
@@ -952,15 +996,17 @@
         tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-500">Belum ada riwayat pembelian.</td></tr>`;
         return;
       }
-      beliWargaHistory.forEach(b => {
+      const recentBeli = beliWargaHistory.slice(0, 10);
+      recentBeli.forEach(b => {
         let itemsStr = b.itemsDetail.map(i => `<span class="text-emerald-400 font-semibold">${i.item} (+${i.qty})</span>`).join(', ');
+        let currBadge = b.currency === "Uang Merah" ? "🔴" : "⚪";
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
-            <td class="p-3 text-gray-400 text-xs">${b.date}</td>
-            <td class="p-3 text-white font-bold">${b.namaWarga}</td>
-            <td class="p-3">${itemsStr}</td>
-            <td class="p-3 text-right font-black text-red-400">Rp ${b.totalHarga.toLocaleString('id-ID')} (⚪)</td>
-            <td class="p-3 text-gray-300 text-sm">${b.admin}</td>
+            <td class="p-2.5 text-gray-400 text-xs">${b.date}</td>
+            <td class="p-2.5 text-white font-bold text-xs">${b.namaWarga}</td>
+            <td class="p-2.5 text-xs">${itemsStr}</td>
+            <td class="p-2.5 text-right font-black text-xs text-red-400">Rp ${b.totalHarga.toLocaleString('id-ID')} (${currBadge})</td>
+            <td class="p-2.5 text-gray-300 text-xs">${b.admin}</td>
           </tr>`;
       });
     }
@@ -991,17 +1037,33 @@
       const grid = document.getElementById("vaultInventoryGrid");
       grid.innerHTML = "";
       for (let item in vaultStock) {
-        grid.innerHTML += `<div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex flex-col justify-between"><div class="text-xs font-semibold text-gray-400 mb-1">${item}</div><div class="text-2xl font-black text-blue-400">${vaultStock[item].toLocaleString('id-ID')}</div></div>`;
+        grid.innerHTML += `
+          <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
+            <span class="text-xs font-semibold text-gray-400 truncate pr-2">${item}</span>
+            <span class="text-base font-black text-blue-400">${vaultStock[item].toLocaleString('id-ID')}</span>
+          </div>`;
       }
     }
 
     function renderVaultHistory() {
       const tbody = document.getElementById("vaultHistoryTableBody");
       tbody.innerHTML = "";
-      if (vaultHistory.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat.</td></tr>`; return; }
-      vaultHistory.forEach(h => {
+      if (vaultHistory.length === 0) { 
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat.</td></tr>`; 
+        return; 
+      }
+      const recentHistory = vaultHistory.slice(0, 10);
+      recentHistory.forEach(h => {
         let badge = h.action === 'ADD' ? '<span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs font-bold">Masuk (+)</span>' : h.action === 'SUB' ? '<span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs font-bold">Keluar (-)</span>' : '<span class="bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded text-xs font-bold">Set</span>';
-        tbody.innerHTML += `<tr class="hover:bg-slate-800/40 transition"><td class="p-3 text-gray-400 text-xs">${h.date}</td><td class="p-3 text-white font-bold">${h.item}</td><td class="p-3">${badge}</td><td class="p-3 text-right font-black ${h.action==='ADD'?'text-green-400':'text-red-400'}">${h.diff}</td><td class="p-3 text-gray-300 text-sm">${h.desc}</td><td class="p-3 text-gray-300 text-sm font-medium">${h.author}</td></tr>`;
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="p-2.5 text-gray-400 text-xs">${h.date}</td>
+            <td class="p-2.5 text-white font-bold text-xs">${h.item}</td>
+            <td class="p-2.5">${badge}</td>
+            <td class="p-2.5 text-right font-black text-xs ${h.action==='ADD'?'text-green-400':'text-red-400'}">${h.diff}</td>
+            <td class="p-2.5 text-gray-300 text-xs">${h.desc}</td>
+            <td class="p-2.5 text-gray-300 text-xs font-medium">${h.author}</td>
+          </tr>`;
       });
     }
 
@@ -1042,15 +1104,29 @@
       let saldoMerah = 0, saldoPutih = 0;
       const tbody = document.getElementById("businessHistoryTableBody");
       tbody.innerHTML = "";
+      
       if (businessHistory.length === 0) {
         tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada transaksi.</td></tr>`;
       } else {
         businessHistory.forEach(b => {
           if (b.currency === "Uang Merah") { if (b.type === "IN") saldoMerah += b.amount; else saldoMerah -= b.amount; }
           else { if (b.type === "IN") saldoPutih += b.amount; else saldoPutih -= b.amount; }
-          let typeBadge = b.type === 'IN' ? '<span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs font-bold">Masuk (+)</span>' : '<span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs font-bold">Pengeluaran (-)</span>';
-          let currLabel = b.currency === "Uang Merah" ? '<span class="text-red-400 font-bold">Uang Merah 🔴</span>' : '<span class="text-gray-300 font-bold">Uang Putih ⚪</span>';
-          tbody.innerHTML += `<tr class="hover:bg-slate-800/40 transition"><td class="p-3 text-gray-400 text-xs">${b.date}</td><td class="p-3">${currLabel}</td><td class="p-3">${typeBadge}</td><td class="p-3 text-right font-black ${b.type==='IN'?'text-green-400':'text-red-400'}">${b.type==='IN'?'+':'-'}${b.amount.toLocaleString('id-ID')}</td><td class="p-3 text-gray-300 text-sm">${b.desc}</td><td class="p-3 text-gray-300 text-sm font-medium">${b.author}</td></tr>`;
+        });
+
+        const recentBusiness = businessHistory.slice(0, 10);
+        recentBusiness.forEach(b => {
+          let typeBadge = b.type === 'IN' ? '<span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs font-bold">Masuk (+)</span>' : '<span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs font-bold">Keluar (-)</span>';
+          let currLabel = b.currency === "Uang Merah" ? '<span class="text-red-400 font-bold text-xs">Uang Merah 🔴</span>' : '<span class="text-gray-300 font-bold text-xs">Uang Putih ⚪</span>';
+          
+          tbody.innerHTML += `
+            <tr class="hover:bg-slate-800/40 transition">
+              <td class="p-2.5 text-gray-400 text-xs">${b.date}</td>
+              <td class="p-2.5">${currLabel}</td>
+              <td class="p-2.5">${typeBadge}</td>
+              <td class="p-2.5 text-right font-black text-xs ${b.type==='IN'?'text-green-400':'text-red-400'}">${b.type==='IN'?'+':'-'}${b.amount.toLocaleString('id-ID')}</td>
+              <td class="p-2.5 text-gray-300 text-xs">${b.desc}</td>
+              <td class="p-2.5 text-gray-300 text-xs font-medium">${b.author}</td>
+            </tr>`;
         });
       }
       document.getElementById("totalUangMerah").innerText = saldoMerah.toLocaleString('id-ID');
@@ -1149,7 +1225,7 @@
       if (isViewer) document.querySelectorAll(".editor-only").forEach(el => el.style.display = "none");
     }
 
-    // --- FUNGSI EKSEKUSI: MASUKKAN SETORAN KE BRANKAS (Ditempatkan di Luar) ---
+    // --- FUNGSI EKSEKUSI: MASUKKAN SETORAN KE BRANKAS ---
     function masukkanSetoranKeBrankas() {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
         alert("Akses ditolak! Akun Viewer tidak memiliki izin memasukkan setoran ke brankas.");
