@@ -1168,25 +1168,28 @@
         return;
       }
 
+      console.log("Tombol Masukkan ke Brankas diklik. Minggu aktif:", activeMinggu);
+      console.log("Data setoran saat ini:", setoranData[activeMinggu]);
+
       const currentList = setoranData[activeMinggu] || {};
       let totalIron = 0, totalCarbon = 0, totalGlass = 0, totalRubber = 0, totalPlastik = 0;
-      let hasData = false;
 
-      // Iterasi data anggota dengan aman (mendukung berbagai format penulisan huruf)
+      // Hitung total keseluruhan bahan
       for (let name in currentList) {
         const item = currentList[name];
         if (item) {
-          totalIron += parseInt(item.iron || item.Iron || item.IRON) || 0;
-          totalCarbon += parseInt(item.carbon || item.Carbon || item.CARBON) || 0;
-          totalGlass += parseInt(item.glass || item.Glass || item.GLASS) || 0;
-          totalRubber += parseInt(item.rubber || item.Rubber || item.RUBBER) || 0;
-          totalPlastik += parseInt(item.plastik || item.Plastik || item.PLASTIK) || 0;
-          hasData = true;
+          totalIron += parseInt(item.iron || item.Iron || 0) || 0;
+          totalCarbon += parseInt(item.carbon || item.Carbon || 0) || 0;
+          totalGlass += parseInt(item.glass || item.Glass || 0) || 0;
+          totalRubber += parseInt(item.rubber || item.Rubber || 0) || 0;
+          totalPlastik += parseInt(item.plastik || item.Plastik || 0) || 0;
         }
       }
 
-      if (!hasData || (totalIron === 0 && totalCarbon === 0 && totalGlass === 0 && totalRubber === 0 && totalPlastik === 0)) {
-        alert("Tidak ada data bahan setoran yang valid atau jumlahnya masih 0 semua!");
+      console.log("Total terhitung -> Iron:", totalIron, "Carbon:", totalCarbon, "Glass:", totalGlass, "Rubber:", totalRubber, "Plastik:", totalPlastik);
+
+      if (totalIron === 0 && totalCarbon === 0 && totalGlass === 0 && totalRubber === 0 && totalPlastik === 0) {
+        alert("Total bahan bernilai 0 semua! Masukkan minimal angka bahan pada salah satu anggota terlebih dahulu.");
         return;
       }
 
@@ -1199,32 +1202,22 @@
         vaultStock["Rubber"] = (vaultStock["Rubber"] || 0) + totalRubber;
         vaultStock["Plastik"] = (vaultStock["Plastik"] || 0) + totalPlastik;
 
-        // 2. Catat riwayat (history) masuk brankas
+        // 2. Catat riwayat (history)
         const timestamp = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
         const authorName = "Sistem Setoran (" + activeMinggu + ")";
 
-        if (totalIron > 0) {
-          vaultHistory.unshift({ id: Date.now() + 1, date: timestamp, item: "Iron", action: "ADD", diff: `+${totalIron}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
-        }
-        if (totalCarbon > 0) {
-          vaultHistory.unshift({ id: Date.now() + 2, date: timestamp, item: "Carbon", action: "ADD", diff: `+${totalCarbon}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
-        }
-        if (totalGlass > 0) {
-          vaultHistory.unshift({ id: Date.now() + 3, date: timestamp, item: "Glass", action: "ADD", diff: `+${totalGlass}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
-        }
-        if (totalRubber > 0) {
-          vaultHistory.unshift({ id: Date.now() + 4, date: timestamp, item: "Rubber", action: "ADD", diff: `+${totalRubber}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
-        }
-        if (totalPlastik > 0) {
-          vaultHistory.unshift({ id: Date.now() + 5, date: timestamp, item: "Plastik", action: "ADD", diff: `+${totalPlastik}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
-        }
+        if (totalIron > 0) vaultHistory.unshift({ id: Date.now() + 1, date: timestamp, item: "Iron", action: "ADD", diff: `+${totalIron}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
+        if (totalCarbon > 0) vaultHistory.unshift({ id: Date.now() + 2, date: timestamp, item: "Carbon", action: "ADD", diff: `+${totalCarbon}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
+        if (totalGlass > 0) vaultHistory.unshift({ id: Date.now() + 3, date: timestamp, item: "Glass", action: "ADD", diff: `+${totalGlass}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
+        if (totalRubber > 0) vaultHistory.unshift({ id: Date.now() + 4, date: timestamp, item: "Rubber", action: "ADD", diff: `+${totalRubber}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
+        if (totalPlastik > 0) vaultHistory.unshift({ id: Date.now() + 5, date: timestamp, item: "Plastik", action: "ADD", diff: `+${totalPlastik}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
 
-        // 3. Simpan dan perbarui tampilan secara real-time
+        // 3. Simpan ke Firebase
         saveDataToCloud();
         renderVaultInventory();
         renderVaultHistory();
 
-        alert(`Berhasil! Seluruh bahan dari rekap ${activeMinggu} telah ditambahkan ke dalam stok Brankas dan tercatat di riwayat.`);
+        alert(`Berhasil! Seluruh bahan dari rekap ${activeMinggu} telah ditambahkan ke dalam stok Brankas.`);
       }
     }
       
