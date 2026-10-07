@@ -1456,15 +1456,28 @@
       currentGroupKey = document.getElementById("groupSelect").value;
       const group = groupsData[currentGroupKey];
       document.getElementById("activeGroupNameBadge").innerText = group.name;
+      
       const ammoListDiv = document.getElementById("ammoPriceList");
       ammoListDiv.innerHTML = "";
-      for (let ammo in group.ammo) ammoListDiv.innerHTML += `<div class="flex justify-between bg-slate-900/80 p-3 rounded-xl border border-slate-800"><span>${ammo} (1 pack)</span><span class="font-bold text-green-400">${group.ammo[ammo].toLocaleString('id-ID')}</span></div>`;
+      for (let ammo in group.ammo) {
+        ammoListDiv.innerHTML += `<div class="flex justify-between bg-slate-900/80 p-3 rounded-xl border border-slate-800"><span>${ammo} (1 pack)</span><span class="font-bold text-green-400">${group.ammo[ammo].toLocaleString('id-ID')}</span></div>`;
+      }
+
       const itemListDiv = document.getElementById("itemPriceList");
       itemListDiv.innerHTML = "";
       for (let item in group.items) {
         const data = group.items[item];
-        itemListDiv.innerHTML += `<div class="glass-card p-2.5 rounded-xl border border-slate-800"><div class="text-gray-400">${item}</div><div class="font-bold text-red-400">${data.isRate ? data.price*100+'%' : data.price.toLocaleString('id-ID')+' / PC'}</div></div>`;
+        let promoText = data.promo ? `<div class="text-[10px] text-amber-400 mt-0.5"><i class="fa-solid fa-tag"></i> ${data.promo}</div>` : '';
+        itemListDiv.innerHTML += `
+          <div class="glass-card p-3 rounded-xl border border-slate-800 flex flex-col justify-between">
+            <div>
+              <div class="text-gray-300 font-semibold text-xs">${item}</div>
+              <div class="font-bold text-red-400 text-sm mt-1">${data.isRate ? (data.price * 100) + '%' : 'Rp ' + data.price.toLocaleString('id-ID') + ' / PC'}</div>
+            </div>
+            ${promoText}
+          </div>`;
       }
+
       document.getElementById("ammoRowsContainer").innerHTML = "";
       document.getElementById("itemRowsContainer").innerHTML = "";
       calculateAll();
