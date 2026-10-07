@@ -537,9 +537,18 @@
         </div>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-        <div class="flex justify-between items-center">
+       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <h2 class="text-lg font-bold text-red-400 flex items-center gap-2"><i class="fa-solid fa-hand-holding-dollar"></i> Rekap Setoran Bahan (<span id="currentMingguLabel">Minggu 1</span>)</h2>
-          <button onclick="sendSetoranToDiscord()" class="editor-only bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg"><i class="fa-brands fa-discord"></i> Kirim Rekap ke Discord & Salin</button>
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Tombol Baru: Masuk ke Brankas -->
+            <button onclick="masukkanSetoranKeBrankas()" class="editor-only bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
+              <i class="fa-solid fa-vault"></i> Masukkan ke Brankas
+            </button>
+            <!-- Tombol Kirim Discord -->
+            <button onclick="sendSetoranToDiscord()" class="editor-only bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
+              <i class="fa-brands fa-discord"></i> Kirim ke Discord & Salin
+            </button>
+          </div>
         </div>
         <div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead><tr class="border-b border-slate-700 text-xs text-gray-400 uppercase"><th class="p-3">Nama Anggota</th><th class="p-3 text-right">Iron 🔩</th><th class="p-3 text-right">Carbon ⬛</th><th class="p-3 text-right">Glass 🧊</th><th class="p-3 text-right">Rubber 🛞</th><th class="p-3 text-right">Plastik 🧪</th><th class="p-3 text-center">Status</th><th class="p-3 text-center editor-only">Aksi</th></tr></thead><tbody id="setoranTableBody" class="divide-y divide-slate-800 text-sm"><tr><td colspan="8" class="p-4 text-center text-gray-500">Memuat data...</td></tr></tbody></table></div>
       </div>
@@ -1152,6 +1161,69 @@
         text += `• **${name}** | Iron: ${item.iron} | Carbon: ${item.carbon} | Glass: ${item.glass} | Rubber: ${item.rubber} | Plastik: ${item.plastik} | [${status}]\n`;
       }
 
+      // Fungsi Eksekusi: Masukkan Seluruh Setoran Bahan ke Brankas & Riwayat
+    function masukkanSetoranKeBrankas() {
+      if (localStorage.getItem("nmc_logged_user") === "viewer") {
+        alert("Akses ditolak! Akun Viewer tidak memiliki izin memasukkan setoran ke brankas.");
+        return;
+      }
+
+      const currentList = setoranData[activeMinggu] || {};
+      let totalIron = 0, totalCarbon = 0, totalGlass = 0, totalRubber = 0, totalPlastik = 0;
+      let hasData = false;
+
+      // Hitung total keseluruhan bahan dari semua anggota di minggu aktif
+      for (let name in currentList) {
+        const item = currentList[name];
+        totalIron += item.iron || 0;
+        totalCarbon += item.carbon || 0;
+        totalGlass += item.glass || 0;
+        totalRubber += item.rubber || 0;
+        totalPlastik += item.plastik || 0;
+        hasData = true;
+      }
+
+      if (!hasData || (totalIron === 0 && totalCarbon === 0 && totalGlass === 0 && totalRubber === 0 && totalPlastik === 0)) {
+        alert("Tidak ada data bahan setoran yang bisa dimasukkan (semua masih 0)!");
+        return;
+      }
+
+      if (confirm(`Konfirmasi: Masukkan total keseluruhan setoran ${activeMinggu} (${totalIron} Iron, ${totalCarbon} Carbon, ${totalGlass} Glass, ${totalRubber} Rubber, ${totalPlastik} Plastik) langsung ke dalam stok Brankas?`)) {
+        
+        // 1. Tambahkan ke stok brankas utama
+        vaultStock["Iron"] = (vaultStock["Iron"] || 0) + totalIron;
+        vaultStock["Carbon"] = (vaultStock["Carbon"] || 0) + totalCarbon;
+        vaultStock["Glass"] = (vaultStock["Glass"] || 0) + totalGlass;
+        vaultStock["Rubber"] = (vaultStock["Rubber"] || 0) + totalRubber;
+        vaultStock["Plastik"] = (vaultStock["Plastik"] || 0) + totalPlastik;
+
+        // 2. Catat riwayat (history) masuk brankas
+        const timestamp = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        const authorName = "Sistem Setoran (" + activeMinggu + ")";
+
+        if (totalIron > 0) {
+          vaultHistory.unshift({ id: Date.now() + 1, date: timestamp, item: "Iron", action: "ADD", diff: `+${totalIron}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
+        }
+        if (totalCarbon > 0) {
+          vaultHistory.unshift({ id: Date.now() + 2, date: timestamp, item: "Carbon", action: "ADD", diff: `+${totalCarbon}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
+        }
+        if (totalGlass > 0) {
+          vaultHistory.unshift({ id: Date.now() + 3, date: timestamp, item: "Glass", action: "ADD", diff: `+${totalGlass}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
+        }
+        if (totalRubber > 0) {
+          vaultHistory.unshift({ id: Date.now() + 4, date: timestamp, item: "Rubber", action: "ADD", diff: `+${totalRubber}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
+        }
+        if (totalPlastik > 0) {
+          vaultHistory.unshift({ id: Date.now() + 5, date: timestamp, item: "Plastik", action: "ADD", diff: `+${totalPlastik}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
+        }
+
+        // 3. Simpan otomatis ke database Firebase
+        saveDataToCloud();
+
+        alert(`Berhasil! Seluruh bahan dari rekap ${activeMinggu} telah ditambahkan ke dalam stok Brankas dan tercatat di riwayat.`);
+      }
+    }
+      
       text += `\n📊 **TOTAL KESELURUHAN BAHAN:**\n`;
       text += `• Iron: ${totalIron} | Carbon: ${totalCarbon} | Glass: ${totalGlass} | Rubber: ${totalRubber} | Plastik: ${totalPlastik}`;
 
