@@ -508,7 +508,7 @@
         </div>
         <div class="flex gap-3 pt-2">
           <button onclick="updateVaultStock()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2"><i class="fa-solid fa-check"></i> Perbarui & Simpan History</button>
-          <button onclick="sendVaultToDiscord()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2"><i class="fa-brands fa-discord"></i> Kirim Laporan ke Discord</button>
+          <button onclick="sendVaultToDiscord()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 editor-only"><i class="fa-brands fa-discord"></i> Kirim Laporan ke Discord</button>
         </div>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
@@ -593,7 +593,7 @@
             <button onclick="masukkanSetoranKeBrankas()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg editor-only">
               <i class="fa-solid fa-vault"></i> Masukkan ke Brankas
             </button>
-            <button onclick="sendSetoranToDiscord()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
+            <button onclick="sendSetoranToDiscord()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg editor-only">
               <i class="fa-brands fa-discord"></i> Kirim ke Discord & Salin
             </button>
           </div>
@@ -618,7 +618,7 @@
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
         <div class="flex justify-between items-center">
           <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-users"></i> Daftar Anggota Aktif & Hierarki Klub</h2>
-          <button onclick="sendMembersToDiscord()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
+          <button onclick="sendMembersToDiscord()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg editor-only">
             <i class="fa-brands fa-discord"></i> Kirim Daftar Anggota ke Discord & Salin
           </button>
         </div>
@@ -724,12 +724,6 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-
-    const DISCORD_WEBHOOK_BRANKAS   = "https://discordapp.com/api/webhooks/1557009048807800852/l82FqtdPoEUwzfGTSxCC_fVYYrtEJozTFKMXgpGDdiudHFyD7BB6TONGERVL2BL3kdnN";
-    const DISCORD_WEBHOOK_PENJUALAN = "https://discordapp.com/api/webhooks/1557014106060623913/LQEqIw427dgWz1nEb2f8ihXhYH_rkl7a_ApywtffJFR31y07KkIzrDcGchuP9PO82-If";
-    const DISCORD_WEBHOOK_PEMBELIAN = "https://discordapp.com/api/webhooks/1557138906586292345/guf2IGdXyXLP7yH3gu7l7OGtbOHspcT5zdAd63ZpDIYplCB7FZLYyqAfR7S6bFMQQFk_";
-    const DISCORD_WEBHOOK_SETORAN   = "https://discordapp.com/api/webhooks/1557139282802774127/cw05EPU60q_Uyor3_HEpNVs-XTvnXvOD4LLTWkkZjfiw8SANBTsQjNWEkmmniu0q1DSr";
-    const DISCORD_WEBHOOK_MEMBER    = "https://discordapp.com/api/webhooks/1557148223884496916/fnxfMm7Z_Pk0w5zQuSOwF_DNu9vrUIbkx6QN8pMSZeVmef9EkHb4ucTkQOr95X37Vyma";
 
     // --- LOGIKA MULTI-ROLE (EDITOR & VIEWER) ---
     window.addEventListener("DOMContentLoaded", () => {
@@ -1191,18 +1185,28 @@
       });
     }
 
+    // --- FUNGSI PENGIRIMAN WEBHOOK DINAMIS DARI FIREBASE ---
+
     function sendVaultToDiscord() {
-      let text = `📦 **LAPORAN STOK BRANKAS NAKAMA MC**\n\n`;
-      for (let item in vaultStock) {
-        text += `• **${item}**: ${vaultStock[item].toLocaleString('id-ID')}\n`;
-      }
-      fetch(DISCORD_WEBHOOK_BRANKAS, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: text })
-      })
-      .then(() => showCustomAlert("Laporan brankas berhasil dikirim ke Discord!"))
-      .catch(() => showCustomAlert("Gagal mengirim laporan ke Discord!", "error"));
+      if (currentUserRole !== "editor") return;
+
+      db.ref('webhooks/brankas').once('value').then((snapshot) => {
+        const webhookUrl = snapshot.val();
+        if (!webhookUrl) { showCustomAlert("Webhook brankas belum diatur di Firebase!", "error"); return; }
+
+        let text = `📦 **LAPORAN STOK BRANKAS NAKAMA MC**\n\n`;
+        for (let item in vaultStock) {
+          text += `• **${item}**: ${vaultStock[item].toLocaleString('id-ID')}\n`;
+        }
+
+        fetch(webhookUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: text })
+        })
+        .then(() => showCustomAlert("Laporan brankas berhasil dikirim ke Discord!"))
+        .catch(() => showCustomAlert("Gagal mengirim laporan ke Discord!", "error"));
+      });
     }
 
     function addBusinessTransaction() {
@@ -1366,25 +1370,32 @@
     }
 
     function sendSetoranToDiscord() {
-      const currentList = setoranData[activeMinggu] || {};
-      let text = `📋 **REKAP SETORAN BAHAN (${activeMinggu.toUpperCase()})**\n\n`;
-      let totalIron = 0, totalCarbon = 0, totalGlass = 0, totalRubber = 0, totalPlastik = 0;
+      if (currentUserRole !== "editor") return;
 
-      for (let name in currentList) {
-        const item = currentList[name];
-        const status = item.lunas ? "Lunas ✅" : "Belum Lunas ❌";
-        totalIron += item.iron; totalCarbon += item.carbon; totalGlass += item.glass; totalRubber += item.rubber; totalPlastik += item.plastik;
-        text += `• **${name}** | Iron: ${item.iron} | Carbon: ${item.carbon} | Glass: ${item.glass} | Rubber: ${item.rubber} | Plastik: ${item.plastik} | [${status}]\n`;
-      }
-      text += `\n📊 **TOTAL KESELURUHAN BAHAN:**\n`;
-      text += `• Iron: ${totalIron} | Carbon: ${totalCarbon} | Glass: ${totalGlass} | Rubber: ${totalRubber} | Plastik: ${totalPlastik}`;
+      db.ref('webhooks/setoran').once('value').then((snapshot) => {
+        const webhookUrl = snapshot.val();
+        if (!webhookUrl) { showCustomAlert("Webhook setoran belum diatur di Firebase!", "error"); return; }
 
-      navigator.clipboard.writeText(text);
-      fetch(DISCORD_WEBHOOK_SETORAN, {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
-      })
-      .then(() => showCustomAlert(`Rekap setoran ${activeMinggu} berhasil dikirim & disalin!`))
-      .catch(() => showCustomAlert("Gagal mengirim ke Discord, teks disalin ke clipboard!", "error"));
+        const currentList = setoranData[activeMinggu] || {};
+        let text = `📋 **REKAP SETORAN BAHAN (${activeMinggu.toUpperCase()})**\n\n`;
+        let totalIron = 0, totalCarbon = 0, totalGlass = 0, totalRubber = 0, totalPlastik = 0;
+
+        for (let name in currentList) {
+          const item = currentList[name];
+          const status = item.lunas ? "Lunas ✅" : "Belum Lunas ❌";
+          totalIron += item.iron; totalCarbon += item.carbon; totalGlass += item.glass; totalRubber += item.rubber; totalPlastik += item.plastik;
+          text += `• **${name}** | Iron: ${item.iron} | Carbon: ${item.carbon} | Glass: ${item.glass} | Rubber: ${item.rubber} | Plastik: ${item.plastik} | [${status}]\n`;
+        }
+        text += `\n📊 **TOTAL KESELURUHAN BAHAN:**\n`;
+        text += `• Iron: ${totalIron} | Carbon: ${totalCarbon} | Glass: ${totalGlass} | Rubber: ${totalRubber} | Plastik: ${totalPlastik}`;
+
+        navigator.clipboard.writeText(text);
+        fetch(webhookUrl, {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
+        })
+        .then(() => showCustomAlert(`Rekap setoran ${activeMinggu} berhasil dikirim & disalin!`))
+        .catch(() => showCustomAlert("Gagal mengirim ke Discord, teks disalin ke clipboard!", "error"));
+      });
     }
 
     function addClubMember() {
@@ -1456,23 +1467,30 @@
     }
 
     function sendMembersToDiscord() {
-      const memberNames = Object.keys(memberList);
-      let text = `👥 **DAFTAR ANGGOTA & HIERARKI KLUB NAKAMA MC**\n\n`;
-      let totalAktif = 0, totalInactive = 0;
+      if (currentUserRole !== "editor") return;
 
-      memberNames.forEach(name => {
-        const item = memberList[name];
-        if (item.status === "Aktif") totalAktif++; else totalInactive++;
-        text += `• **${name}** | *${item.rank}* | [${item.status}]\n`;
+      db.ref('webhooks/member').once('value').then((snapshot) => {
+        const webhookUrl = snapshot.val();
+        if (!webhookUrl) { showCustomAlert("Webhook member belum diatur di Firebase!", "error"); return; }
+
+        const memberNames = Object.keys(memberList);
+        let text = `👥 **DAFTAR ANGGOTA & HIERARKI KLUB NAKAMA MC**\n\n`;
+        let totalAktif = 0, totalInactive = 0;
+
+        memberNames.forEach(name => {
+          const item = memberList[name];
+          if (item.status === "Aktif") totalAktif++; else totalInactive++;
+          text += `• **${name}** | *${item.rank}* | [${item.status}]\n`;
+        });
+        text += `\n📊 **RINGKASAN ANGGOTA:**\n• Aktif: ${totalAktif} | Inactive: ${totalInactive} | Total: ${memberNames.length}`;
+
+        navigator.clipboard.writeText(text);
+        fetch(webhookUrl, {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
+        })
+        .then(() => showCustomAlert("Daftar anggota berhasil dikirim & disalin!"))
+        .catch(() => showCustomAlert("Gagal mengirim ke Discord, teks disalin ke clipboard!", "error"));
       });
-      text += `\n📊 **RINGKASAN ANGGOTA:**\n• Aktif: ${totalAktif} | Inactive: ${totalInactive} | Total: ${memberNames.length}`;
-
-      navigator.clipboard.writeText(text);
-      fetch(DISCORD_WEBHOOK_MEMBER, {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
-      })
-      .then(() => showCustomAlert("Daftar anggota berhasil dikirim & disalin!"))
-      .catch(() => showCustomAlert("Gagal mengirim ke Discord, teks disalin ke clipboard!", "error"));
     }
 
     const craftRecipes = { "50AE": { iron: 50, carbon: 50, umer: 20000 }, "9MM": { iron: 50, carbon: 50, umer: 60000 }, "38LC": { iron: 50, carbon: 50, umer: 70000 } };
@@ -1567,46 +1585,62 @@
     }
 
     function sendPenjualanToDiscord() {
-      const group = groupsData[currentGroupKey];
-      let text = `🛒 **LOG PENJUALAN AMMO (${group.name})**\n\n`;
-      let total = 0;
-      document.querySelectorAll("#ammoRowsContainer > div").forEach(r => {
-        const t = r.querySelector(".ammo-type-select").value;
-        const q = parseFloat(r.querySelector(".ammo-qty-input").value) || 0;
-        if(q > 0) {
-          const tot = (group.ammo[t]||0)*q;
-          total += tot;
-          text += `• ${t} x${q} Pack = Rp ${tot.toLocaleString('id-ID')}\n`;
-        }
+      if (currentUserRole !== "editor") return;
+
+      db.ref('webhooks/penjualan').once('value').then((snapshot) => {
+        const webhookUrl = snapshot.val();
+        if (!webhookUrl) { showCustomAlert("Webhook penjualan belum diatur di Firebase!", "error"); return; }
+
+        const group = groupsData[currentGroupKey];
+        let text = `🛒 **LOG PENJUALAN AMMO (${group.name})**\n\n`;
+        let total = 0;
+        document.querySelectorAll("#ammoRowsContainer > div").forEach(r => {
+          const t = r.querySelector(".ammo-type-select").value;
+          const q = parseFloat(r.querySelector(".ammo-qty-input").value) || 0;
+          if(q > 0) {
+            const tot = (group.ammo[t]||0)*q;
+            total += tot;
+            text += `• ${t} x${q} Pack = Rp ${tot.toLocaleString('id-ID')}\n`;
+          }
+        });
+        text += `\n💵 **Total Tagihan Ammo: Rp ${total.toLocaleString('id-ID')}**`;
+
+        fetch(webhookUrl, {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
+        })
+        .then(() => showCustomAlert("Log penjualan berhasil dikirim ke Discord!"))
+        .catch(() => showCustomAlert("Gagal mengirim log penjualan ke Discord!", "error"));
       });
-      text += `\n💵 **Total Tagihan Ammo: Rp ${total.toLocaleString('id-ID')}**`;
-      fetch(DISCORD_WEBHOOK_PENJUALAN, {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
-      })
-      .then(() => showCustomAlert("Log penjualan berhasil dikirim ke Discord!"))
-      .catch(() => showCustomAlert("Gagal mengirim log penjualan ke Discord!", "error"));
     }
 
     function sendPembelianToDiscord() {
-      const group = groupsData[currentGroupKey];
-      let text = `🔫 **LOG PEMBELIAN / LAYANAN (${group.name})**\n\n`;
-      let total = 0;
-      document.querySelectorAll("#itemRowsContainer > div").forEach(r => {
-        const t = r.querySelector(".item-type-select").value;
-        const q = parseFloat(r.querySelector(".item-qty-input").value) || 0;
-        const d = group.items[t];
-        if(q > 0 && d) {
-          const tot = d.isRate ? q * d.price : d.price * q;
-          total += tot;
-          text += `• ${t} x${q} = Rp ${tot.toLocaleString('id-ID')}\n`;
-        }
+      if (currentUserRole !== "editor") return;
+
+      db.ref('webhooks/pembelian').once('value').then((snapshot) => {
+        const webhookUrl = snapshot.val();
+        if (!webhookUrl) { showCustomAlert("Webhook pembelian belum diatur di Firebase!", "error"); return; }
+
+        const group = groupsData[currentGroupKey];
+        let text = `🔫 **LOG PEMBELIAN / LAYANAN (${group.name})**\n\n`;
+        let total = 0;
+        document.querySelectorAll("#itemRowsContainer > div").forEach(r => {
+          const t = r.querySelector(".item-type-select").value;
+          const q = parseFloat(r.querySelector(".item-qty-input").value) || 0;
+          const d = group.items[t];
+          if(q > 0 && d) {
+            const tot = d.isRate ? q * d.price : d.price * q;
+            total += tot;
+            text += `• ${t} x${q} = Rp ${tot.toLocaleString('id-ID')}\n`;
+          }
+        });
+        text += `\n💵 **Total Pembelian / Fee: Rp ${total.toLocaleString('id-ID')}**`;
+
+        fetch(webhookUrl, {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
+        })
+        .then(() => showCustomAlert("Log pembelian berhasil dikirim ke Discord!"))
+        .catch(() => showCustomAlert("Gagal mengirim log pembelian ke Discord!", "error"));
       });
-      text += `\n💵 **Total Pembelian / Fee: Rp ${total.toLocaleString('id-ID')}**`;
-      fetch(DISCORD_WEBHOOK_PEMBELIAN, {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
-      })
-      .then(() => showCustomAlert("Log pembelian berhasil dikirim ke Discord!"))
-      .catch(() => showCustomAlert("Gagal mengirim log pembelian ke Discord!", "error"));
     }
 
     function copySummary() { showCustomAlert("Ringkasan berhasil disalin!"); }
