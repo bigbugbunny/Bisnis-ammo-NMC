@@ -259,14 +259,14 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-blue-400"><span>Kelola Brankas</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
-        <!-- Card 4: Beli Bahan Warga -->
+        <!-- Card 4: Transaksi Warga (Beli / Jual) -->
         <div onclick="showSection('sectionBeliWarga')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between border border-emerald-500/30">
           <div>
             <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-emerald-500/30"><i class="fa-solid fa-basket-shopping"></i></div>
-            <h3 class="text-xl font-bold text-white mb-2">Beli Bahan (Warga)</h3>
-            <p class="text-sm text-gray-400">Beli bahan dari warga dengan kalkulasi otomatis Qty x Harga Satuan & Uang Putih/Merah.</p>
+            <h3 class="text-xl font-bold text-white mb-2">Transaksi Warga</h3>
+            <p class="text-sm text-gray-400">Beli bahan dari warga atau Jual barang/bahan ke warga dengan update brankas & kas otomatis.</p>
           </div>
-          <div class="mt-6 flex justify-between items-center text-xs font-semibold text-emerald-400"><span>Buka Pembelian</span><i class="fa-solid fa-chevron-right"></i></div>
+          <div class="mt-6 flex justify-between items-center text-xs font-semibold text-emerald-400"><span>Buka Transaksi Warga</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
         <!-- Card 5 -->
@@ -302,18 +302,25 @@
       </div>
     </div>
 
-    <!-- ================= HALAMAN: BELI BAHAN WARGA ================= -->
+    <!-- ================= HALAMAN: TRANSAKSI WARGA (BELI / JUAL) ================= -->
     <div id="sectionBeliWarga" class="hidden space-y-6">
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
-        <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-cart-plus"></i> Form Transaksi Beli Bahan dari Warga</h2>
+        <h2 id="formWargaTitle" class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-cart-plus"></i> Form Transaksi Warga</h2>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pb-2 border-b border-slate-700">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pb-2 border-b border-slate-700">
           <div>
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nama Warga (Penjual)</label>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jenis Transaksi</label>
+            <select id="wargaTxType" onchange="gantiLabelTxWarga()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-400 text-sm font-bold">
+              <option value="beli">Beli dari Warga (Klub Keluar Kas)</option>
+              <option value="jual">Jual ke Warga (Klub Terima Kas)</option>
+            </select>
+          </div>
+          <div>
+            <label id="labelNamaWarga" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nama Warga (Penjual)</label>
             <input type="text" id="beliWargaNama" placeholder="Nama warga..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-400 text-sm">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Anggota Klub (Pembeli / Perwakilan)</label>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Anggota Klub (Perwakilan)</label>
             <input type="text" id="beliWargaAdmin" placeholder="Nama Anda / Anggota" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-400 text-sm">
           </div>
           <div>
@@ -325,19 +332,29 @@
           </div>
         </div>
 
-        <!-- Daftar Baris Bahan dengan Tombol + -->
+        <!-- Daftar Baris Bahan/Barang dengan Tombol + -->
         <div class="space-y-3 pt-2">
-          <label class="block text-xs font-semibold text-emerald-400 uppercase tracking-wider">Daftar Bahan yang Dibeli:</label>
+          <label id="labelDaftarItem" class="block text-xs font-semibold text-emerald-400 uppercase tracking-wider">Daftar Bahan yang Dibeli:</label>
           <div id="beliBahanRowsContainer" class="space-y-3">
             <div class="beli-row grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
               <div class="md:col-span-4">
                 <select class="row-item w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none">
-                  <option value="Iron">Iron</option>
-                  <option value="Carbon">Carbon</option>
-                  <option value="Glass">Glass</option>
-                  <option value="Rubber">Rubber</option>
-                  <option value="Plastik">Plastik</option>
-                  <option value="Box Recycle">Box Recycle</option>
+                  <optgroup label="Bahan Dasar">
+                    <option value="Iron">Iron</option>
+                    <option value="Carbon">Carbon</option>
+                    <option value="Glass">Glass</option>
+                    <option value="Rubber">Rubber</option>
+                    <option value="Plastik">Plastik</option>
+                    <option value="Box Recycle">Box Recycle</option>
+                  </optgroup>
+                  <optgroup label="Senjata & Item Lain">
+                    <option value="Vest">Vest</option>
+                    <option value="Senjata DA">Senjata DA</option>
+                    <option value="Senjata P50">Senjata P50</option>
+                    <option value="Senjata TAC9">Senjata TAC9</option>
+                    <option value="Senjata Ceramic">Senjata Ceramic</option>
+                    <option value="Senjata DE">Senjata DE</option>
+                  </optgroup>
                 </select>
               </div>
               <div class="md:col-span-2">
@@ -356,38 +373,39 @@
           </div>
 
           <button type="button" onclick="tambahBarisBeli()" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/40 text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2">
-            <i class="fa-solid fa-plus"></i> Tambah Bahan Lain (+)
+            <i class="fa-solid fa-plus"></i> Tambah Item Lain (+)
           </button>
         </div>
 
         <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 mt-4">
           <div>
-            <span class="text-xs text-gray-400 block">Total Keseluruhan Pembayaran:</span>
+            <span class="text-xs text-gray-400 block">Total Keseluruhan Transaksi:</span>
             <span id="grandTotalBeliText" class="text-2xl font-black text-emerald-400">Rp 0 (⚪ Uang Putih)</span>
           </div>
-          <button onclick="prosesBeliBahanWarga()" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-            <i class="fa-solid fa-check-to-slot"></i> Bayar, Masuk Brankas & Catat Kas
+          <button onclick="prosesTransaksiWarga()" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-check-to-slot"></i> Proses, Update Brankas & Kas
           </button>
         </div>
       </div>
 
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
         <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2">
-          <i class="fa-solid fa-history"></i> Riwayat Pembelian Bahan dari Warga
+          <i class="fa-solid fa-history"></i> Riwayat Transaksi Warga
         </h2>
         <div class="overflow-x-auto max-h-96 overflow-y-auto">
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase sticky top-0 bg-slate-900/95 backdrop-blur z-10">
                 <th class="p-2.5">Waktu</th>
+                <th class="p-2.5">Tipe</th>
                 <th class="p-2.5">Nama Warga</th>
-                <th class="p-2.5">Daftar Bahan & Qty</th>
-                <th class="p-2.5 text-right">Total Biaya & Jenis Kas</th>
+                <th class="p-2.5">Daftar Item & Qty</th>
+                <th class="p-2.5 text-right">Total Biaya & Kas</th>
                 <th class="p-2.5">Perwakilan Klub</th>
               </tr>
             </thead>
             <tbody id="beliWargaTableBody" class="divide-y divide-slate-800 text-sm">
-              <tr><td colspan="5" class="p-4 text-center text-gray-500">Belum ada riwayat pembelian.</td></tr>
+              <tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat transaksi warga.</td></tr>
             </tbody>
           </table>
         </div>
@@ -477,7 +495,7 @@
             <select id="vaultItemName" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400">
               <optgroup label="Bahan Dasar & Lainnya"><option value="Iron">Iron</option><option value="Carbon">Carbon</option><option value="Glass">Glass</option><option value="Rubber">Rubber</option><option value="Plastik">Plastik</option><option value="Box Recycle">Box Recycle</option></optgroup>
               <optgroup label="Pack Ammo"><option value="Pack Ammo 38LC">Pack Ammo 38LC</option><option value="Pack Ammo 9MM">Pack Ammo 9MM</option><option value="Pack Ammo 50AE">Pack Ammo 50AE</option></optgroup>
-              <optgroup label="Butiran Ammo"><option value="Ammo 38LC">Pack Ammo 38LC</option><option value="Ammo 9MM">Pack Ammo 9MM</option><option value="Ammo 50AE">Pack Ammo 50AE</option></optgroup>
+              <optgroup label="Butiran Ammo"><option value="Ammo 38LC">Ammo 38LC</option><option value="Ammo 9MM">Ammo 9MM</option><option value="Ammo 50AE">Ammo 50AE</option></optgroup>
               <optgroup label="Senjata, Vest & Item"><option value="Vest">Vest</option><option value="Senjata DA">Senjata DA</option><option value="Senjata P50">Senjata P50</option><option value="Senjata TAC9">Senjata TAC9</option><option value="Senjata Ceramic">Senjata Ceramic</option><option value="Senjata DE">Senjata DE</option></optgroup>
             </select>
           </div>
@@ -533,7 +551,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jenis Uang</label><select id="businessCurrency" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400"><option value="Uang Merah">Uang Merah 🔴</option><option value="Uang Putih">Uang Putih ⚪</option></select></div>
           <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Tipe</label><select id="businessType" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400"><option value="IN">Pemasukan (+)</option><option value="OUT">Pengeluaran (-)</option></select></div>
-          <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nominal</label><input type="number" id="businessAmount" min="Rp.0" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400" placeholder="0"></div>
+          <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nominal</label><input type="number" id="businessAmount" min="0" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400" placeholder="0"></div>
           <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Keterangan</label><input type="text" id="businessDesc" placeholder="Contoh: Jual barang" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400"></div>
           <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Pelapor</label><input type="text" id="businessAuthor" placeholder="Nama" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400"></div>
         </div>
@@ -770,7 +788,7 @@
         if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
         else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner Kelompok";
         else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris & Riwayat)";
-        else if(sectionId === 'sectionBeliWarga') subtitle.innerText = "Modul Pembelian Bahan dari Warga";
+        else if(sectionId === 'sectionBeliWarga') subtitle.innerText = "Modul Transaksi Warga (Beli & Jual)";
         else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Data Bisnis (Kas Uang Merah & Putih)";
         else if(sectionId === 'sectionSetoran') subtitle.innerText = "Modul Data Setoran Bahan Mingguan Klub";
         else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Data Anggota, Hierarki Rank & Status Keaktifan";
@@ -824,7 +842,24 @@
       });
     }
 
-    // --- MODUL PEMBELIAN BAHAN DARI WARGA ---
+    // --- MODUL TRANSAKSI WARGA (BELI / JUAL) ---
+    function gantiLabelTxWarga() {
+      const type = document.getElementById("wargaTxType").value;
+      const title = document.getElementById("formWargaTitle");
+      const labelNama = document.getElementById("labelNamaWarga");
+      const labelItem = document.getElementById("labelDaftarItem");
+
+      if (type === 'jual') {
+        title.innerHTML = `<i class="fa-solid fa-cart-shopping"></i> Form Transaksi Jual ke Warga`;
+        labelNama.innerText = "Nama Warga (Pembeli)";
+        labelDaftarItem.innerText = "Daftar Item/Bahan yang Dijual:";
+      } else {
+        title.innerHTML = `<i class="fa-solid fa-cart-plus"></i> Form Transaksi Beli dari Warga`;
+        labelNama.innerText = "Nama Warga (Penjual)";
+        labelDaftarItem.innerText = "Daftar Bahan yang Dibeli:";
+      }
+    }
+
     function tambahBarisBeli() {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
         alert("Akses ditolak! Akun Viewer hanya dapat melihat data.");
@@ -835,12 +870,22 @@
         <div class="beli-row grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
           <div class="md:col-span-4">
             <select class="row-item w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none">
-              <option value="Iron">Iron</option>
-              <option value="Carbon">Carbon</option>
-              <option value="Glass">Glass</option>
-              <option value="Rubber">Rubber</option>
-              <option value="Plastik">Plastik</option>
-              <option value="Box Recycle">Box Recycle</option>
+              <optgroup label="Bahan Dasar">
+                <option value="Iron">Iron</option>
+                <option value="Carbon">Carbon</option>
+                <option value="Glass">Glass</option>
+                <option value="Rubber">Rubber</option>
+                <option value="Plastik">Plastik</option>
+                <option value="Box Recycle">Box Recycle</option>
+              </optgroup>
+              <optgroup label="Senjata & Item Lain">
+                <option value="Vest">Vest</option>
+                <option value="Senjata DA">Senjata DA</option>
+                <option value="Senjata P50">Senjata P50</option>
+                <option value="Senjata TAC9">Senjata TAC9</option>
+                <option value="Senjata Ceramic">Senjata Ceramic</option>
+                <option value="Senjata DE">Senjata DE</option>
+              </optgroup>
             </select>
           </div>
           <div class="md:col-span-2">
@@ -866,7 +911,7 @@
         btn.closest(".beli-row").remove();
         hitungTotalBeliWarga();
       } else {
-        alert("Minimal harus ada 1 baris bahan!");
+        alert("Minimal harus ada 1 baris item!");
       }
     }
 
@@ -888,11 +933,12 @@
       return grandTotal;
     }
 
-    function prosesBeliBahanWarga() {
+    function prosesTransaksiWarga() {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
         alert("Akses ditolak! Akun Viewer tidak memiliki izin melakukan transaksi.");
         return;
       }
+      const txType = document.getElementById("wargaTxType").value; // 'beli' atau 'jual'
       const namaWarga = document.getElementById("beliWargaNama").value.trim();
       const admin = document.getElementById("beliWargaAdmin").value.trim();
       const currency = document.getElementById("beliWargaCurrency").value;
@@ -916,38 +962,67 @@
           itemsDetail.push({ item, qty, totalHargaBaris: rowTotal });
           totalSemuaHarga += rowTotal;
 
-          vaultStock[item] = (vaultStock[item] || 0) + qty;
-
-          vaultHistory.unshift({
-            id: Date.now() + Math.random(),
-            date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-            item: item,
-            action: "ADD",
-            diff: `+${qty}`,
-            desc: `Beli dari Warga (${namaWarga})`,
-            author: admin
-          });
+          if (txType === 'beli') {
+            // Beli dari warga -> Stok Brankas Bertambah (+)
+            vaultStock[item] = (vaultStock[item] || 0) + qty;
+            vaultHistory.unshift({
+              id: Date.now() + Math.random(),
+              date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+              item: item,
+              action: "ADD",
+              diff: `+${qty}`,
+              desc: `Beli dari Warga (${namaWarga})`,
+              author: admin
+            });
+          } else {
+            // Jual ke warga -> Stok Brankas Berkurang (-)
+            vaultStock[item] = Math.max(0, (vaultStock[item] || 0) - qty);
+            vaultHistory.unshift({
+              id: Date.now() + Math.random(),
+              date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+              item: item,
+              action: "SUB",
+              diff: `-${qty}`,
+              desc: `Jual ke Warga (${namaWarga})`,
+              author: admin
+            });
+          }
         }
       });
 
       if (itemsDetail.length === 0 || totalSemuaHarga <= 0) {
-        alert("Masukkan jumlah dan harga satuan bahan dengan benar!");
+        alert("Masukkan jumlah dan harga satuan item dengan benar!");
         return;
       }
 
-      businessHistory.unshift({
-        id: Date.now(),
-        date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-        currency: currency,
-        type: "OUT",
-        amount: totalSemuaHarga,
-        desc: `Beli bahan dari warga (${namaWarga})`,
-        author: admin
-      });
+      if (txType === 'beli') {
+        // Beli -> Kas Klub Berkurang (OUT)
+        businessHistory.unshift({
+          id: Date.now(),
+          date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+          currency: currency,
+          type: "OUT",
+          amount: totalSemuaHarga,
+          desc: `Beli bahan dari warga (${namaWarga})`,
+          author: admin
+        });
+      } else {
+        // Jual -> Kas Klub Bertambah (IN)
+        businessHistory.unshift({
+          id: Date.now(),
+          date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+          currency: currency,
+          type: "IN",
+          amount: totalSemuaHarga,
+          desc: `Jual ke warga (${namaWarga})`,
+          author: admin
+        });
+      }
 
       beliWargaHistory.unshift({
         id: Date.now(),
         date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        txType,
         namaWarga,
         itemsDetail,
         totalHarga: totalSemuaHarga,
@@ -963,12 +1038,22 @@
         <div class="beli-row grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
           <div class="md:col-span-4">
             <select class="row-item w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none">
-              <option value="Iron">Iron</option>
-              <option value="Carbon">Carbon</option>
-              <option value="Glass">Glass</option>
-              <option value="Rubber">Rubber</option>
-              <option value="Plastik">Plastik</option>
-              <option value="Box Recycle">Box Recycle</option>
+              <optgroup label="Bahan Dasar">
+                <option value="Iron">Iron</option>
+                <option value="Carbon">Carbon</option>
+                <option value="Glass">Glass</option>
+                <option value="Rubber">Rubber</option>
+                <option value="Plastik">Plastik</option>
+                <option value="Box Recycle">Box Recycle</option>
+              </optgroup>
+              <optgroup label="Senjata & Item Lain">
+                <option value="Vest">Vest</option>
+                <option value="Senjata DA">Senjata DA</option>
+                <option value="Senjata P50">Senjata P50</option>
+                <option value="Senjata TAC9">Senjata TAC9</option>
+                <option value="Senjata Ceramic">Senjata Ceramic</option>
+                <option value="Senjata DE">Senjata DE</option>
+              </optgroup>
             </select>
           </div>
           <div class="md:col-span-2">
@@ -986,25 +1071,34 @@
         </div>`;
       hitungTotalBeliWarga();
 
-      alert(`Berhasil! Pembelian bahan dari ${namaWarga} seharga Rp ${totalSemuaHarga.toLocaleString('id-ID')} (${currency}) dicatat.`);
+      alert(`Berhasil! Transaksi ${txType === 'beli' ? 'Pembelian dari' : 'Penjualan ke'} warga ${namaWarga} senilai Rp ${totalSemuaHarga.toLocaleString('id-ID')} berhasil dicatat & brankas diperbarui.`);
     }
 
     function renderBeliWargaHistory() {
       const tbody = document.getElementById("beliWargaTableBody");
       tbody.innerHTML = "";
       if (beliWargaHistory.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-500">Belum ada riwayat pembelian.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat transaksi warga.</td></tr>`;
         return;
       }
       beliWargaHistory.forEach(b => {
-        let itemsStr = b.itemsDetail.map(i => `<span class="text-emerald-400 font-semibold">${i.item} (+${i.qty})</span>`).join(', ');
+        let itemsStr = b.itemsDetail.map(i => {
+          let sign = b.txType === 'jual' ? '-' : '+';
+          let color = b.txType === 'jual' ? 'text-red-400' : 'text-emerald-400';
+          return `<span class="${color} font-semibold">${i.item} (${sign}${i.qty})</span>`;
+        }).join(', ');
+
         let currBadge = b.currency === "Uang Merah" ? "🔴" : "⚪";
+        let typeBadge = b.txType === 'jual' ? '<span class="bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded text-xs font-bold">Jual</span>' : '<span class="bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded text-xs font-bold">Beli</span>';
+        let costColor = b.txType === 'jual' ? 'text-green-400' : 'text-red-400';
+
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
             <td class="p-2.5 text-gray-400 text-xs">${b.date}</td>
+            <td class="p-2.5">${typeBadge}</td>
             <td class="p-2.5 text-white font-bold text-xs">${b.namaWarga}</td>
             <td class="p-2.5 text-xs">${itemsStr}</td>
-            <td class="p-2.5 text-right font-black text-xs text-red-400">Rp ${b.totalHarga.toLocaleString('id-ID')} (${currBadge})</td>
+            <td class="p-2.5 text-right font-black text-xs ${costColor}">Rp ${b.totalHarga.toLocaleString('id-ID')} (${currBadge})</td>
             <td class="p-2.5 text-gray-300 text-xs">${b.admin}</td>
           </tr>`;
       });
