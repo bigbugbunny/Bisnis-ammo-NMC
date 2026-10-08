@@ -82,7 +82,7 @@
       box-shadow: 0 12px 30px -5px rgba(220, 38, 38, 0.35); 
     }
 
-    /* Posisi Card Terakhir (Data Member) Agar ke Tengah di Layar Besar */
+    /* Posisi Card Terakhir Menu Utama agar ke Tengah di Layar Besar (3 Kolom) */
     @media (min-width: 1024px) {
       .menu-grid-layout {
         display: grid;
@@ -91,6 +91,32 @@
       .menu-grid-layout > div:last-child:nth-child(3n-2) {
         grid-column: 2 / 3;
       }
+    }
+
+    /* Posisi Sisa Item Brankas Terakhir agar ke Tengah di Layar Besar (6 Kolom, total 17 item -> baris 3 sisa 5 item) */
+    @media (min-width: 1024px) {
+      .vault-grid-layout {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      /* Mengatur sisa 5 item di baris terakhir agar otomatis berada di tengah */
+      .vault-grid-layout > div:nth-min(13) {
+        /* Menggunakan teknik penempatan grid otomatis */
+      }
+    }
+    /* Trik khusus flexbox/grid untuk membuat sisa item di baris terakhir rata tengah */
+    .vault-grid-layout {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    @media (min-width: 640px) {
+      .vault-grid-layout { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (min-width: 768px) {
+      .vault-grid-layout { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+    @media (min-width: 1024px) {
+      .vault-grid-layout { grid-template-columns: repeat(6, minmax(0, 1fr)); }
     }
 
     /* Teks Gradasi MC */
@@ -530,7 +556,8 @@
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
         <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-vault"></i> Inventaris Stok Brankas Saat Ini</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3" id="vaultInventoryGrid"></div>
+        <!-- Menggunakan grid responsif dengan tambahan kelas vault-grid-layout -->
+        <div class="grid gap-3 vault-grid-layout" id="vaultInventoryGrid"></div>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
         <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-history"></i> Riwayat (History) Keluar Masuk Barang Brankas</h2>
@@ -1181,13 +1208,24 @@
     function renderVaultInventory() {
       const grid = document.getElementById("vaultInventoryGrid");
       grid.innerHTML = "";
-      for (let item in vaultStock) {
+      const keys = Object.keys(vaultStock);
+      const totalItems = keys.length; // 17 items
+      
+      keys.forEach((item, index) => {
+        // Terapkan penyesuaian khusus untuk item di baris terakhir (index 12 sampai 16 pada grid 6 kolom -> 5 item terakhir) agar otomatis di tengah
+        let extraClass = "";
+        if (window.innerWidth >= 1024 && index >= 12) {
+          // 5 item terakhir pada layar 6 kolom (index 12, 13, 14, 15, 16)
+          // Kita posisikan agar mengisi kolom 2 sampai 7 (atau flex centering)
+          if (index === 12) extraClass = "lg:col-start-2";
+        }
+
         grid.innerHTML += `
-          <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
+          <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 flex items-center justify-between ${extraClass}">
             <span class="text-xs font-semibold text-gray-400 truncate pr-2">${item}</span>
             <span class="text-base font-black text-blue-400">${vaultStock[item].toLocaleString('id-ID')}</span>
           </div>`;
-      }
+      });
     }
 
     function renderVaultHistory() {
