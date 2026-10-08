@@ -516,7 +516,8 @@
               <optgroup label="Bahan Dasar & Lainnya"><option value="Iron">Iron</option><option value="Carbon">Carbon</option><option value="Glass">Glass</option><option value="Rubber">Rubber</option><option value="Plastik">Plastik</option><option value="Box Recycle">Box Recycle</option></optgroup>
               <optgroup label="Pack Ammo"><option value="Pack Ammo 38LC">Pack Ammo 38LC</option><option value="Pack Ammo 9MM">Pack Ammo 9MM</option><option value="Pack Ammo 50AE">Pack Ammo 50AE</option></optgroup>
               <optgroup label="Butiran Ammo"><option value="Ammo 38LC">Ammo 38LC</option><option value="Ammo 9MM">Ammo 9MM</option><option value="Ammo 50AE">Ammo 50AE</option></optgroup>
-              <optgroup label="Senjata, Vest & Item"><option value="Vest">Vest</option><option value="Senjata DA">Senjata DA</option><option value="Senjata P50">Senjata P50</option><option value="Senjata TAC9">Senjata TAC9</option><option value="Senjata Ceramic">Senjata Ceramic</option></optgroup>
+              <optgroup label="Barham"><option value="Kecubung">Kecubung</option><option value="Jamur">Jamur</option><option value="Weed">Weed</option></optgroup><option value="Joint">Joint</option></optgroup>
+              <optgroup label="Senjata, Vest & Item"><option value="LockPick">LockPick</option><option value="Vest">Vest</option><option value="Senjata DA">Senjata DA</option><option value="Senjata P50">Senjata P50</option><option value="Senjata TAC9">Senjata TAC9</option><option value="Senjata Ceramic">Senjata Ceramic</option></optgroup>
             </select>
           </div>
           <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Aksi & Qty</label><div class="flex gap-2"><select id="vaultAction" class="bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400 text-sm"><option value="ADD">Masuk (+)</option><option value="SUB">Keluar (-)</option><option value="SET">Set</option></select><input type="number" id="vaultQty" min="0" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400" placeholder="0"></div></div>
@@ -529,7 +530,7 @@
         </div>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-        <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-vault"></i> Inventaris Stok Brankas Saat Ini</h2>
+        <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-vault"></i> Inventory Stok Brankas Saat Ini</h2>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3" id="vaultInventoryGrid"></div>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
@@ -858,7 +859,8 @@
       "Iron": 0, "Carbon": 0, "Glass": 0, "Rubber": 0, "Plastik": 0, "Box Recycle": 0,
       "Pack Ammo 38LC": 0, "Pack Ammo 9MM": 0, "Pack Ammo 50AE": 0,
       "Ammo 38LC": 0, "Ammo 9MM": 0, "Ammo 50AE": 0,
-      "Vest": 0, "Senjata DA": 0, "Senjata P50": 0, "Senjata TAC9": 0, "Senjata Ceramic": 0
+      "Kecubung": 0, "Jamur": 0, "Weed": 0, "Joint": 0,
+      "LockPick": 0, "Vest": 0, "Senjata DA": 0, "Senjata P50": 0, "Senjata TAC9": 0, "Senjata Ceramic": 0
     };
 
     let vaultStock = { ...defaultVaultStock };
@@ -1588,11 +1590,11 @@
       "th21": { name: "21TH", ammo: { "50AE": 80000, "9MM": 115000, "38LC": 145000 }, items: { "Baju Hangat": { price: 100000, promo: "Max 100 Pcs/Minggu", isRate: false } } },
       "voldemort": { name: "Voldemort", ammo: { "50AE": 75000, "9MM": 120000, "38LC": 140000 }, items: { "Baju Hangat": { price: 110000, promo: "Max 50 Pcs", isRate: false } } },
       "mugen": { name: "Mugen", ammo: { "50AE": 75000, "9MM": 115000, "38LC": 130000 }, items: { "Cuci Uang (20%)": { price: 0.80, promo: "Max 15 Juta", isRate: true }, "Cuci Uang (30%)": { price: 0.70, promo: "Tanpa Max", isRate: true } } },
-      "atlanta": { name: "Atlanta", ammo: { "50AE": 100000, "9MM": 150000, "38LC": 145000 }, items: { "Kecubung": { price: 23000, promo: "", isRate: false }, "Jamur": { price: 23000, promo: "", isRate: false }, "Wide": { price: 23000, promo: "", isRate: false } } },
-      "brooklyn": { name: "Brooklyn", ammo: { "50AE": 75000, "9MM": 110000, "38LC": 140000 }, items: { "Kecubung": { price: 20000, promo: "", isRate: false }, "Jamur": { price: 20000, promo: "", isRate: false }, "Wide": { price: 20000, promo: "", isRate: false } } },
-      "alk": { name: "ALK", ammo: { "50AE": 75000, "9MM": 135000, "38LC": 155000 }, items: { "Kecubung": { price: 21500, promo: "", isRate: false }, "Jamur": { price: 21500, promo: "", isRate: false }, "Wide": { price: 21500, promo: "", isRate: false } } },
+      "atlanta": { name: "Atlanta", ammo: { "50AE": 100000, "9MM": 150000, "38LC": 145000 }, items: { "Kecubung": { price: 23000, promo: "", isRate: false }, "Jamur": { price: 23000, promo: "", isRate: false }, "Weed": { price: 23000, promo: "", isRate: false } } },
+      "brooklyn": { name: "Brooklyn", ammo: { "50AE": 75000, "9MM": 110000, "38LC": 140000 }, items: { "Kecubung": { price: 20000, promo: "", isRate: false }, "Jamur": { price: 20000, promo: "", isRate: false }, "Weed": { price: 20000, promo: "", isRate: false } } },
+      "alk": { name: "ALK", ammo: { "50AE": 75000, "9MM": 135000, "38LC": 155000 }, items: { "Kecubung": { price: 21500, promo: "", isRate: false }, "Jamur": { price: 21500, promo: "", isRate: false }, "Weed": { price: 21500, promo: "", isRate: false } } },
       "s90": { name: "90S", ammo: { "50AE": 80000, "9MM": 115000, "38LC": 140000 }, items: { "Baju Hangat": { price: 100000, promo: "", isRate: false } } },
-      "angker": { name: "Angker", ammo: { "50AE": 80000, "9MM": 120000, "38LC": 155000 }, items: { "Kecubung": { price: 23000, promo: "", isRate: false }, "Jamur": { price: 23000, promo: "", isRate: false }, "Wide": { price: 23000, promo: "", isRate: false } } },
+      "angker": { name: "Angker", ammo: { "50AE": 80000, "9MM": 120000, "38LC": 155000 }, items: { "Kecubung": { price: 23000, promo: "", isRate: false }, "Jamur": { price: 23000, promo: "", isRate: false }, "Weed": { price: 23000, promo: "", isRate: false } } },
       "white_tiger": { name: "White Tiger", ammo: { "50AE": 70000, "9MM": 110000, "38LC": 140000 }, items: { "Umer ke Putih (15%)": { price: 0.85, promo: "", isRate: true }, "Putih ke Umer (18%)": { price: 0.82, promo: "", isRate: true } } },
       "mayans": { name: "Mayans", ammo: { "9MM": 113000, "38LC": 120000 }, items: { "DA": { price: 150000, promo: "10 Free 2", isRate: false }, "P50": { price: 130000, promo: "", isRate: false }, "TAC9": { price: 110000, promo: "", isRate: false }, "CERAMIC": { price: 90000, promo: "", isRate: false } } }
     };
