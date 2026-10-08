@@ -11,10 +11,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   
-  <!-- Firebase SDK (App, Database, & Auth) -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 
   <style>
     .welcome-title-glow {
@@ -140,7 +139,7 @@
 <body class="min-h-screen p-4 md:p-8">
   <div class="bg-ambient-glow"></div>
 
-  <!-- MODAL LOGIN (MENGGUNAKAN FIREBASE AUTH) -->
+  <!-- MODAL LOGIN MURNI USERNAME & SANDI -->
   <div id="loginModal" class="fixed inset-0 bg-slate-950/95 z-50 flex items-center justify-center p-4">
     <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6">
       <div class="text-center space-y-3">
@@ -148,19 +147,19 @@
           <i class="fa-solid fa-skull"></i>
         </div>
         <h2 class="text-2xl font-black tracking-wider text-red-500">TRIAD COMMUNITY ACCESS</h2>
-        <p class="text-xs text-gray-400">Silakan login menggunakan akun terdaftar</p>
+        <p class="text-xs text-gray-400">Silakan masukkan username dan sandi Anda</p>
       </div>
 
       <div class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Email / Username</label>
-          <input type="text" id="loginUsername" placeholder="Masukkan email..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-red-500 text-sm">
+          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Username</label>
+          <input type="text" id="loginUsername" placeholder="Masukkan username..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-red-500 text-sm">
         </div>
         <div>
-          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Password</label>
-          <input type="password" id="loginPassword" placeholder="Masukkan password..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-red-500 text-sm">
+          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Sandi / Password</label>
+          <input type="password" id="loginPassword" placeholder="Masukkan sandi..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-red-500 text-sm">
         </div>
-        <div id="loginError" class="text-xs text-red-400 text-center hidden">Email atau password salah!</div>
+        <div id="loginError" class="text-xs text-red-400 text-center hidden">Username atau sandi salah!</div>
 
         <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider">
           <i class="fa-solid fa-right-to-bracket"></i> MASUK SISTEM
@@ -192,7 +191,7 @@
       
       <div class="mt-4 md:mt-0 flex items-center gap-3">
         <span id="userRoleBadge" class="bg-red-950/60 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-800/50 flex items-center gap-2">
-          <i class="fa-solid fa-user-shield"></i> Role: Editor (Akses Penuh)
+          <i class="fa-solid fa-user-shield"></i> Role: Administrator
         </span>
         <button onclick="handleLogout()" class="bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-500/30 transition flex items-center gap-1">
           <i class="fa-solid fa-right-from-bracket"></i> Keluar
@@ -708,7 +707,6 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const auth = firebase.auth();
 
     const DISCORD_WEBHOOK_BRANKAS   = "https://discordapp.com/api/webhooks/1557009048807800852/l82FqtdPoEUwzfGTSxCC_fVYYrtEJozTFKMXgpGDdiudHFyD7BB6TONGERVL2BL3kdnN";
     const DISCORD_WEBHOOK_PENJUALAN = "https://discordapp.com/api/webhooks/1557014106060623913/LQEqIw427dgWz1nEb2f8ihXhYH_rkl7a_ApywtffJFR31y07KkIzrDcGchuP9PO82-If";
@@ -716,42 +714,46 @@
     const DISCORD_WEBHOOK_SETORAN   = "https://discordapp.com/api/webhooks/1557139282802774127/cw05EPU60q_Uyor3_HEpNVs-XTvnXvOD4LLTWkkZjfiw8SANBTsQjNWEkmmniu0q1DSr";
     const DISCORD_WEBHOOK_MEMBER    = "https://discordapp.com/api/webhooks/1557148223884496916/fnxfMm7Z_Pk0w5zQuSOwF_DNu9vrUIbkx6QN8pMSZeVmef9EkHb4ucTkQOr95X37Vyma";
 
-    // --- FUNGSI LOGIN DENGAN FIREBASE AUTH ---
+    // --- SISTEM LOGIN MURNI USERNAME & SANDI AMAN DI DATABASE ---
     function handleLogin() {
-      const email = document.getElementById("loginUsername").value.trim();
-      const pass = document.getElementById("loginPassword").value.trim();
+      const usernameInput = document.getElementById("loginUsername").value.trim();
+      const passwordInput = document.getElementById("loginPassword").value.trim();
       const errorDiv = document.getElementById("loginError");
 
-      if (!email || !pass) {
-        errorDiv.innerText = "Email dan password wajib diisi!";
+      if (!usernameInput || !passwordInput) {
+        errorDiv.innerText = "Username dan sandi wajib diisi!";
         errorDiv.classList.remove("hidden");
         return;
       }
 
-      auth.signInWithEmailAndPassword(email, pass)
-        .then((userCredential) => {
+      // Cek ke database Firebase pada node 'admin_users'
+      db.ref('admin_users/' + usernameInput).once('value').then((snapshot) => {
+        const userData = snapshot.val();
+        if (userData && userData.password === passwordInput) {
+          localStorage.setItem("nmc_logged_user", usernameInput);
           document.getElementById("loginModal").classList.add("hidden");
           errorDiv.classList.add("hidden");
-        })
-        .catch((error) => {
-          errorDiv.innerText = "Email atau password salah!";
+        } else {
+          errorDiv.innerText = "Username atau sandi salah!";
           errorDiv.classList.remove("hidden");
-        });
-    }
-
-    function handleLogout() {
-      auth.signOut().then(() => {
-        location.reload();
+        }
+      }).catch(() => {
+        errorDiv.innerText = "Gagal terhubung ke database!";
+        errorDiv.classList.remove("hidden");
       });
     }
 
-    // Pantau status login pengguna secara real-time oleh Firebase
-    auth.onAuthStateChanged((user) => {
-      const modal = document.getElementById("loginModal");
-      if (user) {
-        modal.classList.add("hidden");
+    function handleLogout() {
+      localStorage.removeItem("nmc_logged_user");
+      location.reload();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const loggedUser = localStorage.getItem("nmc_logged_user");
+      if (loggedUser) {
+        document.getElementById("loginModal").classList.add("hidden");
       } else {
-        modal.classList.remove("hidden");
+        document.getElementById("loginModal").classList.remove("hidden");
       }
     });
 
