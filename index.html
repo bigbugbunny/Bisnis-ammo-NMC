@@ -82,6 +82,17 @@
       box-shadow: 0 12px 30px -5px rgba(220, 38, 38, 0.35); 
     }
 
+    /* Posisi Card Terakhir (Data Member) Agar ke Tengah di Layar Besar */
+    @media (min-width: 1024px) {
+      .menu-grid-layout {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .menu-grid-layout > div:last-child:nth-child(3n-2) {
+        grid-column: 2 / 3;
+      }
+    }
+
     /* Teks Gradasi MC */
     .mc-gradient-text { 
       background: linear-gradient(135deg, #ef4444 0%, #f59e0b 50%, #ef4444 100%); 
@@ -236,7 +247,8 @@
         <i class="fa-solid fa-bars"></i> NAKAMA MC BLAINE COUNTY - PILIH MODUL MANAGEMENT
       </h2>
 
-      <div class="flex flex-wrap justify-center gap-6">
+      <!-- Menggunakan grid standar dengan tambahan kelas menu-grid-layout -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 menu-grid-layout">
         
         <!-- Card 1 -->
         <div onclick="showSection('sectionBahan')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between">
@@ -298,7 +310,7 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-pink-400"><span>Rekap Setoran</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
-        <!-- Card 7: Data Member -->
+        <!-- Card 7: Data Member (Otomatis ke tengah di baris terakhir) -->
         <div onclick="showSection('sectionMember')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between">
           <div>
             <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-emerald-500/30"><i class="fa-solid fa-users"></i></div>
@@ -504,7 +516,7 @@
               <optgroup label="Bahan Dasar & Lainnya"><option value="Iron">Iron</option><option value="Carbon">Carbon</option><option value="Glass">Glass</option><option value="Rubber">Rubber</option><option value="Plastik">Plastik</option><option value="Box Recycle">Box Recycle</option></optgroup>
               <optgroup label="Pack Ammo"><option value="Pack Ammo 38LC">Pack Ammo 38LC</option><option value="Pack Ammo 9MM">Pack Ammo 9MM</option><option value="Pack Ammo 50AE">Pack Ammo 50AE</option></optgroup>
               <optgroup label="Butiran Ammo"><option value="Ammo 38LC">Ammo 38LC</option><option value="Ammo 9MM">Ammo 9MM</option><option value="Ammo 50AE">Ammo 50AE</option></optgroup>
-              <optgroup label="Senjata, Vest & Item"><option value="Vest">Vest</option><option value="Senjata DA">Senjata DA</option><option value="Senjata P50">Senjata P50</option><option value="Senjata TAC9">Senjata TAC9</option><option value="Senjata Ceramic">Senjata Ceramic</option>
+              <optgroup label="Senjata, Vest & Item"><option value="Vest">Vest</option><option value="Senjata DA">Senjata DA</option><option value="Senjata P50">Senjata P50</option><option value="Senjata TAC9">Senjata TAC9</option><option value="Senjata Ceramic">Senjata Ceramic</option></optgroup>
             </select>
           </div>
           <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Aksi & Qty</label><div class="flex gap-2"><select id="vaultAction" class="bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400 text-sm"><option value="ADD">Masuk (+)</option><option value="SUB">Keluar (-)</option><option value="SET">Set</option></select><input type="number" id="vaultQty" min="0" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400" placeholder="0"></div></div>
