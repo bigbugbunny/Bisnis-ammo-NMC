@@ -139,7 +139,7 @@
 <body class="min-h-screen p-4 md:p-8">
   <div class="bg-ambient-glow"></div>
 
-  <!-- MODAL LOGIN MURNI USERNAME & SANDI -->
+  <!-- MODAL LOGIN DENGAN PILIHAN EDITOR / VIEWER -->
   <div id="loginModal" class="fixed inset-0 bg-slate-950/95 z-50 flex items-center justify-center p-4">
     <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6">
       <div class="text-center space-y-3">
@@ -147,7 +147,7 @@
           <i class="fa-solid fa-skull"></i>
         </div>
         <h2 class="text-2xl font-black tracking-wider text-red-500">TRIAD COMMUNITY ACCESS</h2>
-        <p class="text-xs text-gray-400">Silakan masukkan username dan sandi Anda</p>
+        <p class="text-xs text-gray-400">Silakan login sebagai Editor atau masuk sebagai Viewer</p>
       </div>
 
       <div class="space-y-4">
@@ -162,7 +162,17 @@
         <div id="loginError" class="text-xs text-red-400 text-center hidden">Username atau sandi salah!</div>
 
         <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider">
-          <i class="fa-solid fa-right-to-bracket"></i> MASUK SISTEM
+          <i class="fa-solid fa-right-to-bracket"></i> MASUK SEBAGAI EDITOR
+        </button>
+
+        <div class="relative flex py-1 items-center">
+          <div class="flex-grow border-t border-slate-800"></div>
+          <span class="flex-shrink mx-3 text-gray-500 text-xs uppercase font-semibold">atau</span>
+          <div class="flex-grow border-t border-slate-800"></div>
+        </div>
+
+        <button onclick="loginAsViewer()" class="w-full bg-slate-800 hover:bg-slate-700 text-gray-300 font-bold py-3 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider flex items-center justify-center gap-2">
+          <i class="fa-solid fa-eye"></i> MASUK SEBAGAI VIEWER (HANYA LIHAT)
         </button>
       </div>
     </div>
@@ -190,11 +200,16 @@
       </div>
       
       <div class="mt-4 md:mt-0 flex items-center gap-3">
-        <span id="userRoleBadge" class="bg-red-950/60 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-800/50 flex items-center gap-2">
-          <i class="fa-solid fa-user-shield"></i> Role: Administrator
+        <span id="userRoleBadge" class="bg-slate-800 text-gray-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2">
+          <i class="fa-solid fa-eye"></i> Role: Viewer
         </span>
-        <button onclick="handleLogout()" class="bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-500/30 transition flex items-center gap-1">
-          <i class="fa-solid fa-right-from-bracket"></i> Keluar
+
+        <button id="btnLoginAdminModal" onclick="openLoginModal()" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-500/30 transition flex items-center gap-1">
+          <i class="fa-solid fa-right-to-bracket"></i> Login Editor
+        </button>
+
+        <button id="btnLogoutBtn" onclick="handleLogout()" class="hidden bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-500/30 transition flex items-center gap-1">
+          <i class="fa-solid fa-right-from-bracket"></i> Keluar / Ganti Role
         </button>
       </div>
     </div>
@@ -319,7 +334,7 @@
 
     <!-- TRANSAKSI WARGA -->
     <div id="sectionBeliWarga" class="hidden space-y-6">
-      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
+      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
         <h2 id="formWargaTitle" class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-cart-plus"></i> Form Transaksi Warga</h2>
         
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pb-2 border-b border-slate-700">
@@ -458,23 +473,23 @@
         <div class="glass-card p-5 rounded-2xl"><h2 class="text-md font-bold text-red-400 mb-3 flex items-center justify-between"><span><i class="fa-solid fa-cart-shopping"></i> HARGA BELI / LAYANAN</span></h2><div id="itemPriceList" class="grid grid-cols-2 gap-2 text-xs"></div></div>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-        <div class="flex justify-between items-center"><h2 class="text-lg font-bold text-green-400 flex items-center gap-2"><i class="fa-solid fa-calculator"></i> KALKULATOR PENJUALAN AMMO</h2><button onclick="addAmmoRow()" class="bg-green-600/80 hover:bg-green-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-plus"></i> Tambah Ammo</button></div>
+        <div class="flex justify-between items-center"><h2 class="text-lg font-bold text-green-400 flex items-center gap-2"><i class="fa-solid fa-calculator"></i> KALKULATOR PENJUALAN AMMO</h2><button onclick="addAmmoRow()" class="bg-green-600/80 hover:bg-green-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1 editor-only"><i class="fa-solid fa-plus"></i> Tambah Ammo</button></div>
         <div id="ammoRowsContainer" class="space-y-3"></div>
         <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex justify-between items-center"><span class="text-sm text-gray-400">Total Tagihan Ammo:</span><span id="grandTotalAmmo" class="text-2xl font-black text-green-400">0</span></div>
-        <button onclick="sendPenjualanToDiscord()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2"><i class="fa-brands fa-discord"></i> Kirim Log Penjualan ke Discord</button>
+        <button onclick="sendPenjualanToDiscord()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 editor-only"><i class="fa-brands fa-discord"></i> Kirim Log Penjualan ke Discord</button>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-        <div class="flex justify-between items-center"><h2 class="text-lg font-bold text-red-400 flex items-center gap-2"><i class="fa-solid fa-gun"></i> KALKULATOR PEMBELIAN / LAYANAN</h2><button onclick="addItemRow()" class="bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-plus"></i> Tambah Barang</button></div>
+        <div class="flex justify-between items-center"><h2 class="text-lg font-bold text-red-400 flex items-center gap-2"><i class="fa-solid fa-gun"></i> KALKULATOR PEMBELIAN / LAYANAN</h2><button onclick="addItemRow()" class="bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1 editor-only"><i class="fa-solid fa-plus"></i> Tambah Barang</button></div>
         <div id="itemRowsContainer" class="space-y-3"></div>
         <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex justify-between items-center"><span class="text-sm text-gray-400">Total Pembelian / Fee:</span><span id="grandTotalItem" class="text-2xl font-black text-red-400">0</span></div>
-        <button onclick="sendPembelianToDiscord()" class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2"><i class="fa-brands fa-discord"></i> Kirim Log Pembelian ke Discord</button>
+        <button onclick="sendPembelianToDiscord()" class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 editor-only"><i class="fa-brands fa-discord"></i> Kirim Log Pembelian ke Discord</button>
       </div>
       <button onclick="copySummary()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 border border-slate-700"><i class="fa-solid fa-copy"></i> Salin Ringkasan Transaksi Gabungan</button>
     </div>
 
     <!-- DATA BRANKAS -->
     <div id="sectionBrankas" class="hidden space-y-6">
-      <div id="vaultControlPanel" class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
+      <div id="vaultControlPanel" class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
         <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2"><i class="fa-solid fa-boxes-packing"></i> Update Stok Barang Brankas</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
@@ -529,7 +544,7 @@
           <div id="totalUangPutih" class="text-3xl font-black text-white">0</div>
         </div>
       </div>
-      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
+      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
         <h2 class="text-lg font-bold text-purple-400 flex items-center gap-2"><i class="fa-solid fa-file-invoice-dollar"></i> Catat Transaksi Kas Bisnis</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jenis Uang</label><select id="businessCurrency" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400"><option value="Uang Merah">Uang Merah 🔴</option><option value="Uang Putih">Uang Putih ⚪</option></select></div>
@@ -566,7 +581,7 @@
             <option value="Minggu 1">Minggu 1</option><option value="Minggu 2">Minggu 2</option><option value="Minggu 3">Minggu 3</option><option value="Minggu 4">Minggu 4</option>
           </select>
         </div>
-        <div class="w-full md:w-auto flex items-center gap-2">
+        <div class="w-full md:w-auto flex items-center gap-2 editor-only">
           <input type="text" id="newMemberName" placeholder="Nama Anggota Baru..." class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-red-500">
           <button onclick="addNewMember()" class="bg-red-700 hover:bg-red-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-user-plus"></i> Tambah Anggota</button>
         </div>
@@ -575,7 +590,7 @@
        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <h2 class="text-lg font-bold text-red-400 flex items-center gap-2"><i class="fa-solid fa-hand-holding-dollar"></i> Rekap Setoran Bahan (<span id="currentMingguLabel">Minggu 1</span>)</h2>
           <div class="flex flex-wrap items-center gap-2">
-            <button onclick="masukkanSetoranKeBrankas()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
+            <button onclick="masukkanSetoranKeBrankas()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg editor-only">
               <i class="fa-solid fa-vault"></i> Masukkan ke Brankas
             </button>
             <button onclick="sendSetoranToDiscord()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
@@ -583,13 +598,13 @@
             </button>
           </div>
         </div>
-        <div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead><tr class="border-b border-slate-700 text-xs text-gray-400 uppercase"><th class="p-3">Nama Anggota</th><th class="p-3 text-right">Iron 🔩</th><th class="p-3 text-right">Carbon ⬛</th><th class="p-3 text-right">Glass 🧊</th><th class="p-3 text-right">Rubber 🛞</th><th class="p-3 text-right">Plastik 🧪</th><th class="p-3 text-center">Status</th><th class="p-3 text-center">Aksi</th></tr></thead><tbody id="setoranTableBody" class="divide-y divide-slate-800 text-sm"><tr><td colspan="8" class="p-4 text-center text-gray-500">Memuat data...</td></tr></tbody></table></div>
+        <div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead><tr class="border-b border-slate-700 text-xs text-gray-400 uppercase"><th class="p-3">Nama Anggota</th><th class="p-3 text-right">Iron 🔩</th><th class="p-3 text-right">Carbon ⬛</th><th class="p-3 text-right">Glass 🧊</th><th class="p-3 text-right">Rubber 🛞</th><th class="p-3 text-right">Plastik 🧪</th><th class="p-3 text-center">Status</th><th class="p-3 text-center editor-only">Aksi</th></tr></thead><tbody id="setoranTableBody" class="divide-y divide-slate-800 text-sm"><tr><td colspan="8" class="p-4 text-center text-gray-500">Memuat data...</td></tr></tbody></table></div>
       </div>
     </div>
 
     <!-- DATA MEMBER -->
     <div id="sectionMember" class="hidden space-y-6">
-      <div class="glass-card p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="glass-card p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-center gap-4 editor-only">
         <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-id-badge"></i> Tambah Anggota Klub</h2>
         <div class="w-full md:w-auto flex flex-wrap items-center gap-2">
           <input type="text" id="clubMemberName" placeholder="Nama Anggota..." class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
@@ -612,7 +627,7 @@
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase">
-                <th class="p-3">Nama Anggota</th><th class="p-3">Rank / Jabatan</th><th class="p-3 text-center">Status Keaktifan</th><th class="p-3 text-center">Aksi</th>
+                <th class="p-3">Nama Anggota</th><th class="p-3">Rank / Jabatan</th><th class="p-3 text-center">Status Keaktifan</th><th class="p-3 text-center editor-only">Aksi</th>
               </tr>
             </thead>
             <tbody id="memberTableBody" class="divide-y divide-slate-800 text-sm">
@@ -626,6 +641,8 @@
   </div>
 
   <script>
+    let currentUserRole = "viewer";
+
     function showCustomAlert(message, type = 'success') {
       const existingModal = document.getElementById('customAlertModal');
       if (existingModal) existingModal.remove();
@@ -714,7 +731,23 @@
     const DISCORD_WEBHOOK_SETORAN   = "https://discordapp.com/api/webhooks/1557139282802774127/cw05EPU60q_Uyor3_HEpNVs-XTvnXvOD4LLTWkkZjfiw8SANBTsQjNWEkmmniu0q1DSr";
     const DISCORD_WEBHOOK_MEMBER    = "https://discordapp.com/api/webhooks/1557148223884496916/fnxfMm7Z_Pk0w5zQuSOwF_DNu9vrUIbkx6QN8pMSZeVmef9EkHb4ucTkQOr95X37Vyma";
 
-    // --- SISTEM LOGIN MURNI USERNAME & SANDI AMAN DI DATABASE ---
+    // --- LOGIKA MULTI-ROLE (EDITOR & VIEWER) ---
+    window.addEventListener("DOMContentLoaded", () => {
+      const savedRole = localStorage.getItem("nmc_user_role");
+      
+      if (savedRole === "editor") {
+        currentUserRole = "editor";
+        document.getElementById("loginModal").classList.add("hidden");
+      } else if (savedRole === "viewer") {
+        currentUserRole = "viewer";
+        document.getElementById("loginModal").classList.add("hidden");
+      } else {
+        document.getElementById("loginModal").classList.remove("hidden");
+      }
+      
+      applyRolePermissions();
+    });
+
     function handleLogin() {
       const usernameInput = document.getElementById("loginUsername").value.trim();
       const passwordInput = document.getElementById("loginPassword").value.trim();
@@ -726,36 +759,89 @@
         return;
       }
 
-      // Cek ke database Firebase pada node 'admin_users'
-      db.ref('admin_users/' + usernameInput).once('value').then((snapshot) => {
-        const userData = snapshot.val();
-        if (userData && userData.password === passwordInput) {
+      db.ref('admin_users').once('value').then((snapshot) => {
+        const users = snapshot.val();
+        let isSuccess = false;
+
+        if (users) {
+          for (let userKey in users) {
+            if (userKey.toLowerCase() === usernameInput.toLowerCase()) {
+              const userData = users[userKey];
+              const storedPass = (typeof userData === 'object' && userData !== null) ? userData.password : userData;
+              
+              if (String(storedPass) === String(passwordInput)) {
+                isSuccess = true;
+                break;
+              }
+            }
+          }
+        }
+
+        if (isSuccess) {
+          currentUserRole = "editor";
+          localStorage.setItem("nmc_user_role", "editor");
           localStorage.setItem("nmc_logged_user", usernameInput);
+          
           document.getElementById("loginModal").classList.add("hidden");
           errorDiv.classList.add("hidden");
+          applyRolePermissions();
+          showCustomAlert(`Selamat datang kembali, ${usernameInput}!`);
         } else {
           errorDiv.innerText = "Username atau sandi salah!";
           errorDiv.classList.remove("hidden");
         }
-      }).catch(() => {
+      }).catch((err) => {
+        console.error(err);
         errorDiv.innerText = "Gagal terhubung ke database!";
         errorDiv.classList.remove("hidden");
       });
     }
 
+    function loginAsViewer() {
+      currentUserRole = "viewer";
+      localStorage.setItem("nmc_user_role", "viewer");
+      localStorage.removeItem("nmc_logged_user");
+
+      document.getElementById("loginModal").classList.add("hidden");
+      applyRolePermissions();
+    }
+
+    function openLoginModal() {
+      document.getElementById("loginModal").classList.remove("hidden");
+    }
+
     function handleLogout() {
+      localStorage.removeItem("nmc_user_role");
       localStorage.removeItem("nmc_logged_user");
       location.reload();
     }
 
-    window.addEventListener("DOMContentLoaded", () => {
-      const loggedUser = localStorage.getItem("nmc_logged_user");
-      if (loggedUser) {
-        document.getElementById("loginModal").classList.add("hidden");
+    function applyRolePermissions() {
+      const badge = document.getElementById("userRoleBadge");
+      const btnLogin = document.getElementById("btnLoginAdminModal");
+      const btnLogout = document.getElementById("btnLogoutBtn");
+      const editorElements = document.querySelectorAll(".editor-only");
+
+      if (currentUserRole === "editor") {
+        if(badge) {
+          badge.innerHTML = `<i class="fa-solid fa-user-shield"></i> Role: Editor`;
+          badge.className = "bg-red-950/60 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-800/50 flex items-center gap-2";
+        }
+        if(btnLogin) btnLogin.classList.add("hidden");
+        if(btnLogout) btnLogout.classList.remove("hidden");
+
+        editorElements.forEach(el => el.classList.remove("hidden"));
       } else {
-        document.getElementById("loginModal").classList.remove("hidden");
+        if(badge) {
+          badge.innerHTML = `<i class="fa-solid fa-eye"></i> Role: Viewer`;
+          badge.className = "bg-slate-800 text-gray-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2";
+        }
+        if(btnLogin) btnLogin.classList.remove("hidden");
+        if(btnLogout) btnLogout.classList.add("hidden");
+
+        editorElements.forEach(el => el.classList.add("hidden"));
       }
-    });
+    }
 
     function showWelcomeScreen() {
       document.getElementById('sectionWelcome').classList.remove('hidden');
@@ -1194,6 +1280,7 @@
     }
 
     function toggleStatusLunas(name) {
+      if (currentUserRole !== "editor") return;
       if (!setoranData[activeMinggu][name]) return;
       setoranData[activeMinggu][name].lunas = !setoranData[activeMinggu][name].lunas;
       saveDataToCloud();
@@ -1218,18 +1305,22 @@
           `<span onclick="toggleStatusLunas('${name}')" class="cursor-pointer bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30 hover:bg-green-500/30">Lunas ✅</span>` : 
           `<span onclick="toggleStatusLunas('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30 hover:bg-green-500/30">Belum Lunas ❌</span>`;
 
+        let actionCol = currentUserRole === "editor" ? 
+          `<td class="p-3 text-center editor-only"><button onclick="removeSetoranMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></td>` : '';
+
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
             <td class="p-3 text-white font-bold">${name}</td>
-            <td class="p-3 text-right"><input type="number" value="${item.iron}" onchange="updateSetoranBahan('${name}', 'iron', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-amber-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
-            <td class="p-3 text-right"><input type="number" value="${item.carbon}" onchange="updateSetoranBahan('${name}', 'carbon', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-blue-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
-            <td class="p-3 text-right"><input type="number" value="${item.glass}" onchange="updateSetoranBahan('${name}', 'glass', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-cyan-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
-            <td class="p-3 text-right"><input type="number" value="${item.rubber}" onchange="updateSetoranBahan('${name}', 'rubber', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-purple-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
-            <td class="p-3 text-right"><input type="number" value="${item.plastik}" onchange="updateSetoranBahan('${name}', 'plastik', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-emerald-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
+            <td class="p-3 text-right"><input type="number" value="${item.iron}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'iron', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-amber-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
+            <td class="p-3 text-right"><input type="number" value="${item.carbon}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'carbon', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-blue-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
+            <td class="p-3 text-right"><input type="number" value="${item.glass}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'glass', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-cyan-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
+            <td class="p-3 text-right"><input type="number" value="${item.rubber}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'rubber', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-purple-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
+            <td class="p-3 text-right"><input type="number" value="${item.plastik}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'plastik', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-emerald-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
             <td class="p-3 text-center">${statusBadge}</td>
-            <td class="p-3 text-center"><button onclick="removeSetoranMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></td>
+            ${actionCol}
           </tr>`;
       });
+      applyRolePermissions();
     }
 
     function masukkanSetoranKeBrankas() {
@@ -1315,6 +1406,7 @@
     }
 
     function toggleMemberStatus(name) {
+      if (currentUserRole !== "editor") return;
       if (!memberList[name]) return;
       memberList[name].status = memberList[name].status === "Aktif" ? "Inactive" : "Aktif";
       saveDataToCloud();
@@ -1349,14 +1441,18 @@
           `<span onclick="toggleMemberStatus('${name}')" class="cursor-pointer bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30 hover:bg-green-500/30">Aktif ✅</span>` : 
           `<span onclick="toggleMemberStatus('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30 hover:bg-green-500/30">Inactive ❌</span>`;
 
+        let actionCol = currentUserRole === "editor" ? 
+          `<td class="p-3 text-center editor-only"><button onclick="removeClubMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></td>` : '';
+
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
             <td class="p-3 text-white font-bold">${name}</td>
-            <td class="p-3"><select onchange="updateMemberRank('${name}', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs text-amber-300 font-bold focus:outline-none focus:border-emerald-400">${rankOptions}</select></td>
+            <td class="p-3"><select ${currentUserRole!=='editor'?'disabled':''} onchange="updateMemberRank('${name}', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs text-amber-300 font-bold focus:outline-none focus:border-emerald-400">${rankOptions}</select></td>
             <td class="p-3 text-center">${statusBadge}</td>
-            <td class="p-3 text-center"><button onclick="removeClubMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></td>
+            ${actionCol}
           </tr>`;
       });
+      applyRolePermissions();
     }
 
     function sendMembersToDiscord() {
