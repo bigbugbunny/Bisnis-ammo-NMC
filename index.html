@@ -4,15 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Triad Community Management System</title>
-
-  <!-- Logo Website -->
-  <link rel="icon" type="image/png" href="NakamaLogo.png">
   
+  <!-- Favicon Logo Website -->
+  <link rel="icon" type="image/png" href="Nakama.png">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <!-- Firebase SDK -->
+  
+  <!-- Firebase SDK (App, Database, & Auth) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
   <style>
     .welcome-title-glow {
       background: linear-gradient(135deg, #ffffff 30%, #ef4444 100%);
@@ -78,7 +81,6 @@
       box-shadow: 0 12px 30px -5px rgba(220, 38, 38, 0.35); 
     }
 
-    /* PENGATURAN GRID 3 KOLOM YANG DIPERTEGAS */
     .menu-grid-layout {
       display: grid;
       grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -107,7 +109,6 @@
       .vault-grid-layout {
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
-      /* Mengatur sisa elemen ganjil di baris terakhir brankas agar otomatis berada di tengah */
       .vault-grid-layout > div:last-child:nth-child(3n-2) {
         grid-column: 2 / 3;
       }
@@ -139,7 +140,7 @@
 <body class="min-h-screen p-4 md:p-8">
   <div class="bg-ambient-glow"></div>
 
-  <!-- MODAL LOGIN -->
+  <!-- MODAL LOGIN (MENGGUNAKAN FIREBASE AUTH) -->
   <div id="loginModal" class="fixed inset-0 bg-slate-950/95 z-50 flex items-center justify-center p-4">
     <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6">
       <div class="text-center space-y-3">
@@ -147,19 +148,19 @@
           <i class="fa-solid fa-skull"></i>
         </div>
         <h2 class="text-2xl font-black tracking-wider text-red-500">TRIAD COMMUNITY ACCESS</h2>
-        <p class="text-xs text-gray-400">Silakan login untuk masuk ke sistem management</p>
+        <p class="text-xs text-gray-400">Silakan login menggunakan akun terdaftar</p>
       </div>
 
       <div class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Username</label>
-          <input type="text" id="loginUsername" placeholder="Masukkan username..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-red-500 text-sm">
+          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Email / Username</label>
+          <input type="text" id="loginUsername" placeholder="Masukkan email..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-red-500 text-sm">
         </div>
         <div>
           <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Password</label>
           <input type="password" id="loginPassword" placeholder="Masukkan password..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-red-500 text-sm">
         </div>
-        <div id="loginError" class="text-xs text-red-400 text-center hidden">Username atau password salah!</div>
+        <div id="loginError" class="text-xs text-red-400 text-center hidden">Email atau password salah!</div>
 
         <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider">
           <i class="fa-solid fa-right-to-bracket"></i> MASUK SISTEM
@@ -181,7 +182,7 @@
         </button>
 
         <div class="flex items-center gap-3">
-          <img src="NakamaLogo.png" alt="Logo" class="w-12 h-12 object-contain rounded-xl border border-red-600/50 bg-black p-1 shadow-md" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+          <img src="Nakama.png" alt="Logo" class="w-12 h-12 object-contain rounded-xl border border-red-600/50 bg-black p-1 shadow-md" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
           <div>
             <h1 class="text-2xl md:text-3xl font-black tracking-wide mc-gradient-text" id="headerTitleText">TRIAD COMMUNITY</h1>
             <p class="text-xs text-gray-400 mt-0.5 tracking-wider" id="headerSubtitle">SYSTEM MANAGEMENT & DASHBOARD</p>
@@ -191,7 +192,7 @@
       
       <div class="mt-4 md:mt-0 flex items-center gap-3">
         <span id="userRoleBadge" class="bg-red-950/60 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-800/50 flex items-center gap-2">
-          <i class="fa-solid fa-user-shield"></i> Role: -
+          <i class="fa-solid fa-user-shield"></i> Role: Editor (Akses Penuh)
         </span>
         <button onclick="handleLogout()" class="bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-500/30 transition flex items-center gap-1">
           <i class="fa-solid fa-right-from-bracket"></i> Keluar
@@ -206,7 +207,7 @@
           <i class="fa-solid fa-shield-halved"></i> Pusat Data Triad Community
         </span>
         <h2 class="text-4xl md:text-6xl font-black tracking-wider welcome-title-glow leading-tight">WELCOME TO <br> TRIAD COMMUNITY</h2>
-        <p class="text-sm text-gray-400">Silakan pilih divisi atau klub organisasi di bawah ini untuk mengakses sistem management by Bunny.</p>
+        <p class="text-sm text-gray-400">Silakan pilih divisi atau klub organisasi di bawah ini untuk mengakses sistem management by bunny.</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto pt-4">
@@ -319,7 +320,7 @@
 
     <!-- TRANSAKSI WARGA -->
     <div id="sectionBeliWarga" class="hidden space-y-6">
-      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
+      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
         <h2 id="formWargaTitle" class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-cart-plus"></i> Form Transaksi Warga</h2>
         
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pb-2 border-b border-slate-700">
@@ -458,23 +459,23 @@
         <div class="glass-card p-5 rounded-2xl"><h2 class="text-md font-bold text-red-400 mb-3 flex items-center justify-between"><span><i class="fa-solid fa-cart-shopping"></i> HARGA BELI / LAYANAN</span></h2><div id="itemPriceList" class="grid grid-cols-2 gap-2 text-xs"></div></div>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-        <div class="flex justify-between items-center"><h2 class="text-lg font-bold text-green-400 flex items-center gap-2"><i class="fa-solid fa-calculator"></i> KALKULATOR PENJUALAN AMMO</h2><button onclick="addAmmoRow()" class="editor-only bg-green-600/80 hover:bg-green-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-plus"></i> Tambah Ammo</button></div>
+        <div class="flex justify-between items-center"><h2 class="text-lg font-bold text-green-400 flex items-center gap-2"><i class="fa-solid fa-calculator"></i> KALKULATOR PENJUALAN AMMO</h2><button onclick="addAmmoRow()" class="bg-green-600/80 hover:bg-green-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-plus"></i> Tambah Ammo</button></div>
         <div id="ammoRowsContainer" class="space-y-3"></div>
         <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex justify-between items-center"><span class="text-sm text-gray-400">Total Tagihan Ammo:</span><span id="grandTotalAmmo" class="text-2xl font-black text-green-400">0</span></div>
-        <button onclick="sendPenjualanToDiscord()" class="editor-only w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2"><i class="fa-brands fa-discord"></i> Kirim Log Penjualan ke Discord</button>
+        <button onclick="sendPenjualanToDiscord()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2"><i class="fa-brands fa-discord"></i> Kirim Log Penjualan ke Discord</button>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-        <div class="flex justify-between items-center"><h2 class="text-lg font-bold text-red-400 flex items-center gap-2"><i class="fa-solid fa-gun"></i> KALKULATOR PEMBELIAN / LAYANAN</h2><button onclick="addItemRow()" class="editor-only bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-plus"></i> Tambah Barang</button></div>
+        <div class="flex justify-between items-center"><h2 class="text-lg font-bold text-red-400 flex items-center gap-2"><i class="fa-solid fa-gun"></i> KALKULATOR PEMBELIAN / LAYANAN</h2><button onclick="addItemRow()" class="bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-plus"></i> Tambah Barang</button></div>
         <div id="itemRowsContainer" class="space-y-3"></div>
         <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex justify-between items-center"><span class="text-sm text-gray-400">Total Pembelian / Fee:</span><span id="grandTotalItem" class="text-2xl font-black text-red-400">0</span></div>
-        <button onclick="sendPembelianToDiscord()" class="editor-only w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2"><i class="fa-brands fa-discord"></i> Kirim Log Pembelian ke Discord</button>
+        <button onclick="sendPembelianToDiscord()" class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2"><i class="fa-brands fa-discord"></i> Kirim Log Pembelian ke Discord</button>
       </div>
       <button onclick="copySummary()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 border border-slate-700"><i class="fa-solid fa-copy"></i> Salin Ringkasan Transaksi Gabungan</button>
     </div>
 
     <!-- DATA BRANKAS -->
     <div id="sectionBrankas" class="hidden space-y-6">
-      <div id="vaultControlPanel" class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
+      <div id="vaultControlPanel" class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
         <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2"><i class="fa-solid fa-boxes-packing"></i> Update Stok Barang Brankas</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
@@ -497,7 +498,7 @@
         </div>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-        <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-vault"></i> Inventori Stok Brankas Saat Ini</h2>
+        <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-vault"></i> Inventory Stok Brankas Saat Ini</h2>
         <div class="vault-grid-layout" id="vaultInventoryGrid"></div>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
@@ -529,7 +530,7 @@
           <div id="totalUangPutih" class="text-3xl font-black text-white">0</div>
         </div>
       </div>
-      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
+      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
         <h2 class="text-lg font-bold text-purple-400 flex items-center gap-2"><i class="fa-solid fa-file-invoice-dollar"></i> Catat Transaksi Kas Bisnis</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jenis Uang</label><select id="businessCurrency" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400"><option value="Uang Merah">Uang Merah 🔴</option><option value="Uang Putih">Uang Putih ⚪</option></select></div>
@@ -566,7 +567,7 @@
             <option value="Minggu 1">Minggu 1</option><option value="Minggu 2">Minggu 2</option><option value="Minggu 3">Minggu 3</option><option value="Minggu 4">Minggu 4</option>
           </select>
         </div>
-        <div class="w-full md:w-auto flex items-center gap-2 editor-only">
+        <div class="w-full md:w-auto flex items-center gap-2">
           <input type="text" id="newMemberName" placeholder="Nama Anggota Baru..." class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-red-500">
           <button onclick="addNewMember()" class="bg-red-700 hover:bg-red-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-user-plus"></i> Tambah Anggota</button>
         </div>
@@ -575,15 +576,15 @@
        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <h2 class="text-lg font-bold text-red-400 flex items-center gap-2"><i class="fa-solid fa-hand-holding-dollar"></i> Rekap Setoran Bahan (<span id="currentMingguLabel">Minggu 1</span>)</h2>
           <div class="flex flex-wrap items-center gap-2">
-            <button onclick="masukkanSetoranKeBrankas()" class="editor-only bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
+            <button onclick="masukkanSetoranKeBrankas()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
               <i class="fa-solid fa-vault"></i> Masukkan ke Brankas
             </button>
-            <button onclick="sendSetoranToDiscord()" class="editor-only bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
+            <button onclick="sendSetoranToDiscord()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
               <i class="fa-brands fa-discord"></i> Kirim ke Discord & Salin
             </button>
           </div>
         </div>
-        <div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead><tr class="border-b border-slate-700 text-xs text-gray-400 uppercase"><th class="p-3">Nama Anggota</th><th class="p-3 text-right">Iron 🔩</th><th class="p-3 text-right">Carbon ⬛</th><th class="p-3 text-right">Glass 🧊</th><th class="p-3 text-right">Rubber 🛞</th><th class="p-3 text-right">Plastik 🧪</th><th class="p-3 text-center">Status</th><th class="p-3 text-center editor-only">Aksi</th></tr></thead><tbody id="setoranTableBody" class="divide-y divide-slate-800 text-sm"><tr><td colspan="8" class="p-4 text-center text-gray-500">Memuat data...</td></tr></tbody></table></div>
+        <div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead><tr class="border-b border-slate-700 text-xs text-gray-400 uppercase"><th class="p-3">Nama Anggota</th><th class="p-3 text-right">Iron 🔩</th><th class="p-3 text-right">Carbon ⬛</th><th class="p-3 text-right">Glass 🧊</th><th class="p-3 text-right">Rubber 🛞</th><th class="p-3 text-right">Plastik 🧪</th><th class="p-3 text-center">Status</th><th class="p-3 text-center">Aksi</th></tr></thead><tbody id="setoranTableBody" class="divide-y divide-slate-800 text-sm"><tr><td colspan="8" class="p-4 text-center text-gray-500">Memuat data...</td></tr></tbody></table></div>
       </div>
     </div>
 
@@ -591,7 +592,7 @@
     <div id="sectionMember" class="hidden space-y-6">
       <div class="glass-card p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
         <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-id-badge"></i> Tambah Anggota Klub</h2>
-        <div class="w-full md:w-auto flex flex-wrap items-center gap-2 editor-only">
+        <div class="w-full md:w-auto flex flex-wrap items-center gap-2">
           <input type="text" id="clubMemberName" placeholder="Nama Anggota..." class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
           <select id="clubMemberRank" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
             <option value="President">1. President</option><option value="Vice President">2. Vice President</option><option value="Sergeant at Arms">3. Sergeant at Arms</option><option value="Road Captain">4. Road Captain</option><option value="Secretary">5. Secretary</option><option value="Treasurer">6. Treasurer</option><option value="Enforcer">7. Enforcer</option><option value="Member / Patched">8. Member / Patched</option><option value="Prospect" selected>9. Prospect</option><option value="Hangaround">10. Hangaround</option>
@@ -603,7 +604,7 @@
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
         <div class="flex justify-between items-center">
           <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-users"></i> Daftar Anggota Aktif & Hierarki Klub</h2>
-          <button onclick="sendMembersToDiscord()" class="editor-only bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
+          <button onclick="sendMembersToDiscord()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
             <i class="fa-brands fa-discord"></i> Kirim Daftar Anggota ke Discord & Salin
           </button>
         </div>
@@ -612,7 +613,7 @@
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase">
-                <th class="p-3">Nama Anggota</th><th class="p-3">Rank / Jabatan</th><th class="p-3 text-center">Status Keaktifan</th><th class="p-3 text-center editor-only">Aksi</th>
+                <th class="p-3">Nama Anggota</th><th class="p-3">Rank / Jabatan</th><th class="p-3 text-center">Status Keaktifan</th><th class="p-3 text-center">Aksi</th>
               </tr>
             </thead>
             <tbody id="memberTableBody" class="divide-y divide-slate-800 text-sm">
@@ -707,6 +708,7 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+    const auth = firebase.auth();
 
     const DISCORD_WEBHOOK_BRANKAS   = "https://discordapp.com/api/webhooks/1557009048807800852/l82FqtdPoEUwzfGTSxCC_fVYYrtEJozTFKMXgpGDdiudHFyD7BB6TONGERVL2BL3kdnN";
     const DISCORD_WEBHOOK_PENJUALAN = "https://discordapp.com/api/webhooks/1557014106060623913/LQEqIw427dgWz1nEb2f8ihXhYH_rkl7a_ApywtffJFR31y07KkIzrDcGchuP9PO82-If";
@@ -714,48 +716,42 @@
     const DISCORD_WEBHOOK_SETORAN   = "https://discordapp.com/api/webhooks/1557139282802774127/cw05EPU60q_Uyor3_HEpNVs-XTvnXvOD4LLTWkkZjfiw8SANBTsQjNWEkmmniu0q1DSr";
     const DISCORD_WEBHOOK_MEMBER    = "https://discordapp.com/api/webhooks/1557148223884496916/fnxfMm7Z_Pk0w5zQuSOwF_DNu9vrUIbkx6QN8pMSZeVmef9EkHb4ucTkQOr95X37Vyma";
 
-    const ACCOUNTS = {
-      "viewer": { pass: "123", role: "Viewer (Hanya Melihat)" },
-      "HighRank": { pass: "505", role: "Editor (Akses Penuh)" }
-    };
-
+    // --- FUNGSI LOGIN DENGAN FIREBASE AUTH ---
     function handleLogin() {
-      const user = document.getElementById("loginUsername").value.trim();
+      const email = document.getElementById("loginUsername").value.trim();
       const pass = document.getElementById("loginPassword").value.trim();
       const errorDiv = document.getElementById("loginError");
-      if (ACCOUNTS[user] && ACCOUNTS[user].pass === pass) {
-        localStorage.setItem("nmc_logged_user", user);
-        localStorage.setItem("nmc_user_role", ACCOUNTS[user].role);
-        applyRoleAccess(user);
-        document.getElementById("loginModal").classList.add("hidden");
-      } else {
+
+      if (!email || !pass) {
+        errorDiv.innerText = "Email dan password wajib diisi!";
         errorDiv.classList.remove("hidden");
+        return;
       }
+
+      auth.signInWithEmailAndPassword(email, pass)
+        .then((userCredential) => {
+          document.getElementById("loginModal").classList.add("hidden");
+          errorDiv.classList.add("hidden");
+        })
+        .catch((error) => {
+          errorDiv.innerText = "Email atau password salah!";
+          errorDiv.classList.remove("hidden");
+        });
     }
 
     function handleLogout() {
-      localStorage.removeItem("nmc_logged_user");
-      localStorage.removeItem("nmc_user_role");
-      location.reload();
+      auth.signOut().then(() => {
+        location.reload();
+      });
     }
 
-    function applyRoleAccess(user) {
-      const roleBadge = document.getElementById("userRoleBadge");
-      roleBadge.innerHTML = `<i class="fa-solid fa-user-shield"></i> Role: ${ACCOUNTS[user].role}`;
-      if (user === "viewer") {
-        document.querySelectorAll(".editor-only").forEach(el => el.style.display = "none");
+    // Pantau status login pengguna secara real-time oleh Firebase
+    auth.onAuthStateChanged((user) => {
+      const modal = document.getElementById("loginModal");
+      if (user) {
+        modal.classList.add("hidden");
       } else {
-        document.querySelectorAll(".editor-only").forEach(el => el.style.display = "block");
-      }
-    }
-
-    window.addEventListener("DOMContentLoaded", () => {
-      const loggedUser = localStorage.getItem("nmc_logged_user");
-      if (loggedUser && ACCOUNTS[loggedUser]) {
-        document.getElementById("loginModal").classList.add("hidden");
-        applyRoleAccess(loggedUser);
-      } else {
-        document.getElementById("loginModal").classList.remove("hidden");
+        modal.classList.remove("hidden");
       }
     });
 
@@ -870,9 +866,6 @@
     }
 
     function removeSetoranMember(name) {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak!", "error"); return;
-      }
       showCustomConfirm(`Hapus ${name} dari rekap setoran ${activeMinggu}?`, () => {
         delete setoranData[activeMinggu][name];
         saveDataToCloud();
@@ -881,9 +874,6 @@
     }
 
     function removeClubMember(name) {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak!", "error"); return;
-      }
       showCustomConfirm(`Hapus ${name} dari daftar anggota klub?`, () => {
         delete memberList[name];
         saveDataToCloud();
@@ -909,10 +899,6 @@
     }
 
     function tambahBarisBeli() {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer hanya dapat melihat data.", "error");
-        return;
-      }
       const container = document.getElementById("beliBahanRowsContainer");
       const rowHtml = `
         <div class="beli-row grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
@@ -933,7 +919,6 @@
     }
 
     function hapusBarisBeli(btn) {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") return;
       const rows = document.querySelectorAll(".beli-row");
       if (rows.length > 1) {
         btn.closest(".beli-row").remove();
@@ -961,9 +946,6 @@
     }
 
     function prosesTransaksiWarga() {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak!", "error"); return;
-      }
       const txType = document.getElementById("wargaTxType").value;
       const namaWarga = document.getElementById("beliWargaNama").value.trim();
       const admin = document.getElementById("beliWargaAdmin").value.trim();
@@ -1072,9 +1054,6 @@
     }
 
     function updateVaultStock() {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak!", "error"); return;
-      }
       const itemName = document.getElementById("vaultItemName").value;
       const action = document.getElementById("vaultAction").value;
       const qty = parseInt(document.getElementById("vaultQty").value) || 0;
@@ -1139,9 +1118,6 @@
     }
 
     function addBusinessTransaction() {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak!", "error"); return;
-      }
       const currency = document.getElementById("businessCurrency").value;
       const type = document.getElementById("businessType").value;
       const amount = parseInt(document.getElementById("businessAmount").value) || 0;
@@ -1191,9 +1167,6 @@
     }
 
     function addNewMember() {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak!", "error"); return;
-      }
       const name = document.getElementById("newMemberName").value.trim();
       if (!name) { showCustomAlert("Masukkan nama anggota!", "error"); return; }
       if (!setoranData[activeMinggu]) setoranData[activeMinggu] = {};
@@ -1212,9 +1185,6 @@
     }
 
     function updateSetoranBahan(name, bahan, val) {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak!", "error"); renderSetoranTable(); return;
-      }
       const num = parseInt(val) || 0;
       if (!setoranData[activeMinggu][name]) setoranData[activeMinggu][name] = { iron: 0, carbon: 0, glass: 0, rubber: 0, plastik: 0, lunas: false };
       setoranData[activeMinggu][name][bahan] = num;
@@ -1222,9 +1192,6 @@
     }
 
     function toggleStatusLunas(name) {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak!", "error"); return;
-      }
       if (!setoranData[activeMinggu][name]) return;
       setoranData[activeMinggu][name].lunas = !setoranData[activeMinggu][name].lunas;
       saveDataToCloud();
@@ -1243,8 +1210,6 @@
         return;
       }
 
-      const isViewer = localStorage.getItem("nmc_logged_user") === "viewer";
-
       memberNames.forEach(name => {
         const item = currentList[name];
         let statusBadge = item.lunas ? 
@@ -1254,22 +1219,18 @@
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
             <td class="p-3 text-white font-bold">${name}</td>
-            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.iron}" onchange="updateSetoranBahan('${name}', 'iron', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-amber-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
-            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.carbon}" onchange="updateSetoranBahan('${name}', 'carbon', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-blue-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
-            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.glass}" onchange="updateSetoranBahan('${name}', 'glass', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-cyan-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
-            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.rubber}" onchange="updateSetoranBahan('${name}', 'rubber', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-purple-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
-            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.plastik}" onchange="updateSetoranBahan('${name}', 'plastik', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-emerald-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
+            <td class="p-3 text-right"><input type="number" value="${item.iron}" onchange="updateSetoranBahan('${name}', 'iron', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-amber-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
+            <td class="p-3 text-right"><input type="number" value="${item.carbon}" onchange="updateSetoranBahan('${name}', 'carbon', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-blue-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
+            <td class="p-3 text-right"><input type="number" value="${item.glass}" onchange="updateSetoranBahan('${name}', 'glass', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-cyan-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
+            <td class="p-3 text-right"><input type="number" value="${item.rubber}" onchange="updateSetoranBahan('${name}', 'rubber', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-purple-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
+            <td class="p-3 text-right"><input type="number" value="${item.plastik}" onchange="updateSetoranBahan('${name}', 'plastik', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-emerald-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
             <td class="p-3 text-center">${statusBadge}</td>
-            <td class="p-3 text-center editor-only"><button onclick="removeSetoranMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></td>
+            <td class="p-3 text-center"><button onclick="removeSetoranMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></td>
           </tr>`;
       });
-      if (isViewer) document.querySelectorAll(".editor-only").forEach(el => el.style.display = "none");
     }
 
     function masukkanSetoranKeBrankas() {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak!", "error"); return;
-      }
       const currentList = setoranData[activeMinggu] || {};
       let totalIron = 0, totalCarbon = 0, totalGlass = 0, totalRubber = 0, totalPlastik = 0;
 
@@ -1334,9 +1295,6 @@
     }
 
     function addClubMember() {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak!", "error"); return;
-      }
       const name = document.getElementById("clubMemberName").value.trim();
       const rank = document.getElementById("clubMemberRank").value;
       if (!name) { showCustomAlert("Masukkan nama anggota!", "error"); return; }
@@ -1355,9 +1313,6 @@
     }
 
     function toggleMemberStatus(name) {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak!", "error"); return;
-      }
       if (!memberList[name]) return;
       memberList[name].status = memberList[name].status === "Aktif" ? "Inactive" : "Aktif";
       saveDataToCloud();
@@ -1365,9 +1320,6 @@
     }
 
     function updateMemberRank(name, newRank) {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak!", "error"); renderMemberTable(); return;
-      }
       if (!memberList[name]) return;
       memberList[name].rank = newRank;
       saveDataToCloud();
@@ -1384,7 +1336,6 @@
         return;
       }
 
-      const isViewer = localStorage.getItem("nmc_logged_user") === "viewer";
       const ranksList = ["President", "Vice President", "Sergeant at Arms", "Road Captain", "Secretary", "Treasurer", "Enforcer", "Member / Patched", "Prospect", "Hangaround"];
 
       memberNames.forEach(name => {
@@ -1399,12 +1350,11 @@
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
             <td class="p-3 text-white font-bold">${name}</td>
-            <td class="p-3"><select ${isViewer ? 'disabled' : ''} onchange="updateMemberRank('${name}', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs text-amber-300 font-bold focus:outline-none focus:border-emerald-400">${rankOptions}</select></td>
+            <td class="p-3"><select onchange="updateMemberRank('${name}', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs text-amber-300 font-bold focus:outline-none focus:border-emerald-400">${rankOptions}</select></td>
             <td class="p-3 text-center">${statusBadge}</td>
-            <td class="p-3 text-center editor-only"><button onclick="removeClubMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></td>
+            <td class="p-3 text-center"><button onclick="removeClubMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></td>
           </tr>`;
       });
-      if (isViewer) document.querySelectorAll(".editor-only").forEach(el => el.style.display = "none");
     }
 
     function sendMembersToDiscord() {
@@ -1493,23 +1443,20 @@
     }
 
     function addAmmoRow() {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") return;
       const group = groupsData[currentGroupKey], container = document.getElementById("ammoRowsContainer"), rowId = "ammo_" + Date.now();
       let opts = ""; for (let a in group.ammo) opts += `<option value="${a}">${a} (${group.ammo[a].toLocaleString('id-ID')}/pack)</option>`;
-      container.insertAdjacentHTML('beforeend', `<div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800"><div class="md:col-span-5"><select class="ammo-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" onchange="calculateAll()">${opts}</select></div><div class="md:col-span-3"><input type="number" value="0" min="0" class="ammo-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" placeholder="0" oninput="calculateAll()"></div><div class="md:col-span-3 text-right font-bold text-green-400 text-sm">Rp <span class="ammo-row-total">0</span></div><div class="md:col-span-1 text-center editor-only"><button onclick="removeRow('${rowId}')" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div></div>`);
+      container.insertAdjacentHTML('beforeend', `<div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800"><div class="md:col-span-5"><select class="ammo-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" onchange="calculateAll()">${opts}</select></div><div class="md:col-span-3"><input type="number" value="0" min="0" class="ammo-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" placeholder="0" oninput="calculateAll()"></div><div class="md:col-span-3 text-right font-bold text-green-400 text-sm">Rp <span class="ammo-row-total">0</span></div><div class="md:col-span-1 text-center"><button onclick="removeRow('${rowId}')" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div></div>`);
       calculateAll();
     }
 
     function addItemRow() {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") return;
       const group = groupsData[currentGroupKey], container = document.getElementById("itemRowsContainer"), rowId = "item_" + Date.now();
       let opts = ""; for (let i in group.items) opts += `<option value="${i}">${i}</option>`;
-      container.insertAdjacentHTML('beforeend', `<div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800"><div class="md:col-span-5"><select class="item-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" onchange="calculateAll()">${opts}</select></div><div class="md:col-span-3"><input type="number" value="0" min="0" class="item-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" placeholder="0" oninput="calculateAll()"></div><div class="md:col-span-3 text-right font-bold text-red-400 text-sm">Rp <span class="item-row-total">0</span></div><div class="md:col-span-1 text-center editor-only"><button onclick="removeRow('${rowId}')" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div></div>`);
+      container.insertAdjacentHTML('beforeend', `<div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800"><div class="md:col-span-5"><select class="item-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" onchange="calculateAll()">${opts}</select></div><div class="md:col-span-3"><input type="number" value="0" min="0" class="item-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" placeholder="0" oninput="calculateAll()"></div><div class="md:col-span-3 text-right font-bold text-red-400 text-sm">Rp <span class="item-row-total">0</span></div><div class="md:col-span-1 text-center"><button onclick="removeRow('${rowId}')" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div></div>`);
       calculateAll();
     }
 
     function removeRow(id) { 
-      if (localStorage.getItem("nmc_logged_user") === "viewer") return;
       const el = document.getElementById(id); if (el) { el.remove(); calculateAll(); } 
     }
 
