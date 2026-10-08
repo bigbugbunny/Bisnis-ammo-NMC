@@ -89,7 +89,6 @@
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 0.75rem;
       }
-      /* Mengatur sisa elemen ganjil di baris terakhir agar rata tengah */
       .vault-grid-layout > div:last-child:nth-child(3n-2) {
         grid-column: 2 / 3;
       }
@@ -659,6 +658,39 @@
       document.body.insertAdjacentHTML('beforeend', modalHtml);
     }
 
+    // --- FUNGSI CUSTOM KONFIRMASI (GANTI CONFIRM BAWAAN BROWSER) ---
+    function showCustomConfirm(message, onConfirm) {
+      const existingModal = document.getElementById('customConfirmModal');
+      if (existingModal) existingModal.remove();
+
+      const modalHtml = `
+        <div id="customConfirmModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div class="glass-card p-6 rounded-2xl shadow-2xl w-full max-w-sm text-center space-y-4 border border-red-500/50 animate-modal-in">
+            <div class="w-14 h-14 bg-red-950/50 text-red-400 rounded-2xl flex items-center justify-center text-2xl mx-auto border border-red-500/40 shadow-inner">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="space-y-1">
+              <h3 class="text-sm font-black tracking-widest text-white uppercase">KONFIRMASI HAPUS</h3>
+              <p class="text-xs text-gray-300 leading-relaxed">${message}</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3 pt-2">
+              <button id="confirmYesBtn" class="bg-red-700 hover:bg-red-600 text-white font-bold py-2.5 px-4 rounded-xl transition text-xs tracking-wider shadow">
+                HAPUS
+              </button>
+              <button onclick="document.getElementById('customConfirmModal').remove()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider shadow">
+                BATA
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+      document.getElementById('confirmYesBtn').onclick = () => {
+        document.getElementById('customConfirmModal').remove();
+        onConfirm();
+      };
+    }
+
     const firebaseConfig = {
       apiKey: "AIzaSyBWZzjpvghve0zG9COIORa1i1SZJ4mLIoA",
       authDomain: "nmc-management.firebaseapp.com",
@@ -833,6 +865,28 @@
       });
     }
 
+    function removeSetoranMember(name) {
+      if (localStorage.getItem("nmc_logged_user") === "viewer") {
+        showCustomAlert("Akses ditolak!", "error"); return;
+      }
+      showCustomConfirm(`Hapus ${name} dari rekap setoran ${activeMinggu}?`, () => {
+        delete setoranData[activeMinggu][name];
+        saveDataToCloud();
+        renderSetoranTable();
+      });
+    }
+
+    function removeClubMember(name) {
+      if (localStorage.getItem("nmc_logged_user") === "viewer") {
+        showCustomAlert("Akses ditolak!", "error"); return;
+      }
+      showCustomConfirm(`Hapus ${name} dari daftar anggota klub?`, () => {
+        delete memberList[name];
+        saveDataToCloud();
+        renderMemberTable();
+      });
+    }
+
     function gantiLabelTxWarga() {
       const type = document.getElementById("wargaTxType").value;
       const title = document.getElementById("formWargaTitle");
@@ -904,8 +958,7 @@
 
     function prosesTransaksiWarga() {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak memiliki izin.", "error");
-        return;
+        showCustomAlert("Akses ditolak!", "error"); return;
       }
       const txType = document.getElementById("wargaTxType").value;
       const namaWarga = document.getElementById("beliWargaNama").value.trim();
@@ -1174,17 +1227,6 @@
       renderSetoranTable();
     }
 
-    function removeSetoranMember(name) {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak!", "error"); return;
-      }
-      if (confirm(`Hapus ${name} dari rekap setoran ${activeMinggu}?`)) {
-        delete setoranData[activeMinggu][name];
-        saveDataToCloud();
-        renderSetoranTable();
-      }
-    }
-
     function renderSetoranTable() {
       const tbody = document.getElementById("setoranTableBody");
       tbody.innerHTML = "";
@@ -1203,7 +1245,7 @@
         const item = currentList[name];
         let statusBadge = item.lunas ? 
           `<span onclick="toggleStatusLunas('${name}')" class="cursor-pointer bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30 hover:bg-green-500/30">Lunas ✅</span>` : 
-          `<span onclick="toggleStatusLunas('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30 hover:bg-red-500/30">Belum Lunas ❌</span>`;
+          `<span onclick="toggleStatusLunas('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30 hover:bg-green-500/30">Belum Lunas ❌</span>`;
 
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
@@ -1242,7 +1284,7 @@
         showCustomAlert("Total bahan bernilai 0 semua!", "error"); return;
       }
 
-      if (confirm(`Konfirmasi: Masukkan total keseluruhan setoran ${activeMinggu} ke dalam stok Brankas?`)) {
+      showCustomConfirm(`Masukkan total keseluruhan setoran ${activeMinggu} ke dalam stok Brankas?`, () => {
         vaultStock["Iron"] = (vaultStock["Iron"] || 0) + totalIron;
         vaultStock["Carbon"] = (vaultStock["Carbon"] || 0) + totalCarbon;
         vaultStock["Glass"] = (vaultStock["Glass"] || 0) + totalGlass;
@@ -1262,7 +1304,7 @@
         renderVaultInventory();
         renderVaultHistory();
         showCustomAlert(`Berhasil! Seluruh bahan dari rekap ${activeMinggu} telah ditambahkan ke Brankas.`);
-      }
+      });
     }
 
     function sendSetoranToDiscord() {
@@ -1325,17 +1367,6 @@
       if (!memberList[name]) return;
       memberList[name].rank = newRank;
       saveDataToCloud();
-    }
-
-    function removeClubMember(name) {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak!", "error"); return;
-      }
-      if (confirm(`Hapus ${name} dari daftar anggota klub?`)) {
-        delete memberList[name];
-        saveDataToCloud();
-        renderMemberTable();
-      }
     }
 
     function renderMemberTable() {
