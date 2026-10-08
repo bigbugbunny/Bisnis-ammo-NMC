@@ -74,10 +74,26 @@
       box-shadow: 0 12px 30px -5px rgba(220, 38, 38, 0.35); 
     }
 
-    /* Posisi Grid Menu Utama & Brankas (3 Kolom & Baris Terakhir ke Tengah secara presisi) */
+    /* PENGATURAN GRID 3 KOLOM YANG DIPERTEGAS */
+    .menu-grid-layout {
+      display: grid;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .vault-grid-layout {
+      display: grid;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 640px) {
+      .vault-grid-layout {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
     @media (min-width: 1024px) {
       .menu-grid-layout {
-        display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
       .menu-grid-layout > div:last-child:nth-child(3n-2) {
@@ -85,27 +101,12 @@
       }
 
       .vault-grid-layout {
-        display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 0.75rem;
       }
+      /* Mengatur sisa elemen ganjil di baris terakhir brankas agar otomatis berada di tengah */
       .vault-grid-layout > div:last-child:nth-child(3n-2) {
         grid-column: 2 / 3;
       }
-    }
-
-    @media (min-width: 640px) and (max-width: 1023px) {
-      .vault-grid-layout {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.75rem;
-      }
-    }
-
-    .vault-grid-layout {
-      display: grid;
-      grid-template-columns: repeat(1, minmax(0, 1fr));
-      gap: 0.75rem;
     }
 
     .mc-gradient-text { 
@@ -658,7 +659,6 @@
       document.body.insertAdjacentHTML('beforeend', modalHtml);
     }
 
-    // --- FUNGSI CUSTOM KONFIRMASI (GANTI CONFIRM BAWAAN BROWSER) ---
     function showCustomConfirm(message, onConfirm) {
       const existingModal = document.getElementById('customConfirmModal');
       if (existingModal) existingModal.remove();
@@ -678,7 +678,7 @@
                 HAPUS
               </button>
               <button onclick="document.getElementById('customConfirmModal').remove()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider shadow">
-                BATA
+                BATAL
               </button>
             </div>
           </div>
