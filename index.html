@@ -93,6 +93,25 @@
       }
     }
 
+    /* Pengaturan Grid Inventaris Brankas (Gaya 3 Kolom & Baris Terakhir ke Tengah) */
+    .vault-grid-layout {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+    @media (min-width: 640px) {
+      .vault-grid-layout { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (min-width: 1024px) {
+      .vault-grid-layout { 
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .vault-grid-layout > div:last-child:nth-child(3n-1) {
+        grid-column: 2 / 3;
+      }
+    }
+
     /* Teks Gradasi MC */
     .mc-gradient-text { 
       background: linear-gradient(135deg, #ef4444 0%, #f59e0b 50%, #ef4444 100%); 
@@ -542,7 +561,7 @@
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
         <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-vault"></i> Inventory Stok Brankas Saat Ini</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3" id="vaultInventoryGrid"></div>
+        <div class="vault-grid-layout" id="vaultInventoryGrid"></div>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
         <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-history"></i> Riwayat (History) Keluar Masuk Barang Brankas</h2>
@@ -923,11 +942,11 @@
       if (type === 'jual') {
         title.innerHTML = `<i class="fa-solid fa-cart-shopping"></i> Form Transaksi Jual ke Warga`;
         labelNama.innerText = "Nama Warga (Pembeli)";
-        labelDaftarItem.innerText = "Daftar Item/Bahan yang Dijual:";
+        labelItem.innerText = "Daftar Item/Bahan yang Dijual:";
       } else {
         title.innerHTML = `<i class="fa-solid fa-cart-plus"></i> Form Transaksi Beli dari Warga`;
         labelNama.innerText = "Nama Warga (Penjual)";
-        labelDaftarItem.innerText = "Daftar Bahan yang Dibeli:";
+        labelItem.innerText = "Daftar Bahan yang Dibeli:";
       }
     }
 
@@ -1327,6 +1346,13 @@
       if (setoranData[activeMinggu][name]) { showCustomAlert("Anggota sudah ada di daftar minggu ini!", "error"); return; }
 
       setoranData[activeMinggu][name] = { iron: 0, carbon: 0, glass: 0, rubber: 0, plastik: 0, lunas: false };
+
+      // Urutkan objek setoran berdasarkan nama secara otomatis (A-Z)
+      const sortedKeys = Object.keys(setoranData[activeMinggu]).sort((a, b) => a.localeCompare(b));
+      let sortedObj = {};
+      sortedKeys.forEach(k => { sortedObj[k] = setoranData[activeMinggu][k]; });
+      setoranData[activeMinggu] = sortedObj;
+
       saveDataToCloud();
       document.getElementById("newMemberName").value = "";
       renderSetoranTable();
@@ -1371,7 +1397,9 @@
       const tbody = document.getElementById("setoranTableBody");
       tbody.innerHTML = "";
       const currentList = setoranData[activeMinggu] || {};
-      const memberNames = Object.keys(currentList);
+      
+      // Urutkan nama anggota secara otomatis abjad (A-Z) saat dirender
+      const memberNames = Object.keys(currentList).sort((a, b) => a.localeCompare(b));
 
       if (memberNames.length === 0) {
         tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-gray-500">Belum ada anggota dalam rekap ${activeMinggu}.</td></tr>`;
@@ -1490,6 +1518,13 @@
       if (memberList[name]) { showCustomAlert("Anggota sudah terdaftar!", "error"); return; }
 
       memberList[name] = { rank: rank, status: "Aktif" };
+
+      // Urutkan daftar member berdasarkan nama secara otomatis (A-Z)
+      const sortedKeys = Object.keys(memberList).sort((a, b) => a.localeCompare(b));
+      let sortedObj = {};
+      sortedKeys.forEach(k => { sortedObj[k] = memberList[k]; });
+      memberList = sortedObj;
+
       saveDataToCloud();
       document.getElementById("clubMemberName").value = "";
       renderMemberTable();
@@ -1532,7 +1567,9 @@
     function renderMemberTable() {
       const tbody = document.getElementById("memberTableBody");
       tbody.innerHTML = "";
-      const memberNames = Object.keys(memberList);
+      
+      // Urutkan nama anggota secara otomatis abjad (A-Z) saat dirender
+      const memberNames = Object.keys(memberList).sort((a, b) => a.localeCompare(b));
 
       if (memberNames.length === 0) {
         tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">Belum ada anggota terdaftar.</td></tr>`;
