@@ -6,7 +6,7 @@
   <title>Triad Community Management System</title>
   
   <!-- Favicon Logo Website -->
-  <link rel="icon" type="image/png" href="Nakama.png">
+  <link rel="icon" type="image/png" href="NakamaLogo.png">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -143,8 +143,8 @@
   <div id="loginModal" class="fixed inset-0 bg-slate-950/95 z-50 flex items-center justify-center p-4">
     <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6">
       <div class="text-center space-y-3">
-        <div class="w-20 h-20 bg-red-950/40 text-red-500 rounded-2xl flex items-center justify-center text-3xl mx-auto border border-red-600/40 shadow-inner">
-          <i class="fa-solid fa-skull"></i>
+        <div class="w-20 h-20 bg-red-950/40 rounded-2xl flex items-center justify-center mx-auto border border-red-600/40 shadow-inner p-2">
+          <img src="Nakama.png" alt="Logo" class="w-full h-full object-contain">
         </div>
         <h2 class="text-2xl font-black tracking-wider text-red-500">TRIAD COMMUNITY ACCESS</h2>
         <p class="text-xs text-gray-400">Silakan login sebagai Editor atau masuk sebagai Viewer</p>
@@ -162,7 +162,7 @@
         <div id="loginError" class="text-xs text-red-400 text-center hidden">Username atau sandi salah!</div>
 
         <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider">
-          <i class="fa-solid fa-right-to-bracket"></i> MASUK SEBAGAI EDITOR
+          <i class="fa-solid fa-right-to-bracket"></i> MASUK SEBAGAI HIGHRANK
         </button>
 
         <div class="relative flex py-1 items-center">
@@ -172,7 +172,7 @@
         </div>
 
         <button onclick="loginAsViewer()" class="w-full bg-slate-800 hover:bg-slate-700 text-gray-300 font-bold py-3 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider flex items-center justify-center gap-2">
-          <i class="fa-solid fa-eye"></i> MASUK SEBAGAI VIEWER (HANYA LIHAT)
+          <i class="fa-solid fa-eye"></i> MASUK SEBAGAI MEMBER (HANYA LIHAT)
         </button>
       </div>
     </div>
@@ -512,7 +512,7 @@
         </div>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-        <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-vault"></i> Inventory Stok Brankas Saat Ini</h2>
+        <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-vault"></i> Inventori Stok Brankas Saat Ini</h2>
         <div class="vault-grid-layout" id="vaultInventoryGrid"></div>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
