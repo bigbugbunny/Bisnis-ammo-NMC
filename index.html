@@ -90,6 +90,15 @@
       text-shadow: 0 0 30px rgba(239,68,68,0.3);
     }
 
+    /* Animasi Pop-up Tengah yang Elegan */
+    @keyframes modalScaleIn {
+      0% { transform: scale(0.85); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .animate-modal-in {
+      animation: modalScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
     /* Efek Tombol Responsif Saat Diklik */
     button, .menu-card {
       transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease;
@@ -202,7 +211,7 @@
         </div>
 
         <!-- Pilihan 2: Coming Soon -->
-        <div onclick="alert('Divisi atau klub lain akan segera hadir (Coming Soon)!')" class="coming-soon-card p-8 rounded-2xl cursor-pointer flex flex-col justify-between shadow-xl opacity-75 hover:opacity-100 transition">
+        <div onclick="showCustomAlert('Divisi atau klub lain akan segera hadir (Coming Soon)!', 'info')" class="coming-soon-card p-8 rounded-2xl cursor-pointer flex flex-col justify-between shadow-xl opacity-75 hover:opacity-100 transition">
           <div class="space-y-5">
             <div class="w-16 h-16 bg-slate-900 text-gray-400 rounded-2xl flex items-center justify-center text-3xl border border-slate-800 shadow-inner">
               <i class="fa-solid fa-clock-rotate-left"></i>
@@ -666,6 +675,44 @@
   </div>
 
   <script>
+    // --- FUNGSI CUSTOM ALERT ANIMASI DI TENGAH ---
+    function showCustomAlert(message, type = 'success') {
+      const existingModal = document.getElementById('customAlertModal');
+      if (existingModal) existingModal.remove();
+
+      let borderColor = 'border-green-500/50';
+      let iconBg = 'bg-green-950/50 text-green-400 border-green-500/40';
+      let iconClass = 'fa-circle-check';
+
+      if (type === 'error') {
+        borderColor = 'border-red-500/50';
+        iconBg = 'bg-red-950/50 text-red-400 border-red-500/40';
+        iconClass = 'fa-circle-exclamation';
+      } else if (type === 'info') {
+        borderColor = 'border-blue-500/50';
+        iconBg = 'bg-blue-950/50 text-blue-400 border-blue-500/40';
+        iconClass = 'fa-circle-info';
+      }
+
+      const modalHtml = `
+        <div id="customAlertModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div class="glass-card p-6 rounded-2xl shadow-2xl w-full max-w-sm text-center space-y-4 border ${borderColor} animate-modal-in">
+            <div class="w-14 h-14 ${iconBg} rounded-2xl flex items-center justify-center text-2xl mx-auto border shadow-inner">
+              <i class="fa-solid ${iconClass}"></i>
+            </div>
+            <div class="space-y-1">
+              <h3 class="text-sm font-black tracking-widest text-white uppercase">NOTIFIKASI SISTEM</h3>
+              <p class="text-xs text-gray-300 leading-relaxed">${message}</p>
+            </div>
+            <button onclick="document.getElementById('customAlertModal').remove()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider shadow">
+              OK
+            </button>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+
     const firebaseConfig = {
       apiKey: "AIzaSyBWZzjpvghve0zG9COIORa1i1SZJ4mLIoA",
       authDomain: "nmc-management.firebaseapp.com",
@@ -682,7 +729,7 @@
     // ================= DISCORD WEBHOOKS TERPISAH =================
     const DISCORD_WEBHOOK_BRANKAS   = "https://discordapp.com/api/webhooks/1557009048807800852/l82FqtdPoEUwzfGTSxCC_fVYYrtEJozTFKMXgpGDdiudHFyD7BB6TONGERVL2BL3kdnN";
     const DISCORD_WEBHOOK_PENJUALAN = "https://discordapp.com/api/webhooks/1557014106060623913/LQEqIw427dgWz1nEb2f8ihXhYH_rkl7a_ApywtffJFR31y07KkIzrDcGchuP9PO82-If";
-    const DISCORD_WEBHOOK_PEMBELIAN = "https://discordapp.com/api/webhooks/1557548755614441552/JWo4i4A5CUM_6hZl3HduX5lWWQ8LecX0bVRrJck6x4cHuJvgkNJauwC4ZUuQ4_7CoBE7";
+    const DISCORD_WEBHOOK_PEMBELIAN = "https://discordapp.com/api/webhooks/1557138906586292345/guf2IGdXyXLP7yH3gu7l7OGtbOHspcT5zdAd63ZpDIYplCB7FZLYyqAfR7S6bFMQQFk_";
     const DISCORD_WEBHOOK_SETORAN   = "https://discordapp.com/api/webhooks/1557139282802774127/cw05EPU60q_Uyor3_HEpNVs-XTvnXvOD4LLTWkkZjfiw8SANBTsQjNWEkmmniu0q1DSr";
     const DISCORD_WEBHOOK_MEMBER    = "https://discordapp.com/api/webhooks/1557148223884496916/fnxfMm7Z_Pk0w5zQuSOwF_DNu9vrUIbkx6QN8pMSZeVmef9EkHb4ucTkQOr95X37Vyma";
 
@@ -862,7 +909,7 @@
 
     function tambahBarisBeli() {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        alert("Akses ditolak! Akun Viewer hanya dapat melihat data.");
+        showCustomAlert("Akses ditolak! Akun Viewer hanya dapat melihat data.", "error");
         return;
       }
       const container = document.getElementById("beliBahanRowsContainer");
@@ -911,7 +958,7 @@
         btn.closest(".beli-row").remove();
         hitungTotalBeliWarga();
       } else {
-        alert("Minimal harus ada 1 baris item!");
+        showCustomAlert("Minimal harus ada 1 baris item!", "error");
       }
     }
 
@@ -935,16 +982,16 @@
 
     function prosesTransaksiWarga() {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        alert("Akses ditolak! Akun Viewer tidak memiliki izin melakukan transaksi.");
+        showCustomAlert("Akses ditolak! Akun Viewer tidak memiliki izin melakukan transaksi.", "error");
         return;
       }
-      const txType = document.getElementById("wargaTxType").value; // 'beli' atau 'jual'
+      const txType = document.getElementById("wargaTxType").value;
       const namaWarga = document.getElementById("beliWargaNama").value.trim();
       const admin = document.getElementById("beliWargaAdmin").value.trim();
       const currency = document.getElementById("beliWargaCurrency").value;
 
       if (!namaWarga || !admin) {
-        alert("Nama Warga dan Nama Anggota Klub wajib diisi!");
+        showCustomAlert("Nama Warga dan Nama Anggota Klub wajib diisi!", "error");
         return;
       }
 
@@ -963,7 +1010,6 @@
           totalSemuaHarga += rowTotal;
 
           if (txType === 'beli') {
-            // Beli dari warga -> Stok Brankas Bertambah (+)
             vaultStock[item] = (vaultStock[item] || 0) + qty;
             vaultHistory.unshift({
               id: Date.now() + Math.random(),
@@ -975,7 +1021,6 @@
               author: admin
             });
           } else {
-            // Jual ke warga -> Stok Brankas Berkurang (-)
             vaultStock[item] = Math.max(0, (vaultStock[item] || 0) - qty);
             vaultHistory.unshift({
               id: Date.now() + Math.random(),
@@ -991,12 +1036,11 @@
       });
 
       if (itemsDetail.length === 0 || totalSemuaHarga <= 0) {
-        alert("Masukkan jumlah dan harga satuan item dengan benar!");
+        showCustomAlert("Masukkan jumlah dan harga satuan item dengan benar!", "error");
         return;
       }
 
       if (txType === 'beli') {
-        // Beli -> Kas Klub Berkurang (OUT)
         businessHistory.unshift({
           id: Date.now(),
           date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
@@ -1007,7 +1051,6 @@
           author: admin
         });
       } else {
-        // Jual -> Kas Klub Bertambah (IN)
         businessHistory.unshift({
           id: Date.now(),
           date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
@@ -1071,7 +1114,7 @@
         </div>`;
       hitungTotalBeliWarga();
 
-      alert(`Berhasil! Transaksi ${txType === 'beli' ? 'Pembelian dari' : 'Penjualan ke'} warga ${namaWarga} senilai Rp ${totalSemuaHarga.toLocaleString('id-ID')} berhasil dicatat & brankas diperbarui.`);
+      showCustomAlert(`Berhasil! Transaksi ${txType === 'beli' ? 'Pembelian dari' : 'Penjualan ke'} warga ${namaWarga} senilai Rp ${totalSemuaHarga.toLocaleString('id-ID')} berhasil dicatat & brankas diperbarui.`);
     }
 
     function renderBeliWargaHistory() {
@@ -1107,7 +1150,7 @@
     // --- MODUL BRANKAS ---
     function updateVaultStock() {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        alert("Akses ditolak! Akun Viewer tidak memiliki izin memperbarui stok brankas.");
+        showCustomAlert("Akses ditolak! Akun Viewer tidak memiliki izin memperbarui stok brankas.", "error");
         return;
       }
       const itemName = document.getElementById("vaultItemName").value;
@@ -1115,7 +1158,7 @@
       const qty = parseInt(document.getElementById("vaultQty").value) || 0;
       const desc = document.getElementById("vaultDesc").value.trim();
       const author = document.getElementById("vaultAuthor").value.trim();
-      if (qty < 0 || !desc || !author) { alert("Semua field wajib diisi!"); return; }
+      if (qty < 0 || !desc || !author) { showCustomAlert("Semua field wajib diisi!", "error"); return; }
       let diffText = action === "ADD" ? `+${qty}` : action === "SUB" ? `-${qty}` : `Set: ${qty}`;
       if (action === "ADD") vaultStock[itemName] = (vaultStock[itemName] || 0) + qty;
       else if (action === "SUB") vaultStock[itemName] = Math.max(0, (vaultStock[itemName] || 0) - qty);
@@ -1123,7 +1166,7 @@
       vaultHistory.unshift({ id: Date.now(), date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }), item: itemName, action, diff: diffText, desc, author });
       saveDataToCloud();
       document.getElementById("vaultQty").value = "0"; document.getElementById("vaultDesc").value = ""; document.getElementById("vaultAuthor").value = "";
-      alert(`Stok ${itemName} diperbarui!`);
+      showCustomAlert(`Stok ${itemName} berhasil diperbarui!`);
     }
 
     function renderVaultInventory() {
@@ -1170,14 +1213,14 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: text })
       })
-      .then(() => alert("Laporan brankas berhasil dikirim ke Discord!"))
-      .catch(() => alert("Gagal mengirim laporan ke Discord!"));
+      .then(() => showCustomAlert("Laporan brankas berhasil dikirim ke Discord!"))
+      .catch(() => showCustomAlert("Gagal mengirim laporan ke Discord!", "error"));
     }
 
     // --- MODUL DATA BISNIS ---
     function addBusinessTransaction() {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        alert("Akses ditolak! Akun Viewer tidak memiliki izin mencatat kas bisnis.");
+        showCustomAlert("Akses ditolak! Akun Viewer tidak memiliki izin mencatat kas bisnis.", "error");
         return;
       }
       const currency = document.getElementById("businessCurrency").value;
@@ -1185,11 +1228,11 @@
       const amount = parseInt(document.getElementById("businessAmount").value) || 0;
       const desc = document.getElementById("businessDesc").value.trim();
       const author = document.getElementById("businessAuthor").value.trim();
-      if (amount <= 0 || !desc || !author) { alert("Isi nominal dan keterangan dengan benar!"); return; }
+      if (amount <= 0 || !desc || !author) { showCustomAlert("Isi nominal dan keterangan dengan benar!", "error"); return; }
       businessHistory.unshift({ id: Date.now(), date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }), currency, type, amount, desc, author });
       saveDataToCloud();
       document.getElementById("businessAmount").value = "0"; document.getElementById("businessDesc").value = ""; document.getElementById("businessAuthor").value = "";
-      alert("Transaksi kas disimpan!");
+      showCustomAlert("Transaksi kas berhasil disimpan!");
     }
 
     function renderBusinessData() {
@@ -1231,13 +1274,13 @@
 
     function addNewMember() {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        alert("Akses ditolak! Akun Viewer hanya dapat melihat data.");
+        showCustomAlert("Akses ditolak! Akun Viewer hanya dapat melihat data.", "error");
         return;
       }
       const name = document.getElementById("newMemberName").value.trim();
-      if (!name) { alert("Masukkan nama anggota!"); return; }
+      if (!name) { showCustomAlert("Masukkan nama anggota!", "error"); return; }
       if (!setoranData[activeMinggu]) setoranData[activeMinggu] = {};
-      if (setoranData[activeMinggu][name]) { alert("Anggota sudah ada di daftar minggu ini!"); return; }
+      if (setoranData[activeMinggu][name]) { showCustomAlert("Anggota sudah ada di daftar minggu ini!", "error"); return; }
 
       setoranData[activeMinggu][name] = { iron: 0, carbon: 0, glass: 0, rubber: 0, plastik: 0, lunas: false };
       saveDataToCloud();
@@ -1247,7 +1290,7 @@
 
     function updateSetoranBahan(name, bahan, val) {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        alert("Akses ditolak! Akun Viewer tidak dapat mengubah data setoran.");
+        showCustomAlert("Akses ditolak! Akun Viewer tidak dapat mengubah data setoran.", "error");
         renderSetoranTable();
         return;
       }
@@ -1259,7 +1302,7 @@
 
     function toggleStatusLunas(name) {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        alert("Akses ditolak! Akun Viewer tidak dapat mengubah status lunas.");
+        showCustomAlert("Akses ditolak! Akun Viewer tidak dapat mengubah status lunas.", "error");
         return;
       }
       if (!setoranData[activeMinggu][name]) return;
@@ -1270,7 +1313,7 @@
 
     function removeSetoranMember(name) {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        alert("Akses ditolak! Akun Viewer tidak dapat menghapus anggota dari rekap.");
+        showCustomAlert("Akses ditolak! Akun Viewer tidak dapat menghapus anggota dari rekap.", "error");
         return;
       }
       if (confirm(`Hapus ${name} dari rekap setoran ${activeMinggu}?`)) {
@@ -1317,7 +1360,7 @@
     // --- FUNGSI EKSEKUSI: MASUKKAN SETORAN KE BRANKAS ---
     function masukkanSetoranKeBrankas() {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        alert("Akses ditolak! Akun Viewer tidak memiliki izin memasukkan setoran ke brankas.");
+        showCustomAlert("Akses ditolak! Akun Viewer tidak memiliki izin memasukkan setoran ke brankas.", "error");
         return;
       }
 
@@ -1336,7 +1379,7 @@
       }
 
       if (totalIron === 0 && totalCarbon === 0 && totalGlass === 0 && totalRubber === 0 && totalPlastik === 0) {
-        alert("Total bahan bernilai 0 semua! Masukkan minimal angka bahan pada salah satu anggota terlebih dahulu.");
+        showCustomAlert("Total bahan bernilai 0 semua! Masukkan minimal angka bahan pada salah satu anggota terlebih dahulu.", "error");
         return;
       }
 
@@ -1361,7 +1404,7 @@
         renderVaultInventory();
         renderVaultHistory();
 
-        alert(`Berhasil! Seluruh bahan dari rekap ${activeMinggu} telah ditambahkan ke dalam stok Brankas.`);
+        showCustomAlert(`Berhasil! Seluruh bahan dari rekap ${activeMinggu} telah ditambahkan ke dalam stok Brankas.`);
       }
     }
 
@@ -1387,20 +1430,20 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: text })
       })
-      .then(() => alert(`Rekap setoran ${activeMinggu} berhasil dikirim ke Discord dan disalin!`))
-      .catch(() => alert("Gagal mengirim ke Discord, tapi teks sudah disalin ke clipboard!"));
+      .then(() => showCustomAlert(`Rekap setoran ${activeMinggu} berhasil dikirim ke Discord dan disalin!`))
+      .catch(() => showCustomAlert("Gagal mengirim ke Discord, tapi teks sudah disalin ke clipboard!", "error"));
     }
 
     // --- MODUL 7: DATA MEMBER & HIERARKI RANK ---
     function addClubMember() {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        alert("Akses ditolak! Akun Viewer hanya dapat melihat data.");
+        showCustomAlert("Akses ditolak! Akun Viewer hanya dapat melihat data.", "error");
         return;
       }
       const name = document.getElementById("clubMemberName").value.trim();
       const rank = document.getElementById("clubMemberRank").value;
-      if (!name) { alert("Masukkan nama anggota!"); return; }
-      if (memberList[name]) { alert("Anggota sudah terdaftar!"); return; }
+      if (!name) { showCustomAlert("Masukkan nama anggota!", "error"); return; }
+      if (memberList[name]) { showCustomAlert("Anggota sudah terdaftar!", "error"); return; }
 
       memberList[name] = { rank: rank, status: "Aktif" };
       saveDataToCloud();
@@ -1410,7 +1453,7 @@
 
     function toggleMemberStatus(name) {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        alert("Akses ditolak! Akun Viewer tidak dapat mengubah status anggota.");
+        showCustomAlert("Akses ditolak! Akun Viewer tidak dapat mengubah status anggota.", "error");
         return;
       }
       if (!memberList[name]) return;
@@ -1421,7 +1464,7 @@
 
     function updateMemberRank(name, newRank) {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        alert("Akses ditolak! Akun Viewer tidak dapat mengubah rank anggota.");
+        showCustomAlert("Akses ditolak! Akun Viewer tidak dapat mengubah rank anggota.", "error");
         renderMemberTable();
         return;
       }
@@ -1432,7 +1475,7 @@
 
     function removeClubMember(name) {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        alert("Akses ditolak! Akun Viewer tidak dapat menghapus anggota.");
+        showCustomAlert("Akses ditolak! Akun Viewer tidak dapat menghapus anggota.", "error");
         return;
       }
       if (confirm(`Hapus ${name} dari daftar anggota klub?`)) {
@@ -1507,8 +1550,8 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: text })
       })
-      .then(() => alert("Daftar anggota berhasil dikirim ke Discord dan disalin!"))
-      .catch(() => alert("Gagal mengirim ke Discord, tapi teks sudah disalin ke clipboard!"));
+      .then(() => showCustomAlert("Daftar anggota berhasil dikirim ke Discord dan disalin!"))
+      .catch(() => showCustomAlert("Gagal mengirim ke Discord, tapi teks sudah disalin ke clipboard!", "error"));
     }
 
     // --- LOGIC LAINNYA ---
@@ -1626,8 +1669,8 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: text })
       })
-      .then(() => alert("Log penjualan berhasil dikirim ke Discord!"))
-      .catch(() => alert("Gagal mengirim log penjualan ke Discord!"));
+      .then(() => showCustomAlert("Log penjualan berhasil dikirim ke Discord!"))
+      .catch(() => showCustomAlert("Gagal mengirim log penjualan ke Discord!", "error"));
     }
 
     function sendPembelianToDiscord() {
@@ -1651,11 +1694,11 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: text })
       })
-      .then(() => alert("Log pembelian berhasil dikirim ke Discord!"))
-      .catch(() => alert("Gagal mengirim log pembelian ke Discord!"));
+      .then(() => showCustomAlert("Log pembelian berhasil dikirim ke Discord!"))
+      .catch(() => showCustomAlert("Gagal mengirim log pembelian ke Discord!", "error"));
     }
 
-    function copySummary() { alert("Ringkasan disalin!"); }
+    function copySummary() { showCustomAlert("Ringkasan berhasil disalin!"); }
 
     calcBahan(); loadGroupData();
   </script>
