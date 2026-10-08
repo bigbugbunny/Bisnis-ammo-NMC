@@ -10,15 +10,12 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
   <style>
-    /* Efek Gradasi Teks Utama */
     .welcome-title-glow {
       background: linear-gradient(135deg, #ffffff 30%, #ef4444 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-shadow: 0 0 40px rgba(239, 68, 68, 0.3);
     }
-
-    /* Kartu Coming Soon yang Lebih Elegan */
     .coming-soon-card {
       background: rgba(11, 15, 25, 0.6);
       backdrop-filter: blur(10px);
@@ -29,8 +26,6 @@
       border-color: rgba(100, 116, 139, 0.6);
       background: rgba(11, 15, 25, 0.8);
     }
-    
-    /* Background Dasar & Scrollbar Modern */
     body { 
       background-color: #07090e; 
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -42,7 +37,6 @@
     ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #ef4444; }
 
-    /* Animasi Efek Cahaya Latar Belakang (Glow) */
     @keyframes pulseGlow {
       0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.15; }
       50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.25; }
@@ -59,7 +53,6 @@
       animation: pulseGlow 10s ease-in-out infinite;
     }
 
-    /* Glass Card dengan Efek Border Menyala saat Disorot */
     .glass-card { 
       background: rgba(18, 24, 38, 0.85); 
       backdrop-filter: blur(12px); 
@@ -72,7 +65,6 @@
       transform: translateY(-3px); 
     }
 
-    /* Efek Menu Card Utama */
     .menu-card { 
       transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); 
     }
@@ -82,7 +74,7 @@
       box-shadow: 0 12px 30px -5px rgba(220, 38, 38, 0.35); 
     }
 
-    /* Posisi Card Terakhir (Data Member) Agar ke Tengah di Layar Besar */
+    /* Posisi Grid Menu Utama & Brankas (3 Kolom & Baris Terakhir ke Tengah secara presisi) */
     @media (min-width: 1024px) {
       .menu-grid-layout {
         display: grid;
@@ -91,28 +83,32 @@
       .menu-grid-layout > div:last-child:nth-child(3n-2) {
         grid-column: 2 / 3;
       }
-    }
 
-    /* Pengaturan Grid Inventaris Brankas (Gaya 3 Kolom & Baris Terakhir ke Tengah) */
-    .vault-grid-layout {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.75rem;
-    }
-    @media (min-width: 640px) {
-      .vault-grid-layout { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    }
-    @media (min-width: 1024px) {
-      .vault-grid-layout { 
+      .vault-grid-layout {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.75rem;
       }
-      .vault-grid-layout > div:last-child:nth-child(3n-1) {
+      /* Mengatur sisa elemen ganjil di baris terakhir agar rata tengah */
+      .vault-grid-layout > div:last-child:nth-child(3n-2) {
         grid-column: 2 / 3;
       }
     }
 
-    /* Teks Gradasi MC */
+    @media (min-width: 640px) and (max-width: 1023px) {
+      .vault-grid-layout {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+      }
+    }
+
+    .vault-grid-layout {
+      display: grid;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+
     .mc-gradient-text { 
       background: linear-gradient(135deg, #ef4444 0%, #f59e0b 50%, #ef4444 100%); 
       -webkit-background-clip: text; 
@@ -120,7 +116,6 @@
       text-shadow: 0 0 30px rgba(239,68,68,0.3);
     }
 
-    /* Animasi Pop-up Tengah yang Elegan */
     @keyframes modalScaleIn {
       0% { transform: scale(0.85); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
@@ -129,7 +124,6 @@
       animation: modalScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    /* Efek Tombol Responsif Saat Diklik */
     button, .menu-card {
       transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease;
     }
@@ -141,7 +135,7 @@
 <body class="min-h-screen p-4 md:p-8">
   <div class="bg-ambient-glow"></div>
 
-  <!-- ================= MODAL LOGIN ================= -->
+  <!-- MODAL LOGIN -->
   <div id="loginModal" class="fixed inset-0 bg-slate-950/95 z-50 flex items-center justify-center p-4">
     <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6">
       <div class="text-center space-y-3">
@@ -175,21 +169,17 @@
     <!-- HEADER -->
     <div class="flex flex-col md:flex-row justify-between items-center bg-slate-900/90 p-6 rounded-2xl border border-red-900/40 shadow-2xl">
       <div class="flex items-center gap-4">
-        <!-- Tombol Home -->
-        <button id="btnHome" onclick="showWelcomeScreen()" class="bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700" title="Kembali ke Home Triad Community">
+        <button id="btnHome" onclick="showWelcomeScreen()" class="bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700" title="Kembali ke Home">
           <i class="fa-solid fa-house"></i>
         </button>
-        <!-- Tombol Back -->
-        <button id="btnBackMenu" onclick="showSection('mainMenu')" class="hidden bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700" title="Kembali ke Menu Nakama MC">
+        <button id="btnBackMenu" onclick="showSection('mainMenu')" class="hidden bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700" title="Kembali ke Menu">
           <i class="fa-solid fa-arrow-left"></i>
         </button>
 
         <div class="flex items-center gap-3">
           <img src="Nakama.png" alt="Logo" class="w-12 h-12 object-contain rounded-xl border border-red-600/50 bg-black p-1 shadow-md" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
           <div>
-            <h1 class="text-2xl md:text-3xl font-black tracking-wide mc-gradient-text" id="headerTitleText">
-              TRIAD COMMUNITY
-            </h1>
+            <h1 class="text-2xl md:text-3xl font-black tracking-wide mc-gradient-text" id="headerTitleText">TRIAD COMMUNITY</h1>
             <p class="text-xs text-gray-400 mt-0.5 tracking-wider" id="headerSubtitle">SYSTEM MANAGEMENT & DASHBOARD</p>
           </div>
         </div>
@@ -205,24 +195,17 @@
       </div>
     </div>
 
-    <!-- ================= 1. HALAMAN WELCOME TRIAD COMMUNITY ================= -->
+    <!-- HALAMAN WELCOME -->
     <div id="sectionWelcome" class="space-y-8 py-12 animate-fade-in">
-      
-      <!-- Header Selamat Datang -->
       <div class="text-center space-y-3 max-w-2xl mx-auto">
         <span class="bg-red-950/50 text-red-400 text-xs font-bold px-4 py-1.5 rounded-full border border-red-800/40 tracking-widest uppercase inline-flex items-center gap-2 shadow-inner">
           <i class="fa-solid fa-shield-halved"></i> Pusat Data Triad Community
         </span>
-        <h2 class="text-4xl md:text-6xl font-black tracking-wider welcome-title-glow leading-tight">
-          WELCOME TO <br> TRIAD COMMUNITY
-        </h2>
+        <h2 class="text-4xl md:text-6xl font-black tracking-wider welcome-title-glow leading-tight">WELCOME TO <br> TRIAD COMMUNITY</h2>
         <p class="text-sm text-gray-400">Silakan pilih divisi atau klub organisasi di bawah ini untuk mengakses sistem management by bunny.</p>
       </div>
 
-      <!-- Pilihan Kartu Divisi -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto pt-4">
-        
-        <!-- Pilihan 1: Nakama MC Blaine County -->
         <div onclick="selectCommunity('nakama')" class="menu-card glass-card p-8 rounded-2xl cursor-pointer flex flex-col justify-between border border-red-600/40 shadow-xl relative overflow-hidden group">
           <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-red-600/10 rounded-full blur-2xl group-hover:bg-red-600/20 transition"></div>
           <div class="space-y-5 relative z-10">
@@ -240,7 +223,6 @@
           </div>
         </div>
 
-        <!-- Pilihan 2: Coming Soon -->
         <div onclick="showCustomAlert('Divisi atau klub lain akan segera hadir (Coming Soon)!', 'info')" class="coming-soon-card p-8 rounded-2xl cursor-pointer flex flex-col justify-between shadow-xl opacity-75 hover:opacity-100 transition">
           <div class="space-y-5">
             <div class="w-16 h-16 bg-slate-900 text-gray-400 rounded-2xl flex items-center justify-center text-3xl border border-slate-800 shadow-inner">
@@ -256,20 +238,16 @@
             <i class="fa-solid fa-lock text-gray-600"></i>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- ================= 2. HALAMAN MENU UTAMA NAKAMA MC ================= -->
+    <!-- MENU UTAMA NAKAMA MC -->
     <div id="sectionMainMenu" class="hidden space-y-6">
       <h2 class="text-sm font-bold text-red-400 tracking-widest uppercase flex items-center gap-2">
         <i class="fa-solid fa-bars"></i> NAKAMA MC BLAINE COUNTY - PILIH MODUL MANAGEMENT
       </h2>
 
-      <!-- Menggunakan grid standar dengan tambahan kelas menu-grid-layout -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 menu-grid-layout">
-        
-        <!-- Card 1 -->
         <div onclick="showSection('sectionBahan')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between">
           <div>
             <div class="w-12 h-12 bg-amber-500/20 text-amber-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-amber-500/30"><i class="fa-solid fa-boxes-stacked"></i></div>
@@ -279,7 +257,6 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-amber-400"><span>Hitung Bahan</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
-        <!-- Card 2 -->
         <div onclick="showSection('sectionKalkulator')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between">
           <div>
             <div class="w-12 h-12 bg-red-500/20 text-red-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-red-500/30"><i class="fa-solid fa-handshake"></i></div>
@@ -289,7 +266,6 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-red-400"><span>Buka Transaksi</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
-        <!-- Card 3 -->
         <div onclick="showSection('sectionBrankas')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between">
           <div>
             <div class="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-blue-500/30"><i class="fa-solid fa-vault"></i></div>
@@ -299,7 +275,6 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-blue-400"><span>Kelola Brankas</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
-        <!-- Card 4: Transaksi Warga (Beli / Jual) -->
         <div onclick="showSection('sectionBeliWarga')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between border border-emerald-500/30">
           <div>
             <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-emerald-500/30"><i class="fa-solid fa-basket-shopping"></i></div>
@@ -309,7 +284,6 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-emerald-400"><span>Buka Transaksi Warga</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
-        <!-- Card 5 -->
         <div onclick="showSection('sectionBisnis')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between">
           <div>
             <div class="w-12 h-12 bg-purple-500/20 text-purple-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-purple-500/30"><i class="fa-solid fa-chart-line"></i></div>
@@ -319,7 +293,6 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-purple-400"><span>Lihat Laporan</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
-        <!-- Card 6: Data Setoran -->
         <div onclick="showSection('sectionSetoran')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between">
           <div>
             <div class="w-12 h-12 bg-pink-500/20 text-pink-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-pink-500/30"><i class="fa-solid fa-hand-holding-dollar"></i></div>
@@ -329,7 +302,6 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-pink-400"><span>Rekap Setoran</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
-        <!-- Card 7: Data Member (Otomatis ke tengah di baris terakhir) -->
         <div onclick="showSection('sectionMember')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between">
           <div>
             <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-emerald-500/30"><i class="fa-solid fa-users"></i></div>
@@ -338,11 +310,10 @@
           </div>
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-emerald-400"><span>Kelola Member</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
-
       </div>
     </div>
 
-    <!-- ================= HALAMAN: TRANSAKSI WARGA (BELI / JUAL) ================= -->
+    <!-- TRANSAKSI WARGA -->
     <div id="sectionBeliWarga" class="hidden space-y-6">
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
         <h2 id="formWargaTitle" class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-cart-plus"></i> Form Transaksi Warga</h2>
@@ -372,53 +343,22 @@
           </div>
         </div>
 
-        <!-- Daftar Baris Bahan/Barang dengan Tombol + -->
         <div class="space-y-3 pt-2">
           <label id="labelDaftarItem" class="block text-xs font-semibold text-emerald-400 uppercase tracking-wider">Daftar Bahan yang Dibeli:</label>
           <div id="beliBahanRowsContainer" class="space-y-3">
             <div class="beli-row grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
               <div class="md:col-span-4">
                 <select class="row-item w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none">
-                  <optgroup label="Bahan Dasar">
-                    <option value="Iron">Iron</option>
-                    <option value="Carbon">Carbon</option>
-                    <option value="Glass">Glass</option>
-                    <option value="Rubber">Rubber</option>
-                    <option value="Plastik">Plastik</option>
-                    <option value="Box Recycle">Box Recycle</option>
-                  </optgroup>
-                  <optgroup label="Pack Ammo">
-                    <option value="Pack Ammo 50AE">Pack Ammo 50AE</option>
-                    <option value="Pack Ammo 9MM">Pack Ammo 9MM</option>
-                    <option value="Pack Ammo 38LC">Pack Ammo 38LC</option>
-                  </optgroup>
-                  <optgroup label="Barham">
-                    <option value="Kecubung">Kecubung</option>
-                    <option value="Jamur">Jamur</option>
-                    <option value="Weed">Weed</option>
-                    <option value="Joint">Joint</option>
-                  </optgroup>
-                  <optgroup label="Senjata & Item Lain">
-                    <option value="Vest">Vest</option>
-                    <option value="Senjata DA">Senjata DA</option>
-                    <option value="Senjata P50">Senjata P50</option>
-                    <option value="Senjata TAC9">Senjata TAC9</option>
-                    <option value="Senjata Ceramic">Senjata Ceramic</option>
-                  </optgroup>
+                  <optgroup label="Bahan Dasar"><option value="Iron">Iron</option><option value="Carbon">Carbon</option><option value="Glass">Glass</option><option value="Rubber">Rubber</option><option value="Plastik">Plastik</option><option value="Box Recycle">Box Recycle</option></optgroup>
+                  <optgroup label="Pack Ammo"><option value="Pack Ammo 50AE">Pack Ammo 50AE</option><option value="Pack Ammo 9MM">Pack Ammo 9MM</option><option value="Pack Ammo 38LC">Pack Ammo 38LC</option></optgroup>
+                  <optgroup label="Barham"><option value="Kecubung">Kecubung</option><option value="Jamur">Jamur</option><option value="Weed">Weed</option><option value="Joint">Joint</option></optgroup>
+                  <optgroup label="Senjata & Item Lain"><option value="Vest">Vest</option><option value="Senjata DA">Senjata DA</option><option value="Senjata P50">Senjata P50</option><option value="Senjata TAC9">Senjata TAC9</option><option value="Senjata Ceramic">Senjata Ceramic</option></optgroup>
                 </select>
               </div>
-              <div class="md:col-span-2">
-                <input type="number" min="1" value="1" placeholder="Qty" class="row-qty w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()">
-              </div>
-              <div class="md:col-span-3">
-                <input type="number" min="0" value="0" placeholder="Harga Satuan" class="row-price w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()">
-              </div>
-              <div class="md:col-span-2 text-right font-bold text-emerald-400 text-sm pt-1 md:pt-0">
-                Rp <span class="row-total-text">0</span>
-              </div>
-              <div class="md:col-span-1 text-center">
-                <button type="button" onclick="hapusBarisBeli(this)" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button>
-              </div>
+              <div class="md:col-span-2"><input type="number" min="1" value="1" placeholder="Qty" class="row-qty w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()"></div>
+              <div class="md:col-span-3"><input type="number" min="0" value="0" placeholder="Harga Satuan" class="row-price w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()"></div>
+              <div class="md:col-span-2 text-right font-bold text-emerald-400 text-sm pt-1 md:pt-0">Rp <span class="row-total-text">0</span></div>
+              <div class="md:col-span-1 text-center"><button type="button" onclick="hapusBarisBeli(this)" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></div>
             </div>
           </div>
 
@@ -439,19 +379,12 @@
       </div>
 
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-        <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2">
-          <i class="fa-solid fa-history"></i> Riwayat Transaksi Warga
-        </h2>
+        <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-history"></i> Riwayat Transaksi Warga</h2>
         <div class="overflow-x-auto max-h-96 overflow-y-auto">
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase sticky top-0 bg-slate-900/95 backdrop-blur z-10">
-                <th class="p-2.5">Waktu</th>
-                <th class="p-2.5">Tipe</th>
-                <th class="p-2.5">Nama Warga</th>
-                <th class="p-2.5">Daftar Item & Qty</th>
-                <th class="p-2.5 text-right">Total Biaya & Kas</th>
-                <th class="p-2.5">Perwakilan Klub</th>
+                <th class="p-2.5">Waktu</th><th class="p-2.5">Tipe</th><th class="p-2.5">Nama Warga</th><th class="p-2.5">Daftar Item & Qty</th><th class="p-2.5 text-right">Total Biaya & Kas</th><th class="p-2.5">Perwakilan Klub</th>
               </tr>
             </thead>
             <tbody id="beliWargaTableBody" class="divide-y divide-slate-800 text-sm">
@@ -462,7 +395,7 @@
       </div>
     </div>
 
-    <!-- ================= HALAMAN 2: KALKULASI BAHAN CRAFTING ================= -->
+    <!-- KALKULASI BAHAN CRAFTING -->
     <div id="sectionBahan" class="hidden space-y-6">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
@@ -508,7 +441,7 @@
       </div>
     </div>
 
-    <!-- ================= HALAMAN 3: TRANSAKSI PARTNER ================= -->
+    <!-- TRANSAKSI PARTNER -->
     <div id="sectionKalkulator" class="hidden space-y-6">
       <div class="glass-card p-4 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4">
         <span class="text-sm font-bold text-red-400"><i class="fa-solid fa-handshake"></i> PILIH KELOMPOK PARTNER:</span>
@@ -535,7 +468,7 @@
       <button onclick="copySummary()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 border border-slate-700"><i class="fa-solid fa-copy"></i> Salin Ringkasan Transaksi Gabungan</button>
     </div>
 
-    <!-- ================= MODUL 4: DATA BRANKAS ================= -->
+    <!-- DATA BRANKAS -->
     <div id="sectionBrankas" class="hidden space-y-6">
       <div id="vaultControlPanel" class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
         <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2"><i class="fa-solid fa-boxes-packing"></i> Update Stok Barang Brankas</h2>
@@ -569,12 +502,7 @@
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase sticky top-0 bg-slate-900/95 backdrop-blur z-10">
-                <th class="p-2.5">Waktu</th>
-                <th class="p-2.5">Barang</th>
-                <th class="p-2.5">Aksi</th>
-                <th class="p-2.5 text-right">Jumlah</th>
-                <th class="p-2.5">Keterangan</th>
-                <th class="p-2.5">Pelapor</th>
+                <th class="p-2.5">Waktu</th><th class="p-2.5">Barang</th><th class="p-2.5">Aksi</th><th class="p-2.5 text-right">Jumlah</th><th class="p-2.5">Keterangan</th><th class="p-2.5">Pelapor</th>
               </tr>
             </thead>
             <tbody id="vaultHistoryTableBody" class="divide-y divide-slate-800 text-sm">
@@ -585,7 +513,7 @@
       </div>
     </div>
 
-    <!-- ================= HALAMAN 5: DATA BISNIS ================= -->
+    <!-- DATA BISNIS -->
     <div id="sectionBisnis" class="hidden space-y-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="glass-card p-6 shadow-lg bg-gradient-to-br from-slate-900 to-red-950/20">
@@ -614,12 +542,7 @@
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase sticky top-0 bg-slate-900/95 backdrop-blur z-10">
-                <th class="p-2.5">Waktu</th>
-                <th class="p-2.5">Jenis Uang</th>
-                <th class="p-2.5">Status</th>
-                <th class="p-2.5 text-right">Nominal</th>
-                <th class="p-2.5">Keterangan</th>
-                <th class="p-2.5">Pelapor</th>
+                <th class="p-2.5">Waktu</th><th class="p-2.5">Jenis Uang</th><th class="p-2.5">Status</th><th class="p-2.5 text-right">Nominal</th><th class="p-2.5">Keterangan</th><th class="p-2.5">Pelapor</th>
               </tr>
             </thead>
             <tbody id="businessHistoryTableBody" class="divide-y divide-slate-800 text-sm">
@@ -630,7 +553,7 @@
       </div>
     </div>
 
-    <!-- ================= HALAMAN 6: DATA SETORAN MINGGUAN ================= -->
+    <!-- DATA SETORAN -->
     <div id="sectionSetoran" class="hidden space-y-6">
       <div class="glass-card p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
         <div class="w-full md:w-auto flex items-center gap-3">
@@ -648,11 +571,9 @@
        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <h2 class="text-lg font-bold text-red-400 flex items-center gap-2"><i class="fa-solid fa-hand-holding-dollar"></i> Rekap Setoran Bahan (<span id="currentMingguLabel">Minggu 1</span>)</h2>
           <div class="flex flex-wrap items-center gap-2">
-            <!-- Tombol Masuk ke Brankas -->
             <button onclick="masukkanSetoranKeBrankas()" class="editor-only bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
               <i class="fa-solid fa-vault"></i> Masukkan ke Brankas
             </button>
-            <!-- Tombol Kirim Discord -->
             <button onclick="sendSetoranToDiscord()" class="editor-only bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
               <i class="fa-brands fa-discord"></i> Kirim ke Discord & Salin
             </button>
@@ -662,25 +583,14 @@
       </div>
     </div>
 
-    <!-- ================= HALAMAN 7: DATA MEMBER & HIERARKI RANK ================= -->
+    <!-- DATA MEMBER -->
     <div id="sectionMember" class="hidden space-y-6">
       <div class="glass-card p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
-        <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
-          <i class="fa-solid fa-id-badge"></i> Tambah Anggota Klub
-        </h2>
+        <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-id-badge"></i> Tambah Anggota Klub</h2>
         <div class="w-full md:w-auto flex flex-wrap items-center gap-2 editor-only">
           <input type="text" id="clubMemberName" placeholder="Nama Anggota..." class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
           <select id="clubMemberRank" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
-            <option value="President">1. President</option>
-            <option value="Vice President">2. Vice President</option>
-            <option value="Sergeant at Arms">3. Sergeant at Arms</option>
-            <option value="Road Captain">4. Road Captain</option>
-            <option value="Secretary">5. Secretary</option>
-            <option value="Treasurer">6. Treasurer</option>
-            <option value="Enforcer">7. Enforcer</option>
-            <option value="Member / Patched">8. Member / Patched</option>
-            <option value="Prospect" selected>9. Prospect</option>
-            <option value="Hangaround">10. Hangaround</option>
+            <option value="President">1. President</option><option value="Vice President">2. Vice President</option><option value="Sergeant at Arms">3. Sergeant at Arms</option><option value="Road Captain">4. Road Captain</option><option value="Secretary">5. Secretary</option><option value="Treasurer">6. Treasurer</option><option value="Enforcer">7. Enforcer</option><option value="Member / Patched">8. Member / Patched</option><option value="Prospect" selected>9. Prospect</option><option value="Hangaround">10. Hangaround</option>
           </select>
           <button onclick="addClubMember()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-user-plus"></i> Tambah</button>
         </div>
@@ -688,9 +598,7 @@
 
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
         <div class="flex justify-between items-center">
-          <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
-            <i class="fa-solid fa-users"></i> Daftar Anggota Aktif & Hierarki Klub
-          </h2>
+          <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-users"></i> Daftar Anggota Aktif & Hierarki Klub</h2>
           <button onclick="sendMembersToDiscord()" class="editor-only bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
             <i class="fa-brands fa-discord"></i> Kirim Daftar Anggota ke Discord & Salin
           </button>
@@ -700,10 +608,7 @@
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase">
-                <th class="p-3">Nama Anggota</th>
-                <th class="p-3">Rank / Jabatan</th>
-                <th class="p-3 text-center">Status Keaktifan</th>
-                <th class="p-3 text-center editor-only">Aksi</th>
+                <th class="p-3">Nama Anggota</th><th class="p-3">Rank / Jabatan</th><th class="p-3 text-center">Status Keaktifan</th><th class="p-3 text-center editor-only">Aksi</th>
               </tr>
             </thead>
             <tbody id="memberTableBody" class="divide-y divide-slate-800 text-sm">
@@ -717,7 +622,6 @@
   </div>
 
   <script>
-    // --- FUNGSI CUSTOM ALERT ANIMASI DI TENGAH ---
     function showCustomAlert(message, type = 'success') {
       const existingModal = document.getElementById('customAlertModal');
       if (existingModal) existingModal.remove();
@@ -768,7 +672,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // ================= DISCORD WEBHOOKS TERPISAH =================
     const DISCORD_WEBHOOK_BRANKAS   = "https://discordapp.com/api/webhooks/1557009048807800852/l82FqtdPoEUwzfGTSxCC_fVYYrtEJozTFKMXgpGDdiudHFyD7BB6TONGERVL2BL3kdnN";
     const DISCORD_WEBHOOK_PENJUALAN = "https://discordapp.com/api/webhooks/1557014106060623913/LQEqIw427dgWz1nEb2f8ihXhYH_rkl7a_ApywtffJFR31y07KkIzrDcGchuP9PO82-If";
     const DISCORD_WEBHOOK_PEMBELIAN = "https://discordapp.com/api/webhooks/1557138906586292345/guf2IGdXyXLP7yH3gu7l7OGtbOHspcT5zdAd63ZpDIYplCB7FZLYyqAfR7S6bFMQQFk_";
@@ -820,7 +723,6 @@
       }
     });
 
-    // Navigasi Antar Halaman
     function showWelcomeScreen() {
       document.getElementById('sectionWelcome').classList.remove('hidden');
       document.getElementById('sectionMainMenu').classList.add('hidden');
@@ -884,7 +786,6 @@
       }
     }
 
-    // --- REALTIME DATABASE (FIREBASE) ---
     const defaultVaultStock = {
       "Iron": 0, "Carbon": 0, "Glass": 0, "Rubber": 0, "Plastik": 0, "Box Recycle": 0,
       "Pack Ammo 38LC": 0, "Pack Ammo 9MM": 0, "Pack Ammo 50AE": 0,
@@ -932,7 +833,6 @@
       });
     }
 
-    // --- MODUL TRANSAKSI WARGA (BELI / JUAL) ---
     function gantiLabelTxWarga() {
       const type = document.getElementById("wargaTxType").value;
       const title = document.getElementById("formWargaTitle");
@@ -960,46 +860,16 @@
         <div class="beli-row grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
           <div class="md:col-span-4">
             <select class="row-item w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none">
-              <optgroup label="Bahan Dasar">
-                <option value="Iron">Iron</option>
-                <option value="Carbon">Carbon</option>
-                <option value="Glass">Glass</option>
-                <option value="Rubber">Rubber</option>
-                <option value="Plastik">Plastik</option>
-                <option value="Box Recycle">Box Recycle</option>
-              </optgroup>
-              <optgroup label="Pack Ammo">
-                <option value="Pack Ammo 50AE">Pack Ammo 50AE</option>
-                <option value="Pack Ammo 9MM">Pack Ammo 9MM</option>
-                <option value="Pack Ammo 38LC">Pack Ammo 38LC</option>
-              </optgroup>
-              <optgroup label="Barham">
-                <option value="Kecubung">Kecubung</option>
-                <option value="Jamur">Jamur</option>
-                <option value="Weed">Weed</option>
-                <option value="Joint">Joint</option>
-              </optgroup>
-              <optgroup label="Senjata & Item Lain">
-                <option value="Vest">Vest</option>
-                <option value="Senjata DA">Senjata DA</option>
-                <option value="Senjata P50">Senjata P50</option>
-                <option value="Senjata TAC9">Senjata TAC9</option>
-                <option value="Senjata Ceramic">Senjata Ceramic</option>
-              </optgroup>
+              <optgroup label="Bahan Dasar"><option value="Iron">Iron</option><option value="Carbon">Carbon</option><option value="Glass">Glass</option><option value="Rubber">Rubber</option><option value="Plastik">Plastik</option><option value="Box Recycle">Box Recycle</option></optgroup>
+              <optgroup label="Pack Ammo"><option value="Pack Ammo 50AE">Pack Ammo 50AE</option><option value="Pack Ammo 9MM">Pack Ammo 9MM</option><option value="Pack Ammo 38LC">Pack Ammo 38LC</option></optgroup>
+              <optgroup label="Barham"><option value="Kecubung">Kecubung</option><option value="Jamur">Jamur</option><option value="Weed">Weed</option><option value="Joint">Joint</option></optgroup>
+              <optgroup label="Senjata & Item Lain"><option value="Vest">Vest</option><option value="Senjata DA">Senjata DA</option><option value="Senjata P50">Senjata P50</option><option value="Senjata TAC9">Senjata TAC9</option><option value="Senjata Ceramic">Senjata Ceramic</option></optgroup>
             </select>
           </div>
-          <div class="md:col-span-2">
-            <input type="number" min="1" value="1" placeholder="Qty" class="row-qty w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()">
-          </div>
-          <div class="md:col-span-3">
-            <input type="number" min="0" value="0" placeholder="Harga Satuan" class="row-price w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()">
-          </div>
-          <div class="md:col-span-2 text-right font-bold text-emerald-400 text-sm pt-1 md:pt-0">
-            Rp <span class="row-total-text">0</span>
-          </div>
-          <div class="md:col-span-1 text-center">
-            <button type="button" onclick="hapusBarisBeli(this)" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button>
-          </div>
+          <div class="md:col-span-2"><input type="number" min="1" value="1" placeholder="Qty" class="row-qty w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()"></div>
+          <div class="md:col-span-3"><input type="number" min="0" value="0" placeholder="Harga Satuan" class="row-price w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()"></div>
+          <div class="md:col-span-2 text-right font-bold text-emerald-400 text-sm pt-1 md:pt-0">Rp <span class="row-total-text">0</span></div>
+          <div class="md:col-span-1 text-center"><button type="button" onclick="hapusBarisBeli(this)" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></div>
         </div>`;
       container.insertAdjacentHTML('beforeend', rowHtml);
     }
@@ -1025,7 +895,6 @@
         const qty = parseFloat(r.querySelector(".row-qty").value) || 0;
         const price = parseFloat(r.querySelector(".row-price").value) || 0;
         const rowTotal = qty * price;
-        
         r.querySelector(".row-total-text").innerText = rowTotal.toLocaleString('id-ID');
         grandTotal += rowTotal;
       });
@@ -1035,7 +904,7 @@
 
     function prosesTransaksiWarga() {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak memiliki izin melakukan transaksi.", "error");
+        showCustomAlert("Akses ditolak! Akun Viewer tidak memiliki izin.", "error");
         return;
       }
       const txType = document.getElementById("wargaTxType").value;
@@ -1067,22 +936,14 @@
             vaultHistory.unshift({
               id: Date.now() + Math.random(),
               date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-              item: item,
-              action: "ADD",
-              diff: `+${qty}`,
-              desc: `Beli dari Warga (${namaWarga})`,
-              author: admin
+              item: item, action: "ADD", diff: `+${qty}`, desc: `Beli dari Warga (${namaWarga})`, author: admin
             });
           } else {
             vaultStock[item] = Math.max(0, (vaultStock[item] || 0) - qty);
             vaultHistory.unshift({
               id: Date.now() + Math.random(),
               date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-              item: item,
-              action: "SUB",
-              diff: `-${qty}`,
-              desc: `Jual ke Warga (${namaWarga})`,
-              author: admin
+              item: item, action: "SUB", diff: `-${qty}`, desc: `Jual ke Warga (${namaWarga})`, author: admin
             });
           }
         }
@@ -1094,90 +955,33 @@
       }
 
       if (txType === 'beli') {
-        businessHistory.unshift({
-          id: Date.now(),
-          date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-          currency: currency,
-          type: "OUT",
-          amount: totalSemuaHarga,
-          desc: `Beli bahan dari warga (${namaWarga})`,
-          author: admin
-        });
+        businessHistory.unshift({ id: Date.now(), date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }), currency, type: "OUT", amount: totalSemuaHarga, desc: `Beli bahan dari warga (${namaWarga})`, author: admin });
       } else {
-        businessHistory.unshift({
-          id: Date.now(),
-          date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-          currency: currency,
-          type: "IN",
-          amount: totalSemuaHarga,
-          desc: `Jual ke warga (${namaWarga})`,
-          author: admin
-        });
+        businessHistory.unshift({ id: Date.now(), date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }), currency, type: "IN", amount: totalSemuaHarga, desc: `Jual ke warga (${namaWarga})`, author: admin });
       }
 
-      beliWargaHistory.unshift({
-        id: Date.now(),
-        date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-        txType,
-        namaWarga,
-        itemsDetail,
-        totalHarga: totalSemuaHarga,
-        currency,
-        admin
-      });
+      beliWargaHistory.unshift({ id: Date.now(), date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }), txType, namaWarga, itemsDetail, totalHarga: totalSemuaHarga, currency, admin });
 
       saveDataToCloud();
-
       document.getElementById("beliWargaNama").value = "";
       document.getElementById("beliWargaAdmin").value = "";
       document.getElementById("beliBahanRowsContainer").innerHTML = `
         <div class="beli-row grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
           <div class="md:col-span-4">
             <select class="row-item w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none">
-              <optgroup label="Bahan Dasar">
-                <option value="Iron">Iron</option>
-                <option value="Carbon">Carbon</option>
-                <option value="Glass">Glass</option>
-                <option value="Rubber">Rubber</option>
-                <option value="Plastik">Plastik</option>
-                <option value="Box Recycle">Box Recycle</option>
-              </optgroup>
-              <optgroup label="Pack Ammo">
-                <option value="Pack Ammo 50AE">Pack Ammo 50AE</option>
-                <option value="Pack Ammo 9MM">Pack Ammo 9MM</option>
-                <option value="Pack Ammo 38LC">Pack Ammo 38LC</option>
-              </optgroup>
-              <optgroup label="Barham">
-                <option value="Kecubung">Kecubung</option>
-                <option value="Jamur">Jamur</option>
-                <option value="Weed">Weed</option>
-                <option value="Joint">Joint</option>
-              </optgroup>
-              <optgroup label="Senjata & Item Lain">
-                <option value="Vest">Vest</option>
-                <option value="Senjata DA">Senjata DA</option>
-                <option value="Senjata P50">Senjata P50</option>
-                <option value="Senjata TAC9">Senjata TAC9</option>
-                <option value="Senjata Ceramic">Senjata Ceramic</option>
-              </optgroup>
+              <optgroup label="Bahan Dasar"><option value="Iron">Iron</option><option value="Carbon">Carbon</option><option value="Glass">Glass</option><option value="Rubber">Rubber</option><option value="Plastik">Plastik</option><option value="Box Recycle">Box Recycle</option></optgroup>
+              <optgroup label="Pack Ammo"><option value="Pack Ammo 50AE">Pack Ammo 50AE</option><option value="Pack Ammo 9MM">Pack Ammo 9MM</option><option value="Pack Ammo 38LC">Pack Ammo 38LC</option></optgroup>
+              <optgroup label="Barham"><option value="Kecubung">Kecubung</option><option value="Jamur">Jamur</option><option value="Weed">Weed</option><option value="Joint">Joint</option></optgroup>
+              <optgroup label="Senjata & Item Lain"><option value="Vest">Vest</option><option value="Senjata DA">Senjata DA</option><option value="Senjata P50">Senjata P50</option><option value="Senjata TAC9">Senjata TAC9</option><option value="Senjata Ceramic">Senjata Ceramic</option></optgroup>
             </select>
           </div>
-          <div class="md:col-span-2">
-            <input type="number" min="1" value="1" placeholder="Qty" class="row-qty w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()">
-          </div>
-          <div class="md:col-span-3">
-            <input type="number" min="0" value="0" placeholder="Harga Satuan" class="row-price w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()">
-          </div>
-          <div class="md:col-span-2 text-right font-bold text-emerald-400 text-sm pt-1 md:pt-0">
-            Rp <span class="row-total-text">0</span>
-          </div>
-          <div class="md:col-span-1 text-center">
-            <button type="button" onclick="hapusBarisBeli(this)" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button>
-          </div>
+          <div class="md:col-span-2"><input type="number" min="1" value="1" placeholder="Qty" class="row-qty w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()"></div>
+          <div class="md:col-span-3"><input type="number" min="0" value="0" placeholder="Harga Satuan" class="row-price w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()"></div>
+          <div class="md:col-span-2 text-right font-bold text-emerald-400 text-sm pt-1 md:pt-0">Rp <span class="row-total-text">0</span></div>
+          <div class="md:col-span-1 text-center"><button type="button" onclick="hapusBarisBeli(this)" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></div>
         </div>`;
       hitungTotalBeliWarga();
-
-      showCustomAlert(`Berhasil! Transaksi ${txType === 'beli' ? 'Pembelian dari' : 'Penjualan ke'} warga ${namaWarga} senilai Rp ${totalSemuaHarga.toLocaleString('id-ID')} berhasil dicatat & brankas diperbarui.`);
+      showCustomAlert(`Berhasil! Transaksi warga senilai Rp ${totalSemuaHarga.toLocaleString('id-ID')} berhasil dicatat & brankas diperbarui.`);
     }
 
     function renderBeliWargaHistory() {
@@ -1210,11 +1014,9 @@
       });
     }
 
-    // --- MODUL BRANKAS ---
     function updateVaultStock() {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak memiliki izin memperbarui stok brankas.", "error");
-        return;
+        showCustomAlert("Akses ditolak!", "error"); return;
       }
       const itemName = document.getElementById("vaultItemName").value;
       const action = document.getElementById("vaultAction").value;
@@ -1270,7 +1072,6 @@
       for (let item in vaultStock) {
         text += `• **${item}**: ${vaultStock[item].toLocaleString('id-ID')}\n`;
       }
-
       fetch(DISCORD_WEBHOOK_BRANKAS, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1280,11 +1081,9 @@
       .catch(() => showCustomAlert("Gagal mengirim laporan ke Discord!", "error"));
     }
 
-    // --- MODUL DATA BISNIS ---
     function addBusinessTransaction() {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak memiliki izin mencatat kas bisnis.", "error");
-        return;
+        showCustomAlert("Akses ditolak!", "error"); return;
       }
       const currency = document.getElementById("businessCurrency").value;
       const type = document.getElementById("businessType").value;
@@ -1328,7 +1127,6 @@
       document.getElementById("totalUangPutih").innerText = saldoPutih.toLocaleString('id-ID');
     }
 
-    // --- MODUL DATA SETORAN BAHAN MINGGUAN ---
     function changeActiveMinggu() {
       activeMinggu = document.getElementById("selectMinggu").value;
       document.getElementById("currentMingguLabel").innerText = activeMinggu;
@@ -1337,8 +1135,7 @@
 
     function addNewMember() {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer hanya dapat melihat data.", "error");
-        return;
+        showCustomAlert("Akses ditolak!", "error"); return;
       }
       const name = document.getElementById("newMemberName").value.trim();
       if (!name) { showCustomAlert("Masukkan nama anggota!", "error"); return; }
@@ -1347,7 +1144,6 @@
 
       setoranData[activeMinggu][name] = { iron: 0, carbon: 0, glass: 0, rubber: 0, plastik: 0, lunas: false };
 
-      // Urutkan objek setoran berdasarkan nama secara otomatis (A-Z)
       const sortedKeys = Object.keys(setoranData[activeMinggu]).sort((a, b) => a.localeCompare(b));
       let sortedObj = {};
       sortedKeys.forEach(k => { sortedObj[k] = setoranData[activeMinggu][k]; });
@@ -1360,9 +1156,7 @@
 
     function updateSetoranBahan(name, bahan, val) {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak dapat mengubah data setoran.", "error");
-        renderSetoranTable();
-        return;
+        showCustomAlert("Akses ditolak!", "error"); renderSetoranTable(); return;
       }
       const num = parseInt(val) || 0;
       if (!setoranData[activeMinggu][name]) setoranData[activeMinggu][name] = { iron: 0, carbon: 0, glass: 0, rubber: 0, plastik: 0, lunas: false };
@@ -1372,8 +1166,7 @@
 
     function toggleStatusLunas(name) {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak dapat mengubah status lunas.", "error");
-        return;
+        showCustomAlert("Akses ditolak!", "error"); return;
       }
       if (!setoranData[activeMinggu][name]) return;
       setoranData[activeMinggu][name].lunas = !setoranData[activeMinggu][name].lunas;
@@ -1383,8 +1176,7 @@
 
     function removeSetoranMember(name) {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak dapat menghapus anggota dari rekap.", "error");
-        return;
+        showCustomAlert("Akses ditolak!", "error"); return;
       }
       if (confirm(`Hapus ${name} dari rekap setoran ${activeMinggu}?`)) {
         delete setoranData[activeMinggu][name];
@@ -1398,7 +1190,6 @@
       tbody.innerHTML = "";
       const currentList = setoranData[activeMinggu] || {};
       
-      // Urutkan nama anggota secara otomatis abjad (A-Z) saat dirender
       const memberNames = Object.keys(currentList).sort((a, b) => a.localeCompare(b));
 
       if (memberNames.length === 0) {
@@ -1429,34 +1220,29 @@
       if (isViewer) document.querySelectorAll(".editor-only").forEach(el => el.style.display = "none");
     }
 
-    // --- FUNGSI EKSEKUSI: MASUKKAN SETORAN KE BRANKAS ---
     function masukkanSetoranKeBrankas() {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak memiliki izin memasukkan setoran ke brankas.", "error");
-        return;
+        showCustomAlert("Akses ditolak!", "error"); return;
       }
-
       const currentList = setoranData[activeMinggu] || {};
       let totalIron = 0, totalCarbon = 0, totalGlass = 0, totalRubber = 0, totalPlastik = 0;
 
       for (let name in currentList) {
         const item = currentList[name];
         if (item) {
-          totalIron += parseInt(item.iron || item.Iron || 0) || 0;
-          totalCarbon += parseInt(item.carbon || item.Carbon || 0) || 0;
-          totalGlass += parseInt(item.glass || item.Glass || 0) || 0;
-          totalRubber += parseInt(item.rubber || item.Rubber || 0) || 0;
-          totalPlastik += parseInt(item.plastik || item.Plastik || 0) || 0;
+          totalIron += parseInt(item.iron || 0) || 0;
+          totalCarbon += parseInt(item.carbon || 0) || 0;
+          totalGlass += parseInt(item.glass || 0) || 0;
+          totalRubber += parseInt(item.rubber || 0) || 0;
+          totalPlastik += parseInt(item.plastik || 0) || 0;
         }
       }
 
       if (totalIron === 0 && totalCarbon === 0 && totalGlass === 0 && totalRubber === 0 && totalPlastik === 0) {
-        showCustomAlert("Total bahan bernilai 0 semua! Masukkan minimal angka bahan pada salah satu anggota terlebih dahulu.", "error");
-        return;
+        showCustomAlert("Total bahan bernilai 0 semua!", "error"); return;
       }
 
-      if (confirm(`Konfirmasi: Masukkan total keseluruhan setoran ${activeMinggu} (${totalIron} Iron, ${totalCarbon} Carbon, ${totalGlass} Glass, ${totalRubber} Rubber, ${totalPlastik} Plastik) langsung ke dalam stok Brankas?`)) {
-        
+      if (confirm(`Konfirmasi: Masukkan total keseluruhan setoran ${activeMinggu} ke dalam stok Brankas?`)) {
         vaultStock["Iron"] = (vaultStock["Iron"] || 0) + totalIron;
         vaultStock["Carbon"] = (vaultStock["Carbon"] || 0) + totalCarbon;
         vaultStock["Glass"] = (vaultStock["Glass"] || 0) + totalGlass;
@@ -1475,8 +1261,7 @@
         saveDataToCloud();
         renderVaultInventory();
         renderVaultHistory();
-
-        showCustomAlert(`Berhasil! Seluruh bahan dari rekap ${activeMinggu} telah ditambahkan ke dalam stok Brankas.`);
+        showCustomAlert(`Berhasil! Seluruh bahan dari rekap ${activeMinggu} telah ditambahkan ke Brankas.`);
       }
     }
 
@@ -1491,26 +1276,20 @@
         totalIron += item.iron; totalCarbon += item.carbon; totalGlass += item.glass; totalRubber += item.rubber; totalPlastik += item.plastik;
         text += `• **${name}** | Iron: ${item.iron} | Carbon: ${item.carbon} | Glass: ${item.glass} | Rubber: ${item.rubber} | Plastik: ${item.plastik} | [${status}]\n`;
       }
-      
       text += `\n📊 **TOTAL KESELURUHAN BAHAN:**\n`;
       text += `• Iron: ${totalIron} | Carbon: ${totalCarbon} | Glass: ${totalGlass} | Rubber: ${totalRubber} | Plastik: ${totalPlastik}`;
 
       navigator.clipboard.writeText(text);
-
       fetch(DISCORD_WEBHOOK_SETORAN, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: text })
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
       })
-      .then(() => showCustomAlert(`Rekap setoran ${activeMinggu} berhasil dikirim ke Discord dan disalin!`))
-      .catch(() => showCustomAlert("Gagal mengirim ke Discord, tapi teks sudah disalin ke clipboard!", "error"));
+      .then(() => showCustomAlert(`Rekap setoran ${activeMinggu} berhasil dikirim & disalin!`))
+      .catch(() => showCustomAlert("Gagal mengirim ke Discord, teks disalin ke clipboard!", "error"));
     }
 
-    // --- MODUL 7: DATA MEMBER & HIERARKI RANK ---
     function addClubMember() {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer hanya dapat melihat data.", "error");
-        return;
+        showCustomAlert("Akses ditolak!", "error"); return;
       }
       const name = document.getElementById("clubMemberName").value.trim();
       const rank = document.getElementById("clubMemberRank").value;
@@ -1519,7 +1298,6 @@
 
       memberList[name] = { rank: rank, status: "Aktif" };
 
-      // Urutkan daftar member berdasarkan nama secara otomatis (A-Z)
       const sortedKeys = Object.keys(memberList).sort((a, b) => a.localeCompare(b));
       let sortedObj = {};
       sortedKeys.forEach(k => { sortedObj[k] = memberList[k]; });
@@ -1532,8 +1310,7 @@
 
     function toggleMemberStatus(name) {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak dapat mengubah status anggota.", "error");
-        return;
+        showCustomAlert("Akses ditolak!", "error"); return;
       }
       if (!memberList[name]) return;
       memberList[name].status = memberList[name].status === "Aktif" ? "Inactive" : "Aktif";
@@ -1543,9 +1320,7 @@
 
     function updateMemberRank(name, newRank) {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak dapat mengubah rank anggota.", "error");
-        renderMemberTable();
-        return;
+        showCustomAlert("Akses ditolak!", "error"); renderMemberTable(); return;
       }
       if (!memberList[name]) return;
       memberList[name].rank = newRank;
@@ -1554,8 +1329,7 @@
 
     function removeClubMember(name) {
       if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak dapat menghapus anggota.", "error");
-        return;
+        showCustomAlert("Akses ditolak!", "error"); return;
       }
       if (confirm(`Hapus ${name} dari daftar anggota klub?`)) {
         delete memberList[name];
@@ -1568,7 +1342,6 @@
       const tbody = document.getElementById("memberTableBody");
       tbody.innerHTML = "";
       
-      // Urutkan nama anggota secara otomatis abjad (A-Z) saat dirender
       const memberNames = Object.keys(memberList).sort((a, b) => a.localeCompare(b));
 
       if (memberNames.length === 0) {
@@ -1577,34 +1350,23 @@
       }
 
       const isViewer = localStorage.getItem("nmc_logged_user") === "viewer";
-      const ranksList = [
-        "President", "Vice President", "Sergeant at Arms", "Road Captain", 
-        "Secretary", "Treasurer", "Enforcer", "Member / Patched", "Prospect", "Hangaround"
-      ];
+      const ranksList = ["President", "Vice President", "Sergeant at Arms", "Road Captain", "Secretary", "Treasurer", "Enforcer", "Member / Patched", "Prospect", "Hangaround"];
 
       memberNames.forEach(name => {
         const item = memberList[name];
         let rankOptions = "";
-        ranksList.forEach(r => {
-          rankOptions += `<option value="${r}" ${item.rank === r ? 'selected' : ''}>${r}</option>`;
-        });
+        ranksList.forEach(r => { rankOptions += `<option value="${r}" ${item.rank === r ? 'selected' : ''}>${r}</option>`; });
 
         let statusBadge = item.status === "Aktif" ? 
           `<span onclick="toggleMemberStatus('${name}')" class="cursor-pointer bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30 hover:bg-green-500/30">Aktif ✅</span>` : 
-          `<span onclick="toggleMemberStatus('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30 hover:bg-red-500/30">Inactive ❌</span>`;
+          `<span onclick="toggleMemberStatus('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30 hover:bg-green-500/30">Inactive ❌</span>`;
 
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
             <td class="p-3 text-white font-bold">${name}</td>
-            <td class="p-3">
-              <select ${isViewer ? 'disabled' : ''} onchange="updateMemberRank('${name}', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs text-amber-300 font-bold focus:outline-none focus:border-emerald-400">
-                ${rankOptions}
-              </select>
-            </td>
+            <td class="p-3"><select ${isViewer ? 'disabled' : ''} onchange="updateMemberRank('${name}', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs text-amber-300 font-bold focus:outline-none focus:border-emerald-400">${rankOptions}</select></td>
             <td class="p-3 text-center">${statusBadge}</td>
-            <td class="p-3 text-center editor-only">
-              <button onclick="removeClubMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button>
-            </td>
+            <td class="p-3 text-center editor-only"><button onclick="removeClubMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></td>
           </tr>`;
       });
       if (isViewer) document.querySelectorAll(".editor-only").forEach(el => el.style.display = "none");
@@ -1620,22 +1382,16 @@
         if (item.status === "Aktif") totalAktif++; else totalInactive++;
         text += `• **${name}** | *${item.rank}* | [${item.status}]\n`;
       });
-
-      text += `\n📊 **RINGKASAN ANGGOTA:**\n`;
-      text += `• Aktif: ${totalAktif} | Inactive: ${totalInactive} | Total: ${memberNames.length}`;
+      text += `\n📊 **RINGKASAN ANGGOTA:**\n• Aktif: ${totalAktif} | Inactive: ${totalInactive} | Total: ${memberNames.length}`;
 
       navigator.clipboard.writeText(text);
-
       fetch(DISCORD_WEBHOOK_MEMBER, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: text })
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
       })
-      .then(() => showCustomAlert("Daftar anggota berhasil dikirim ke Discord dan disalin!"))
-      .catch(() => showCustomAlert("Gagal mengirim ke Discord, tapi teks sudah disalin ke clipboard!", "error"));
+      .then(() => showCustomAlert("Daftar anggota berhasil dikirim & disalin!"))
+      .catch(() => showCustomAlert("Gagal mengirim ke Discord, teks disalin ke clipboard!", "error"));
     }
 
-    // --- LOGIC LAINNYA ---
     const craftRecipes = { "50AE": { iron: 50, carbon: 50, umer: 20000 }, "9MM": { iron: 50, carbon: 50, umer: 60000 }, "38LC": { iron: 50, carbon: 50, umer: 70000 } };
     function calcBahan() {
       const type = document.getElementById("craftAmmoType").value;
@@ -1744,11 +1500,8 @@
         }
       });
       text += `\n💵 **Total Tagihan Ammo: Rp ${total.toLocaleString('id-ID')}**`;
-
       fetch(DISCORD_WEBHOOK_PENJUALAN, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: text })
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
       })
       .then(() => showCustomAlert("Log penjualan berhasil dikirim ke Discord!"))
       .catch(() => showCustomAlert("Gagal mengirim log penjualan ke Discord!", "error"));
@@ -1769,11 +1522,8 @@
         }
       });
       text += `\n💵 **Total Pembelian / Fee: Rp ${total.toLocaleString('id-ID')}**`;
-
       fetch(DISCORD_WEBHOOK_PEMBELIAN, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: text })
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
       })
       .then(() => showCustomAlert("Log pembelian berhasil dikirim ke Discord!"))
       .catch(() => showCustomAlert("Gagal mengirim log pembelian ke Discord!", "error"));
