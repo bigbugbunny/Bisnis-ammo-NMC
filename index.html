@@ -93,18 +93,7 @@
       }
     }
 
-    /* Posisi Sisa Item Brankas Terakhir agar ke Tengah di Layar Besar (6 Kolom, total 17 item -> baris 3 sisa 5 item) */
-    @media (min-width: 1024px) {
-      .vault-grid-layout {
-        display: grid;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-      }
-      /* Mengatur sisa 5 item di baris terakhir agar otomatis berada di tengah */
-      .vault-grid-layout > div:nth-min(13) {
-        /* Menggunakan teknik penempatan grid otomatis */
-      }
-    }
-    /* Trik khusus flexbox/grid untuk membuat sisa item di baris terakhir rata tengah */
+    /* Posisi Grid Inventaris Brankas (6 Kolom) */
     .vault-grid-layout {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -116,7 +105,12 @@
       .vault-grid-layout { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     }
     @media (min-width: 1024px) {
-      .vault-grid-layout { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+      .vault-grid-layout { 
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      /* Membuat 5 item terakhir di baris ke-3 (Vest sampai Ceramic) mulai dari kolom ke-2 agar pas di tengah */
+      .vault-grid-layout > div:nth-child(13) { grid-column: 2 / 3; }
     }
 
     /* Teks Gradasi MC */
@@ -214,8 +208,6 @@
 
     <!-- ================= 1. HALAMAN WELCOME TRIAD COMMUNITY ================= -->
     <div id="sectionWelcome" class="space-y-8 py-12 animate-fade-in">
-      
-      <!-- Header Selamat Datang -->
       <div class="text-center space-y-3 max-w-2xl mx-auto">
         <span class="bg-red-950/50 text-red-400 text-xs font-bold px-4 py-1.5 rounded-full border border-red-800/40 tracking-widest uppercase inline-flex items-center gap-2 shadow-inner">
           <i class="fa-solid fa-shield-halved"></i> Pusat Data Triad Community
@@ -226,9 +218,7 @@
         <p class="text-sm text-gray-400">Silakan pilih divisi atau klub organisasi di bawah ini untuk mengakses sistem management by bunny.</p>
       </div>
 
-      <!-- Pilihan Kartu Divisi -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto pt-4">
-        
         <!-- Pilihan 1: Nakama MC Blaine County -->
         <div onclick="selectCommunity('nakama')" class="menu-card glass-card p-8 rounded-2xl cursor-pointer flex flex-col justify-between border border-red-600/40 shadow-xl relative overflow-hidden group">
           <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-red-600/10 rounded-full blur-2xl group-hover:bg-red-600/20 transition"></div>
@@ -263,7 +253,6 @@
             <i class="fa-solid fa-lock text-gray-600"></i>
           </div>
         </div>
-
       </div>
     </div>
 
@@ -273,9 +262,7 @@
         <i class="fa-solid fa-bars"></i> NAKAMA MC BLAINE COUNTY - PILIH MODUL MANAGEMENT
       </h2>
 
-      <!-- Menggunakan grid standar dengan tambahan kelas menu-grid-layout -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 menu-grid-layout">
-        
         <!-- Card 1 -->
         <div onclick="showSection('sectionBahan')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between">
           <div>
@@ -306,7 +293,7 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-blue-400"><span>Kelola Brankas</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
-        <!-- Card 4: Transaksi Warga (Beli / Jual) -->
+        <!-- Card 4 -->
         <div onclick="showSection('sectionBeliWarga')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between border border-emerald-500/30">
           <div>
             <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-emerald-500/30"><i class="fa-solid fa-basket-shopping"></i></div>
@@ -326,7 +313,7 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-purple-400"><span>Lihat Laporan</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
-        <!-- Card 6: Data Setoran -->
+        <!-- Card 6 -->
         <div onclick="showSection('sectionSetoran')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between">
           <div>
             <div class="w-12 h-12 bg-pink-500/20 text-pink-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-pink-500/30"><i class="fa-solid fa-hand-holding-dollar"></i></div>
@@ -336,7 +323,7 @@
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-pink-400"><span>Rekap Setoran</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
-        <!-- Card 7: Data Member (Otomatis ke tengah di baris terakhir) -->
+        <!-- Card 7 -->
         <div onclick="showSection('sectionMember')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between">
           <div>
             <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-emerald-500/30"><i class="fa-solid fa-users"></i></div>
@@ -345,11 +332,10 @@
           </div>
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-emerald-400"><span>Kelola Member</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
-
       </div>
     </div>
 
-    <!-- ================= HALAMAN: TRANSAKSI WARGA (BELI / JUAL) ================= -->
+    <!-- ================= HALAMAN: TRANSAKSI WARGA ================= -->
     <div id="sectionBeliWarga" class="hidden space-y-6">
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
         <h2 id="formWargaTitle" class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-cart-plus"></i> Form Transaksi Warga</h2>
@@ -379,7 +365,6 @@
           </div>
         </div>
 
-        <!-- Daftar Baris Bahan/Barang dengan Tombol + -->
         <div class="space-y-3 pt-2">
           <label id="labelDaftarItem" class="block text-xs font-semibold text-emerald-400 uppercase tracking-wider">Daftar Bahan yang Dibeli:</label>
           <div id="beliBahanRowsContainer" class="space-y-3">
@@ -387,19 +372,10 @@
               <div class="md:col-span-4">
                 <select class="row-item w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none">
                   <optgroup label="Bahan Dasar">
-                    <option value="Iron">Iron</option>
-                    <option value="Carbon">Carbon</option>
-                    <option value="Glass">Glass</option>
-                    <option value="Rubber">Rubber</option>
-                    <option value="Plastik">Plastik</option>
-                    <option value="Box Recycle">Box Recycle</option>
+                    <option value="Iron">Iron</option><option value="Carbon">Carbon</option><option value="Glass">Glass</option><option value="Rubber">Rubber</option><option value="Plastik">Plastik</option><option value="Box Recycle">Box Recycle</option>
                   </optgroup>
                   <optgroup label="Senjata & Item Lain">
-                    <option value="Vest">Vest</option>
-                    <option value="Senjata DA">Senjata DA</option>
-                    <option value="Senjata P50">Senjata P50</option>
-                    <option value="Senjata TAC9">Senjata TAC9</option>
-                    <option value="Senjata Ceramic">Senjata Ceramic</option>
+                    <option value="Vest">Vest</option><option value="Senjata DA">Senjata DA</option><option value="Senjata P50">Senjata P50</option><option value="Senjata TAC9">Senjata TAC9</option><option value="Senjata Ceramic">Senjata Ceramic</option>
                   </optgroup>
                 </select>
               </div>
@@ -442,12 +418,7 @@
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase sticky top-0 bg-slate-900/95 backdrop-blur z-10">
-                <th class="p-2.5">Waktu</th>
-                <th class="p-2.5">Tipe</th>
-                <th class="p-2.5">Nama Warga</th>
-                <th class="p-2.5">Daftar Item & Qty</th>
-                <th class="p-2.5 text-right">Total Biaya & Kas</th>
-                <th class="p-2.5">Perwakilan Klub</th>
+                <th class="p-2.5">Waktu</th><th class="p-2.5">Tipe</th><th class="p-2.5">Nama Warga</th><th class="p-2.5">Daftar Item & Qty</th><th class="p-2.5 text-right">Total Biaya & Kas</th><th class="p-2.5">Perwakilan Klub</th>
               </tr>
             </thead>
             <tbody id="beliWargaTableBody" class="divide-y divide-slate-800 text-sm">
@@ -458,7 +429,7 @@
       </div>
     </div>
 
-    <!-- ================= HALAMAN 2: KALKULASI BAHAN CRAFTING ================= -->
+    <!-- ================= HALAMAN: KALKULASI BAHAN ================= -->
     <div id="sectionBahan" class="hidden space-y-6">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
@@ -504,7 +475,7 @@
       </div>
     </div>
 
-    <!-- ================= HALAMAN 3: TRANSAKSI PARTNER ================= -->
+    <!-- ================= HALAMAN: TRANSAKSI PARTNER ================= -->
     <div id="sectionKalkulator" class="hidden space-y-6">
       <div class="glass-card p-4 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4">
         <span class="text-sm font-bold text-red-400"><i class="fa-solid fa-handshake"></i> PILIH KELOMPOK PARTNER:</span>
@@ -556,8 +527,7 @@
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
         <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-vault"></i> Inventaris Stok Brankas Saat Ini</h2>
-        <!-- Menggunakan grid responsif dengan tambahan kelas vault-grid-layout -->
-        <div class="grid gap-3 vault-grid-layout" id="vaultInventoryGrid"></div>
+        <div class="vault-grid-layout gap-3" id="vaultInventoryGrid"></div>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
         <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-history"></i> Riwayat (History) Keluar Masuk Barang Brankas</h2>
@@ -565,12 +535,7 @@
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase sticky top-0 bg-slate-900/95 backdrop-blur z-10">
-                <th class="p-2.5">Waktu</th>
-                <th class="p-2.5">Barang</th>
-                <th class="p-2.5">Aksi</th>
-                <th class="p-2.5 text-right">Jumlah</th>
-                <th class="p-2.5">Keterangan</th>
-                <th class="p-2.5">Pelapor</th>
+                <th class="p-2.5">Waktu</th><th class="p-2.5">Barang</th><th class="p-2.5">Aksi</th><th class="p-2.5 text-right">Jumlah</th><th class="p-2.5">Keterangan</th><th class="p-2.5">Pelapor</th>
               </tr>
             </thead>
             <tbody id="vaultHistoryTableBody" class="divide-y divide-slate-800 text-sm">
@@ -610,12 +575,7 @@
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase sticky top-0 bg-slate-900/95 backdrop-blur z-10">
-                <th class="p-2.5">Waktu</th>
-                <th class="p-2.5">Jenis Uang</th>
-                <th class="p-2.5">Status</th>
-                <th class="p-2.5 text-right">Nominal</th>
-                <th class="p-2.5">Keterangan</th>
-                <th class="p-2.5">Pelapor</th>
+                <th class="p-2.5">Waktu</th><th class="p-2.5">Jenis Uang</th><th class="p-2.5">Status</th><th class="p-2.5 text-right">Nominal</th><th class="p-2.5">Keterangan</th><th class="p-2.5">Pelapor</th>
               </tr>
             </thead>
             <tbody id="businessHistoryTableBody" class="divide-y divide-slate-800 text-sm">
@@ -644,11 +604,9 @@
        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <h2 class="text-lg font-bold text-red-400 flex items-center gap-2"><i class="fa-solid fa-hand-holding-dollar"></i> Rekap Setoran Bahan (<span id="currentMingguLabel">Minggu 1</span>)</h2>
           <div class="flex flex-wrap items-center gap-2">
-            <!-- Tombol Masuk ke Brankas -->
             <button onclick="masukkanSetoranKeBrankas()" class="editor-only bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
               <i class="fa-solid fa-vault"></i> Masukkan ke Brankas
             </button>
-            <!-- Tombol Kirim Discord -->
             <button onclick="sendSetoranToDiscord()" class="editor-only bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
               <i class="fa-brands fa-discord"></i> Kirim ke Discord & Salin
             </button>
@@ -658,25 +616,14 @@
       </div>
     </div>
 
-    <!-- ================= HALAMAN 7: DATA MEMBER & HIERARKI RANK ================= -->
+    <!-- ================= HALAMAN 7: DATA MEMBER ================= -->
     <div id="sectionMember" class="hidden space-y-6">
       <div class="glass-card p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
-        <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
-          <i class="fa-solid fa-id-badge"></i> Tambah Anggota Klub
-        </h2>
+        <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-id-badge"></i> Tambah Anggota Klub</h2>
         <div class="w-full md:w-auto flex flex-wrap items-center gap-2 editor-only">
           <input type="text" id="clubMemberName" placeholder="Nama Anggota..." class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
           <select id="clubMemberRank" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
-            <option value="President">1. President</option>
-            <option value="Vice President">2. Vice President</option>
-            <option value="Sergeant at Arms">3. Sergeant at Arms</option>
-            <option value="Road Captain">4. Road Captain</option>
-            <option value="Secretary">5. Secretary</option>
-            <option value="Treasurer">6. Treasurer</option>
-            <option value="Enforcer">7. Enforcer</option>
-            <option value="Member / Patched">8. Member / Patched</option>
-            <option value="Prospect" selected>9. Prospect</option>
-            <option value="Hangaround">10. Hangaround</option>
+            <option value="President">1. President</option><option value="Vice President">2. Vice President</option><option value="Sergeant at Arms">3. Sergeant at Arms</option><option value="Road Captain">4. Road Captain</option><option value="Secretary">5. Secretary</option><option value="Treasurer">6. Treasurer</option><option value="Enforcer">7. Enforcer</option><option value="Member / Patched">8. Member / Patched</option><option value="Prospect" selected>9. Prospect</option><option value="Hangaround">10. Hangaround</option>
           </select>
           <button onclick="addClubMember()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-user-plus"></i> Tambah</button>
         </div>
@@ -684,22 +631,16 @@
 
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
         <div class="flex justify-between items-center">
-          <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
-            <i class="fa-solid fa-users"></i> Daftar Anggota Aktif & Hierarki Klub
-          </h2>
+          <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-users"></i> Daftar Anggota Aktif & Hierarki Klub</h2>
           <button onclick="sendMembersToDiscord()" class="editor-only bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg">
             <i class="fa-brands fa-discord"></i> Kirim Daftar Anggota ke Discord & Salin
           </button>
         </div>
-
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase">
-                <th class="p-3">Nama Anggota</th>
-                <th class="p-3">Rank / Jabatan</th>
-                <th class="p-3 text-center">Status Keaktifan</th>
-                <th class="p-3 text-center editor-only">Aksi</th>
+                <th class="p-3">Nama Anggota</th><th class="p-3">Rank / Jabatan</th><th class="p-3 text-center">Status Keaktifan</th><th class="p-3 text-center editor-only">Aksi</th>
               </tr>
             </thead>
             <tbody id="memberTableBody" class="divide-y divide-slate-800 text-sm">
@@ -713,41 +654,20 @@
   </div>
 
   <script>
-    // --- FUNGSI CUSTOM ALERT ANIMASI DI TENGAH ---
     function showCustomAlert(message, type = 'success') {
       const existingModal = document.getElementById('customAlertModal');
       if (existingModal) existingModal.remove();
-
-      let borderColor = 'border-green-500/50';
-      let iconBg = 'bg-green-950/50 text-green-400 border-green-500/40';
-      let iconClass = 'fa-circle-check';
-
-      if (type === 'error') {
-        borderColor = 'border-red-500/50';
-        iconBg = 'bg-red-950/50 text-red-400 border-red-500/40';
-        iconClass = 'fa-circle-exclamation';
-      } else if (type === 'info') {
-        borderColor = 'border-blue-500/50';
-        iconBg = 'bg-blue-950/50 text-blue-400 border-blue-500/40';
-        iconClass = 'fa-circle-info';
-      }
-
+      let borderColor = 'border-green-500/50', iconBg = 'bg-green-950/50 text-green-400 border-green-500/40', iconClass = 'fa-circle-check';
+      if (type === 'error') { borderColor = 'border-red-500/50'; iconBg = 'bg-red-950/50 text-red-400 border-red-500/40'; iconClass = 'fa-circle-exclamation'; }
+      else if (type === 'info') { borderColor = 'border-blue-500/50'; iconBg = 'bg-blue-950/50 text-blue-400 border-blue-500/40'; iconClass = 'fa-circle-info'; }
       const modalHtml = `
         <div id="customAlertModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
           <div class="glass-card p-6 rounded-2xl shadow-2xl w-full max-w-sm text-center space-y-4 border ${borderColor} animate-modal-in">
-            <div class="w-14 h-14 ${iconBg} rounded-2xl flex items-center justify-center text-2xl mx-auto border shadow-inner">
-              <i class="fa-solid ${iconClass}"></i>
-            </div>
-            <div class="space-y-1">
-              <h3 class="text-sm font-black tracking-widest text-white uppercase">NOTIFIKASI SISTEM</h3>
-              <p class="text-xs text-gray-300 leading-relaxed">${message}</p>
-            </div>
-            <button onclick="document.getElementById('customAlertModal').remove()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider shadow">
-              OK
-            </button>
+            <div class="w-14 h-14 ${iconBg} rounded-2xl flex items-center justify-center text-2xl mx-auto border shadow-inner"><i class="fa-solid ${iconClass}"></i></div>
+            <div class="space-y-1"><h3 class="text-sm font-black tracking-widest text-white uppercase">NOTIFIKASI SISTEM</h3><p class="text-xs text-gray-300 leading-relaxed">${message}</p></div>
+            <button onclick="document.getElementById('customAlertModal').remove()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider shadow">OK</button>
           </div>
-        </div>
-      `;
+        </div>`;
       document.body.insertAdjacentHTML('beforeend', modalHtml);
     }
 
@@ -760,63 +680,37 @@
       messagingSenderId: "551684270539",
       appId: "1:551684270539:web:0706d854b3ce6f731e6e4e"
     };
-
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // ================= DISCORD WEBHOOKS TERPISAH =================
     const DISCORD_WEBHOOK_BRANKAS   = "https://discordapp.com/api/webhooks/1557009048807800852/l82FqtdPoEUwzfGTSxCC_fVYYrtEJozTFKMXgpGDdiudHFyD7BB6TONGERVL2BL3kdnN";
     const DISCORD_WEBHOOK_PENJUALAN = "https://discordapp.com/api/webhooks/1557014106060623913/LQEqIw427dgWz1nEb2f8ihXhYH_rkl7a_ApywtffJFR31y07KkIzrDcGchuP9PO82-If";
     const DISCORD_WEBHOOK_PEMBELIAN = "https://discordapp.com/api/webhooks/1557138906586292345/guf2IGdXyXLP7yH3gu7l7OGtbOHspcT5zdAd63ZpDIYplCB7FZLYyqAfR7S6bFMQQFk_";
     const DISCORD_WEBHOOK_SETORAN   = "https://discordapp.com/api/webhooks/1557139282802774127/cw05EPU60q_Uyor3_HEpNVs-XTvnXvOD4LLTWkkZjfiw8SANBTsQjNWEkmmniu0q1DSr";
     const DISCORD_WEBHOOK_MEMBER    = "https://discordapp.com/api/webhooks/1557148223884496916/fnxfMm7Z_Pk0w5zQuSOwF_DNu9vrUIbkx6QN8pMSZeVmef9EkHb4ucTkQOr95X37Vyma";
 
-    const ACCOUNTS = {
-      "viewer": { pass: "123", role: "Viewer (Hanya Melihat)" },
-      "HighRank": { pass: "505", role: "Editor (Akses Penuh)" }
-    };
+    const ACCOUNTS = { "viewer": { pass: "123", role: "Viewer (Hanya Melihat)" }, "HighRank": { pass: "505", role: "Editor (Akses Penuh)" } };
 
     function handleLogin() {
       const user = document.getElementById("loginUsername").value.trim();
       const pass = document.getElementById("loginPassword").value.trim();
-      const errorDiv = document.getElementById("loginError");
       if (ACCOUNTS[user] && ACCOUNTS[user].pass === pass) {
         localStorage.setItem("nmc_logged_user", user);
         localStorage.setItem("nmc_user_role", ACCOUNTS[user].role);
         applyRoleAccess(user);
         document.getElementById("loginModal").classList.add("hidden");
-      } else {
-        errorDiv.classList.remove("hidden");
-      }
+      } else { document.getElementById("loginError").classList.remove("hidden"); }
     }
-
-    function handleLogout() {
-      localStorage.removeItem("nmc_logged_user");
-      localStorage.removeItem("nmc_user_role");
-      location.reload();
-    }
-
+    function handleLogout() { localStorage.clear(); location.reload(); }
     function applyRoleAccess(user) {
-      const roleBadge = document.getElementById("userRoleBadge");
-      roleBadge.innerHTML = `<i class="fa-solid fa-user-shield"></i> Role: ${ACCOUNTS[user].role}`;
-      if (user === "viewer") {
-        document.querySelectorAll(".editor-only").forEach(el => el.style.display = "none");
-      } else {
-        document.querySelectorAll(".editor-only").forEach(el => el.style.display = "block");
-      }
+      document.getElementById("userRoleBadge").innerHTML = `<i class="fa-solid fa-user-shield"></i> Role: ${ACCOUNTS[user].role}`;
+      document.querySelectorAll(".editor-only").forEach(el => el.style.display = user === "viewer" ? "none" : "block");
     }
-
     window.addEventListener("DOMContentLoaded", () => {
-      const loggedUser = localStorage.getItem("nmc_logged_user");
-      if (loggedUser && ACCOUNTS[loggedUser]) {
-        document.getElementById("loginModal").classList.add("hidden");
-        applyRoleAccess(loggedUser);
-      } else {
-        document.getElementById("loginModal").classList.remove("hidden");
-      }
+      const u = localStorage.getItem("nmc_logged_user");
+      if (u && ACCOUNTS[u]) { document.getElementById("loginModal").classList.add("hidden"); applyRoleAccess(u); }
     });
 
-    // Navigasi Antar Halaman
     function showWelcomeScreen() {
       document.getElementById('sectionWelcome').classList.remove('hidden');
       document.getElementById('sectionMainMenu').classList.add('hidden');
@@ -827,24 +721,19 @@
       document.getElementById('sectionBisnis').classList.add('hidden');
       document.getElementById('sectionSetoran').classList.add('hidden');
       document.getElementById('sectionMember').classList.add('hidden');
-
       document.getElementById('btnHome').classList.remove('hidden');
       document.getElementById('btnBackMenu').classList.add('hidden');
       document.getElementById('headerTitleText').innerText = "TRIAD COMMUNITY";
       document.getElementById('headerSubtitle').innerText = "SYSTEM MANAGEMENT & DASHBOARD";
     }
-
     function selectCommunity(type) {
       if (type === 'nakama') {
         document.getElementById('sectionWelcome').classList.add('hidden');
         document.getElementById('sectionMainMenu').classList.remove('hidden');
-        document.getElementById('btnHome').classList.remove('hidden');
-        document.getElementById('btnBackMenu').classList.add('hidden');
         document.getElementById('headerTitleText').innerText = "NAKAMA MC BLAINE COUNTY";
         document.getElementById('headerSubtitle').innerText = "SYSTEM MANAGEMENT & CLUB HOUSE";
       }
     }
-
     function showSection(sectionId) {
       document.getElementById('sectionWelcome').classList.add('hidden');
       document.getElementById('sectionMainMenu').classList.add('hidden');
@@ -856,31 +745,20 @@
       document.getElementById('sectionSetoran').classList.add('hidden');
       document.getElementById('sectionMember').classList.add('hidden');
 
-      const btnHome = document.getElementById('btnHome');
-      const btnBack = document.getElementById('btnBackMenu');
+      document.getElementById(sectionId).classList.remove('hidden');
+      document.getElementById('btnHome').classList.remove('hidden');
+      document.getElementById('btnBackMenu').classList.remove('hidden');
+      
       const subtitle = document.getElementById('headerSubtitle');
-
-      if (sectionId === 'mainMenu') {
-        document.getElementById('sectionMainMenu').classList.remove('hidden');
-        btnHome.classList.remove('hidden');
-        btnBack.classList.add('hidden');
-        subtitle.innerText = "SYSTEM MANAGEMENT & CLUB HOUSE";
-      } else {
-        document.getElementById(sectionId).classList.remove('hidden');
-        btnHome.classList.remove('hidden');
-        btnBack.classList.remove('hidden');
-        
-        if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
-        else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner Kelompok";
-        else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris & Riwayat)";
-        else if(sectionId === 'sectionBeliWarga') subtitle.innerText = "Modul Transaksi Warga (Beli & Jual)";
-        else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Data Bisnis (Kas Uang Merah & Putih)";
-        else if(sectionId === 'sectionSetoran') subtitle.innerText = "Modul Data Setoran Bahan Mingguan Klub";
-        else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Data Anggota, Hierarki Rank & Status Keaktifan";
-      }
+      if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
+      else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner Kelompok";
+      else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris & Riwayat)";
+      else if(sectionId === 'sectionBeliWarga') subtitle.innerText = "Modul Transaksi Warga (Beli & Jual)";
+      else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Data Bisnis (Kas Uang Merah & Putih)";
+      else if(sectionId === 'sectionSetoran') subtitle.innerText = "Modul Data Setoran Bahan Mingguan Klub";
+      else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Data Anggota, Hierarki Rank & Status Keaktifan";
     }
 
-    // --- REALTIME DATABASE (FIREBASE) ---
     const defaultVaultStock = {
       "Iron": 0, "Carbon": 0, "Glass": 0, "Rubber": 0, "Plastik": 0, "Box Recycle": 0,
       "Pack Ammo 38LC": 0, "Pack Ammo 9MM": 0, "Pack Ammo 50AE": 0,
@@ -905,8 +783,6 @@
         beliWargaHistory = data.beli_warga || [];
         setoranData = data.setoran || { "Minggu 1": {} };
         memberList = data.club_members || {};
-      } else {
-        db.ref('nmc_data').set({ inventory: defaultVaultStock, history: [], business: [], beli_warga: [], setoran: { "Minggu 1": {} }, club_members: {} });
       }
       renderVaultInventory();
       renderVaultHistory();
@@ -927,279 +803,145 @@
       });
     }
 
-    // --- MODUL TRANSAKSI WARGA (BELI / JUAL) ---
+    // Transaksi Warga
     function gantiLabelTxWarga() {
       const type = document.getElementById("wargaTxType").value;
       const title = document.getElementById("formWargaTitle");
       const labelNama = document.getElementById("labelNamaWarga");
       const labelItem = document.getElementById("labelDaftarItem");
-
       if (type === 'jual') {
         title.innerHTML = `<i class="fa-solid fa-cart-shopping"></i> Form Transaksi Jual ke Warga`;
         labelNama.innerText = "Nama Warga (Pembeli)";
-        labelDaftarItem.innerText = "Daftar Item/Bahan yang Dijual:";
+        labelItem.innerText = "Daftar Item/Bahan yang Dijual:";
       } else {
         title.innerHTML = `<i class="fa-solid fa-cart-plus"></i> Form Transaksi Beli dari Warga`;
         labelNama.innerText = "Nama Warga (Penjual)";
-        labelDaftarItem.innerText = "Daftar Bahan yang Dibeli:";
+        labelItem.innerText = "Daftar Bahan yang Dibeli:";
       }
     }
 
     function tambahBarisBeli() {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer hanya dapat melihat data.", "error");
-        return;
-      }
+      if (localStorage.getItem("nmc_logged_user") === "viewer") return;
       const container = document.getElementById("beliBahanRowsContainer");
-      const rowHtml = `
+      container.insertAdjacentHTML('beforeend', `
         <div class="beli-row grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
           <div class="md:col-span-4">
             <select class="row-item w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none">
-              <optgroup label="Bahan Dasar">
-                <option value="Iron">Iron</option>
-                <option value="Carbon">Carbon</option>
-                <option value="Glass">Glass</option>
-                <option value="Rubber">Rubber</option>
-                <option value="Plastik">Plastik</option>
-                <option value="Box Recycle">Box Recycle</option>
-              </optgroup>
-              <optgroup label="Senjata & Item Lain">
-                <option value="Vest">Vest</option>
-                <option value="Senjata DA">Senjata DA</option>
-                <option value="Senjata P50">Senjata P50</option>
-                <option value="Senjata TAC9">Senjata TAC9</option>
-                <option value="Senjata Ceramic">Senjata Ceramic</option>
-              </optgroup>
+              <optgroup label="Bahan Dasar"><option value="Iron">Iron</option><option value="Carbon">Carbon</option><option value="Glass">Glass</option><option value="Rubber">Rubber</option><option value="Plastik">Plastik</option><option value="Box Recycle">Box Recycle</option></optgroup>
+              <optgroup label="Senjata & Item Lain"><option value="Vest">Vest</option><option value="Senjata DA">Senjata DA</option><option value="Senjata P50">Senjata P50</option><option value="Senjata TAC9">Senjata TAC9</option><option value="Senjata Ceramic">Senjata Ceramic</option></optgroup>
             </select>
           </div>
-          <div class="md:col-span-2">
-            <input type="number" min="1" value="1" placeholder="Qty" class="row-qty w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()">
-          </div>
-          <div class="md:col-span-3">
-            <input type="number" min="0" value="0" placeholder="Harga Satuan" class="row-price w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()">
-          </div>
-          <div class="md:col-span-2 text-right font-bold text-emerald-400 text-sm pt-1 md:pt-0">
-            Rp <span class="row-total-text">0</span>
-          </div>
-          <div class="md:col-span-1 text-center">
-            <button type="button" onclick="hapusBarisBeli(this)" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button>
-          </div>
-        </div>`;
-      container.insertAdjacentHTML('beforeend', rowHtml);
+          <div class="md:col-span-2"><input type="number" min="1" value="1" placeholder="Qty" class="row-qty w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()"></div>
+          <div class="md:col-span-3"><input type="number" min="0" value="0" placeholder="Harga Satuan" class="row-price w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()"></div>
+          <div class="md:col-span-2 text-right font-bold text-emerald-400 text-sm pt-1 md:pt-0">Rp <span class="row-total-text">0</span></div>
+          <div class="md:col-span-1 text-center"><button type="button" onclick="hapusBarisBeli(this)" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div>
+        </div>`);
     }
 
     function hapusBarisBeli(btn) {
       if (localStorage.getItem("nmc_logged_user") === "viewer") return;
-      const rows = document.querySelectorAll(".beli-row");
-      if (rows.length > 1) {
-        btn.closest(".beli-row").remove();
-        hitungTotalBeliWarga();
-      } else {
-        showCustomAlert("Minimal harus ada 1 baris item!", "error");
-      }
+      if (document.querySelectorAll(".beli-row").length > 1) { btn.closest(".beli-row").remove(); hitungTotalBeliWarga(); }
+      else showCustomAlert("Minimal 1 baris item!", "error");
     }
 
     function hitungTotalBeliWarga() {
-      const rows = document.querySelectorAll(".beli-row");
-      const currency = document.getElementById("beliWargaCurrency").value;
-      const currSymbol = currency === "Uang Merah" ? "🔴 Uang Merah" : "⚪ Uang Putih";
       let grandTotal = 0;
-      
-      rows.forEach(r => {
+      const currency = document.getElementById("beliWargaCurrency").value;
+      document.querySelectorAll(".beli-row").forEach(r => {
         const qty = parseFloat(r.querySelector(".row-qty").value) || 0;
         const price = parseFloat(r.querySelector(".row-price").value) || 0;
         const rowTotal = qty * price;
-        
         r.querySelector(".row-total-text").innerText = rowTotal.toLocaleString('id-ID');
         grandTotal += rowTotal;
       });
-      document.getElementById("grandTotalBeliText").innerText = `Rp ${grandTotal.toLocaleString('id-ID')} (${currSymbol})`;
+      document.getElementById("grandTotalBeliText").innerText = `Rp ${grandTotal.toLocaleString('id-ID')} (${currency === "Uang Merah" ? "🔴 Uang Merah" : "⚪ Uang Putih"})`;
       return grandTotal;
     }
 
     function prosesTransaksiWarga() {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak memiliki izin melakukan transaksi.", "error");
-        return;
-      }
+      if (localStorage.getItem("nmc_logged_user") === "viewer") { showCustomAlert("Akses ditolak!", "error"); return; }
       const txType = document.getElementById("wargaTxType").value;
       const namaWarga = document.getElementById("beliWargaNama").value.trim();
       const admin = document.getElementById("beliWargaAdmin").value.trim();
       const currency = document.getElementById("beliWargaCurrency").value;
+      if (!namaWarga || !admin) { showCustomAlert("Nama Warga & Anggota wajib diisi!", "error"); return; }
 
-      if (!namaWarga || !admin) {
-        showCustomAlert("Nama Warga dan Nama Anggota Klub wajib diisi!", "error");
-        return;
-      }
-
-      const rows = document.querySelectorAll(".beli-row");
-      let itemsDetail = [];
-      let totalSemuaHarga = 0;
-
-      rows.forEach(r => {
+      let itemsDetail = [], totalSemuaHarga = 0;
+      document.querySelectorAll(".beli-row").forEach(r => {
         const item = r.querySelector(".row-item").value;
         const qty = parseInt(r.querySelector(".row-qty").value) || 0;
         const price = parseFloat(r.querySelector(".row-price").value) || 0;
         const rowTotal = qty * price;
-
         if (qty > 0 && rowTotal > 0) {
           itemsDetail.push({ item, qty, totalHargaBaris: rowTotal });
           totalSemuaHarga += rowTotal;
-
           if (txType === 'beli') {
             vaultStock[item] = (vaultStock[item] || 0) + qty;
-            vaultHistory.unshift({
-              id: Date.now() + Math.random(),
-              date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-              item: item,
-              action: "ADD",
-              diff: `+${qty}`,
-              desc: `Beli dari Warga (${namaWarga})`,
-              author: admin
-            });
+            vaultHistory.unshift({ id: Date.now() + Math.random(), date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }), item, action: "ADD", diff: `+${qty}`, desc: `Beli dari Warga (${namaWarga})`, author: admin });
           } else {
             vaultStock[item] = Math.max(0, (vaultStock[item] || 0) - qty);
-            vaultHistory.unshift({
-              id: Date.now() + Math.random(),
-              date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-              item: item,
-              action: "SUB",
-              diff: `-${qty}`,
-              desc: `Jual ke Warga (${namaWarga})`,
-              author: admin
-            });
+            vaultHistory.unshift({ id: Date.now() + Math.random(), date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }), item, action: "SUB", diff: `-${qty}`, desc: `Jual ke Warga (${namaWarga})`, author: admin });
           }
         }
       });
 
-      if (itemsDetail.length === 0 || totalSemuaHarga <= 0) {
-        showCustomAlert("Masukkan jumlah dan harga satuan item dengan benar!", "error");
-        return;
-      }
+      if (itemsDetail.length === 0 || totalSemuaHarga <= 0) { showCustomAlert("Periksa kembali jumlah dan harga!", "error"); return; }
 
-      if (txType === 'beli') {
-        businessHistory.unshift({
-          id: Date.now(),
-          date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-          currency: currency,
-          type: "OUT",
-          amount: totalSemuaHarga,
-          desc: `Beli bahan dari warga (${namaWarga})`,
-          author: admin
-        });
-      } else {
-        businessHistory.unshift({
-          id: Date.now(),
-          date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-          currency: currency,
-          type: "IN",
-          amount: totalSemuaHarga,
-          desc: `Jual ke warga (${namaWarga})`,
-          author: admin
-        });
-      }
-
-      beliWargaHistory.unshift({
+      businessHistory.unshift({
         id: Date.now(),
         date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-        txType,
-        namaWarga,
-        itemsDetail,
-        totalHarga: totalSemuaHarga,
-        currency,
-        admin
+        currency, type: txType === 'beli' ? "OUT" : "IN", amount: totalSemuaHarga,
+        desc: `${txType === 'beli' ? 'Beli dari' : 'Jual ke'} warga (${namaWarga})`, author: admin
       });
 
+      beliWargaHistory.unshift({ id: Date.now(), date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }), txType, namaWarga, itemsDetail, totalHarga: totalSemuaHarga, currency, admin });
       saveDataToCloud();
-
-      document.getElementById("beliWargaNama").value = "";
-      document.getElementById("beliWargaAdmin").value = "";
+      document.getElementById("beliWargaNama").value = ""; document.getElementById("beliWargaAdmin").value = "";
       document.getElementById("beliBahanRowsContainer").innerHTML = `
         <div class="beli-row grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
-          <div class="md:col-span-4">
-            <select class="row-item w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none">
-              <optgroup label="Bahan Dasar">
-                <option value="Iron">Iron</option>
-                <option value="Carbon">Carbon</option>
-                <option value="Glass">Glass</option>
-                <option value="Rubber">Rubber</option>
-                <option value="Plastik">Plastik</option>
-                <option value="Box Recycle">Box Recycle</option>
-              </optgroup>
-              <optgroup label="Senjata & Item Lain">
-                <option value="Vest">Vest</option>
-                <option value="Senjata DA">Senjata DA</option>
-                <option value="Senjata P50">Senjata P50</option>
-                <option value="Senjata TAC9">Senjata TAC9</option>
-                <option value="Senjata Ceramic">Senjata Ceramic</option>
-              </optgroup>
-            </select>
-          </div>
-          <div class="md:col-span-2">
-            <input type="number" min="1" value="1" placeholder="Qty" class="row-qty w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()">
-          </div>
-          <div class="md:col-span-3">
-            <input type="number" min="0" value="0" placeholder="Harga Satuan" class="row-price w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()">
-          </div>
-          <div class="md:col-span-2 text-right font-bold text-emerald-400 text-sm pt-1 md:pt-0">
-            Rp <span class="row-total-text">0</span>
-          </div>
-          <div class="md:col-span-1 text-center">
-            <button type="button" onclick="hapusBarisBeli(this)" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button>
-          </div>
+          <div class="md:col-span-4"><select class="row-item w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none"><optgroup label="Bahan Dasar"><option value="Iron">Iron</option><option value="Carbon">Carbon</option><option value="Glass">Glass</option><option value="Rubber">Rubber</option><option value="Plastik">Plastik</option><option value="Box Recycle">Box Recycle</option></optgroup><optgroup label="Senjata & Item Lain"><option value="Vest">Vest</option><option value="Senjata DA">Senjata DA</option><option value="Senjata P50">Senjata P50</option><option value="Senjata TAC9">Senjata TAC9</option><option value="Senjata Ceramic">Senjata Ceramic</option></optgroup></select></div>
+          <div class="md:col-span-2"><input type="number" min="1" value="1" placeholder="Qty" class="row-qty w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()"></div>
+          <div class="md:col-span-3"><input type="number" min="0" value="0" placeholder="Harga Satuan" class="row-price w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()"></div>
+          <div class="md:col-span-2 text-right font-bold text-emerald-400 text-sm pt-1 md:pt-0">Rp <span class="row-total-text">0</span></div>
+          <div class="md:col-span-1 text-center"><button type="button" onclick="hapusBarisBeli(this)" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div>
         </div>`;
       hitungTotalBeliWarga();
-
-      showCustomAlert(`Berhasil! Transaksi ${txType === 'beli' ? 'Pembelian dari' : 'Penjualan ke'} warga ${namaWarga} senilai Rp ${totalSemuaHarga.toLocaleString('id-ID')} berhasil dicatat & brankas diperbarui.`);
+      showCustomAlert("Transaksi warga berhasil dicatat dan brankas diperbarui!");
     }
 
     function renderBeliWargaHistory() {
       const tbody = document.getElementById("beliWargaTableBody");
       tbody.innerHTML = "";
-      if (beliWargaHistory.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat transaksi warga.</td></tr>`;
-        return;
-      }
+      if (beliWargaHistory.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat transaksi warga.</td></tr>`; return; }
       beliWargaHistory.forEach(b => {
-        let itemsStr = b.itemsDetail.map(i => {
-          let sign = b.txType === 'jual' ? '-' : '+';
-          let color = b.txType === 'jual' ? 'text-red-400' : 'text-emerald-400';
-          return `<span class="${color} font-semibold">${i.item} (${sign}${i.qty})</span>`;
-        }).join(', ');
-
-        let currBadge = b.currency === "Uang Merah" ? "🔴" : "⚪";
-        let typeBadge = b.txType === 'jual' ? '<span class="bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded text-xs font-bold">Jual</span>' : '<span class="bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded text-xs font-bold">Beli</span>';
-        let costColor = b.txType === 'jual' ? 'text-green-400' : 'text-red-400';
-
+        let itemsStr = b.itemsDetail.map(i => `<span class="${b.txType === 'jual' ? 'text-red-400' : 'text-emerald-400'} font-semibold">${i.item} (${b.txType === 'jual' ? '-' : '+'}${i.qty})</span>`).join(', ');
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
             <td class="p-2.5 text-gray-400 text-xs">${b.date}</td>
-            <td class="p-2.5">${typeBadge}</td>
+            <td class="p-2.5"><span class="bg-${b.txType === 'jual' ? 'blue' : 'emerald'}-500/20 text-${b.txType === 'jual' ? 'blue' : 'emerald'}-400 px-2 py-0.5 rounded text-xs font-bold">${b.txType === 'jual' ? 'Jual' : 'Beli'}</span></td>
             <td class="p-2.5 text-white font-bold text-xs">${b.namaWarga}</td>
             <td class="p-2.5 text-xs">${itemsStr}</td>
-            <td class="p-2.5 text-right font-black text-xs ${costColor}">Rp ${b.totalHarga.toLocaleString('id-ID')} (${currBadge})</td>
+            <td class="p-2.5 text-right font-black text-xs ${b.txType === 'jual' ? 'text-green-400' : 'text-red-400'}">Rp ${b.totalHarga.toLocaleString('id-ID')} (${b.currency === "Uang Merah" ? "🔴" : "⚪"})</td>
             <td class="p-2.5 text-gray-300 text-xs">${b.admin}</td>
           </tr>`;
       });
     }
 
-    // --- MODUL BRANKAS ---
+    // Brankas
     function updateVaultStock() {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak memiliki izin memperbarui stok brankas.", "error");
-        return;
-      }
+      if (localStorage.getItem("nmc_logged_user") === "viewer") { showCustomAlert("Akses ditolak!", "error"); return; }
       const itemName = document.getElementById("vaultItemName").value;
       const action = document.getElementById("vaultAction").value;
       const qty = parseInt(document.getElementById("vaultQty").value) || 0;
       const desc = document.getElementById("vaultDesc").value.trim();
       const author = document.getElementById("vaultAuthor").value.trim();
       if (qty < 0 || !desc || !author) { showCustomAlert("Semua field wajib diisi!", "error"); return; }
-      let diffText = action === "ADD" ? `+${qty}` : action === "SUB" ? `-${qty}` : `Set: ${qty}`;
+      
       if (action === "ADD") vaultStock[itemName] = (vaultStock[itemName] || 0) + qty;
       else if (action === "SUB") vaultStock[itemName] = Math.max(0, (vaultStock[itemName] || 0) - qty);
       else vaultStock[itemName] = qty;
-      vaultHistory.unshift({ id: Date.now(), date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }), item: itemName, action, diff: diffText, desc, author });
+
+      vaultHistory.unshift({ id: Date.now(), date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }), item: itemName, action, diff: action === "ADD" ? `+${qty}` : action === "SUB" ? `-${qty}` : `Set: ${qty}`, desc, author });
       saveDataToCloud();
       document.getElementById("vaultQty").value = "0"; document.getElementById("vaultDesc").value = ""; document.getElementById("vaultAuthor").value = "";
       showCustomAlert(`Stok ${itemName} berhasil diperbarui!`);
@@ -1208,68 +950,39 @@
     function renderVaultInventory() {
       const grid = document.getElementById("vaultInventoryGrid");
       grid.innerHTML = "";
-      const keys = Object.keys(vaultStock);
-      const totalItems = keys.length; // 17 items
-      
-      keys.forEach((item, index) => {
-        // Terapkan penyesuaian khusus untuk item di baris terakhir (index 12 sampai 16 pada grid 6 kolom -> 5 item terakhir) agar otomatis di tengah
-        let extraClass = "";
-        if (window.innerWidth >= 1024 && index >= 12) {
-          // 5 item terakhir pada layar 6 kolom (index 12, 13, 14, 15, 16)
-          // Kita posisikan agar mengisi kolom 2 sampai 7 (atau flex centering)
-          if (index === 12) extraClass = "lg:col-start-2";
-        }
-
+      for (let item in vaultStock) {
         grid.innerHTML += `
-          <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 flex items-center justify-between ${extraClass}">
+          <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
             <span class="text-xs font-semibold text-gray-400 truncate pr-2">${item}</span>
             <span class="text-base font-black text-blue-400">${vaultStock[item].toLocaleString('id-ID')}</span>
           </div>`;
-      });
+      }
     }
 
     function renderVaultHistory() {
       const tbody = document.getElementById("vaultHistoryTableBody");
       tbody.innerHTML = "";
-      if (vaultHistory.length === 0) { 
-        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat.</td></tr>`; 
-        return; 
-      }
+      if (vaultHistory.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat.</td></tr>`; return; }
       vaultHistory.forEach(h => {
         let badge = h.action === 'ADD' ? '<span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs font-bold">Masuk (+)</span>' : h.action === 'SUB' ? '<span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs font-bold">Keluar (-)</span>' : '<span class="bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded text-xs font-bold">Set</span>';
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
-            <td class="p-2.5 text-gray-400 text-xs">${h.date}</td>
-            <td class="p-2.5 text-white font-bold text-xs">${h.item}</td>
-            <td class="p-2.5">${badge}</td>
-            <td class="p-2.5 text-right font-black text-xs ${h.action==='ADD'?'text-green-400':'text-red-400'}">${h.diff}</td>
-            <td class="p-2.5 text-gray-300 text-xs">${h.desc}</td>
-            <td class="p-2.5 text-gray-300 text-xs font-medium">${h.author}</td>
+            <td class="p-2.5 text-gray-400 text-xs">${h.date}</td><td class="p-2.5 text-white font-bold text-xs">${h.item}</td><td class="p-2.5">${badge}</td><td class="p-2.5 text-right font-black text-xs ${h.action==='ADD'?'text-green-400':'text-red-400'}">${h.diff}</td><td class="p-2.5 text-gray-300 text-xs">${h.desc}</td><td class="p-2.5 text-gray-300 text-xs">${h.author}</td>
           </tr>`;
       });
     }
 
     function sendVaultToDiscord() {
       let text = `📦 **LAPORAN STOK BRANKAS NAKAMA MC**\n\n`;
-      for (let item in vaultStock) {
-        text += `• **${item}**: ${vaultStock[item].toLocaleString('id-ID')}\n`;
-      }
-
-      fetch(DISCORD_WEBHOOK_BRANKAS, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: text })
-      })
+      for (let item in vaultStock) text += `• **${item}**: ${vaultStock[item].toLocaleString('id-ID')}\n`;
+      fetch(DISCORD_WEBHOOK_BRANKAS, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text }) })
       .then(() => showCustomAlert("Laporan brankas berhasil dikirim ke Discord!"))
       .catch(() => showCustomAlert("Gagal mengirim laporan ke Discord!", "error"));
     }
 
-    // --- MODUL DATA BISNIS ---
+    // Bisnis
     function addBusinessTransaction() {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak memiliki izin mencatat kas bisnis.", "error");
-        return;
-      }
+      if (localStorage.getItem("nmc_logged_user") === "viewer") { showCustomAlert("Akses ditolak!", "error"); return; }
       const currency = document.getElementById("businessCurrency").value;
       const type = document.getElementById("businessType").value;
       const amount = parseInt(document.getElementById("businessAmount").value) || 0;
@@ -1286,23 +999,18 @@
       let saldoMerah = 0, saldoPutih = 0;
       const tbody = document.getElementById("businessHistoryTableBody");
       tbody.innerHTML = "";
-      
       if (businessHistory.length === 0) {
         tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada transaksi.</td></tr>`;
       } else {
         businessHistory.forEach(b => {
           if (b.currency === "Uang Merah") { if (b.type === "IN") saldoMerah += b.amount; else saldoMerah -= b.amount; }
           else { if (b.type === "IN") saldoPutih += b.amount; else saldoPutih -= b.amount; }
-
-          let typeBadge = b.type === 'IN' ? '<span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs font-bold">Masuk (+)</span>' : '<span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs font-bold">Keluar (-)</span>';
-          let currLabel = b.currency === "Uang Merah" ? '<span class="text-red-400 font-bold text-xs">Uang Merah 🔴</span>' : '<span class="text-gray-300 font-bold text-xs">Uang Putih ⚪</span>';
-          
           tbody.innerHTML += `
             <tr class="hover:bg-slate-800/40 transition">
               <td class="p-2.5 text-gray-400 text-xs">${b.date}</td>
-              <td class="p-2.5">${currLabel}</td>
-              <td class="p-2.5">${typeBadge}</td>
-              <td class="p-2.5 text-right font-black text-xs ${b.type==='IN'?'text-green-400':'text-red-400'}">${b.type==='IN'?'+':'-'}${b.amount.toLocaleString('id-ID')}</td>
+              <td class="p-2.5"><span class="${b.currency === "Uang Merah" ? 'text-red-400' : 'text-gray-300'} font-bold text-xs">${b.currency}</span></td>
+              <td class="p-2.5"><span class="bg-${b.type === 'IN' ? 'green' : 'red'}-500/20 text-${b.type === 'IN' ? 'green' : 'red'}-400 px-2 py-0.5 rounded text-xs font-bold">${b.type === 'IN' ? 'Masuk (+)' : 'Keluar (-)'}</span></td>
+              <td class="p-2.5 text-right font-black text-xs ${b.type === 'IN' ? 'text-green-400' : 'text-red-400'}">${b.type === 'IN' ? '+' : '-'}${b.amount.toLocaleString('id-ID')}</td>
               <td class="p-2.5 text-gray-300 text-xs">${b.desc}</td>
               <td class="p-2.5 text-gray-300 text-xs font-medium">${b.author}</td>
             </tr>`;
@@ -1312,296 +1020,160 @@
       document.getElementById("totalUangPutih").innerText = saldoPutih.toLocaleString('id-ID');
     }
 
-    // --- MODUL DATA SETORAN BAHAN MINGGUAN ---
+    // Setoran
     function changeActiveMinggu() {
       activeMinggu = document.getElementById("selectMinggu").value;
       document.getElementById("currentMingguLabel").innerText = activeMinggu;
       renderSetoranTable();
     }
-
     function addNewMember() {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer hanya dapat melihat data.", "error");
-        return;
-      }
+      if (localStorage.getItem("nmc_logged_user") === "viewer") return;
       const name = document.getElementById("newMemberName").value.trim();
       if (!name) { showCustomAlert("Masukkan nama anggota!", "error"); return; }
       if (!setoranData[activeMinggu]) setoranData[activeMinggu] = {};
-      if (setoranData[activeMinggu][name]) { showCustomAlert("Anggota sudah ada di daftar minggu ini!", "error"); return; }
-
+      if (setoranData[activeMinggu][name]) { showCustomAlert("Anggota sudah ada!", "error"); return; }
       setoranData[activeMinggu][name] = { iron: 0, carbon: 0, glass: 0, rubber: 0, plastik: 0, lunas: false };
       saveDataToCloud();
       document.getElementById("newMemberName").value = "";
       renderSetoranTable();
     }
-
     function updateSetoranBahan(name, bahan, val) {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak dapat mengubah data setoran.", "error");
-        renderSetoranTable();
-        return;
-      }
-      const num = parseInt(val) || 0;
+      if (localStorage.getItem("nmc_logged_user") === "viewer") return;
       if (!setoranData[activeMinggu][name]) setoranData[activeMinggu][name] = { iron: 0, carbon: 0, glass: 0, rubber: 0, plastik: 0, lunas: false };
-      setoranData[activeMinggu][name][bahan] = num;
+      setoranData[activeMinggu][name][bahan] = parseInt(val) || 0;
       saveDataToCloud();
     }
-
     function toggleStatusLunas(name) {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak dapat mengubah status lunas.", "error");
-        return;
-      }
+      if (localStorage.getItem("nmc_logged_user") === "viewer") return;
       if (!setoranData[activeMinggu][name]) return;
       setoranData[activeMinggu][name].lunas = !setoranData[activeMinggu][name].lunas;
       saveDataToCloud();
       renderSetoranTable();
     }
-
     function removeSetoranMember(name) {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak dapat menghapus anggota dari rekap.", "error");
-        return;
-      }
-      if (confirm(`Hapus ${name} dari rekap setoran ${activeMinggu}?`)) {
-        delete setoranData[activeMinggu][name];
-        saveDataToCloud();
-        renderSetoranTable();
-      }
+      if (localStorage.getItem("nmc_logged_user") === "viewer") return;
+      if (confirm(`Hapus ${name}?`)) { delete setoranData[activeMinggu][name]; saveDataToCloud(); renderSetoranTable(); }
     }
-
     function renderSetoranTable() {
       const tbody = document.getElementById("setoranTableBody");
       tbody.innerHTML = "";
       const currentList = setoranData[activeMinggu] || {};
-      const memberNames = Object.keys(currentList);
-
-      if (memberNames.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-gray-500">Belum ada anggota dalam rekap ${activeMinggu}.</td></tr>`;
-        return;
-      }
-
+      const names = Object.keys(currentList);
+      if (names.length === 0) { tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-gray-500">Belum ada anggota.</td></tr>`; return; }
       const isViewer = localStorage.getItem("nmc_logged_user") === "viewer";
-
-      memberNames.forEach(name => {
+      names.forEach(name => {
         const item = currentList[name];
-        let statusBadge = item.lunas ? 
-          `<span onclick="toggleStatusLunas('${name}')" class="cursor-pointer bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30 hover:bg-green-500/30">Lunas ✅</span>` : 
-          `<span onclick="toggleStatusLunas('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30 hover:bg-red-500/30">Belum Lunas ❌</span>`;
-
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
             <td class="p-3 text-white font-bold">${name}</td>
-            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.iron}" onchange="updateSetoranBahan('${name}', 'iron', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-amber-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
-            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.carbon}" onchange="updateSetoranBahan('${name}', 'carbon', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-blue-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
-            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.glass}" onchange="updateSetoranBahan('${name}', 'glass', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-cyan-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
-            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.rubber}" onchange="updateSetoranBahan('${name}', 'rubber', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-purple-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
-            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.plastik}" onchange="updateSetoranBahan('${name}', 'plastik', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-emerald-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
-            <td class="p-3 text-center">${statusBadge}</td>
-            <td class="p-3 text-center editor-only"><button onclick="removeSetoranMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></td>
+            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.iron}" onchange="updateSetoranBahan('${name}', 'iron', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-amber-400 font-bold text-sm"></td>
+            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.carbon}" onchange="updateSetoranBahan('${name}', 'carbon', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-blue-400 font-bold text-sm"></td>
+            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.glass}" onchange="updateSetoranBahan('${name}', 'glass', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-cyan-400 font-bold text-sm"></td>
+            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.rubber}" onchange="updateSetoranBahan('${name}', 'rubber', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-purple-400 font-bold text-sm"></td>
+            <td class="p-3 text-right"><input type="number" ${isViewer ? 'disabled' : ''} value="${item.plastik}" onchange="updateSetoranBahan('${name}', 'plastik', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-emerald-400 font-bold text-sm"></td>
+            <td class="p-3 text-center"><span onclick="toggleStatusLunas('${name}')" class="cursor-pointer bg-${item.lunas ? 'green' : 'red'}-500/20 text-${item.lunas ? 'green' : 'red'}-400 px-3 py-1 rounded-full text-xs font-bold border">${item.lunas ? 'Lunas ✅' : 'Belum ❌'}</span></td>
+            <td class="p-3 text-center editor-only"><button onclick="removeSetoranMember('${name}')" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></td>
           </tr>`;
       });
       if (isViewer) document.querySelectorAll(".editor-only").forEach(el => el.style.display = "none");
     }
 
-    // --- FUNGSI EKSEKUSI: MASUKKAN SETORAN KE BRANKAS ---
     function masukkanSetoranKeBrankas() {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak memiliki izin memasukkan setoran ke brankas.", "error");
-        return;
-      }
-
+      if (localStorage.getItem("nmc_logged_user") === "viewer") return;
       const currentList = setoranData[activeMinggu] || {};
-      let totalIron = 0, totalCarbon = 0, totalGlass = 0, totalRubber = 0, totalPlastik = 0;
-
-      for (let name in currentList) {
-        const item = currentList[name];
-        if (item) {
-          totalIron += parseInt(item.iron || item.Iron || 0) || 0;
-          totalCarbon += parseInt(item.carbon || item.Carbon || 0) || 0;
-          totalGlass += parseInt(item.glass || item.Glass || 0) || 0;
-          totalRubber += parseInt(item.rubber || item.Rubber || 0) || 0;
-          totalPlastik += parseInt(item.plastik || item.Plastik || 0) || 0;
-        }
+      let tIron = 0, tCarbon = 0, tGlass = 0, tRubber = 0, tPlastik = 0;
+      for (let n in currentList) {
+        tIron += parseInt(currentList[n].iron || 0) || 0;
+        tCarbon += parseInt(currentList[n].carbon || 0) || 0;
+        tGlass += parseInt(currentList[n].glass || 0) || 0;
+        tRubber += parseInt(currentList[n].rubber || 0) || 0;
+        tPlastik += parseInt(currentList[n].plastik || 0) || 0;
       }
-
-      if (totalIron === 0 && totalCarbon === 0 && totalGlass === 0 && totalRubber === 0 && totalPlastik === 0) {
-        showCustomAlert("Total bahan bernilai 0 semua! Masukkan minimal angka bahan pada salah satu anggota terlebih dahulu.", "error");
-        return;
-      }
-
-      if (confirm(`Konfirmasi: Masukkan total keseluruhan setoran ${activeMinggu} (${totalIron} Iron, ${totalCarbon} Carbon, ${totalGlass} Glass, ${totalRubber} Rubber, ${totalPlastik} Plastik) langsung ke dalam stok Brankas?`)) {
-        
-        vaultStock["Iron"] = (vaultStock["Iron"] || 0) + totalIron;
-        vaultStock["Carbon"] = (vaultStock["Carbon"] || 0) + totalCarbon;
-        vaultStock["Glass"] = (vaultStock["Glass"] || 0) + totalGlass;
-        vaultStock["Rubber"] = (vaultStock["Rubber"] || 0) + totalRubber;
-        vaultStock["Plastik"] = (vaultStock["Plastik"] || 0) + totalPlastik;
-
-        const timestamp = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-        const authorName = "Sistem Setoran (" + activeMinggu + ")";
-
-        if (totalIron > 0) vaultHistory.unshift({ id: Date.now() + 1, date: timestamp, item: "Iron", action: "ADD", diff: `+${totalIron}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
-        if (totalCarbon > 0) vaultHistory.unshift({ id: Date.now() + 2, date: timestamp, item: "Carbon", action: "ADD", diff: `+${totalCarbon}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
-        if (totalGlass > 0) vaultHistory.unshift({ id: Date.now() + 3, date: timestamp, item: "Glass", action: "ADD", diff: `+${totalGlass}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
-        if (totalRubber > 0) vaultHistory.unshift({ id: Date.now() + 4, date: timestamp, item: "Rubber", action: "ADD", diff: `+${totalRubber}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
-        if (totalPlastik > 0) vaultHistory.unshift({ id: Date.now() + 5, date: timestamp, item: "Plastik", action: "ADD", diff: `+${totalPlastik}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
-
+      if (tIron === 0 && tCarbon === 0 && tGlass === 0 && tRubber === 0 && tPlastik === 0) { showCustomAlert("Bahan masih 0!", "error"); return; }
+      if (confirm(`Masukkan setoran ${activeMinggu} ke brankas?`)) {
+        vaultStock["Iron"] = (vaultStock["Iron"] || 0) + tIron;
+        vaultStock["Carbon"] = (vaultStock["Carbon"] || 0) + tCarbon;
+        vaultStock["Glass"] = (vaultStock["Glass"] || 0) + tGlass;
+        vaultStock["Rubber"] = (vaultStock["Rubber"] || 0) + tRubber;
+        vaultStock["Plastik"] = (vaultStock["Plastik"] || 0) + tPlastik;
+        const ts = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        if(tIron > 0) vaultHistory.unshift({ id: Date.now()+1, date: ts, item: "Iron", action: "ADD", diff: `+${tIron}`, desc: `Setoran ${activeMinggu}`, author: "Sistem" });
+        if(tCarbon > 0) vaultHistory.unshift({ id: Date.now()+2, date: ts, item: "Carbon", action: "ADD", diff: `+${tCarbon}`, desc: `Setoran ${activeMinggu}`, author: "Sistem" });
+        if(tGlass > 0) vaultHistory.unshift({ id: Date.now()+3, date: ts, item: "Glass", action: "ADD", diff: `+${tGlass}`, desc: `Setoran ${activeMinggu}`, author: "Sistem" });
+        if(tRubber > 0) vaultHistory.unshift({ id: Date.now()+4, date: ts, item: "Rubber", action: "ADD", diff: `+${tRubber}`, desc: `Setoran ${activeMinggu}`, author: "Sistem" });
+        if(tPlastik > 0) vaultHistory.unshift({ id: Date.now()+5, date: ts, item: "Plastik", action: "ADD", diff: `+${tPlastik}`, desc: `Setoran ${activeMinggu}`, author: "Sistem" });
         saveDataToCloud();
-        renderVaultInventory();
-        renderVaultHistory();
-
-        showCustomAlert(`Berhasil! Seluruh bahan dari rekap ${activeMinggu} telah ditambahkan ke dalam stok Brankas.`);
+        showCustomAlert("Setoran berhasil dimasukkan ke brankas!");
       }
     }
 
     function sendSetoranToDiscord() {
       const currentList = setoranData[activeMinggu] || {};
-      let text = `📋 **REKAP SETORAN BAHAN (${activeMinggu.toUpperCase()})**\n\n`;
-      let totalIron = 0, totalCarbon = 0, totalGlass = 0, totalRubber = 0, totalPlastik = 0;
-
-      for (let name in currentList) {
-        const item = currentList[name];
-        const status = item.lunas ? "Lunas ✅" : "Belum Lunas ❌";
-        totalIron += item.iron; totalCarbon += item.carbon; totalGlass += item.glass; totalRubber += item.rubber; totalPlastik += item.plastik;
-        text += `• **${name}** | Iron: ${item.iron} | Carbon: ${item.carbon} | Glass: ${item.glass} | Rubber: ${item.rubber} | Plastik: ${item.plastik} | [${status}]\n`;
+      let text = `📋 **REKAP SETORAN (${activeMinggu.toUpperCase()})**\n\n`;
+      for (let n in currentList) {
+        let i = currentList[n];
+        text += `• **${n}** | Iron: ${i.iron} | Carbon: ${i.carbon} | Glass: ${i.glass} | Rubber: ${i.rubber} | Plastik: ${i.plastik} | [${i.lunas ? 'Lunas ✅' : 'Belum ❌'}]\n`;
       }
-      
-      text += `\n📊 **TOTAL KESELURUHAN BAHAN:**\n`;
-      text += `• Iron: ${totalIron} | Carbon: ${totalCarbon} | Glass: ${totalGlass} | Rubber: ${totalRubber} | Plastik: ${totalPlastik}`;
-
       navigator.clipboard.writeText(text);
-
-      fetch(DISCORD_WEBHOOK_SETORAN, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: text })
-      })
-      .then(() => showCustomAlert(`Rekap setoran ${activeMinggu} berhasil dikirim ke Discord dan disalin!`))
-      .catch(() => showCustomAlert("Gagal mengirim ke Discord, tapi teks sudah disalin ke clipboard!", "error"));
+      fetch(DISCORD_WEBHOOK_SETORAN, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text }) })
+      .then(() => showCustomAlert("Rekap setoran dikirim ke Discord & disalin!"));
     }
 
-    // --- MODUL 7: DATA MEMBER & HIERARKI RANK ---
+    // Member
     function addClubMember() {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer hanya dapat melihat data.", "error");
-        return;
-      }
+      if (localStorage.getItem("nmc_logged_user") === "viewer") return;
       const name = document.getElementById("clubMemberName").value.trim();
       const rank = document.getElementById("clubMemberRank").value;
-      if (!name) { showCustomAlert("Masukkan nama anggota!", "error"); return; }
-      if (memberList[name]) { showCustomAlert("Anggota sudah terdaftar!", "error"); return; }
-
-      memberList[name] = { rank: rank, status: "Aktif" };
+      if (!name) { showCustomAlert("Masukkan nama!", "error"); return; }
+      memberList[name] = { rank, status: "Aktif" };
       saveDataToCloud();
       document.getElementById("clubMemberName").value = "";
       renderMemberTable();
     }
-
     function toggleMemberStatus(name) {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak dapat mengubah status anggota.", "error");
-        return;
-      }
-      if (!memberList[name]) return;
+      if (localStorage.getItem("nmc_logged_user") === "viewer") return;
       memberList[name].status = memberList[name].status === "Aktif" ? "Inactive" : "Aktif";
       saveDataToCloud();
       renderMemberTable();
     }
-
-    function updateMemberRank(name, newRank) {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak dapat mengubah rank anggota.", "error");
-        renderMemberTable();
-        return;
-      }
-      if (!memberList[name]) return;
-      memberList[name].rank = newRank;
+    function updateMemberRank(name, r) {
+      if (localStorage.getItem("nmc_logged_user") === "viewer") return;
+      memberList[name].rank = r;
       saveDataToCloud();
     }
-
     function removeClubMember(name) {
-      if (localStorage.getItem("nmc_logged_user") === "viewer") {
-        showCustomAlert("Akses ditolak! Akun Viewer tidak dapat menghapus anggota.", "error");
-        return;
-      }
-      if (confirm(`Hapus ${name} dari daftar anggota klub?`)) {
-        delete memberList[name];
-        saveDataToCloud();
-        renderMemberTable();
-      }
+      if (localStorage.getItem("nmc_logged_user") === "viewer") return;
+      if (confirm(`Hapus ${name}?`)) { delete memberList[name]; saveDataToCloud(); renderMemberTable(); }
     }
-
     function renderMemberTable() {
       const tbody = document.getElementById("memberTableBody");
       tbody.innerHTML = "";
-      const memberNames = Object.keys(memberList);
-
-      if (memberNames.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">Belum ada anggota terdaftar.</td></tr>`;
-        return;
-      }
-
+      const names = Object.keys(memberList);
+      if (names.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">Belum ada anggota.</td></tr>`; return; }
       const isViewer = localStorage.getItem("nmc_logged_user") === "viewer";
-      const ranksList = [
-        "President", "Vice President", "Sergeant at Arms", "Road Captain", 
-        "Secretary", "Treasurer", "Enforcer", "Member / Patched", "Prospect", "Hangaround"
-      ];
-
-      memberNames.forEach(name => {
-        const item = memberList[name];
-        let rankOptions = "";
-        ranksList.forEach(r => {
-          rankOptions += `<option value="${r}" ${item.rank === r ? 'selected' : ''}>${r}</option>`;
-        });
-
-        let statusBadge = item.status === "Aktif" ? 
-          `<span onclick="toggleMemberStatus('${name}')" class="cursor-pointer bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30 hover:bg-green-500/30">Aktif ✅</span>` : 
-          `<span onclick="toggleMemberStatus('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30 hover:bg-red-500/30">Inactive ❌</span>`;
-
+      const ranks = ["President", "Vice President", "Sergeant at Arms", "Road Captain", "Secretary", "Treasurer", "Enforcer", "Member / Patched", "Prospect", "Hangaround"];
+      names.forEach(name => {
+        let item = memberList[name];
+        let opts = ranks.map(r => `<option value="${r}" ${item.rank === r ? 'selected' : ''}>${r}</option>`).join('');
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
             <td class="p-3 text-white font-bold">${name}</td>
-            <td class="p-3">
-              <select ${isViewer ? 'disabled' : ''} onchange="updateMemberRank('${name}', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs text-amber-300 font-bold focus:outline-none focus:border-emerald-400">
-                ${rankOptions}
-              </select>
-            </td>
-            <td class="p-3 text-center">${statusBadge}</td>
-            <td class="p-3 text-center editor-only">
-              <button onclick="removeClubMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button>
-            </td>
+            <td class="p-3"><select ${isViewer ? 'disabled' : ''} onchange="updateMemberRank('${name}', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs text-amber-300 font-bold">${opts}</select></td>
+            <td class="p-3 text-center"><span onclick="toggleMemberStatus('${name}')" class="cursor-pointer bg-${item.status === 'Aktif' ? 'green' : 'red'}-500/20 text-${item.status === 'Aktif' ? 'green' : 'red'}-400 px-3 py-1 rounded-full text-xs font-bold border">${item.status}</span></td>
+            <td class="p-3 text-center editor-only"><button onclick="removeClubMember('${name}')" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></td>
           </tr>`;
       });
       if (isViewer) document.querySelectorAll(".editor-only").forEach(el => el.style.display = "none");
     }
-
     function sendMembersToDiscord() {
-      const memberNames = Object.keys(memberList);
-      let text = `👥 **DAFTAR ANGGOTA & HIERARKI KLUB NAKAMA MC**\n\n`;
-      let totalAktif = 0, totalInactive = 0;
-
-      memberNames.forEach(name => {
-        const item = memberList[name];
-        if (item.status === "Aktif") totalAktif++; else totalInactive++;
-        text += `• **${name}** | *${item.rank}* | [${item.status}]\n`;
-      });
-
-      text += `\n📊 **RINGKASAN ANGGOTA:**\n`;
-      text += `• Aktif: ${totalAktif} | Inactive: ${totalInactive} | Total: ${memberNames.length}`;
-
+      let text = `👥 **DAFTAR ANGGOTA & HIERARKI KLUB**\n\n`;
+      for (let n in memberList) text += `• **${n}** | *${memberList[n].rank}* | [${memberList[n].status}]\n`;
       navigator.clipboard.writeText(text);
-
-      fetch(DISCORD_WEBHOOK_MEMBER, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: text })
-      })
-      .then(() => showCustomAlert("Daftar anggota berhasil dikirim ke Discord dan disalin!"))
-      .catch(() => showCustomAlert("Gagal mengirim ke Discord, tapi teks sudah disalin ke clipboard!", "error"));
+      fetch(DISCORD_WEBHOOK_MEMBER, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text }) })
+      .then(() => showCustomAlert("Daftar anggota dikirim ke Discord & disalin!"));
     }
 
-    // --- LOGIC LAINNYA ---
+    // Kalkulator Crafting & Partner
     const craftRecipes = { "50AE": { iron: 50, carbon: 50, umer: 20000 }, "9MM": { iron: 50, carbon: 50, umer: 60000 }, "38LC": { iron: 50, carbon: 50, umer: 70000 } };
     function calcBahan() {
       const type = document.getElementById("craftAmmoType").value;
@@ -1643,25 +1215,14 @@
       
       const ammoListDiv = document.getElementById("ammoPriceList");
       ammoListDiv.innerHTML = "";
-      for (let ammo in group.ammo) {
-        ammoListDiv.innerHTML += `<div class="flex justify-between bg-slate-900/80 p-3 rounded-xl border border-slate-800"><span>${ammo} (1 pack)</span><span class="font-bold text-green-400">${group.ammo[ammo].toLocaleString('id-ID')}</span></div>`;
-      }
+      for (let ammo in group.ammo) ammoListDiv.innerHTML += `<div class="flex justify-between bg-slate-900/80 p-3 rounded-xl border border-slate-800"><span>${ammo} (1 pack)</span><span class="font-bold text-green-400">${group.ammo[ammo].toLocaleString('id-ID')}</span></div>`;
 
       const itemListDiv = document.getElementById("itemPriceList");
       itemListDiv.innerHTML = "";
       for (let item in group.items) {
-        const data = group.items[item];
-        let promoText = data.promo ? `<div class="text-[10px] text-amber-400 mt-0.5"><i class="fa-solid fa-tag"></i> ${data.promo}</div>` : '';
-        itemListDiv.innerHTML += `
-          <div class="glass-card p-3 rounded-xl border border-slate-800 flex flex-col justify-between">
-            <div>
-              <div class="text-gray-300 font-semibold text-xs">${item}</div>
-              <div class="font-bold text-red-400 text-sm mt-1">${data.isRate ? (data.price * 100) + '%' : 'Rp ' + data.price.toLocaleString('id-ID') + ' / PC'}</div>
-            </div>
-            ${promoText}
-          </div>`;
+        let d = group.items[item];
+        itemListDiv.innerHTML += `<div class="glass-card p-3 rounded-xl border border-slate-800"><div class="text-gray-300 font-semibold text-xs">${item}</div><div class="font-bold text-red-400 text-sm mt-1">${d.isRate ? (d.price * 100) + '%' : 'Rp ' + d.price.toLocaleString('id-ID') + ' / PC'}</div>${d.promo ? '<div class="text-[10px] text-amber-400 mt-0.5">' + d.promo + '</div>' : ''}</div>`;
       }
-
       document.getElementById("ammoRowsContainer").innerHTML = "";
       document.getElementById("itemRowsContainer").innerHTML = "";
       calculateAll();
@@ -1670,7 +1231,7 @@
     function addAmmoRow() {
       if (localStorage.getItem("nmc_logged_user") === "viewer") return;
       const group = groupsData[currentGroupKey], container = document.getElementById("ammoRowsContainer"), rowId = "ammo_" + Date.now();
-      let opts = ""; for (let a in group.ammo) opts += `<option value="${a}">${a} (${group.ammo[a].toLocaleString('id-ID')}/pack)</option>`;
+      let opts = ""; for (let a in group.ammo) opts += `<option value="${a}">${a}</option>`;
       container.insertAdjacentHTML('beforeend', `<div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800"><div class="md:col-span-5"><select class="ammo-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" onchange="calculateAll()">${opts}</select></div><div class="md:col-span-3"><input type="number" value="0" min="0" class="ammo-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" placeholder="0" oninput="calculateAll()"></div><div class="md:col-span-3 text-right font-bold text-green-400 text-sm">Rp <span class="ammo-row-total">0</span></div><div class="md:col-span-1 text-center editor-only"><button onclick="removeRow('${rowId}')" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div></div>`);
       calculateAll();
     }
@@ -1683,9 +1244,9 @@
       calculateAll();
     }
 
-    function removeRow(id) { 
+    function removeRow(id) {
       if (localStorage.getItem("nmc_logged_user") === "viewer") return;
-      const el = document.getElementById(id); if (el) { el.remove(); calculateAll(); } 
+      const el = document.getElementById(id); if (el) { el.remove(); calculateAll(); }
     }
 
     function calculateAll() {
@@ -1698,51 +1259,26 @@
 
     function sendPenjualanToDiscord() {
       const group = groupsData[currentGroupKey];
-      let text = `🛒 **LOG PENJUALAN AMMO (${group.name})**\n\n`;
-      let total = 0;
+      let text = `🛒 **LOG PENJUALAN AMMO (${group.name})**\n\n`, total = 0;
       document.querySelectorAll("#ammoRowsContainer > div").forEach(r => {
-        const t = r.querySelector(".ammo-type-select").value;
-        const q = parseFloat(r.querySelector(".ammo-qty-input").value) || 0;
-        if(q > 0) {
-          const tot = (group.ammo[t]||0)*q;
-          total += tot;
-          text += `• ${t} x${q} Pack = Rp ${tot.toLocaleString('id-ID')}\n`;
-        }
+        const t = r.querySelector(".ammo-type-select").value, q = parseFloat(r.querySelector(".ammo-qty-input").value) || 0;
+        if(q > 0) { const tot = (group.ammo[t]||0)*q; total += tot; text += `• ${t} x${q} Pack = Rp ${tot.toLocaleString('id-ID')}\n`; }
       });
       text += `\n💵 **Total Tagihan Ammo: Rp ${total.toLocaleString('id-ID')}**`;
-
-      fetch(DISCORD_WEBHOOK_PENJUALAN, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: text })
-      })
-      .then(() => showCustomAlert("Log penjualan berhasil dikirim ke Discord!"))
-      .catch(() => showCustomAlert("Gagal mengirim log penjualan ke Discord!", "error"));
+      fetch(DISCORD_WEBHOOK_PENJUALAN, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text }) })
+      .then(() => showCustomAlert("Log penjualan dikirim ke Discord!"));
     }
 
     function sendPembelianToDiscord() {
       const group = groupsData[currentGroupKey];
-      let text = `🔫 **LOG PEMBELIAN / LAYANAN (${group.name})**\n\n`;
-      let total = 0;
+      let text = `🔫 **LOG PEMBELIAN / LAYANAN (${group.name})**\n\n`, total = 0;
       document.querySelectorAll("#itemRowsContainer > div").forEach(r => {
-        const t = r.querySelector(".item-type-select").value;
-        const q = parseFloat(r.querySelector(".item-qty-input").value) || 0;
-        const d = group.items[t];
-        if(q > 0 && d) {
-          const tot = d.isRate ? q * d.price : d.price * q;
-          total += tot;
-          text += `• ${t} x${q} = Rp ${tot.toLocaleString('id-ID')}\n`;
-        }
+        const t = r.querySelector(".item-type-select").value, q = parseFloat(r.querySelector(".item-qty-input").value) || 0, d = group.items[t];
+        if(q > 0 && d) { const tot = d.isRate ? q * d.price : d.price * q; total += tot; text += `• ${t} x${q} = Rp ${tot.toLocaleString('id-ID')}\n`; }
       });
       text += `\n💵 **Total Pembelian / Fee: Rp ${total.toLocaleString('id-ID')}**`;
-
-      fetch(DISCORD_WEBHOOK_PEMBELIAN, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: text })
-      })
-      .then(() => showCustomAlert("Log pembelian berhasil dikirim ke Discord!"))
-      .catch(() => showCustomAlert("Gagal mengirim log pembelian ke Discord!", "error"));
+      fetch(DISCORD_WEBHOOK_PEMBELIAN, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text }) })
+      .then(() => showCustomAlert("Log pembelian dikirim ke Discord!"));
     }
 
     function copySummary() { showCustomAlert("Ringkasan berhasil disalin!"); }
