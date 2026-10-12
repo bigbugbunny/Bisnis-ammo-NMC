@@ -139,18 +139,25 @@
 <body class="min-h-screen p-4 md:p-8">
   <div class="bg-ambient-glow"></div>
 
-  <!-- MODAL LOGIN DENGAN PILIHAN EDITOR / VIEWER -->
+  <!-- MODAL LOGIN MULTI-ROLE (HIGHRANK / MEMBER) -->
   <div id="loginModal" class="fixed inset-0 bg-slate-950/95 z-50 flex items-center justify-center p-4">
-    <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6">
+    <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6 border border-red-600/40">
       <div class="text-center space-y-3">
         <div class="w-20 h-20 bg-red-950/40 rounded-2xl flex items-center justify-center mx-auto border border-red-600/40 shadow-inner overflow-hidden">
-          <img src="Nakama.png" alt="Logo" class="w-full h-full object-cover rounded-2xl">
+          <img src="Nakama.png" alt="Logo" class="w-full h-full object-cover rounded-2xl" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
         </div>
         <h2 class="text-2xl font-black tracking-wider text-red-500">TRIAD COMMUNITY ACCESS</h2>
-        <p class="text-xs text-gray-400">Silakan login sebagai HighRank atau masuk sebagai Member</p>
+        <p class="text-xs text-gray-400">Silakan login menggunakan akun HighRank atau Member</p>
       </div>
 
       <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Akses Sistem</label>
+          <select id="loginRoleSelect" onchange="updateLoginStyle()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-red-500 text-sm font-bold">
+            <option value="editor">🔥 HighRank (Full Akses / Editor)</option>
+            <option value="viewer">👁️ Member (Hanya Lihat / Viewer)</option>
+          </select>
+        </div>
         <div>
           <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Username</label>
           <input type="text" id="loginUsername" placeholder="Masukkan username..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-red-500 text-sm">
@@ -161,18 +168,8 @@
         </div>
         <div id="loginError" class="text-xs text-red-400 text-center hidden">Username atau sandi salah!</div>
 
-        <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider">
-          <i class="fa-solid fa-right-to-bracket"></i> MASUK SEBAGAI HIGHRANK
-        </button>
-
-        <div class="relative flex py-1 items-center">
-          <div class="flex-grow border-t border-slate-800"></div>
-          <span class="flex-shrink mx-3 text-gray-500 text-xs uppercase font-semibold">atau</span>
-          <div class="flex-grow border-t border-slate-800"></div>
-        </div>
-
-        <button onclick="loginAsViewer()" class="w-full bg-slate-800 hover:bg-slate-700 text-gray-300 font-bold py-3 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider flex items-center justify-center gap-2">
-          <i class="fa-solid fa-eye"></i> MASUK SEBAGAI MEMBER (HANYA LIHAT)
+        <button id="loginSubmitBtn" onclick="handleLogin()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider">
+          <i class="fa-solid fa-right-to-bracket"></i> MASUK SISTEM
         </button>
       </div>
     </div>
@@ -205,11 +202,11 @@
         </span>
 
         <button id="btnLoginAdminModal" onclick="openLoginModal()" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-500/30 transition flex items-center gap-1">
-          <i class="fa-solid fa-right-to-bracket"></i> Login Editor
+          <i class="fa-solid fa-right-to-bracket"></i> Login Ulang
         </button>
 
         <button id="btnLogoutBtn" onclick="handleLogout()" class="hidden bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-500/30 transition flex items-center gap-1">
-          <i class="fa-solid fa-right-from-bracket"></i> Keluar / Ganti Role
+          <i class="fa-solid fa-right-from-bracket"></i> Keluar / Ganti Akun
         </button>
       </div>
     </div>
@@ -725,16 +722,12 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // --- LOGIKA MULTI-ROLE (EDITOR & VIEWER) ---
+    // --- LOGIKA AUTENTIKASI MULTI-ROLE (EDITOR & VIEWER) ---
     window.addEventListener("DOMContentLoaded", () => {
       const savedRole = localStorage.getItem("nmc_user_role");
       
-      if (savedRole === "editor") {
-        currentUserRole = "editor";
-        document.getElementById("loginModal").classList.add("hidden");
-        showWelcomeScreen();
-      } else if (savedRole === "viewer") {
-        currentUserRole = "viewer";
+      if (savedRole === "editor" || savedRole === "viewer") {
+        currentUserRole = savedRole;
         document.getElementById("loginModal").classList.add("hidden");
         showWelcomeScreen();
       } else {
@@ -742,9 +735,23 @@
       }
       
       applyRolePermissions();
+      updateLoginStyle();
     });
 
+    function updateLoginStyle() {
+      const role = document.getElementById("loginRoleSelect").value;
+      const btn = document.getElementById("loginSubmitBtn");
+      if (role === "editor") {
+        btn.className = "w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider";
+        btn.innerHTML = `<i class="fa-solid fa-user-shield"></i> MASUK SEBAGAI HIGHRANK`;
+      } else {
+        btn.className = "w-full bg-gradient-to-r from-blue-700 to-emerald-600 hover:from-blue-600 hover:to-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider";
+        btn.innerHTML = `<i class="fa-solid fa-eye"></i> MASUK SEBAGAI MEMBER`;
+      }
+    }
+
     function handleLogin() {
+      const selectedRole = document.getElementById("loginRoleSelect").value; // 'editor' atau 'viewer'
       const usernameInput = document.getElementById("loginUsername").value.trim();
       const passwordInput = document.getElementById("loginPassword").value.trim();
       const errorDiv = document.getElementById("loginError");
@@ -755,7 +762,10 @@
         return;
       }
 
-      db.ref('admin_users').once('value').then((snapshot) => {
+      // Tentukan path node database Firebase berdasarkan role
+      const dbPath = selectedRole === "editor" ? 'admin_users' : 'member_users';
+
+      db.ref(dbPath).once('value').then((snapshot) => {
         const users = snapshot.val();
         let isSuccess = false;
 
@@ -771,20 +781,19 @@
               }
             }
           }
-        } else {
-          // Fallback akun lokal default jika node 'admin_users' belum ada di Firebase
-          if (usernameInput.toLowerCase() === "admin" && passwordInput === "123456") {
-            isSuccess = true;
-          }
         }
 
         if (isSuccess) {
-          currentUserRole = "editor";
-          localStorage.setItem("nmc_user_role", "editor");
+          currentUserRole = selectedRole;
+          localStorage.setItem("nmc_user_role", selectedRole);
           localStorage.setItem("nmc_logged_user", usernameInput);
           
           document.getElementById("loginModal").classList.add("hidden");
           errorDiv.classList.add("hidden");
+          
+          document.getElementById("loginUsername").value = "";
+          document.getElementById("loginPassword").value = "";
+
           applyRolePermissions();
           showWelcomeScreen();
           showCustomAlert(`Selamat datang kembali, ${usernameInput}!`);
@@ -793,33 +802,10 @@
           errorDiv.classList.remove("hidden");
         }
       }).catch((err) => {
-        console.error("Firebase Auth Error:", err);
-        // Fallback offline login jika terjadi kendala koneksi ke Firebase
-        if (usernameInput.toLowerCase() === "admin" && passwordInput === "123456") {
-          currentUserRole = "editor";
-          localStorage.setItem("nmc_user_role", "editor");
-          localStorage.setItem("nmc_logged_user", usernameInput);
-          
-          document.getElementById("loginModal").classList.add("hidden");
-          errorDiv.classList.add("hidden");
-          applyRolePermissions();
-          showWelcomeScreen();
-          showCustomAlert(`Selamat datang kembali, ${usernameInput}!`);
-        } else {
-          errorDiv.innerText = "Username atau sandi salah!";
-          errorDiv.classList.remove("hidden");
-        }
+        console.error("Firebase Login Error:", err);
+        errorDiv.innerText = "Gagal terhubung ke database!";
+        errorDiv.classList.remove("hidden");
       });
-    }
-
-    function loginAsViewer() {
-      currentUserRole = "viewer";
-      localStorage.setItem("nmc_user_role", "viewer");
-      localStorage.removeItem("nmc_logged_user");
-
-      document.getElementById("loginModal").classList.add("hidden");
-      applyRolePermissions();
-      showWelcomeScreen();
     }
 
     function openLoginModal() {
@@ -840,7 +826,7 @@
 
       if (currentUserRole === "editor") {
         if(badge) {
-          badge.innerHTML = `<i class="fa-solid fa-user-shield"></i> Role: Editor`;
+          badge.innerHTML = `<i class="fa-solid fa-user-shield"></i> Role: HighRank (Editor)`;
           badge.className = "bg-red-950/60 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-800/50 flex items-center gap-2";
         }
         if(btnLogin) btnLogin.classList.add("hidden");
@@ -849,11 +835,11 @@
         editorElements.forEach(el => el.classList.remove("hidden"));
       } else {
         if(badge) {
-          badge.innerHTML = `<i class="fa-solid fa-eye"></i> Role: Viewer`;
+          badge.innerHTML = `<i class="fa-solid fa-eye"></i> Role: Member (Viewer)`;
           badge.className = "bg-slate-800 text-gray-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2";
         }
-        if(btnLogin) btnLogin.classList.remove("hidden");
-        if(btnLogout) btnLogout.classList.add("hidden");
+        if(btnLogin) btnLogin.classList.add("hidden");
+        if(btnLogout) btnLogout.classList.remove("hidden");
 
         editorElements.forEach(el => el.classList.add("hidden"));
       }
