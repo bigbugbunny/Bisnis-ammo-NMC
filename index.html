@@ -137,10 +137,9 @@
 <body class="min-h-screen p-4 md:p-8">
   <div class="bg-ambient-glow"></div>
 
-  <!-- MODAL LOGIN SIMPEL (TANPA DROPDOWN PILIHAN MODE) -->
+  <!-- MODAL LOGIN -->
   <div id="loginModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
     <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6 border border-red-600/40 relative overflow-hidden">
-      
       <div class="absolute -top-12 -left-12 w-32 h-32 bg-red-600/20 rounded-full blur-2xl pointer-events-none"></div>
 
       <div class="text-center space-y-3 relative z-10">
@@ -319,7 +318,7 @@
           <div>
             <div class="w-12 h-12 bg-pink-500/20 text-pink-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-pink-500/30"><i class="fa-solid fa-hand-holding-dollar"></i></div>
             <h3 class="text-xl font-bold text-white mb-2">Data Setoran</h3>
-            <p class="text-sm text-gray-400">Rekapitulasi setoran mingguan bahan crafting anggota klub & status lunas.</p>
+            <p class="text-sm text-gray-400">Rekapitulasi setoran harian agenda & mingguan bahan crafting anggota klub.</p>
           </div>
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-pink-400"><span>Rekap Setoran</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
@@ -331,6 +330,64 @@
             <p class="text-sm text-gray-400">Daftar anggota aktif klub, hierarki rank, dan status keaktifan.</p>
           </div>
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-emerald-400"><span>Kelola Member</span><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATA SETORAN (HARIAN & MINGGUAN) -->
+    <div id="sectionSetoran" class="hidden space-y-6">
+      <!-- TAB SELECTOR SETORAN -->
+      <div class="flex border-b border-slate-800 gap-2">
+        <button id="tabBtnHarian" onclick="switchSetoranTab('harian')" class="px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-900 border-t border-x border-slate-700 text-pink-400 transition flex items-center gap-2">
+          <i class="fa-solid fa-calendar-day"></i> Setoran Harian (Agenda)
+        </button>
+        <button id="tabBtnMingguan" onclick="switchSetoranTab('mingguan')" class="px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-950/60 border-t border-x border-transparent text-gray-500 hover:text-gray-300 transition flex items-center gap-2">
+          <i class="fa-solid fa-calendar-week"></i> Setoran Mingguan
+        </button>
+      </div>
+
+      <div class="glass-card p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="w-full md:w-auto flex items-center gap-3">
+          <label class="text-xs font-bold text-red-400 uppercase tracking-wider" id="labelPeriodSelect">Pilih Hari Agenda:</label>
+          <select id="selectSetoranPeriod" onchange="changeActiveSetoranPeriod()" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-bold focus:outline-none focus:border-red-500 text-sm">
+            <!-- Dynamic Options -->
+          </select>
+        </div>
+        <div class="w-full md:w-auto flex items-center gap-2 editor-only">
+          <input type="text" id="newMemberName" placeholder="Nama Anggota Baru..." class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-red-500">
+          <button onclick="addNewMember()" class="bg-red-700 hover:bg-red-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-user-plus"></i> Tambah Anggota</button>
+        </div>
+      </div>
+
+      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
+       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <h2 class="text-lg font-bold text-red-400 flex items-center gap-2">
+            <i class="fa-solid fa-hand-holding-dollar"></i> <span id="setoranHeaderTitle">Rekap Setoran Harian</span> (<span id="currentPeriodLabel">Hari 1</span>)
+          </h2>
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="prosesProsesSatuTombolSetoran()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold px-5 py-3 rounded-xl transition flex items-center gap-2 shadow-lg border border-emerald-400/30 editor-only">
+              <i class="fa-solid fa-vault"></i> Masukkan ke Brankas, Kirim Discord & Reset Data
+            </button>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase">
+                <th class="p-3">Nama Anggota</th>
+                <th class="p-3 text-right">Iron 🔩</th>
+                <th class="p-3 text-right">Carbon ⬛</th>
+                <th class="p-3 text-right">Glass 🧊</th>
+                <th class="p-3 text-right">Rubber 🛞</th>
+                <th class="p-3 text-right">Plastik 🧪</th>
+                <th class="p-3 text-center">Status</th>
+                <th class="p-3 text-center editor-only">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="setoranTableBody" class="divide-y divide-slate-800 text-sm">
+              <tr><td colspan="8" class="p-4 text-center text-gray-500">Memuat data...</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -575,36 +632,6 @@
       </div>
     </div>
 
-    <!-- DATA SETORAN -->
-    <div id="sectionSetoran" class="hidden space-y-6">
-      <div class="glass-card p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
-        <div class="w-full md:w-auto flex items-center gap-3">
-          <label class="text-xs font-bold text-red-400 uppercase tracking-wider">Pilih Minggu:</label>
-          <select id="selectMinggu" onchange="changeActiveMinggu()" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-bold focus:outline-none focus:border-red-500 text-sm">
-            <option value="Minggu 1">Minggu 1</option><option value="Minggu 2">Minggu 2</option><option value="Minggu 3">Minggu 3</option><option value="Minggu 4">Minggu 4</option>
-          </select>
-        </div>
-        <div class="w-full md:w-auto flex items-center gap-2 editor-only">
-          <input type="text" id="newMemberName" placeholder="Nama Anggota Baru..." class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-red-500">
-          <button onclick="addNewMember()" class="bg-red-700 hover:bg-red-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-user-plus"></i> Tambah Anggota</button>
-        </div>
-      </div>
-      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <h2 class="text-lg font-bold text-red-400 flex items-center gap-2"><i class="fa-solid fa-hand-holding-dollar"></i> Rekap Setoran Bahan (<span id="currentMingguLabel">Minggu 1</span>)</h2>
-          <div class="flex flex-wrap items-center gap-2">
-            <button onclick="masukkanSetoranKeBrankas()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg editor-only">
-              <i class="fa-solid fa-vault"></i> Masukkan ke Brankas
-            </button>
-            <button onclick="sendSetoranToDiscord()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg editor-only">
-              <i class="fa-brands fa-discord"></i> Kirim ke Discord & Salin
-            </button>
-          </div>
-        </div>
-        <div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead><tr class="border-b border-slate-700 text-xs text-gray-400 uppercase"><th class="p-3">Nama Anggota</th><th class="p-3 text-right">Iron 🔩</th><th class="p-3 text-right">Carbon ⬛</th><th class="p-3 text-right">Glass 🧊</th><th class="p-3 text-right">Rubber 🛞</th><th class="p-3 text-right">Plastik 🧪</th><th class="p-3 text-center">Status</th><th class="p-3 text-center editor-only">Aksi</th></tr></thead><tbody id="setoranTableBody" class="divide-y divide-slate-800 text-sm"><tr><td colspan="8" class="p-4 text-center text-gray-500">Memuat data...</td></tr></tbody></table></div>
-      </div>
-    </div>
-
     <!-- DATA MEMBER -->
     <div id="sectionMember" class="hidden space-y-6">
       <div class="glass-card p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-center gap-4 editor-only">
@@ -683,23 +710,24 @@
       document.body.insertAdjacentHTML('beforeend', modalHtml);
     }
 
-    function showCustomConfirm(message, onConfirm) {
+    // MODAL KONFIRMASI DINAMIS (Bukan lagi hardcode "HAPUS")
+    function showCustomConfirm(title, message, btnText, onConfirm) {
       const existingModal = document.getElementById('customConfirmModal');
       if (existingModal) existingModal.remove();
 
       const modalHtml = `
         <div id="customConfirmModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div class="glass-card p-6 rounded-2xl shadow-2xl w-full max-w-sm text-center space-y-4 border border-red-500/50 animate-modal-in">
-            <div class="w-14 h-14 bg-red-950/50 text-red-400 rounded-2xl flex items-center justify-center text-2xl mx-auto border border-red-500/40 shadow-inner">
+          <div class="glass-card p-6 rounded-2xl shadow-2xl w-full max-w-sm text-center space-y-4 border border-amber-500/50 animate-modal-in">
+            <div class="w-14 h-14 bg-amber-950/50 text-amber-400 rounded-2xl flex items-center justify-center text-2xl mx-auto border border-amber-500/40 shadow-inner">
               <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <div class="space-y-1">
-              <h3 class="text-sm font-black tracking-widest text-white uppercase">KONFIRMASI HAPUS</h3>
+              <h3 class="text-sm font-black tracking-widest text-white uppercase">${title}</h3>
               <p class="text-xs text-gray-300 leading-relaxed">${message}</p>
             </div>
             <div class="grid grid-cols-2 gap-3 pt-2">
-              <button id="confirmYesBtn" class="bg-red-700 hover:bg-red-600 text-white font-bold py-2.5 px-4 rounded-xl transition text-xs tracking-wider shadow">
-                HAPUS
+              <button id="confirmYesBtn" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2.5 px-4 rounded-xl transition text-xs tracking-wider shadow">
+                ${btnText}
               </button>
               <button onclick="document.getElementById('customConfirmModal').remove()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider shadow">
                 BATAL
@@ -728,10 +756,8 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // --- LOGIKA AUTENTIKASI OTOMATIS (MENCEK ADMIN DAHULU, BARU MEMBER) ---
     window.addEventListener("DOMContentLoaded", () => {
       const savedRole = localStorage.getItem("nmc_user_role");
-      
       if (savedRole === "editor" || savedRole === "viewer") {
         currentUserRole = savedRole;
         document.getElementById("loginModal").classList.add("hidden");
@@ -739,7 +765,6 @@
       } else {
         document.getElementById("loginModal").classList.remove("hidden");
       }
-      
       applyRolePermissions();
     });
 
@@ -754,7 +779,6 @@
         return;
       }
 
-      // 1. Cek dulu ke admin_users (HighRank / Editor)
       db.ref('admin_users').once('value').then((snapshot) => {
         const admins = snapshot.val();
         let isAdmin = false;
@@ -776,17 +800,12 @@
           currentUserRole = "editor";
           localStorage.setItem("nmc_user_role", "editor");
           localStorage.setItem("nmc_logged_user", usernameInput);
-          
           document.getElementById("loginModal").classList.add("hidden");
           errorDiv.classList.add("hidden");
-          document.getElementById("loginUsername").value = "";
-          document.getElementById("loginPassword").value = "";
-
           applyRolePermissions();
           showWelcomeScreen();
           showCustomAlert(`Selamat datang HighRank, ${usernameInput}!`);
         } else {
-          // 2. Jika bukan admin, cek ke member_users (Member / Viewer)
           db.ref('member_users').once('value').then((memSnapshot) => {
             const members = memSnapshot.val();
             let isMember = false;
@@ -808,12 +827,8 @@
               currentUserRole = "viewer";
               localStorage.setItem("nmc_user_role", "viewer");
               localStorage.setItem("nmc_logged_user", usernameInput);
-
               document.getElementById("loginModal").classList.add("hidden");
               errorDiv.classList.add("hidden");
-              document.getElementById("loginUsername").value = "";
-              document.getElementById("loginPassword").value = "";
-
               applyRolePermissions();
               showWelcomeScreen();
               showCustomAlert(`Selamat datang Member, ${usernameInput}!`);
@@ -822,27 +837,18 @@
               errorDiv.classList.remove("hidden");
             }
           }).catch((err) => {
-            console.error(err);
             errorDiv.innerText = "Gagal terhubung ke database!";
             errorDiv.classList.remove("hidden");
           });
         }
       }).catch((err) => {
-        console.error(err);
         errorDiv.innerText = "Gagal terhubung ke database!";
         errorDiv.classList.remove("hidden");
       });
     }
 
-    function openLoginModal() {
-      document.getElementById("loginModal").classList.remove("hidden");
-    }
-
-    function handleLogout() {
-      localStorage.removeItem("nmc_user_role");
-      localStorage.removeItem("nmc_logged_user");
-      location.reload();
-    }
+    function openLoginModal() { document.getElementById("loginModal").classList.remove("hidden"); }
+    function handleLogout() { localStorage.removeItem("nmc_user_role"); localStorage.removeItem("nmc_logged_user"); location.reload(); }
 
     function applyRolePermissions() {
       const badge = document.getElementById("userRoleBadge");
@@ -857,7 +863,6 @@
         }
         if(btnLogin) btnLogin.classList.add("hidden");
         if(btnLogout) btnLogout.classList.remove("hidden");
-
         editorElements.forEach(el => el.classList.remove("hidden"));
       } else {
         if(badge) {
@@ -866,7 +871,6 @@
         }
         if(btnLogin) btnLogin.classList.add("hidden");
         if(btnLogout) btnLogout.classList.remove("hidden");
-
         editorElements.forEach(el => el.classList.add("hidden"));
       }
     }
@@ -886,7 +890,6 @@
       document.getElementById('btnBackMenu').classList.add('hidden');
       document.getElementById('headerTitleText').innerText = "TRIAD COMMUNITY";
       document.getElementById('headerSubtitle').innerText = "SYSTEM MANAGEMENT & DASHBOARD";
-      
       applyRolePermissions();
     }
 
@@ -926,14 +929,7 @@
         document.getElementById(sectionId).classList.remove('hidden');
         btnHome.classList.remove('hidden');
         btnBack.classList.remove('hidden');
-        
-        if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
-        else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner Kelompok";
-        else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris & Riwayat)";
-        else if(sectionId === 'sectionBeliWarga') subtitle.innerText = "Modul Transaksi Warga (Beli & Jual)";
-        else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Data Bisnis (Kas Uang Merah & Putih)";
-        else if(sectionId === 'sectionSetoran') subtitle.innerText = "Modul Data Setoran Bahan Mingguan Klub";
-        else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Data Anggota, Hierarki Rank & Status Keaktifan";
+        if(sectionId === 'sectionSetoran') switchSetoranTab('harian');
       }
       applyRolePermissions();
     }
@@ -950,9 +946,11 @@
     let vaultHistory = [];
     let businessHistory = [];
     let beliWargaHistory = [];
-    let setoranData = { "Minggu 1": {} };
+    let setoranDataMingguan = { "Minggu 1": {} };
+    let setoranDataHarian = { "Hari 1": {} };
+    let currentSetoranTab = "harian";
+    let activePeriod = "Hari 1";
     let memberList = {};
-    let activeMinggu = "Minggu 1";
 
     db.ref('nmc_data').on('value', (snapshot) => {
       const data = snapshot.val();
@@ -961,10 +959,14 @@
         vaultHistory = data.history || [];
         businessHistory = data.business || [];
         beliWargaHistory = data.beli_warga || [];
-        setoranData = data.setoran || { "Minggu 1": {} };
+        setoranDataMingguan = data.setoran || { "Minggu 1": {} };
+        setoranDataHarian = data.setoran_harian || { "Hari 1": {} };
         memberList = data.club_members || {};
       } else {
-        db.ref('nmc_data').set({ inventory: defaultVaultStock, history: [], business: [], beli_warga: [], setoran: { "Minggu 1": {} }, club_members: {} });
+        db.ref('nmc_data').set({
+          inventory: defaultVaultStock, history: [], business: [], beli_warga: [],
+          setoran: { "Minggu 1": {} }, setoran_harian: { "Hari 1": {} }, club_members: {}
+        });
       }
       renderVaultInventory();
       renderVaultHistory();
@@ -980,21 +982,201 @@
         history: vaultHistory,
         business: businessHistory,
         beli_warga: beliWargaHistory,
-        setoran: setoranData,
+        setoran: setoranDataMingguan,
+        setoran_harian: setoranDataHarian,
         club_members: memberList
       });
     }
 
+    // --- FITUR SETORAN HARIAN & MINGGUAN ---
+    function switchSetoranTab(type) {
+      currentSetoranTab = type;
+      const btnH = document.getElementById("tabBtnHarian");
+      const btnM = document.getElementById("tabBtnMingguan");
+      const selectP = document.getElementById("selectSetoranPeriod");
+      const labelP = document.getElementById("labelPeriodSelect");
+      const titleH = document.getElementById("setoranHeaderTitle");
+
+      if (type === 'harian') {
+        btnH.className = "px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-900 border-t border-x border-slate-700 text-pink-400 transition flex items-center gap-2";
+        btnM.className = "px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-950/60 border-t border-x border-transparent text-gray-500 hover:text-gray-300 transition flex items-center gap-2";
+        labelP.innerText = "Pilih Hari Agenda:";
+        titleH.innerText = "Rekap Setoran Harian Agenda";
+        selectP.innerHTML = `<option value="Hari 1">Hari 1</option><option value="Hari 2">Hari 2</option><option value="Hari 3">Hari 3</option><option value="Hari 4">Hari 4</option><option value="Hari 5">Hari 5</option><option value="Hari 6">Hari 6</option><option value="Hari 7">Hari 7</option>`;
+        activePeriod = "Hari 1";
+      } else {
+        btnM.className = "px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-900 border-t border-x border-slate-700 text-pink-400 transition flex items-center gap-2";
+        btnH.className = "px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-950/60 border-t border-x border-transparent text-gray-500 hover:text-gray-300 transition flex items-center gap-2";
+        labelP.innerText = "Pilih Minggu:";
+        titleH.innerText = "Rekap Setoran Mingguan";
+        selectP.innerHTML = `<option value="Minggu 1">Minggu 1</option><option value="Minggu 2">Minggu 2</option><option value="Minggu 3">Minggu 3</option><option value="Minggu 4">Minggu 4</option>`;
+        activePeriod = "Minggu 1";
+      }
+      document.getElementById("currentPeriodLabel").innerText = activePeriod;
+      renderSetoranTable();
+    }
+
+    function changeActiveSetoranPeriod() {
+      activePeriod = document.getElementById("selectSetoranPeriod").value;
+      document.getElementById("currentPeriodLabel").innerText = activePeriod;
+      renderSetoranTable();
+    }
+
+    function getCurrentSetoranRef() {
+      return currentSetoranTab === 'harian' ? setoranDataHarian : setoranDataMingguan;
+    }
+
+    function addNewMember() {
+      const name = document.getElementById("newMemberName").value.trim();
+      if (!name) { showCustomAlert("Masukkan nama anggota!", "error"); return; }
+      const ref = getCurrentSetoranRef();
+      if (!ref[activePeriod]) ref[activePeriod] = {};
+      if (ref[activePeriod][name]) { showCustomAlert("Anggota sudah ada di daftar!", "error"); return; }
+
+      ref[activePeriod][name] = { iron: 0, carbon: 0, glass: 0, rubber: 0, plastik: 0, lunas: false };
+      saveDataToCloud();
+      document.getElementById("newMemberName").value = "";
+      renderSetoranTable();
+    }
+
+    function updateSetoranBahan(name, bahan, val) {
+      const num = parseInt(val) || 0;
+      const ref = getCurrentSetoranRef();
+      if (!ref[activePeriod][name]) ref[activePeriod][name] = { iron: 0, carbon: 0, glass: 0, rubber: 0, plastik: 0, lunas: false };
+      ref[activePeriod][name][bahan] = num;
+      saveDataToCloud();
+    }
+
+    function toggleStatusLunas(name) {
+      if (currentUserRole !== "editor") return;
+      const ref = getCurrentSetoranRef();
+      if (!ref[activePeriod][name]) return;
+      ref[activePeriod][name].lunas = !ref[activePeriod][name].lunas;
+      saveDataToCloud();
+      renderSetoranTable();
+    }
+
     function removeSetoranMember(name) {
-      showCustomConfirm(`Hapus ${name} dari rekap setoran ${activeMinggu}?`, () => {
-        delete setoranData[activeMinggu][name];
+      showCustomConfirm("KONFIRMASI HAPUS", `Hapus ${name} dari daftar ${activePeriod}?`, "HAPUS", () => {
+        const ref = getCurrentSetoranRef();
+        delete ref[activePeriod][name];
         saveDataToCloud();
         renderSetoranTable();
       });
     }
 
+    function renderSetoranTable() {
+      const tbody = document.getElementById("setoranTableBody");
+      tbody.innerHTML = "";
+      const ref = getCurrentSetoranRef();
+      const currentList = ref[activePeriod] || {};
+      const memberNames = Object.keys(currentList).sort((a, b) => a.localeCompare(b));
+
+      if (memberNames.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-gray-500">Belum ada data setoran di ${activePeriod}.</td></tr>`;
+        return;
+      }
+
+      memberNames.forEach(name => {
+        const item = currentList[name];
+        let statusBadge = item.lunas ? 
+          `<span onclick="toggleStatusLunas('${name}')" class="cursor-pointer bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30 hover:bg-green-500/30">Lunas ✅</span>` : 
+          `<span onclick="toggleStatusLunas('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30 hover:bg-green-500/30">Belum Lunas ❌</span>`;
+
+        let actionCol = currentUserRole === "editor" ? 
+          `<td class="p-3 text-center editor-only"><button onclick="removeSetoranMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></td>` : '';
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="p-3 text-white font-bold">${name}</td>
+            <td class="p-3 text-right"><input type="number" value="${item.iron}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'iron', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-amber-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
+            <td class="p-3 text-right"><input type="number" value="${item.carbon}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'carbon', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-blue-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
+            <td class="p-3 text-right"><input type="number" value="${item.glass}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'glass', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-cyan-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
+            <td class="p-3 text-right"><input type="number" value="${item.rubber}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'rubber', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-purple-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
+            <td class="p-3 text-right"><input type="number" value="${item.plastik}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'plastik', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-emerald-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
+            <td class="p-3 text-center">${statusBadge}</td>
+            ${actionCol}
+          </tr>`;
+      });
+      applyRolePermissions();
+    }
+
+    // --- FITUR 1 TOMBOL PROSES (BRANKAS + DISCORD + AUTO RESET DATA) ---
+    function prosesProsesSatuTombolSetoran() {
+      if (currentUserRole !== "editor") return;
+
+      const ref = getCurrentSetoranRef();
+      const currentList = ref[activePeriod] || {};
+      let totalIron = 0, totalCarbon = 0, totalGlass = 0, totalRubber = 0, totalPlastik = 0;
+
+      for (let name in currentList) {
+        const item = currentList[name];
+        if (item) {
+          totalIron += parseInt(item.iron || 0) || 0;
+          totalCarbon += parseInt(item.carbon || 0) || 0;
+          totalGlass += parseInt(item.glass || 0) || 0;
+          totalRubber += parseInt(item.rubber || 0) || 0;
+          totalPlastik += parseInt(item.plastik || 0) || 0;
+        }
+      }
+
+      if (totalIron === 0 && totalCarbon === 0 && totalGlass === 0 && totalRubber === 0 && totalPlastik === 0) {
+        showCustomAlert("Seluruh bahan bernilai 0! Tidak ada data setoran untuk diproses.", "error"); 
+        return;
+      }
+
+      showCustomConfirm("PROSES & RESET DATA", `Sistem akan memasukkan total bahan ke Brankas, mengirim rekap ke Webhook Discord, lalu mengosongkan/reset data setoran ${activePeriod}. Lanjutkan?`, "PROSES SEKARANG", () => {
+        // 1. Tambahkan ke Stok Brankas
+        vaultStock["Iron"] = (vaultStock["Iron"] || 0) + totalIron;
+        vaultStock["Carbon"] = (vaultStock["Carbon"] || 0) + totalCarbon;
+        vaultStock["Glass"] = (vaultStock["Glass"] || 0) + totalGlass;
+        vaultStock["Rubber"] = (vaultStock["Rubber"] || 0) + totalRubber;
+        vaultStock["Plastik"] = (vaultStock["Plastik"] || 0) + totalPlastik;
+
+        const timestamp = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        const authorName = `Setoran ${currentSetoranTab === 'harian' ? 'Harian' : 'Mingguan'} (${activePeriod})`;
+
+        if (totalIron > 0) vaultHistory.unshift({ id: Date.now() + 1, date: timestamp, item: "Iron", action: "ADD", diff: `+${totalIron}`, desc: `Setoran ${activePeriod}`, author: authorName });
+        if (totalCarbon > 0) vaultHistory.unshift({ id: Date.now() + 2, date: timestamp, item: "Carbon", action: "ADD", diff: `+${totalCarbon}`, desc: `Setoran ${activePeriod}`, author: authorName });
+        if (totalGlass > 0) vaultHistory.unshift({ id: Date.now() + 3, date: timestamp, item: "Glass", action: "ADD", diff: `+${totalGlass}`, desc: `Setoran ${activePeriod}`, author: authorName });
+        if (totalRubber > 0) vaultHistory.unshift({ id: Date.now() + 4, date: timestamp, item: "Rubber", action: "ADD", diff: `+${totalRubber}`, desc: `Setoran ${activePeriod}`, author: authorName });
+        if (totalPlastik > 0) vaultHistory.unshift({ id: Date.now() + 5, date: timestamp, item: "Plastik", action: "ADD", diff: `+${totalPlastik}`, desc: `Setoran ${activePeriod}`, author: authorName });
+
+        // 2. Susun Pesan Log Discord
+        let text = `📋 **REKAP SETORAN BAHAN ${currentSetoranTab.toUpperCase()} (${activePeriod.toUpperCase()})**\n\n`;
+        for (let name in currentList) {
+          const item = currentList[name];
+          const status = item.lunas ? "Lunas ✅" : "Belum Lunas ❌";
+          text += `• **${name}** | Iron: ${item.iron} | Carbon: ${item.carbon} | Glass: ${item.glass} | Rubber: ${item.rubber} | Plastik: ${item.plastik} | [${status}]\n`;
+        }
+        text += `\n📊 **TOTAL KESELURUHAN DITERIMA BRANKAS:**\n`;
+        text += `• Iron: ${totalIron} | Carbon: ${totalCarbon} | Glass: ${totalGlass} | Rubber: ${totalRubber} | Plastik: ${totalPlastik}`;
+
+        // 3. Kirim ke Webhook Discord
+        db.ref('webhooks/setoran').once('value').then((snapshot) => {
+          const webhookUrl = snapshot.val();
+          if (webhookUrl) {
+            fetch(webhookUrl, {
+              method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
+            }).catch(e => console.error("Webhook Discord Error", e));
+          }
+        });
+
+        // 4. Otomatis Reset/Kosongkan Data Setoran di Periode Tersebut
+        ref[activePeriod] = {};
+
+        // 5. Simpan dan Perbarui Tampilan
+        saveDataToCloud();
+        renderVaultInventory();
+        renderVaultHistory();
+        renderSetoranTable();
+
+        showCustomAlert(`Sukses! Setoran ${activePeriod} berhasil dimasukkan ke Brankas, dikirim ke Discord, dan data tabel otomatis di-reset.`);
+      });
+    }
+
     function removeClubMember(name) {
-      showCustomConfirm(`Hapus ${name} dari daftar anggota klub?`, () => {
+      showCustomConfirm("KONFIRMASI HAPUS", `Hapus ${name} dari daftar anggota klub?`, "HAPUS", () => {
         delete memberList[name];
         saveDataToCloud();
         renderMemberTable();
@@ -1124,21 +1306,6 @@
       saveDataToCloud();
       document.getElementById("beliWargaNama").value = "";
       document.getElementById("beliWargaAdmin").value = "";
-      document.getElementById("beliBahanRowsContainer").innerHTML = `
-        <div class="beli-row grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
-          <div class="md:col-span-4">
-            <select class="row-item w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none">
-              <optgroup label="Bahan Dasar"><option value="Iron">Iron</option><option value="Carbon">Carbon</option><option value="Glass">Glass</option><option value="Rubber">Rubber</option><option value="Plastik">Plastik</option><option value="Box Recycle">Box Recycle</option></optgroup>
-              <optgroup label="Pack Ammo"><option value="Pack Ammo 50AE">Pack Ammo 50AE</option><option value="Pack Ammo 9MM">Pack Ammo 9MM</option><option value="Pack Ammo 38LC">Pack Ammo 38LC</option></optgroup>
-              <optgroup label="Barham"><option value="Kecubung">Kecubung</option><option value="Jamur">Jamur</option><option value="Weed">Weed</option><option value="Joint">Joint</option></optgroup>
-              <optgroup label="Senjata & Item Lain"><option value="Vest">Vest</option><option value="Senjata DA">Senjata DA</option><option value="Senjata P50">Senjata P50</option><option value="Senjata TAC9">Senjata TAC9</option><option value="Senjata Ceramic">Senjata Ceramic</option></optgroup>
-            </select>
-          </div>
-          <div class="md:col-span-2"><input type="number" min="1" value="1" placeholder="Qty" class="row-qty w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()"></div>
-          <div class="md:col-span-3"><input type="number" min="0" value="0" placeholder="Harga Satuan" class="row-price w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()"></div>
-          <div class="md:col-span-2 text-right font-bold text-emerald-400 text-sm pt-1 md:pt-0">Rp <span class="row-total-text">0</span></div>
-          <div class="md:col-span-1 text-center"><button type="button" onclick="hapusBarisBeli(this)" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></div>
-        </div>`;
       hitungTotalBeliWarga();
       showCustomAlert(`Berhasil! Transaksi warga senilai Rp ${totalSemuaHarga.toLocaleString('id-ID')} berhasil dicatat & brankas diperbarui.`);
     }
@@ -1236,9 +1403,7 @@
         }
 
         fetch(webhookUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ content: text })
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
         })
         .then(() => showCustomAlert("Laporan brankas berhasil dikirim ke Discord!"))
         .catch(() => showCustomAlert("Gagal mengirim laporan ke Discord!", "error"));
@@ -1286,152 +1451,6 @@
       }
       document.getElementById("totalUangMerah").innerText = saldoMerah.toLocaleString('id-ID');
       document.getElementById("totalUangPutih").innerText = saldoPutih.toLocaleString('id-ID');
-    }
-
-    function changeActiveMinggu() {
-      activeMinggu = document.getElementById("selectMinggu").value;
-      document.getElementById("currentMingguLabel").innerText = activeMinggu;
-      renderSetoranTable();
-    }
-
-    function addNewMember() {
-      const name = document.getElementById("newMemberName").value.trim();
-      if (!name) { showCustomAlert("Masukkan nama anggota!", "error"); return; }
-      if (!setoranData[activeMinggu]) setoranData[activeMinggu] = {};
-      if (setoranData[activeMinggu][name]) { showCustomAlert("Anggota sudah ada di daftar minggu ini!", "error"); return; }
-
-      setoranData[activeMinggu][name] = { iron: 0, carbon: 0, glass: 0, rubber: 0, plastik: 0, lunas: false };
-
-      const sortedKeys = Object.keys(setoranData[activeMinggu]).sort((a, b) => a.localeCompare(b));
-      let sortedObj = {};
-      sortedKeys.forEach(k => { sortedObj[k] = setoranData[activeMinggu][k]; });
-      setoranData[activeMinggu] = sortedObj;
-
-      saveDataToCloud();
-      document.getElementById("newMemberName").value = "";
-      renderSetoranTable();
-    }
-
-    function updateSetoranBahan(name, bahan, val) {
-      const num = parseInt(val) || 0;
-      if (!setoranData[activeMinggu][name]) setoranData[activeMinggu][name] = { iron: 0, carbon: 0, glass: 0, rubber: 0, plastik: 0, lunas: false };
-      setoranData[activeMinggu][name][bahan] = num;
-      saveDataToCloud();
-    }
-
-    function toggleStatusLunas(name) {
-      if (currentUserRole !== "editor") return;
-      if (!setoranData[activeMinggu][name]) return;
-      setoranData[activeMinggu][name].lunas = !setoranData[activeMinggu][name].lunas;
-      saveDataToCloud();
-      renderSetoranTable();
-    }
-
-    function renderSetoranTable() {
-      const tbody = document.getElementById("setoranTableBody");
-      tbody.innerHTML = "";
-      const currentList = setoranData[activeMinggu] || {};
-      
-      const memberNames = Object.keys(currentList).sort((a, b) => a.localeCompare(b));
-
-      if (memberNames.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-gray-500">Belum ada anggota dalam rekap ${activeMinggu}.</td></tr>`;
-        return;
-      }
-
-      memberNames.forEach(name => {
-        const item = currentList[name];
-        let statusBadge = item.lunas ? 
-          `<span onclick="toggleStatusLunas('${name}')" class="cursor-pointer bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30 hover:bg-green-500/30">Lunas ✅</span>` : 
-          `<span onclick="toggleStatusLunas('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30 hover:bg-green-500/30">Belum Lunas ❌</span>`;
-
-        let actionCol = currentUserRole === "editor" ? 
-          `<td class="p-3 text-center editor-only"><button onclick="removeSetoranMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></td>` : '';
-
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-800/40 transition">
-            <td class="p-3 text-white font-bold">${name}</td>
-            <td class="p-3 text-right"><input type="number" value="${item.iron}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'iron', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-amber-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
-            <td class="p-3 text-right"><input type="number" value="${item.carbon}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'carbon', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-blue-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
-            <td class="p-3 text-right"><input type="number" value="${item.glass}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'glass', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-cyan-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
-            <td class="p-3 text-right"><input type="number" value="${item.rubber}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'rubber', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-purple-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
-            <td class="p-3 text-right"><input type="number" value="${item.plastik}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'plastik', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-emerald-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
-            <td class="p-3 text-center">${statusBadge}</td>
-            ${actionCol}
-          </tr>`;
-      });
-      applyRolePermissions();
-    }
-
-    function masukkanSetoranKeBrankas() {
-      const currentList = setoranData[activeMinggu] || {};
-      let totalIron = 0, totalCarbon = 0, totalGlass = 0, totalRubber = 0, totalPlastik = 0;
-
-      for (let name in currentList) {
-        const item = currentList[name];
-        if (item) {
-          totalIron += parseInt(item.iron || 0) || 0;
-          totalCarbon += parseInt(item.carbon || 0) || 0;
-          totalGlass += parseInt(item.glass || 0) || 0;
-          totalRubber += parseInt(item.rubber || 0) || 0;
-          totalPlastik += parseInt(item.plastik || 0) || 0;
-        }
-      }
-
-      if (totalIron === 0 && totalCarbon === 0 && totalGlass === 0 && totalRubber === 0 && totalPlastik === 0) {
-        showCustomAlert("Total bahan bernilai 0 semua!", "error"); return;
-      }
-
-      showCustomConfirm(`Masukkan total keseluruhan setoran ${activeMinggu} ke dalam stok Brankas?`, () => {
-        vaultStock["Iron"] = (vaultStock["Iron"] || 0) + totalIron;
-        vaultStock["Carbon"] = (vaultStock["Carbon"] || 0) + totalCarbon;
-        vaultStock["Glass"] = (vaultStock["Glass"] || 0) + totalGlass;
-        vaultStock["Rubber"] = (vaultStock["Rubber"] || 0) + totalRubber;
-        vaultStock["Plastik"] = (vaultStock["Plastik"] || 0) + totalPlastik;
-
-        const timestamp = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-        const authorName = "Sistem Setoran (" + activeMinggu + ")";
-
-        if (totalIron > 0) vaultHistory.unshift({ id: Date.now() + 1, date: timestamp, item: "Iron", action: "ADD", diff: `+${totalIron}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
-        if (totalCarbon > 0) vaultHistory.unshift({ id: Date.now() + 2, date: timestamp, item: "Carbon", action: "ADD", diff: `+${totalCarbon}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
-        if (totalGlass > 0) vaultHistory.unshift({ id: Date.now() + 3, date: timestamp, item: "Glass", action: "ADD", diff: `+${totalGlass}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
-        if (totalRubber > 0) vaultHistory.unshift({ id: Date.now() + 4, date: timestamp, item: "Rubber", action: "ADD", diff: `+${totalRubber}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
-        if (totalPlastik > 0) vaultHistory.unshift({ id: Date.now() + 5, date: timestamp, item: "Plastik", action: "ADD", diff: `+${totalPlastik}`, desc: `Setoran Anggota ${activeMinggu}`, author: authorName });
-
-        saveDataToCloud();
-        renderVaultInventory();
-        renderVaultHistory();
-        showCustomAlert(`Berhasil! Seluruh bahan dari rekap ${activeMinggu} telah ditambahkan ke Brankas.`);
-      });
-    }
-
-    function sendSetoranToDiscord() {
-      if (currentUserRole !== "editor") return;
-
-      db.ref('webhooks/setoran').once('value').then((snapshot) => {
-        const webhookUrl = snapshot.val();
-        if (!webhookUrl) { showCustomAlert("Webhook setoran belum diatur di Firebase!", "error"); return; }
-
-        const currentList = setoranData[activeMinggu] || {};
-        let text = `📋 **REKAP SETORAN BAHAN (${activeMinggu.toUpperCase()})**\n\n`;
-        let totalIron = 0, totalCarbon = 0, totalGlass = 0, totalRubber = 0, totalPlastik = 0;
-
-        for (let name in currentList) {
-          const item = currentList[name];
-          const status = item.lunas ? "Lunas ✅" : "Belum Lunas ❌";
-          totalIron += item.iron; totalCarbon += item.carbon; totalGlass += item.glass; totalRubber += item.rubber; totalPlastik += item.plastik;
-          text += `• **${name}** | Iron: ${item.iron} | Carbon: ${item.carbon} | Glass: ${item.glass} | Rubber: ${item.rubber} | Plastik: ${item.plastik} | [${status}]\n`;
-        }
-        text += `\n📊 **TOTAL KESELURUHAN BAHAN:**\n`;
-        text += `• Iron: ${totalIron} | Carbon: ${totalCarbon} | Glass: ${totalGlass} | Rubber: ${totalRubber} | Plastik: ${totalPlastik}`;
-
-        navigator.clipboard.writeText(text);
-        fetch(webhookUrl, {
-          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
-        })
-        .then(() => showCustomAlert(`Rekap setoran ${activeMinggu} berhasil dikirim & disalin!`))
-        .catch(() => showCustomAlert("Gagal mengirim ke Discord, teks disalin ke clipboard!", "error"));
-      });
     }
 
     function addClubMember() {
@@ -1608,9 +1627,7 @@
       calculateAll();
     }
 
-    function removeRow(id) { 
-      const el = document.getElementById(id); if (el) { el.remove(); calculateAll(); } 
-    }
+    function removeRow(id) { const el = document.getElementById(id); if (el) { el.remove(); calculateAll(); } }
 
     function calculateAll() {
       const group = groupsData[currentGroupKey];
