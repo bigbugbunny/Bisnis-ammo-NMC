@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Triad Community Management System</title>
   
-  <!-- Favicon Logo Website -->
   <link rel="icon" type="image/png" href="NakamaLogo.png">
-
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   
@@ -139,11 +137,10 @@
 <body class="min-h-screen p-4 md:p-8">
   <div class="bg-ambient-glow"></div>
 
-  <!-- MODAL LOGIN DENGAN TAMPILAN RAPI & MODERN -->
+  <!-- MODAL LOGIN SIMPEL (TANPA DROPDOWN PILIHAN MODE) -->
   <div id="loginModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
     <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6 border border-red-600/40 relative overflow-hidden">
       
-      <!-- Glow Hiasan -->
       <div class="absolute -top-12 -left-12 w-32 h-32 bg-red-600/20 rounded-full blur-2xl pointer-events-none"></div>
 
       <div class="text-center space-y-3 relative z-10">
@@ -152,22 +149,11 @@
         </div>
         <div>
           <h2 class="text-2xl font-black tracking-wider text-red-500">TRIAD COMMUNITY ACCESS</h2>
-          <p class="text-xs text-gray-400 mt-1">Silakan login menggunakan akun HighRank atau Member</p>
+          <p class="text-xs text-gray-400 mt-1">Masukkan kredensial akun Anda untuk masuk</p>
         </div>
       </div>
 
       <div class="space-y-4 relative z-10">
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Akses Mode Login</label>
-          <div class="relative">
-            <i class="fa-solid fa-user-shield absolute left-3.5 top-3.5 text-gray-500 text-sm"></i>
-            <select id="loginRoleSelect" onchange="updateLoginStyle()" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-10 pr-3 text-white focus:outline-none focus:border-red-500 text-sm font-bold">
-              <option value="editor">🔥 HighRank (Full Akses / Editor)</option>
-              <option value="viewer">👁️ Member (Hanya Lihat / Viewer)</option>
-            </select>
-          </div>
-        </div>
-
         <div>
           <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Username</label>
           <div class="relative">
@@ -189,7 +175,7 @@
         </div>
 
         <button id="loginSubmitBtn" onclick="handleLogin()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider mt-2">
-          <i class="fa-solid fa-right-to-bracket"></i> MASUK SEBAGAI HIGHRANK
+          <i class="fa-solid fa-right-to-bracket"></i> MASUK SISTEM
         </button>
       </div>
     </div>
@@ -742,7 +728,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // --- LOGIKA AUTENTIKASI MULTI-ROLE (EDITOR & VIEWER) ---
+    // --- LOGIKA AUTENTIKASI OTOMATIS (MENCEK ADMIN DAHULU, BARU MEMBER) ---
     window.addEventListener("DOMContentLoaded", () => {
       const savedRole = localStorage.getItem("nmc_user_role");
       
@@ -755,23 +741,9 @@
       }
       
       applyRolePermissions();
-      updateLoginStyle();
     });
 
-    function updateLoginStyle() {
-      const role = document.getElementById("loginRoleSelect").value;
-      const btn = document.getElementById("loginSubmitBtn");
-      if (role === "editor") {
-        btn.className = "w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider mt-2";
-        btn.innerHTML = `<i class="fa-solid fa-user-shield"></i> MASUK SEBAGAI HIGHRANK`;
-      } else {
-        btn.className = "w-full bg-gradient-to-r from-blue-700 to-emerald-600 hover:from-blue-600 hover:to-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider mt-2";
-        btn.innerHTML = `<i class="fa-solid fa-eye"></i> MASUK SEBAGAI MEMBER`;
-      }
-    }
-
     function handleLogin() {
-      const selectedRole = document.getElementById("loginRoleSelect").value; // 'editor' atau 'viewer'
       const usernameInput = document.getElementById("loginUsername").value.trim();
       const passwordInput = document.getElementById("loginPassword").value.trim();
       const errorDiv = document.getElementById("loginError");
@@ -782,47 +754,81 @@
         return;
       }
 
-      // Tentukan path node database Firebase berdasarkan role
-      const dbPath = selectedRole === "editor" ? 'admin_users' : 'member_users';
+      // 1. Cek dulu ke admin_users (HighRank / Editor)
+      db.ref('admin_users').once('value').then((snapshot) => {
+        const admins = snapshot.val();
+        let isAdmin = false;
 
-      db.ref(dbPath).once('value').then((snapshot) => {
-        const users = snapshot.val();
-        let isSuccess = false;
-
-        if (users) {
-          for (let userKey in users) {
+        if (admins) {
+          for (let userKey in admins) {
             if (userKey.toLowerCase() === usernameInput.toLowerCase()) {
-              const userData = users[userKey];
+              const userData = admins[userKey];
               const storedPass = (typeof userData === 'object' && userData !== null) ? userData.password : userData;
-              
               if (String(storedPass) === String(passwordInput)) {
-                isSuccess = true;
+                isAdmin = true;
                 break;
               }
             }
           }
         }
 
-        if (isSuccess) {
-          currentUserRole = selectedRole;
-          localStorage.setItem("nmc_user_role", selectedRole);
+        if (isAdmin) {
+          currentUserRole = "editor";
+          localStorage.setItem("nmc_user_role", "editor");
           localStorage.setItem("nmc_logged_user", usernameInput);
           
           document.getElementById("loginModal").classList.add("hidden");
           errorDiv.classList.add("hidden");
-          
           document.getElementById("loginUsername").value = "";
           document.getElementById("loginPassword").value = "";
 
           applyRolePermissions();
           showWelcomeScreen();
-          showCustomAlert(`Selamat datang kembali, ${usernameInput}!`);
+          showCustomAlert(`Selamat datang HighRank, ${usernameInput}!`);
         } else {
-          errorDiv.innerText = "Username atau sandi salah!";
-          errorDiv.classList.remove("hidden");
+          // 2. Jika bukan admin, cek ke member_users (Member / Viewer)
+          db.ref('member_users').once('value').then((memSnapshot) => {
+            const members = memSnapshot.val();
+            let isMember = false;
+
+            if (members) {
+              for (let userKey in members) {
+                if (userKey.toLowerCase() === usernameInput.toLowerCase()) {
+                  const userData = members[userKey];
+                  const storedPass = (typeof userData === 'object' && userData !== null) ? userData.password : userData;
+                  if (String(storedPass) === String(passwordInput)) {
+                    isMember = true;
+                    break;
+                  }
+                }
+              }
+            }
+
+            if (isMember) {
+              currentUserRole = "viewer";
+              localStorage.setItem("nmc_user_role", "viewer");
+              localStorage.setItem("nmc_logged_user", usernameInput);
+
+              document.getElementById("loginModal").classList.add("hidden");
+              errorDiv.classList.add("hidden");
+              document.getElementById("loginUsername").value = "";
+              document.getElementById("loginPassword").value = "";
+
+              applyRolePermissions();
+              showWelcomeScreen();
+              showCustomAlert(`Selamat datang Member, ${usernameInput}!`);
+            } else {
+              errorDiv.innerText = "Username atau sandi salah!";
+              errorDiv.classList.remove("hidden");
+            }
+          }).catch((err) => {
+            console.error(err);
+            errorDiv.innerText = "Gagal terhubung ke database!";
+            errorDiv.classList.remove("hidden");
+          });
         }
       }).catch((err) => {
-        console.error("Firebase Login Error:", err);
+        console.error(err);
         errorDiv.innerText = "Gagal terhubung ke database!";
         errorDiv.classList.remove("hidden");
       });
@@ -1216,8 +1222,6 @@
           </tr>`;
       });
     }
-
-    // --- FUNGSI PENGIRIMAN WEBHOOK DINAMIS DARI FIREBASE ---
 
     function sendVaultToDiscord() {
       if (currentUserRole !== "editor") return;
