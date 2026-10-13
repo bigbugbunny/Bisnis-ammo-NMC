@@ -709,7 +709,6 @@
       document.body.insertAdjacentHTML('beforeend', modalHtml);
     }
 
-    // MODAL KONFIRMASI DINAMIS (Bukan lagi hardcode "HAPUS")
     function showCustomConfirm(title, message, btnText, onConfirm) {
       const existingModal = document.getElementById('customConfirmModal');
       if (existingModal) existingModal.remove();
@@ -760,7 +759,7 @@
       if (savedRole === "editor" || savedRole === "viewer") {
         currentUserRole = savedRole;
         document.getElementById("loginModal").classList.add("hidden");
-        showWelcomeScreen();
+        handleHashChange();
       } else {
         document.getElementById("loginModal").classList.remove("hidden");
       }
@@ -802,7 +801,7 @@
           document.getElementById("loginModal").classList.add("hidden");
           errorDiv.classList.add("hidden");
           applyRolePermissions();
-          showWelcomeScreen();
+          handleHashChange();
           showCustomAlert(`Selamat datang HighRank, ${usernameInput}!`);
         } else {
           db.ref('member_users').once('value').then((memSnapshot) => {
@@ -829,7 +828,7 @@
               document.getElementById("loginModal").classList.add("hidden");
               errorDiv.classList.add("hidden");
               applyRolePermissions();
-              showWelcomeScreen();
+              handleHashChange();
               showCustomAlert(`Selamat datang Member, ${usernameInput}!`);
             } else {
               errorDiv.innerText = "Username atau sandi salah!";
@@ -847,7 +846,7 @@
     }
 
     function openLoginModal() { document.getElementById("loginModal").classList.remove("hidden"); }
-    function handleLogout() { localStorage.removeItem("nmc_user_role"); localStorage.removeItem("nmc_logged_user"); location.reload(); }
+    function handleLogout() { localStorage.removeItem("nmc_user_role"); localStorage.removeItem("nmc_logged_user"); window.location.hash = ""; location.reload(); }
 
     function applyRolePermissions() {
       const badge = document.getElementById("userRoleBadge");
@@ -874,7 +873,38 @@
       }
     }
 
-    function showWelcomeScreen() {
+    // --- NAVIGASI DAN HASH URL ---
+    function handleHashChange() {
+      const hash = window.location.hash.replace('#', '').toLowerCase();
+      
+      if (!hash || hash === 'welcome') {
+        showWelcomeScreen(false);
+      } else if (hash === 'menu') {
+        selectCommunity('nakama', false);
+      } else {
+        const sectionMap = {
+          'bahan': 'sectionBahan',
+          'kalkulator': 'sectionKalkulator',
+          'brankas': 'sectionBrankas',
+          'beliwarga': 'sectionBeliWarga',
+          'bisnis': 'sectionBisnis',
+          'setoran': 'sectionSetoran',
+          'member': 'sectionMember'
+        };
+
+        if (sectionMap[hash]) {
+          showSection(sectionMap[hash], false);
+        } else {
+          showWelcomeScreen(false);
+        }
+      }
+    }
+
+    window.addEventListener('hashchange', handleHashChange);
+
+    function showWelcomeScreen(updateHash = true) {
+      if (updateHash) window.location.hash = "welcome";
+
       document.getElementById('sectionWelcome').classList.remove('hidden');
       document.getElementById('sectionMainMenu').classList.add('hidden');
       document.getElementById('sectionBahan').classList.add('hidden');
@@ -892,10 +922,20 @@
       applyRolePermissions();
     }
 
-    function selectCommunity(type) {
+    function selectCommunity(type, updateHash = true) {
       if (type === 'nakama') {
+        if (updateHash) window.location.hash = "menu";
+
         document.getElementById('sectionWelcome').classList.add('hidden');
         document.getElementById('sectionMainMenu').classList.remove('hidden');
+        document.getElementById('sectionBahan').classList.add('hidden');
+        document.getElementById('sectionKalkulator').classList.add('hidden');
+        document.getElementById('sectionBrankas').classList.add('hidden');
+        document.getElementById('sectionBeliWarga').classList.add('hidden');
+        document.getElementById('sectionBisnis').classList.add('hidden');
+        document.getElementById('sectionSetoran').classList.add('hidden');
+        document.getElementById('sectionMember').classList.add('hidden');
+
         document.getElementById('btnHome').classList.remove('hidden');
         document.getElementById('btnBackMenu').classList.add('hidden');
         document.getElementById('headerTitleText').innerText = "NAKAMA MC BLAINE COUNTY";
@@ -904,7 +944,17 @@
       }
     }
 
-    function showSection(sectionId) {
+    function showSection(sectionId, updateHash = true) {
+      if (sectionId === 'mainMenu') {
+        selectCommunity('nakama', updateHash);
+        return;
+      }
+
+      if (updateHash) {
+        const cleanName = sectionId.replace('section', '').toLowerCase();
+        window.location.hash = cleanName;
+      }
+
       document.getElementById('sectionWelcome').classList.add('hidden');
       document.getElementById('sectionMainMenu').classList.add('hidden');
       document.getElementById('sectionBahan').classList.add('hidden');
@@ -919,17 +969,21 @@
       const btnBack = document.getElementById('btnBackMenu');
       const subtitle = document.getElementById('headerSubtitle');
 
-      if (sectionId === 'mainMenu') {
-        document.getElementById('sectionMainMenu').classList.remove('hidden');
-        btnHome.classList.remove('hidden');
-        btnBack.classList.add('hidden');
-        subtitle.innerText = "SYSTEM MANAGEMENT & CLUB HOUSE";
-      } else {
-        document.getElementById(sectionId).classList.remove('hidden');
-        btnHome.classList.remove('hidden');
-        btnBack.classList.remove('hidden');
-        if(sectionId === 'sectionSetoran') switchSetoranTab('harian');
+      document.getElementById(sectionId).classList.remove('hidden');
+      btnHome.classList.remove('hidden');
+      btnBack.classList.remove('hidden');
+
+      if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
+      else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner Kelompok";
+      else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris & Riwayat)";
+      else if(sectionId === 'sectionBeliWarga') subtitle.innerText = "Modul Transaksi Warga (Beli & Jual)";
+      else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Data Bisnis (Kas Uang Merah & Putih)";
+      else if(sectionId === 'sectionSetoran') {
+        subtitle.innerText = "Modul Data Setoran Bahan Harian & Mingguan Klub";
+        switchSetoranTab('harian');
       }
+      else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Data Anggota, Hierarki Rank & Status Keaktifan";
+
       applyRolePermissions();
     }
 
@@ -1100,7 +1154,6 @@
       applyRolePermissions();
     }
 
-    // --- FITUR 1 TOMBOL PROSES (BRANKAS + DISCORD + AUTO RESET DATA) ---
     function prosesProsesSatuTombolSetoran() {
       if (currentUserRole !== "editor") return;
 
@@ -1125,7 +1178,6 @@
       }
 
       showCustomConfirm("PROSES & RESET DATA", `Sistem akan memasukkan total bahan ke Brankas, mengirim rekap ke Webhook Discord, lalu mengosongkan/reset data setoran ${activePeriod}. Lanjutkan?`, "PROSES SEKARANG", () => {
-        // 1. Tambahkan ke Stok Brankas
         vaultStock["Iron"] = (vaultStock["Iron"] || 0) + totalIron;
         vaultStock["Carbon"] = (vaultStock["Carbon"] || 0) + totalCarbon;
         vaultStock["Glass"] = (vaultStock["Glass"] || 0) + totalGlass;
@@ -1141,7 +1193,6 @@
         if (totalRubber > 0) vaultHistory.unshift({ id: Date.now() + 4, date: timestamp, item: "Rubber", action: "ADD", diff: `+${totalRubber}`, desc: `Setoran ${activePeriod}`, author: authorName });
         if (totalPlastik > 0) vaultHistory.unshift({ id: Date.now() + 5, date: timestamp, item: "Plastik", action: "ADD", diff: `+${totalPlastik}`, desc: `Setoran ${activePeriod}`, author: authorName });
 
-        // 2. Susun Pesan Log Discord
         let text = `📋 **REKAP SETORAN BAHAN ${currentSetoranTab.toUpperCase()} (${activePeriod.toUpperCase()})**\n\n`;
         for (let name in currentList) {
           const item = currentList[name];
@@ -1151,7 +1202,6 @@
         text += `\n📊 **TOTAL KESELURUHAN DITERIMA BRANKAS:**\n`;
         text += `• Iron: ${totalIron} | Carbon: ${totalCarbon} | Glass: ${totalGlass} | Rubber: ${totalRubber} | Plastik: ${totalPlastik}`;
 
-        // 3. Kirim ke Webhook Discord
         db.ref('webhooks/setoran').once('value').then((snapshot) => {
           const webhookUrl = snapshot.val();
           if (webhookUrl) {
@@ -1161,10 +1211,8 @@
           }
         });
 
-        // 4. Otomatis Reset/Kosongkan Data Setoran di Periode Tersebut
         ref[activePeriod] = {};
 
-        // 5. Simpan dan Perbarui Tampilan
         saveDataToCloud();
         renderVaultInventory();
         renderVaultHistory();
