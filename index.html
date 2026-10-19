@@ -50,17 +50,25 @@
       padding: 0;
     }
 
-    /* === BACKGROUND SLIDESHOW (Hanya di area atas/Hero setinggi 700px) === */
+    /* === BACKGROUND SLIDESHOW DI ATAS TANPA POTONG FOTO + GRADASI ELEGAN === */
+    .hero-bg-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 95vh; /* Tinggi pas untuk menampilkan utuh bagian atas foto */
+      z-index: 1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
     .bg-slideshow {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: 700px;
-      z-index: 1;
+      height: 100%;
       background-color: #07090e;
-      overflow: hidden;
-      pointer-events: none;
     }
 
     .bg-slide {
@@ -70,7 +78,7 @@
       width: 100%;
       height: 100%;
       background-size: cover;
-      background-position: center;
+      background-position: center top; /* Fokus ke bagian atas foto agar tidak terpotong canggung */
       opacity: 0;
       transform: scale(1);
       transition: opacity 1.5s ease-in-out, transform 12s ease-out;
@@ -81,29 +89,29 @@
       transform: scale(1.05);
     }
 
-    /* === KANVAS EFEK HUJAN === */
+    /* === KANVAS EFEK HUJAN DI ATAS === */
     #rainCanvas {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: 700px;
+      height: 100%;
       z-index: 2;
       pointer-events: none;
     }
 
-    /* Efek gradasi menyatu mulus ke hitam di bagian bawah */
+    /* Gradasi halus untuk menutup bagian bawah foto agar menyatu mulus ke hitam */
     .bg-gradient-overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: 700px;
+      height: 100%;
       z-index: 3;
       background: linear-gradient(
         to bottom, 
         rgba(7, 9, 14, 0.2) 0%, 
-        rgba(7, 9, 14, 0.5) 50%, 
+        rgba(7, 9, 14, 0.5) 60%, 
         #07090e 100%
       );
       pointer-events: none;
@@ -205,18 +213,16 @@
 </head>
 <body class="bg-[#07090e] text-gray-200 font-sans antialiased min-h-screen flex flex-col justify-between relative pb-24">
 
-  <!-- === BACKGROUND SLIDESHOW 3 FOTO (Di area atas) === -->
-  <div class="bg-slideshow">
-    <div class="bg-slide active" style="background-image: url('bg1.png');"></div>
-    <div class="bg-slide" style="background-image: url('bg2.png');"></div>
-    <div class="bg-slide" style="background-image: url('bg3.png');"></div>
+  <!-- === WRAPPER BACKGROUND ATAS (FOTO UTUH + HUJAN + GRADASI) === -->
+  <div class="hero-bg-container">
+    <div class="bg-slideshow">
+      <div class="bg-slide active" style="background-image: url('bg1.png');"></div>
+      <div class="bg-slide" style="background-image: url('bg2.png');"></div>
+      <div class="bg-slide" style="background-image: url('bg3.png');"></div>
+    </div>
+    <canvas id="rainCanvas"></canvas>
+    <div class="bg-gradient-overlay"></div>
   </div>
-
-  <!-- === KANVAS EFEK HUJAN === -->
-  <canvas id="rainCanvas"></canvas>
-
-  <!-- Lapisan Gradasi Menyatu ke Hitam -->
-  <div class="bg-gradient-overlay"></div>
 
   <!-- Header / Navbar -->
   <header class="border-b border-red-900/30 bg-slate-950/70 backdrop-blur-md sticky top-0 z-50">
@@ -247,7 +253,7 @@
   <main class="flex-1 relative z-10">
     
     <!-- Hero Section -->
-    <section id="home" class="max-w-5xl mx-auto px-6 pt-20 pb-12 text-center">
+    <section id="home" class="max-w-5xl mx-auto px-6 pt-20 pb-24 text-center">
       <span class="px-4 py-1.5 text-xs font-bold tracking-widest text-red-400 uppercase border border-red-800/40 rounded-full bg-slate-950/60 backdrop-blur inline-flex items-center gap-2 shadow-inner">
         <i class="fa-solid fa-shield-halved"></i> KEADILAN • KEBERSAMAAN • PERSAUDARAAN
       </span>
@@ -490,8 +496,9 @@
     const ctx = canvas.getContext('2d');
 
     function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = 700; // Batasi area tinggi kanvas hujan
+      const container = document.querySelector('.hero-bg-container');
+      canvas.width = container.offsetWidth;
+      canvas.height = container.offsetHeight;
     }
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
@@ -524,7 +531,7 @@
 
         drop.y += drop.speed;
         drop.x -= 0.3;
-        if (drop.y > 700) {
+        if (drop.y > canvas.height) {
           drop.y = -30;
           drop.x = Math.random() * canvas.width;
         }
