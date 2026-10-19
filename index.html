@@ -79,7 +79,7 @@
       transform: scale(1.05);
     }
 
-    /* === KANVAS EFEK HUJAN DI KACA === */
+    /* === KANVAS EFEK HUJAN JELAS & TEBAL === */
     #rainCanvas {
       position: absolute;
       top: 0;
@@ -153,7 +153,7 @@
     <div class="bg-slide" style="background-image: url('bg3.png');"></div>
   </div>
 
-  <!-- === KANVAS EFEK HUJAN DI KACA === -->
+  <!-- === KANVAS EFEK HUJAN JELAS & TEBAL === -->
   <canvas id="rainCanvas"></canvas>
 
   <!-- Lapisan Gradasi Elegan -->
@@ -208,78 +208,66 @@
       </div>
     </section>
 
-    <!-- SECTION GALERI DOKUMENTASI FOTO (GESER OTOMATIS KE SAMPING / SLIDER) -->
-    <section id="gallery" class="max-w-4xl mx-auto px-6 py-12 relative z-10">
+    <!-- SECTION GALERI DOKUMENTASI FOTO (UKURAN LEBIH KECIL & TANPA TEKS DI FOTO) -->
+    <section id="gallery" class="max-w-2xl mx-auto px-6 py-12 relative z-10">
       <div class="text-center mb-8">
         <span class="text-xs font-bold text-red-400 uppercase tracking-widest bg-red-950/50 px-3 py-1 rounded-full border border-red-600/30">Galeri Kegiatan</span>
         <h3 class="text-2xl font-black text-white uppercase tracking-wider mt-2">DOKUMENTASI KELUARGA BESAR</h3>
       </div>
 
-      <!-- Container Slider Dokumentasi -->
+      <!-- Container Slider Dokumentasi (Diperkecil ukurannya) -->
       <div class="relative overflow-hidden rounded-2xl shadow-2xl border border-red-500/30 glass-card">
         <div id="docSlider" class="doc-slider-container">
           
           <!-- Slide 1 -->
-          <div class="w-full shrink-0 p-4 md:p-6 flex flex-col md:flex-row items-center gap-6">
-            <div class="w-full md:w-3/5 h-64 md:h-80 rounded-xl overflow-hidden relative shadow-lg">
+          <div class="w-full shrink-0 p-4 flex flex-col items-center text-center">
+            <div class="w-full h-52 md:h-64 rounded-xl overflow-hidden relative shadow-lg">
               <img src="bg1.png" alt="Dokumentasi 1" class="w-full h-full object-cover">
-              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 to-transparent"></div>
-              <span class="absolute bottom-3 left-3 text-xs font-bold text-white bg-black/70 px-3 py-1 rounded-lg border border-white/10">Clubhouse Gathering</span>
+              <!-- Teks di foto sudah dihapus sepenuhnya -->
             </div>
-            <div class="w-full md:w-2/5 text-left space-y-3">
-              <div class="text-xs font-bold text-red-400 uppercase tracking-widest"><i class="fa-solid fa-calendar-days"></i> Sesi Utama</div>
-              <h4 class="text-xl font-bold text-white">Markas & Pertemuan Rutin</h4>
-              <p class="text-xs text-gray-300 leading-relaxed">
-                Momen kebersamaan seluruh anggota saat berkumpul di markas utama Triad Community untuk mempererat tali persaudaraan.
-              </p>
+            <div class="mt-4 space-y-1">
+              <h4 class="text-base font-bold text-white">Markas & Pertemuan Rutin</h4>
+              <p class="text-xs text-gray-300">Momen kebersamaan seluruh anggota saat berkumpul di markas utama.</p>
             </div>
           </div>
 
           <!-- Slide 2 -->
-          <div class="w-full shrink-0 p-4 md:p-6 flex flex-col md:flex-row items-center gap-6">
-            <div class="w-full md:w-3/5 h-64 md:h-80 rounded-xl overflow-hidden relative shadow-lg">
+          <div class="w-full shrink-0 p-4 flex flex-col items-center text-center">
+            <div class="w-full h-52 md:h-64 rounded-xl overflow-hidden relative shadow-lg">
               <img src="bg2.png" alt="Dokumentasi 2" class="w-full h-full object-cover">
-              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 to-transparent"></div>
-              <span class="absolute bottom-3 left-3 text-xs font-bold text-white bg-black/70 px-3 py-1 rounded-lg border border-white/10">Convoy & Riding</span>
+              <!-- Teks di foto sudah dihapus sepenuhnya -->
             </div>
-            <div class="w-full md:w-2/5 text-left space-y-3">
-              <div class="text-xs font-bold text-amber-400 uppercase tracking-widest"><i class="fa-solid fa-route"></i> Divisi Lapangan</div>
-              <h4 class="text-xl font-bold text-white">Konvoi & Perjalanan Bersama</h4>
-              <p class="text-xs text-gray-300 leading-relaxed">
-                Aksi konvoi tertib divisi Nakama MC dalam menjalankan misi, pengawalan, dan rute perjalanan harian secara solid.
-              </p>
+            <div class="mt-4 space-y-1">
+              <h4 class="text-base font-bold text-white">Konvoi & Perjalanan Bersama</h4>
+              <p class="text-xs text-gray-300">Aksi konvoi tertib divisi Nakama MC dalam menjalankan misi harian.</p>
             </div>
           </div>
 
           <!-- Slide 3 -->
-          <div class="w-full shrink-0 p-4 md:p-6 flex flex-col md:flex-row items-center gap-6">
-            <div class="w-full md:w-3/5 h-64 md:h-80 rounded-xl overflow-hidden relative shadow-lg">
+          <div class="w-full shrink-0 p-4 flex flex-col items-center text-center">
+            <div class="w-full h-52 md:h-64 rounded-xl overflow-hidden relative shadow-lg">
               <img src="bg3.png" alt="Dokumentasi 3" class="w-full h-full object-cover">
-              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 to-transparent"></div>
-              <span class="absolute bottom-3 left-3 text-xs font-bold text-white bg-black/70 px-3 py-1 rounded-lg border border-white/10">Operation Briefing</span>
+              <!-- Teks di foto sudah dihapus sepenuhnya -->
             </div>
-            <div class="w-full md:w-2/5 text-left space-y-3">
-              <div class="text-xs font-bold text-emerald-400 uppercase tracking-widest"><i class="fa-solid fa-briefcase"></i> Manajemen Bisnis</div>
-              <h4 class="text-xl font-bold text-white">Koordinasi & Briefing Strategi</h4>
-              <p class="text-xs text-gray-300 leading-relaxed">
-                Koordinasi terpusat dan briefing pengelolaan kas serta operasional bisnis bersama seluruh anggota aktif.
-              </p>
+            <div class="mt-4 space-y-1">
+              <h4 class="text-base font-bold text-white">Koordinasi & Briefing Strategi</h4>
+              <p class="text-xs text-gray-300">Koordinasi terpusat dan briefing pengelolaan kas bersama anggota.</p>
             </div>
           </div>
 
         </div>
 
         <!-- Tombol Navigasi Slider Kiri Kanan -->
-        <button onclick="prevDocSlide()" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/10 shadow-lg z-20">
+        <button onclick="prevDocSlide()" class="absolute left-3 top-[38%] -translate-y-1/2 w-8 h-8 bg-black/60 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/10 shadow-lg z-20">
           <i class="fa-solid fa-chevron-left text-xs"></i>
         </button>
-        <button onclick="nextDocSlide()" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/10 shadow-lg z-20">
+        <button onclick="nextDocSlide()" class="absolute right-3 top-[38%] -translate-y-1/2 w-8 h-8 bg-black/60 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/10 shadow-lg z-20">
           <i class="fa-solid fa-chevron-right text-xs"></i>
         </button>
       </div>
     </section>
 
-    <!-- SECTION VISI & PILAR ORGANISASI (DI BAWAH DOKUMENTASI) -->
+    <!-- SECTION VISI & PILAR ORGANISASI (DENGAN KATA/ARTI YANG TELAH DISESUAIKAN) -->
     <section id="about" class="max-w-6xl mx-auto px-6 py-12 relative z-10">
       <h3 class="text-xl font-black text-white uppercase tracking-widest text-center mb-8">
         NILAI & PILAR UTAMA ORGANISASI
@@ -292,7 +280,7 @@
           </div>
           <h4 class="text-lg font-bold text-white uppercase">Keadilan</h4>
           <p class="text-xs text-gray-300 leading-relaxed">
-            Menjaga transparansi dalam pengelolaan kas, pembagian hasil bisnis, dan keputusan organisasi secara adil untuk seluruh anggota.
+            Menjunjung tinggi prinsip kesetaraan, keterbukaan informasi, serta keputusan yang objektif demi kesejahteraan bersama.
           </p>
         </div>
 
@@ -302,7 +290,7 @@
           </div>
           <h4 class="text-lg font-bold text-white uppercase">Kebersamaan</h4>
           <p class="text-xs text-gray-300 leading-relaxed">
-            Satu alur koordinasi melalui sistem terpusat untuk mempermudah operasional harian klub dan bisnis bersama.
+            Menyatukan langkah dan visi dalam setiap kegiatan, saling mendukung dalam suka maupun duka di dalam organisasi.
           </p>
         </div>
 
@@ -312,7 +300,7 @@
           </div>
           <h4 class="text-lg font-bold text-white uppercase">Persaudaraan</h4>
           <p class="text-xs text-gray-300 leading-relaxed">
-            Membangun hubungan erat antar anggota dan divisi di bawah naungan Triad Community secara solid.
+            Membentuk ikatan kekeluargaan yang erat, loyalitas tanpa batas, serta perlindungan timbal balik antar anggota.
           </p>
         </div>
       </div>
@@ -405,11 +393,10 @@
       updateDocSlider();
     }
 
-    // Geser otomatis galeri dokumentasi setiap 5 detik
     setInterval(nextDocSlide, 5000);
 
 
-    // --- SKRIP EFEK HUJAN DI KACA ---
+    // --- SKRIP EFEK HUJAN JELAS & TEBAL ---
     const canvas = document.getElementById('rainCanvas');
     const ctx = canvas.getContext('2d');
 
@@ -421,34 +408,35 @@
     resizeCanvas();
 
     const raindrops = [];
-    const maxDrops = 60;
+    const maxDrops = 100;
 
     for (let i = 0; i < maxDrops; i++) {
       raindrops.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        length: Math.random() * 20 + 10,
-        speed: Math.random() * 4 + 2,
-        opacity: Math.random() * 0.3 + 0.1
+        length: Math.random() * 30 + 15,
+        speed: Math.random() * 6 + 4,
+        opacity: Math.random() * 0.6 + 0.3
       });
     }
 
     function animateRain() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
-      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.55)';
+      ctx.lineWidth = 2;
       ctx.lineCap = 'round';
 
       for (let drop of raindrops) {
         ctx.beginPath();
         ctx.globalAlpha = drop.opacity;
         ctx.moveTo(drop.x, drop.y);
-        ctx.lineTo(drop.x, drop.y + drop.length);
+        ctx.lineTo(drop.x - 1, drop.y + drop.length);
         ctx.stroke();
 
         drop.y += drop.speed;
+        drop.x -= 0.3;
         if (drop.y > canvas.height) {
-          drop.y = -20;
+          drop.y = -30;
           drop.x = Math.random() * canvas.width;
         }
       }
