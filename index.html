@@ -125,11 +125,11 @@
       box-shadow: 0 0 30px rgba(239, 68, 68, 0.2), inset 0 0 15px rgba(239, 68, 68, 0.05);
     }
 
-    /* === CAROUSEL CENTER LOCK (100% PRESISI DI TENGAH) === */
+    /* === CAROUSEL 3-ITEM (YOUTUBE STYLE PRESISI DI TENGAH) === */
     .gallery-container {
       position: relative;
       width: 100%;
-      max-width: 1400px;
+      max-width: 1300px;
       margin: 0 auto;
       overflow: hidden;
       padding: 40px 0;
@@ -142,9 +142,9 @@
     }
 
     .gallery-slide {
-      min-width: 100%;
+      min-width: 80%;
       box-sizing: border-box;
-      padding: 0 20px;
+      padding: 0 15px;
       display: flex;
       justify-content: center;
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -172,7 +172,7 @@
 
     @media (min-width: 768px) {
       .gallery-slide {
-        min-width: 75%; /* Membuat slide samping ikut mengintip dengan proporsional */
+        min-width: 55%; /* Lebar slide pas agar foto kiri dan kanan mengintip secara proporsional */
       }
     }
 
@@ -264,21 +264,21 @@
           
           <!-- Slide 1 -->
           <div class="gallery-slide">
-            <div class="w-full max-w-5xl rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
+            <div class="w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
               <img src="bg1.png" alt="Dokumentasi 1" class="photo-box rounded-xl">
             </div>
           </div>
 
           <!-- Slide 2 -->
           <div class="gallery-slide">
-            <div class="w-full max-w-5xl rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
+            <div class="w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
               <img src="bg2.png" alt="Dokumentasi 2" class="photo-box rounded-xl">
             </div>
           </div>
 
           <!-- Slide 3 -->
           <div class="gallery-slide">
-            <div class="w-full max-w-5xl rounded-2xl overflow-hidden shadow-2xl border-2 border-red-500/60 glass-card p-2">
+            <div class="w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border-2 border-red-500/60 glass-card p-2">
               <img src="bg3.png" alt="Dokumentasi 3" class="photo-box rounded-xl">
             </div>
           </div>
@@ -402,10 +402,10 @@
   </footer>
 
   <script>
-    // --- SKRIP CAROUSEL CENTER LOCK (TERKUNCI PRESISI DI TENGAH) ---
+    // --- SKRIP CAROUSEL CENTER LOCK (PRESISI DI TENGAH) ---
     const galleryTrack = document.getElementById('galleryTrack');
     const gallerySlides = galleryTrack.children;
-    let galleryIndex = 0; // Dimulai dari foto pertama (atau bisa diubah ke gallerySlides.length - 1 jika ingin foto terakhir)
+    let galleryIndex = 0;
 
     function updateGallery() {
       const slideWidth = gallerySlides[0].getBoundingClientRect().width;
