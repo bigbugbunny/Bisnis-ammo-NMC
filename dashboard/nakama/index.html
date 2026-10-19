@@ -759,7 +759,7 @@
       if (savedRole === "editor" || savedRole === "viewer") {
         currentUserRole = savedRole;
         document.getElementById("loginModal").classList.add("hidden");
-        handleHashChange();
+        showWelcomeScreen();
       } else {
         document.getElementById("loginModal").classList.remove("hidden");
       }
@@ -801,7 +801,7 @@
           document.getElementById("loginModal").classList.add("hidden");
           errorDiv.classList.add("hidden");
           applyRolePermissions();
-          handleHashChange();
+          showWelcomeScreen();
           showCustomAlert(`Selamat datang HighRank, ${usernameInput}!`);
         } else {
           db.ref('member_users').once('value').then((memSnapshot) => {
@@ -828,7 +828,7 @@
               document.getElementById("loginModal").classList.add("hidden");
               errorDiv.classList.add("hidden");
               applyRolePermissions();
-              handleHashChange();
+              showWelcomeScreen();
               showCustomAlert(`Selamat datang Member, ${usernameInput}!`);
             } else {
               errorDiv.innerText = "Username atau sandi salah!";
@@ -841,12 +841,12 @@
         }
       }).catch((err) => {
         errorDiv.innerText = "Gagal terhubung ke database!";
-        errorDiv.classList.remove("hidden");
+        errorDiv.classList.add("hidden");
       });
     }
 
     function openLoginModal() { document.getElementById("loginModal").classList.remove("hidden"); }
-    function handleLogout() { localStorage.removeItem("nmc_user_role"); localStorage.removeItem("nmc_logged_user"); window.location.hash = ""; location.reload(); }
+    function handleLogout() { localStorage.removeItem("nmc_user_role"); localStorage.removeItem("nmc_logged_user"); window.history.replaceState({}, document.title, window.location.pathname); location.reload(); }
 
     function applyRolePermissions() {
       const badge = document.getElementById("userRoleBadge");
@@ -873,37 +873,9 @@
       }
     }
 
-    // --- NAVIGASI DAN HASH URL ---
-    function handleHashChange() {
-      const hash = window.location.hash.replace('#', '').toLowerCase();
-      
-      if (!hash || hash === 'welcome') {
-        showWelcomeScreen(false);
-      } else if (hash === 'menu') {
-        selectCommunity('nakama', false);
-      } else {
-        const sectionMap = {
-          'bahan': 'sectionBahan',
-          'kalkulator': 'sectionKalkulator',
-          'brankas': 'sectionBrankas',
-          'beliwarga': 'sectionBeliWarga',
-          'bisnis': 'sectionBisnis',
-          'setoran': 'sectionSetoran',
-          'member': 'sectionMember'
-        };
-
-        if (sectionMap[hash]) {
-          showSection(sectionMap[hash], false);
-        } else {
-          showWelcomeScreen(false);
-        }
-      }
-    }
-
-    window.addEventListener('hashchange', handleHashChange);
-
-    function showWelcomeScreen(updateHash = true) {
-      if (updateHash) window.location.hash = "welcome";
+    // --- NAVIGASI BERSIH TANPA HASH (#) ---
+    function showWelcomeScreen() {
+      window.history.replaceState({}, document.title, window.location.pathname);
 
       document.getElementById('sectionWelcome').classList.remove('hidden');
       document.getElementById('sectionMainMenu').classList.add('hidden');
@@ -922,9 +894,9 @@
       applyRolePermissions();
     }
 
-    function selectCommunity(type, updateHash = true) {
+    function selectCommunity(type) {
       if (type === 'nakama') {
-        if (updateHash) window.location.hash = "menu";
+        window.history.replaceState({}, document.title, window.location.pathname);
 
         document.getElementById('sectionWelcome').classList.add('hidden');
         document.getElementById('sectionMainMenu').classList.remove('hidden');
@@ -944,16 +916,13 @@
       }
     }
 
-    function showSection(sectionId, updateHash = true) {
+    function showSection(sectionId) {
       if (sectionId === 'mainMenu') {
-        selectCommunity('nakama', updateHash);
+        selectCommunity('nakama');
         return;
       }
 
-      if (updateHash) {
-        const cleanName = sectionId.replace('section', '').toLowerCase();
-        window.location.hash = cleanName;
-      }
+      window.history.replaceState({}, document.title, window.location.pathname);
 
       document.getElementById('sectionWelcome').classList.add('hidden');
       document.getElementById('sectionMainMenu').classList.add('hidden');
@@ -1008,7 +977,7 @@
     let groupsData = {};
     let currentGroupKey = "";
 
-    // --- REALTIME SYNC FIREBASE ---
+    // --- REALTIME SYNC FIREBASE (DIPISAH SESUAI STRUKTUR ROOT) ---
     db.ref('nmc_data').on('value', (snapshot) => {
       const data = snapshot.val();
       if (data) {
@@ -1019,14 +988,10 @@
         setoranDataMingguan = data.setoran || { "Minggu 1": {} };
         setoranDataHarian = data.setoran_harian || { "Harian": {} };
         memberList = data.club_members || {};
-        
-        // Murni mengambil data groups dari Firebase
-        groupsData = data.groups_data || {};
       } else {
         db.ref('nmc_data').set({
           inventory: defaultVaultStock, history: [], business: [], beli_warga: [],
-          setoran: { "Minggu 1": {} }, setoran_harian: { "Harian": {} }, club_members: {},
-          groups_data: {}
+          setoran: { "Minggu 1": {} }, setoran_harian: { "Harian": {} }, club_members: {}
         });
       }
       renderVaultInventory();
@@ -1035,6 +1000,12 @@
       renderBeliWargaHistory();
       renderSetoranTable();
       renderMemberTable();
+    });
+
+    // Memantau groups_data dari root Firebase
+    db.ref('groups_data').on('value', (snapshot) => {
+      const data = snapshot.val();
+      groupsData = data || {};
       updateGroupSelectOptions();
     });
 
@@ -1046,9 +1017,9 @@
         beli_warga: beliWargaHistory,
         setoran: setoranDataMingguan,
         setoran_harian: setoranDataHarian,
-        club_members: memberList,
-        groups_data: groupsData
+        club_members: memberList
       });
+      db.ref('groups_data').set(groupsData);
     }
 
     function updateGroupSelectOptions() {
@@ -1588,7 +1559,7 @@
 
         let statusBadge = item.status === "Aktif" ? 
           `<span onclick="toggleMemberStatus('${name}')" class="cursor-pointer bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30 hover:bg-green-500/30">Aktif ✅</span>` : 
-          `<span onclick="toggleMemberStatus('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30 hover:bg-green-500/30">Inactive ❌</span>`;
+          `<span onclick="toggleMemberStatus('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30 hover:bg-green-500/30">Inactive ❌</span>`;
 
         let actionCol = currentUserRole === "editor" ? 
           `<td class="p-3 text-center editor-only"><button onclick="removeClubMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></td>` : '';
