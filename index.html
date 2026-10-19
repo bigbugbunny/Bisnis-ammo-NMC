@@ -125,11 +125,11 @@
       box-shadow: 0 0 30px rgba(239, 68, 68, 0.2), inset 0 0 15px rgba(239, 68, 68, 0.05);
     }
 
-    /* === CAROUSEL 3-ITEM (YOUTUBE STYLE - FULL UTUH TANPA CROP) === */
+    /* === CAROUSEL CENTER LOCK (100% PRESISI DI TENGAH) === */
     .gallery-container {
       position: relative;
       width: 100%;
-      max-width: 1350px;
+      max-width: 1400px;
       margin: 0 auto;
       overflow: hidden;
       padding: 40px 0;
@@ -142,15 +142,15 @@
     }
 
     .gallery-slide {
-      min-width: 65%;
+      min-width: 100%;
       box-sizing: border-box;
-      padding: 0 15px;
+      padding: 0 20px;
       display: flex;
       justify-content: center;
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      opacity: 0.3;
+      opacity: 0.25;
       transform: scale(0.8);
-      filter: brightness(0.5);
+      filter: brightness(0.4);
     }
 
     .gallery-slide.active-center {
@@ -172,7 +172,7 @@
 
     @media (min-width: 768px) {
       .gallery-slide {
-        min-width: 50%;
+        min-width: 75%; /* Membuat slide samping ikut mengintip dengan proporsional */
       }
     }
 
@@ -252,7 +252,7 @@
       </div>
     </section>
 
-    <!-- SECTION GALERI DOKUMENTASI (FOTO TERAKHIR DI TENGAH PERTAMA KALI) -->
+    <!-- SECTION GALERI DOKUMENTASI (FOKUS TENGAH PRESISI) -->
     <section id="gallery" class="max-w-7xl mx-auto px-6 pt-16 pb-12 relative z-10">
       <div class="text-center mb-8">
         <span class="text-xs font-bold text-red-400 uppercase tracking-widest bg-red-950/50 px-3 py-1 rounded-full border border-red-600/30">Galeri Kegiatan</span>
@@ -402,12 +402,10 @@
   </footer>
 
   <script>
-    // --- SKRIP CAROUSEL CENTER FOCUS (MULAI DARI FOTO TERAKHIR DI TENGAH) ---
+    // --- SKRIP CAROUSEL CENTER LOCK (TERKUNCI PRESISI DI TENGAH) ---
     const galleryTrack = document.getElementById('galleryTrack');
     const gallerySlides = galleryTrack.children;
-    
-    // Mengatur index awal ke foto terakhir (Slide 3 / bg3.png)
-    let galleryIndex = gallerySlides.length - 1;
+    let galleryIndex = 0; // Dimulai dari foto pertama (atau bisa diubah ke gallerySlides.length - 1 jika ingin foto terakhir)
 
     function updateGallery() {
       const slideWidth = gallerySlides[0].getBoundingClientRect().width;
@@ -435,6 +433,7 @@
     window.addEventListener('resize', updateGallery);
     updateGallery();
 
+    // Rotasi otomatis setiap 5 detik
     setInterval(nextGallerySlide, 5000);
 
 
