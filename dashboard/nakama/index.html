@@ -1005,6 +1005,23 @@
     let activePeriod = "Harian";
     let memberList = {};
 
+    // --- DEFAULT GROUPS DATA ---
+    const defaultGroupsData = {
+      "th21": { name: "21TH", ammo: { "50AE": 200000, "9MM": 260000, "38LC": 275000, "4MM": 290000 }, items: { "Baju Hangat": { price: 160000, promo: "", isRate: false } } },
+      "voldemort": { name: "Voldemort", ammo: { "50AE": 75000, "9MM": 120000, "38LC": 140000 }, items: { "Baju Hangat": { price: 110000, promo: "Max 50 Pcs", isRate: false } } },
+      "mugen": { name: "Mugen", ammo: { "50AE": 75000, "9MM": 115000, "38LC": 130000 }, items: { "Cuci Uang (20%)": { price: 0.80, promo: "Max 15 Juta", isRate: true }, "Cuci Uang (30%)": { price: 0.70, promo: "Tanpa Max", isRate: true } } },
+      "atlanta": { name: "Atlanta", ammo: { "50AE": 100000, "9MM": 150000, "38LC": 145000 }, items: { "Kecubung": { price: 23000, promo: "", isRate: false }, "Jamur": { price: 23000, promo: "", isRate: false }, "Weed": { price: 23000, promo: "", isRate: false } } },
+      "brooklyn": { name: "Brooklyn", ammo: { "50AE": 75000, "9MM": 110000, "38LC": 140000 }, items: { "Kecubung": { price: 20000, promo: "", isRate: false }, "Jamur": { price: 20000, promo: "", isRate: false }, "Weed": { price: 20000, promo: "", isRate: false } } },
+      "alk": { name: "ALK", ammo: { "9MM": 250000, "38LC": 260000 }, items: { "Kecubung": { price: 21500, promo: "", isRate: false }, "Jamur": { price: 21500, promo: "", isRate: false }, "Weed": { price: 21500, promo: "", isRate: false } } },
+      "s90": { name: "90S", ammo: { "50AE": 80000, "9MM": 115000, "38LC": 140000 }, items: { "Baju Hangat": { price: 100000, promo: "", isRate: false } } },
+      "angker": { name: "Angker", ammo: { "50AE": 80000, "9MM": 120000, "38LC": 155000 }, items: { "Kecubung": { price: 23000, promo: "", isRate: false }, "Jamur": { price: 23000, promo: "", isRate: false }, "Weed": { price: 23000, promo: "", isRate: false } } },
+      "white_tiger": { name: "White Tiger", ammo: { "50AE": 195000, "9MM": 260000, "38LC": 275000, "4MM": 290000 }, items: { "Umer ke Putih (25%)": { price: 0.75, promo: "1 Juta - 10 juta", isRate: true }, "Umer ke Putih (20%)": { price: 0.80, promo: "15 Juta - 19 juta", isRate: true }, "Umer ke Putih (15%)": { price: 0.85, promo: "20 Juta Keatas", isRate: true }, "Putih ke Umer (25%)": { price: 0.75, promo: "Tanpa limit", isRate: true } } },
+      "mayans": { name: "Mayans", ammo: { "500AE": 190000, "9MM": 250000, "38LC": 265000, "4MM": 280000 }, items: { "DA": { price: 150000, promo: "10 Free 2", isRate: false }, "P50": { price: 130000, promo: "", isRate: false }, "TAC9": { price: 110000, promo: "", isRate: false }, "CERAMIC": { price: 90000, promo: "", isRate: false }, "PITON": { price: 350000, promo: "", isRate: false } } }
+    };
+
+    let groupsData = { ...defaultGroupsData };
+    let currentGroupKey = "mayans";
+
     db.ref('nmc_data').on('value', (snapshot) => {
       const data = snapshot.val();
       if (data) {
@@ -1015,10 +1032,14 @@
         setoranDataMingguan = data.setoran || { "Minggu 1": {} };
         setoranDataHarian = data.setoran_harian || { "Harian": {} };
         memberList = data.club_members || {};
+        if (data.groups_data) {
+          groupsData = data.groups_data;
+        }
       } else {
         db.ref('nmc_data').set({
           inventory: defaultVaultStock, history: [], business: [], beli_warga: [],
-          setoran: { "Minggu 1": {} }, setoran_harian: { "Harian": {} }, club_members: {}
+          setoran: { "Minggu 1": {} }, setoran_harian: { "Harian": {} }, club_members: {},
+          groups_data: defaultGroupsData
         });
       }
       renderVaultInventory();
@@ -1027,6 +1048,7 @@
       renderBeliWargaHistory();
       renderSetoranTable();
       renderMemberTable();
+      loadGroupData();
     });
 
     function saveDataToCloud() {
@@ -1037,11 +1059,12 @@
         beli_warga: beliWargaHistory,
         setoran: setoranDataMingguan,
         setoran_harian: setoranDataHarian,
-        club_members: memberList
+        club_members: memberList,
+        groups_data: groupsData
       });
     }
 
-    // --- FITUR SETORAN HARIAN (RINGKAS TUNGGAL) & MINGGUAN ---
+    // --- FITUR SETORAN HARIAN & MINGGUAN ---
     function switchSetoranTab(type) {
       currentSetoranTab = type;
       const btnH = document.getElementById("tabBtnHarian");
@@ -1615,23 +1638,9 @@
       document.getElementById("craftNetProfit").innerText = (netProfit >= 0 ? '+' : '') + netProfit.toLocaleString('id-ID');
     }
 
-    const groupsData = {
-      "th21": { name: "21TH", ammo: { "50AE": 200000, "9MM": 260000, "38LC": 275000, "4MM": 290000 }, items: { "Baju Hangat": { price: 160000, promo: "", isRate: false } } },
-      "voldemort": { name: "Voldemort", ammo: { "50AE": 75000, "9MM": 120000, "38LC": 140000 }, items: { "Baju Hangat": { price: 110000, promo: "Max 50 Pcs", isRate: false } } },
-      "mugen": { name: "Mugen", ammo: { "50AE": 75000, "9MM": 115000, "38LC": 130000 }, items: { "Cuci Uang (20%)": { price: 0.80, promo: "Max 15 Juta", isRate: true }, "Cuci Uang (30%)": { price: 0.70, promo: "Tanpa Max", isRate: true } } },
-      "atlanta": { name: "Atlanta", ammo: { "50AE": 100000, "9MM": 150000, "38LC": 145000 }, items: { "Kecubung": { price: 23000, promo: "", isRate: false }, "Jamur": { price: 23000, promo: "", isRate: false }, "Weed": { price: 23000, promo: "", isRate: false } } },
-      "brooklyn": { name: "Brooklyn", ammo: { "50AE": 75000, "9MM": 110000, "38LC": 140000 }, items: { "Kecubung": { price: 20000, promo: "", isRate: false }, "Jamur": { price: 20000, promo: "", isRate: false }, "Weed": { price: 20000, promo: "", isRate: false } } },
-      "alk": { name: "ALK", ammo: { "9MM": 250000, "38LC": 260000 }, items: { "Kecubung": { price: 21500, promo: "", isRate: false }, "Jamur": { price: 21500, promo: "", isRate: false }, "Weed": { price: 21500, promo: "", isRate: false } } },
-      "s90": { name: "90S", ammo: { "50AE": 80000, "9MM": 115000, "38LC": 140000 }, items: { "Baju Hangat": { price: 100000, promo: "", isRate: false } } },
-      "angker": { name: "Angker", ammo: { "50AE": 80000, "9MM": 120000, "38LC": 155000 }, items: { "Kecubung": { price: 23000, promo: "", isRate: false }, "Jamur": { price: 23000, promo: "", isRate: false }, "Weed": { price: 23000, promo: "", isRate: false } } },
-      "white_tiger": { name: "White Tiger", ammo: { "50AE": 195000, "9MM": 260000, "38LC": 275000, "4MM": 290000 }, items: { "Umer ke Putih (25%)": { price: 0.75, promo: "1 Juta - 10 juta", isRate: true }, "Umer ke Putih (20%)": { price: 0.80, promo: "15 Juta - 19 juta", isRate: true }, "Umer ke Putih (15%)": { price: 0.85, promo: "20 Juta Keatas", isRate: true }, "Putih ke Umer (25%)": { price: 0.75, promo: "Tanpa limit", isRate: true } } },
-      "mayans": { name: "Mayans", ammo: { "500AE": 190000, "9MM": 250000, "38LC": 265000, "4MM": 280000 }, items: { "DA": { price: 150000, promo: "10 Free 2", isRate: false }, "P50": { price: 130000, promo: "", isRate: false }, "TAC9": { price: 110000, promo: "", isRate: false }, "CERAMIC": { price: 90000, promo: "", isRate: false }, "PITON": { price: 350000, promo: "", isRate: false } } }
-    };
-    let currentGroupKey = "mayans";
-
     function loadGroupData() {
       currentGroupKey = document.getElementById("groupSelect").value;
-      const group = groupsData[currentGroupKey];
+      const group = groupsData[currentGroupKey] || defaultGroupsData["mayans"];
       document.getElementById("activeGroupNameBadge").innerText = group.name;
       
       const ammoListDiv = document.getElementById("ammoPriceList");
@@ -1661,14 +1670,14 @@
     }
 
     function addAmmoRow() {
-      const group = groupsData[currentGroupKey], container = document.getElementById("ammoRowsContainer"), rowId = "ammo_" + Date.now();
+      const group = groupsData[currentGroupKey] || defaultGroupsData["mayans"], container = document.getElementById("ammoRowsContainer"), rowId = "ammo_" + Date.now();
       let opts = ""; for (let a in group.ammo) opts += `<option value="${a}">${a} (${group.ammo[a].toLocaleString('id-ID')}/pack)</option>`;
       container.insertAdjacentHTML('beforeend', `<div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800"><div class="md:col-span-5"><select class="ammo-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" onchange="calculateAll()">${opts}</select></div><div class="md:col-span-3"><input type="number" value="0" min="0" class="ammo-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" placeholder="0" oninput="calculateAll()"></div><div class="md:col-span-3 text-right font-bold text-green-400 text-sm">Rp <span class="ammo-row-total">0</span></div><div class="md:col-span-1 text-center"><button onclick="removeRow('${rowId}')" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div></div>`);
       calculateAll();
     }
 
     function addItemRow() {
-      const group = groupsData[currentGroupKey], container = document.getElementById("itemRowsContainer"), rowId = "item_" + Date.now();
+      const group = groupsData[currentGroupKey] || defaultGroupsData["mayans"], container = document.getElementById("itemRowsContainer"), rowId = "item_" + Date.now();
       let opts = ""; for (let i in group.items) opts += `<option value="${i}">${i}</option>`;
       container.insertAdjacentHTML('beforeend', `<div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800"><div class="md:col-span-5"><select class="item-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" onchange="calculateAll()">${opts}</select></div><div class="md:col-span-3"><input type="number" value="0" min="0" class="item-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" placeholder="0" oninput="calculateAll()"></div><div class="md:col-span-3 text-right font-bold text-red-400 text-sm">Rp <span class="item-row-total">0</span></div><div class="md:col-span-1 text-center"><button onclick="removeRow('${rowId}')" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div></div>`);
       calculateAll();
@@ -1677,7 +1686,7 @@
     function removeRow(id) { const el = document.getElementById(id); if (el) { el.remove(); calculateAll(); } }
 
     function calculateAll() {
-      const group = groupsData[currentGroupKey];
+      const group = groupsData[currentGroupKey] || defaultGroupsData["mayans"];
       let tAmmo = 0; document.querySelectorAll("#ammoRowsContainer > div").forEach(r => { const t = r.querySelector(".ammo-type-select").value, q = parseFloat(r.querySelector(".ammo-qty-input").value) || 0, tot = (group.ammo[t]||0)*q; tAmmo += tot; r.querySelector(".ammo-row-total").innerText = tot.toLocaleString('id-ID'); });
       document.getElementById("grandTotalAmmo").innerText = tAmmo.toLocaleString('id-ID');
       let tItem = 0; document.querySelectorAll("#itemRowsContainer > div").forEach(r => { const t = r.querySelector(".item-type-select").value, q = parseFloat(r.querySelector(".item-qty-input").value) || 0, d = group.items[t]; if(!d) return; let tot = d.isRate ? q * d.price : d.price * q; tItem += tot; r.querySelector(".item-row-total").innerText = tot.toLocaleString('id-ID'); });
@@ -1691,7 +1700,7 @@
         const webhookUrl = snapshot.val();
         if (!webhookUrl) { showCustomAlert("Webhook penjualan belum diatur di Firebase!", "error"); return; }
 
-        const group = groupsData[currentGroupKey];
+        const group = groupsData[currentGroupKey] || defaultGroupsData["mayans"];
         let text = `🛒 **LOG PENJUALAN AMMO (${group.name})**\n\n`;
         let total = 0;
         document.querySelectorAll("#ammoRowsContainer > div").forEach(r => {
@@ -1720,7 +1729,7 @@
         const webhookUrl = snapshot.val();
         if (!webhookUrl) { showCustomAlert("Webhook pembelian belum diatur di Firebase!", "error"); return; }
 
-        const group = groupsData[currentGroupKey];
+        const group = groupsData[currentGroupKey] || defaultGroupsData["mayans"];
         let text = `🔫 **LOG PEMBELIAN / LAYANAN (${group.name})**\n\n`;
         let total = 0;
         document.querySelectorAll("#itemRowsContainer > div").forEach(r => {
