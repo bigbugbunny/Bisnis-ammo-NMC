@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRIAD COMMUNITY - Portal Utama & Persaudaraan</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#0d0d0d',
+              card: '#161618',
+              border: '#2a2a2e',
+              accent: '#e5e5e5'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-brand-dark text-gray-200 font-sans antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Header / Navbar -->
+  <header class="border-b border-brand-border bg-brand-card/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <h1 class="text-xl font-bold tracking-widest text-white">TRIAD<span class="text-gray-400 font-light"> COMMUNITY</span></h1>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm text-gray-300 font-medium">
+        <a href="/" class="hover:text-white transition-colors">Home</a>
+        <a href="#about" class="hover:text-white transition-colors">Visi & Nilai</a>
+        <a href="#divisions" class="hover:text-white transition-colors">Divisi</a>
+        <a href="/dashboard/" class="hover:text-white transition-colors">Dashboard Internal</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="/dashboard/" class="px-4 py-2 text-sm font-semibold text-black bg-white rounded-lg hover:bg-gray-200 transition-all">
+          Akses System
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="flex-1">
+    <section class="max-w-5xl mx-auto px-6 py-20 text-center">
+      <span class="px-3 py-1 text-xs font-semibold tracking-wider text-gray-300 uppercase border border-brand-border rounded-full bg-brand-card">
+        Keadilan • Kebersamaan • Persaudaraan
+      </span>
+      <h2 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight mt-6 mb-4">
+        WELCOME TO TRIAD COMMUNITY
+      </h2>
+      <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+        Wadah resmi persaudaraan, manajemen sistem organisasi, dan pusat koordinasi divisi Nakama MC serta grup usaha bersama.
+      </p>
+      <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <a href="/dashboard/" class="px-6 py-3 font-semibold text-black bg-white rounded-lg hover:bg-gray-200 transition-all shadow-lg">
+          Masuk Dashboard Internal
+        </a>
+        <a href="#divisions" class="px-6 py-3 font-semibold text-white bg-brand-card border border-brand-border rounded-lg hover:border-gray-500 transition-all">
+          Lihat Divisi
+        </a>
+      </div>
+    </section>
+
+    <!-- Divisi Section -->
+    <section id="divisions" class="max-w-6xl mx-auto px-6 py-12">
+      <h3 class="text-2xl font-bold text-white mb-8 border-l-4 border-white pl-3">Portal Divisi & Organisasi</h3>
+      <div class="grid md:grid-cols-2 gap-6">
+        
+        <!-- Card 1: Nakama MC -->
+        <div class="bg-brand-card border border-brand-border p-6 rounded-xl hover:border-gray-500 transition-all">
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="text-xl font-bold text-white">Nakama MC Blaine County</h4>
+            <span class="text-xs px-2.5 py-1 bg-green-950 text-green-400 border border-green-800 rounded">Aktif</span>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed mb-6">
+            Modul manajemen klub resmi: Kalkulator bahan crafting (Iron, Carbon, Umer), rekapitulasi setoran anggota, brankas, serta transaksi partner.
+          </p>
+          <a href="/dashboard/" class="inline-flex items-center text-sm font-semibold text-white hover:underline">
+            Buka Modul Nakama MC &rarr;
+          </a>
+        </div>
+
+        <!-- Card 2: Bisnis & Kas -->
+        <div class="bg-brand-card border border-brand-border p-6 rounded-xl hover:border-gray-500 transition-all">
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="text-xl font-bold text-white">Data Bisnis & Kas Organisasi</h4>
+            <span class="text-xs px-2.5 py-1 bg-green-950 text-green-400 border border-green-800 rounded">Aktif</span>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed mb-6">
+            Pencatatan real-time laporan arus kas Uang Merah 🔴 dan Uang Putih ⚪ serta riwayat transaksi warga dan kelompok partner.
+          </p>
+          <a href="/dashboard/" class="inline-flex items-center text-sm font-semibold text-white hover:underline">
+            Lihat Laporan Kas &rarr;
+          </a>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-brand-border bg-brand-card py-6 mt-12">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+      <p>&copy; 2026 TRIAD COMMUNITY. System Management by Bunny.</p>
+      <div class="flex gap-4">
+        <a href="/dashboard/" class="hover:text-gray-300">Dashboard</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
