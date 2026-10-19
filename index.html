@@ -72,7 +72,6 @@
       transform: translateY(-5px);
     }
 
-    /* Custom Input Range untuk Volume */
     input[type=range] {
       accent-color: #ef4444;
     }
@@ -262,6 +261,20 @@
 
     // Set default volume ke 50%
     music.volume = 0.5;
+
+    // Trigger Autoplay otomatis begitu pengguna melakukan klik pertama di mana saja di layar
+    function enableAutoplayOnFirstInteraction() {
+      music.play().then(() => {
+        playIcon.className = "fa-solid fa-pause";
+        document.removeEventListener('click', enableAutoplayOnFirstInteraction);
+        document.removeEventListener('keydown', enableAutoplayOnFirstInteraction);
+      }).catch(error => {
+        console.log("Autoplay ditahan oleh browser sampai interaksi pertama.");
+      });
+    }
+
+    document.addEventListener('click', enableAutoplayOnFirstInteraction, { once: true });
+    document.addEventListener('keydown', enableAutoplayOnFirstInteraction, { once: true });
 
     function togglePlay() {
       if (music.paused) {
