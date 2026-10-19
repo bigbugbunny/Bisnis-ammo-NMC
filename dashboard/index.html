@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nakama MC - Management System</title>
+  <title>Triad Community Management System</title>
   
-  <link rel="icon" type="image/png" href="../NakamaLogo.png">
+  <link rel="icon" type="image/png" href="NakamaLogo.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   
@@ -14,6 +14,22 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
   <style>
+    .welcome-title-glow {
+      background: linear-gradient(135deg, #ffffff 30%, #ef4444 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 40px rgba(239, 68, 68, 0.3);
+    }
+    .coming-soon-card {
+      background: rgba(11, 15, 25, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px dashed rgba(100, 116, 139, 0.3);
+      transition: all 0.3s ease;
+    }
+    .coming-soon-card:hover {
+      border-color: rgba(100, 116, 139, 0.6);
+      background: rgba(11, 15, 25, 0.8);
+    }
     body { 
       background-color: #07090e; 
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -25,6 +41,22 @@
     ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #ef4444; }
 
+    @keyframes pulseGlow {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.15; }
+      50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.25; }
+    }
+    .bg-ambient-glow {
+      position: fixed;
+      top: 15%;
+      left: 50%;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(239, 68, 68, 0.25) 0%, rgba(245, 158, 11, 0.08) 40%, transparent 70%);
+      z-index: -1;
+      pointer-events: none;
+      animation: pulseGlow 10s ease-in-out infinite;
+    }
+
     .glass-card { 
       background: rgba(18, 24, 38, 0.85); 
       backdrop-filter: blur(12px); 
@@ -34,7 +66,9 @@
     .glass-card:hover { 
       border-color: rgba(239, 68, 68, 0.8); 
       box-shadow: 0 0 30px rgba(239, 68, 68, 0.15), inset 0 0 15px rgba(239, 68, 68, 0.05); 
+      transform: translateY(-3px); 
     }
+
     .menu-card { 
       transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); 
     }
@@ -43,96 +77,203 @@
       border-color: rgba(239, 68, 68, 0.9); 
       box-shadow: 0 12px 30px -5px rgba(220, 38, 38, 0.35); 
     }
+
+    .menu-grid-layout {
+      display: grid;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .vault-grid-layout {
+      display: grid;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 640px) {
+      .vault-grid-layout {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .menu-grid-layout {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .menu-grid-layout > div:last-child:nth-child(3n-2) {
+        grid-column: 2 / 3;
+      }
+
+      .vault-grid-layout {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .vault-grid-layout > div:last-child:nth-child(3n-2) {
+        grid-column: 2 / 3;
+      }
+    }
+
     .mc-gradient-text { 
       background: linear-gradient(135deg, #ef4444 0%, #f59e0b 50%, #ef4444 100%); 
       -webkit-background-clip: text; 
       -webkit-text-fill-color: transparent; 
       text-shadow: 0 0 30px rgba(239,68,68,0.3);
     }
+
     @keyframes modalScaleIn {
       0% { transform: scale(0.85); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
     }
-    .animate-modal-in { animation: modalScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-modal-in {
+      animation: modalScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    button, .menu-card {
+      transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    button:active {
+      transform: scale(0.96);
+    }
   </style>
 </head>
-<body class="min-h-screen p-4 md:p-8 flex flex-col justify-between">
+<body class="min-h-screen p-4 md:p-8">
+  <div class="bg-ambient-glow"></div>
 
-  <!-- MODAL NOTIFIKASI CUSTOM -->
-  <div id="customAlertModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card p-6 rounded-2xl shadow-2xl w-full max-w-sm text-center space-y-4 border border-red-500/50 animate-modal-in">
-      <div class="w-14 h-14 bg-red-950/50 text-red-400 rounded-2xl flex items-center justify-center text-2xl mx-auto border border-red-500/40 shadow-inner">
-        <i class="fa-solid fa-circle-exclamation"></i>
+  <!-- MODAL LOGIN / VERIFIKASI IDENTITAS MASUK DIVISI -->
+  <div id="loginModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6 border border-red-600/40 relative overflow-hidden animate-modal-in">
+      <div class="absolute -top-12 -left-12 w-32 h-32 bg-red-600/20 rounded-full blur-2xl pointer-events-none"></div>
+
+      <div class="text-center space-y-3 relative z-10">
+        <div class="w-20 h-20 bg-red-950/50 rounded-2xl flex items-center justify-center mx-auto border border-red-600/40 shadow-inner overflow-hidden p-1">
+          <img src="Nakama.png" alt="Logo" class="w-full h-full object-cover rounded-xl" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+        </div>
+        <div>
+          <h2 class="text-2xl font-black tracking-wider text-red-500">VERIFIKASI IDENTITAS</h2>
+          <p class="text-xs text-gray-400 mt-1">Masukkan kredensial Anda untuk masuk ke sistem divisi Nakama MC</p>
+        </div>
       </div>
-      <div class="space-y-1">
-        <h3 class="text-sm font-black tracking-widest text-white uppercase">NOTIFIKASI SISTEM</h3>
-        <p id="alertModalMessage" class="text-xs text-gray-300 leading-relaxed"></p>
+
+      <div class="space-y-4 relative z-10">
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Username</label>
+          <div class="relative">
+            <i class="fa-solid fa-user absolute left-3.5 top-3.5 text-gray-500 text-sm"></i>
+            <input type="text" id="loginUsername" placeholder="Masukkan username..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-10 pr-3 text-white focus:outline-none focus:border-red-500 text-sm">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Sandi / Password</label>
+          <div class="relative">
+            <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-gray-500 text-sm"></i>
+            <input type="password" id="loginPassword" placeholder="Masukkan sandi..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-10 pr-3 text-white focus:outline-none focus:border-red-500 text-sm">
+          </div>
+        </div>
+
+        <div id="loginError" class="text-xs text-red-400 text-center hidden bg-red-950/40 border border-red-800/40 py-2 rounded-lg font-semibold">
+          Username atau sandi salah!
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 pt-2">
+          <button id="loginSubmitBtn" onclick="handleLogin()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider text-xs">
+            <i class="fa-solid fa-check"></i> MASUK
+          </button>
+          <button onclick="closeLoginModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-gray-300 font-bold py-3.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider">
+            BATAL
+          </button>
+        </div>
       </div>
-      <button onclick="document.getElementById('customAlertModal').classList.add('hidden')" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider shadow">
-        OK
-      </button>
     </div>
   </div>
 
-  <!-- MODAL KONFIRMASI CUSTOM -->
-  <div id="customConfirmModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card p-6 rounded-2xl shadow-2xl w-full max-w-sm text-center space-y-4 border border-amber-500/50 animate-modal-in">
-      <div class="w-14 h-14 bg-amber-950/50 text-amber-400 rounded-2xl flex items-center justify-center text-2xl mx-auto border border-amber-500/40 shadow-inner">
-        <i class="fa-solid fa-triangle-exclamation"></i>
-      </div>
-      <div class="space-y-1">
-        <h3 id="confirmModalTitle" class="text-sm font-black tracking-widest text-white uppercase">KONFIRMASI</h3>
-        <p id="confirmModalMessage" class="text-xs text-gray-300 leading-relaxed"></p>
-      </div>
-      <div class="grid grid-cols-2 gap-3 pt-2">
-        <button id="confirmModalYesBtn" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2.5 px-4 rounded-xl transition text-xs tracking-wider shadow">
-          YA
-        </button>
-        <button onclick="document.getElementById('customConfirmModal').classList.add('hidden')" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider shadow">
-          BATAL
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div class="max-w-7xl mx-auto w-full space-y-6">
+  <div class="max-w-7xl mx-auto space-y-6">
     
     <!-- HEADER -->
     <div class="flex flex-col md:flex-row justify-between items-center bg-slate-900/90 p-6 rounded-2xl border border-red-900/40 shadow-2xl">
       <div class="flex items-center gap-4">
-        <button id="btnHome" onclick="showSection('mainMenu')" class="bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700" title="Kembali ke Menu Utama">
-          <i class="fa-solid fa-bars"></i>
-        </button>
-        <a href="/dashboard/" class="bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700" title="Kembali ke Pilih Divisi">
+        <button id="btnHome" onclick="showWelcomeScreen()" class="bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700" title="Kembali ke Home">
           <i class="fa-solid fa-house"></i>
-        </a>
+        </button>
+        <button id="btnBackMenu" onclick="showSection('mainMenu')" class="hidden bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700" title="Kembali ke Menu">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
 
         <div class="flex items-center gap-3">
-          <img src="../Nakama.png" alt="Logo" class="w-12 h-12 object-contain rounded-xl border border-red-600/50 bg-black p-1 shadow-md" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+          <img src="Nakama.png" alt="Logo" class="w-12 h-12 object-contain rounded-xl border border-red-600/50 bg-black p-1 shadow-md" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
           <div>
-            <h1 class="text-xl md:text-2xl font-black tracking-wide mc-gradient-text" id="headerTitleText">NAKAMA MC</h1>
-            <p class="text-xs text-gray-400 mt-0.5 tracking-wider" id="headerSubtitle">BLAINE COUNTY MANAGEMENT SYSTEM</p>
+            <h1 class="text-2xl md:text-3xl font-black tracking-wide mc-gradient-text" id="headerTitleText">TRIAD COMMUNITY</h1>
+            <p class="text-xs text-gray-400 mt-0.5 tracking-wider" id="headerSubtitle">SYSTEM MANAGEMENT & DASHBOARD</p>
           </div>
         </div>
       </div>
       
       <div class="mt-4 md:mt-0 flex items-center gap-3">
         <span id="userRoleBadge" class="bg-slate-800 text-gray-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2">
-          <i class="fa-solid fa-user"></i> Memuat sesi...
+          <i class="fa-solid fa-user"></i> Status: Tamu / Publik
         </span>
-        <button onclick="handleLogout()" class="bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-500/30 transition flex items-center gap-1">
-          <i class="fa-solid fa-right-from-bracket"></i> Keluar
+
+        <button id="btnLoginAdminModal" onclick="openLoginModal()" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-500/30 transition flex items-center gap-1">
+          <i class="fa-solid fa-right-to-bracket"></i> Login Identitas
+        </button>
+
+        <button id="btnLogoutBtn" onclick="handleLogout()" class="hidden bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-500/30 transition flex items-center gap-1">
+          <i class="fa-solid fa-right-from-bracket"></i> Keluar / Ganti Akun
         </button>
       </div>
     </div>
 
-    <!-- 1. MENU UTAMA (GRID MODUL) -->
-    <div id="sectionMainMenu" class="space-y-6">
+    <!-- HALAMAN WELCOME (BISA DIAKSES BEBAS TANPA LOGIN) -->
+    <div id="sectionWelcome" class="space-y-8 py-12 animate-fade-in">
+      <div class="text-center space-y-3 max-w-2xl mx-auto">
+        <span class="bg-red-950/50 text-red-400 text-xs font-bold px-4 py-1.5 rounded-full border border-red-800/40 tracking-widest uppercase inline-flex items-center gap-2 shadow-inner">
+          <i class="fa-solid fa-shield-halved"></i> Pusat Triad Community
+        </span>
+        <h2 class="text-4xl md:text-6xl font-black tracking-wider welcome-title-glow leading-tight">WELCOME TO <br> TRIAD COMMUNITY</h2>
+        <p class="text-sm text-gray-400">Silakan pilih divisi atau klub organisasi di bawah ini untuk mengakses sistem management by Bunny.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto pt-4">
+        <div onclick="selectCommunity('nakama')" class="menu-card glass-card p-8 rounded-2xl cursor-pointer flex flex-col justify-between border border-red-600/40 shadow-xl relative overflow-hidden group">
+          <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-red-600/10 rounded-full blur-2xl group-hover:bg-red-600/20 transition"></div>
+          <div class="space-y-5 relative z-10">
+            <div class="w-16 h-16 bg-gradient-to-br from-red-950 to-red-900/60 text-red-500 rounded-2xl flex items-center justify-center text-3xl border border-red-600/40 shadow-lg">
+              <i class="fa-solid fa-skull"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-black text-white mb-2 group-hover:text-red-400 transition">Nakama MC Blaine County</h3>
+              <p class="text-sm text-gray-400 leading-relaxed">Modul manajemen lengkap: Kalkulator bahan, transaksi partner, brankas, kas bisnis, setoran & data member.</p>
+            </div>
+          </div>
+          <div class="mt-8 flex justify-between items-center text-sm font-bold text-red-400 relative z-10 pt-4 border-t border-slate-800/80">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk Sistem Klub</span>
+            <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
+          </div>
+        </div>
+
+        <div onclick="showCustomAlert('Divisi atau klub lain akan segera hadir (Coming Soon)!', 'info')" class="coming-soon-card p-8 rounded-2xl cursor-pointer flex flex-col justify-between shadow-xl opacity-75 hover:opacity-100 transition">
+          <div class="space-y-5">
+            <div class="w-16 h-16 bg-slate-900 text-gray-400 rounded-2xl flex items-center justify-center text-3xl border border-slate-800 shadow-inner">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold text-gray-300 mb-2">Coming Soon</h3>
+              <p class="text-sm text-gray-500 leading-relaxed">Persiapan modul untuk divisi, bisnis, atau organisasi tambahan lainnya di masa mendatang.</p>
+            </div>
+          </div>
+          <div class="mt-8 flex justify-between items-center text-sm font-semibold text-gray-500 pt-4 border-t border-slate-800/80">
+            <span>Segera Hadir</span>
+            <i class="fa-solid fa-lock text-gray-600"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MENU UTAMA NAKAMA MC -->
+    <div id="sectionMainMenu" class="hidden space-y-6">
       <h2 class="text-sm font-bold text-red-400 tracking-widest uppercase flex items-center gap-2">
-        <i class="fa-solid fa-grid-2"></i> PILIH MODUL MANAGEMENT DIVISI
+        <i class="fa-solid fa-bars"></i> NAKAMA MC BLAINE COUNTY - PILIH MODUL MANAGEMENT
       </h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 menu-grid-layout">
         <div onclick="showSection('sectionBahan')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between">
           <div>
             <div class="w-12 h-12 bg-amber-500/20 text-amber-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-amber-500/30"><i class="fa-solid fa-boxes-stacked"></i></div>
@@ -164,7 +305,7 @@
           <div>
             <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-emerald-500/30"><i class="fa-solid fa-basket-shopping"></i></div>
             <h3 class="text-xl font-bold text-white mb-2">Transaksi Warga</h3>
-            <p class="text-sm text-gray-400">Beli bahan dari warga atau Jual barang ke warga dengan update brankas & kas otomatis.</p>
+            <p class="text-sm text-gray-400">Beli bahan dari warga atau Jual barang/bahan ke warga dengan update brankas & kas otomatis.</p>
           </div>
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-emerald-400"><span>Buka Transaksi Warga</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
@@ -172,7 +313,7 @@
         <div onclick="showSection('sectionBisnis')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between">
           <div>
             <div class="w-12 h-12 bg-purple-500/20 text-purple-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-purple-500/30"><i class="fa-solid fa-chart-line"></i></div>
-            <h3 class="text-xl font-bold text-white mb-2">Data Bisnis & Kas</h3>
+            <h3 class="text-xl font-bold text-white mb-2">Data Bisnis</h3>
             <p class="text-sm text-gray-400">Laporan kas Uang Merah & Putih organisasi secara real-time.</p>
           </div>
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-purple-400"><span>Lihat Laporan</span><i class="fa-solid fa-chevron-right"></i></div>
@@ -198,123 +339,64 @@
       </div>
     </div>
 
-    <!-- 2. SECTION KALKULASI BAHAN -->
-    <div id="sectionBahan" class="hidden space-y-6">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-          <h2 class="text-lg font-bold text-amber-400 flex items-center gap-2"><i class="fa-solid fa-sliders"></i> Input Resep Crafting</h2>
-          <div>
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Tipe Ammo</label>
-            <select id="craftAmmoType" onchange="calcBahan()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-amber-400">
-              <option value="50AE">50AE (50 Iron, 50 Carbon, 20K Umer)</option>
-              <option value="9MM" selected>9MM (50 Iron, 50 Carbon, 60K Umer)</option>
-              <option value="38LC">38LC (50 Iron, 50 Carbon, 70K Umer)</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jumlah Pack</label>
-            <input type="number" id="craftPackQty" value="0" min="0" oninput="calcBahan()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-amber-400" placeholder="0">
-          </div>
-          <hr class="border-slate-700 my-3">
-          <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider">🛒 Modal Belanja</h3>
-          <div class="space-y-3">
-            <div><label class="block text-xs text-gray-400 mb-1">Harga Beli 1 Iron</label><input type="number" id="craftIronPrice" value="0" oninput="calcBahan()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-400" placeholder="0"></div>
-            <div><label class="block text-xs text-gray-400 mb-1">Harga Beli 1 Carbon</label><input type="number" id="craftCarbonPrice" value="0" oninput="calcBahan()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-400" placeholder="0"></div>
-            <div><label class="block text-xs text-gray-400 mb-1">Harga Jual 1 Pack Ammo</label><input type="number" id="craftSellPrice" value="0" oninput="calcBahan()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-400" placeholder="0"></div>
-          </div>
-        </div>
-        <div class="lg:col-span-2 space-y-6">
-          <div class="glass-card p-6 rounded-2xl shadow-lg">
-            <h2 class="text-lg font-bold text-amber-400 mb-4 flex items-center justify-between"><span><i class="fa-solid fa-boxes-stacked"></i> Kebutuhan Bahan Dasar</span><span id="badgeCraftAmmo" class="text-xs bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full border border-amber-500/30">9MM x0 Pack</span></h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800"><span class="text-gray-400 text-sm">🔩 Total Iron</span><div id="craftTotalIron" class="text-2xl font-black text-amber-400">0</div><div id="craftCostIron" class="text-xs text-gray-500 mt-1">Modal: 0</div></div>
-              <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800"><span class="text-gray-400 text-sm">⬛ Total Carbon</span><div id="craftTotalCarbon" class="text-2xl font-black text-blue-400">0</div><div id="craftCostCarbon" class="text-xs text-gray-500 mt-1">Modal: 0</div></div>
-              <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800"><span class="text-gray-400 text-sm">💵 Biaya Umer</span><div id="craftTotalUmer" class="text-2xl font-black text-emerald-400">0</div><div class="text-xs text-gray-500 mt-1">Fee Crafting</div></div>
-            </div>
-          </div>
-          <div class="glass-card p-6 rounded-2xl shadow-lg">
-            <h2 class="text-lg font-bold text-blue-400 mb-4 flex items-center gap-2"><i class="fa-solid fa-calculator"></i> Proyeksi Modal & Keuntungan</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800"><div class="text-xs text-gray-400 mb-1">Total Modal</div><div id="craftTotalModal" class="text-xl font-bold text-red-400">0</div></div>
-              <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800"><div class="text-xs text-gray-400 mb-1">Total Omset</div><div id="craftTotalOmset" class="text-xl font-bold text-blue-400">0</div></div>
-              <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800"><div class="text-xs text-gray-400 mb-1">Untung Bersih</div><div id="craftNetProfit" class="text-xl font-bold text-green-400">0</div></div>
-            </div>
-          </div>
-        </div>
+    <!-- DATA SETORAN -->
+    <div id="sectionSetoran" class="hidden space-y-6">
+      <div class="flex border-b border-slate-800 gap-2">
+        <button id="tabBtnHarian" onclick="switchSetoranTab('harian')" class="px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-900 border-t border-x border-slate-700 text-pink-400 transition flex items-center gap-2">
+          <i class="fa-solid fa-calendar-day"></i> Setoran Harian (Agenda)
+        </button>
+        <button id="tabBtnMingguan" onclick="switchSetoranTab('mingguan')" class="px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-950/60 border-t border-x border-transparent text-gray-500 hover:text-gray-300 transition flex items-center gap-2">
+          <i class="fa-solid fa-calendar-week"></i> Setoran Mingguan
+        </button>
       </div>
-    </div>
 
-    <!-- 3. SECTION TRANSAKSI PARTNER -->
-    <div id="sectionKalkulator" class="hidden space-y-6">
-      <div class="glass-card p-4 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4">
-        <span class="text-sm font-bold text-red-400"><i class="fa-solid fa-handshake"></i> PILIH KELOMPOK PARTNER:</span>
-        <select id="groupSelect" onchange="loadGroupData()" class="w-full md:w-64 bg-slate-900 border border-red-500/50 rounded-xl p-2.5 text-white font-bold focus:outline-none focus:border-red-400"></select>
+      <div class="glass-card p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="w-full md:w-auto flex items-center gap-3">
+          <label class="text-xs font-bold text-red-400 uppercase tracking-wider" id="labelPeriodSelect">Mode Agenda:</label>
+          <select id="selectSetoranPeriod" onchange="changeActiveSetoranPeriod()" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-bold focus:outline-none focus:border-red-500 text-sm">
+            <!-- Dynamic Options via JS -->
+          </select>
+        </div>
+        <div class="w-full md:w-auto flex items-center gap-2 editor-only">
+          <input type="text" id="newMemberName" placeholder="Nama Anggota Baru..." class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-red-500">
+          <button onclick="addNewMember()" class="bg-red-700 hover:bg-red-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-user-plus"></i> Tambah Anggota</button>
+        </div>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="glass-card p-5 rounded-2xl"><h2 class="text-md font-bold text-green-400 mb-3 flex items-center justify-between"><span><i class="fa-solid fa-tag"></i> HARGA JUAL AMMO</span><span id="activeGroupNameBadge" class="text-xs bg-slate-800 text-red-400 px-2.5 py-1 rounded-full border border-slate-700">-</span></h2><div id="ammoPriceList" class="space-y-2 text-sm"></div></div>
-        <div class="glass-card p-5 rounded-2xl"><h2 class="text-md font-bold text-red-400 mb-3 flex items-center justify-between"><span><i class="fa-solid fa-cart-shopping"></i> HARGA BELI / LAYANAN</span></h2><div id="itemPriceList" class="grid grid-cols-2 gap-2 text-xs"></div></div>
-      </div>
-      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-        <div class="flex justify-between items-center"><h2 class="text-lg font-bold text-green-400 flex items-center gap-2"><i class="fa-solid fa-calculator"></i> KALKULATOR PENJUALAN AMMO</h2><button onclick="addAmmoRow()" class="bg-green-600/80 hover:bg-green-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1 editor-only"><i class="fa-solid fa-plus"></i> Tambah Ammo</button></div>
-        <div id="ammoRowsContainer" class="space-y-3"></div>
-        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex justify-between items-center"><span class="text-sm text-gray-400">Total Tagihan Ammo:</span><span id="grandTotalAmmo" class="text-2xl font-black text-green-400">0</span></div>
-        <button onclick="sendPenjualanToDiscord()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 editor-only"><i class="fa-brands fa-discord"></i> Kirim Log Penjualan ke Discord</button>
-      </div>
-      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-        <div class="flex justify-between items-center"><h2 class="text-lg font-bold text-red-400 flex items-center gap-2"><i class="fa-solid fa-gun"></i> KALKULATOR PEMBELIAN / LAYANAN</h2><button onclick="addItemRow()" class="bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1 editor-only"><i class="fa-solid fa-plus"></i> Tambah Barang</button></div>
-        <div id="itemRowsContainer" class="space-y-3"></div>
-        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex justify-between items-center"><span class="text-sm text-gray-400">Total Pembelian / Fee:</span><span id="grandTotalItem" class="text-2xl font-black text-red-400">0</span></div>
-        <button onclick="sendPembelianToDiscord()" class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 editor-only"><i class="fa-brands fa-discord"></i> Kirim Log Pembelian ke Discord</button>
-      </div>
-      <button onclick="showAlert('Ringkasan berhasil disalin!')" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 border border-slate-700"><i class="fa-solid fa-copy"></i> Salin Ringkasan Transaksi Gabungan</button>
-    </div>
 
-    <!-- 4. SECTION BRANKAS -->
-    <div id="sectionBrankas" class="hidden space-y-6">
-      <div id="vaultControlPanel" class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
-        <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2"><i class="fa-solid fa-boxes-packing"></i> Update Stok Barang Brankas</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div>
-            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nama Barang</label>
-            <select id="vaultItemName" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400">
-              <optgroup label="Bahan Dasar & Lainnya"><option value="Iron">Iron</option><option value="Carbon">Carbon</option><option value="Glass">Glass</option><option value="Rubber">Rubber</option><option value="Plastik">Plastik</option><option value="Box Recycle">Box Recycle</option></optgroup>
-              <optgroup label="Pack Ammo"><option value="Pack Ammo 38LC">Pack Ammo 38LC</option><option value="Pack Ammo 9MM">Pack Ammo 9MM</option><option value="Pack Ammo 50AE">Pack Ammo 50AE</option></optgroup>
-              <optgroup label="Butiran Ammo"><option value="Ammo 38LC">Ammo 38LC</option><option value="Ammo 9MM">Ammo 9MM</option><option value="Ammo 50AE">Ammo 50AE</option></optgroup>
-              <optgroup label="Barham"><option value="Kecubung">Kecubung</option><option value="Jamur">Jamur</option><option value="Weed">Weed</option><option value="Joint">Joint</option></optgroup>
-              <optgroup label="Senjata, Vest & Item"><option value="Lockpick">Lockpick</option><option value="Vest">Vest</option><option value="Senjata DA">Senjata DA</option><option value="Senjata P50">Senjata P50</option><option value="Senjata TAC9">Senjata TAC9</option><option value="Senjata Ceramic">Senjata Ceramic</option></optgroup>
-            </select>
+      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <h2 class="text-lg font-bold text-red-400 flex items-center gap-2">
+            <i class="fa-solid fa-hand-holding-dollar"></i> <span id="setoranHeaderTitle">Rekap Setoran Harian Agenda</span> (<span id="currentPeriodLabel">Harian</span>)
+          </h2>
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="prosesProsesSatuTombolSetoran()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold px-5 py-3 rounded-xl transition flex items-center gap-2 shadow-lg border border-emerald-400/30 editor-only">
+              <i class="fa-solid fa-vault"></i> Masukkan ke Brankas, Kirim Discord & Reset Data
+            </button>
           </div>
-          <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Aksi & Qty</label><div class="flex gap-2"><select id="vaultAction" class="bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400 text-sm"><option value="ADD">Masuk (+)</option><option value="SUB">Keluar (-)</option><option value="SET">Set</option></select><input type="number" id="vaultQty" min="0" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400" placeholder="0"></div></div>
-          <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Keterangan / Sumber</label><input type="text" id="vaultDesc" placeholder="Contoh: Hasil Crafting" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400"></div>
-          <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nama Pelapor</label><input type="text" id="vaultAuthor" placeholder="Nama Anggota" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400"></div>
         </div>
-        <div class="flex gap-3 pt-2">
-          <button onclick="updateVaultStock()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2"><i class="fa-solid fa-check"></i> Perbarui & Simpan History</button>
-          <button onclick="sendVaultToDiscord()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 editor-only"><i class="fa-brands fa-discord"></i> Kirim Laporan ke Discord</button>
-        </div>
-      </div>
-      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-        <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-vault"></i> Inventori Stok Brankas Saat Ini</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3" id="vaultInventoryGrid"></div>
-      </div>
-      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-        <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-history"></i> Riwayat (History) Keluar Masuk Barang Brankas</h2>
-        <div class="overflow-x-auto max-h-96 overflow-y-auto">
+        <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase sticky top-0 bg-slate-900/95 backdrop-blur z-10">
-                <th class="p-2.5">Waktu</th><th class="p-2.5">Barang</th><th class="p-2.5">Aksi</th><th class="p-2.5 text-right">Jumlah</th><th class="p-2.5">Keterangan</th><th class="p-2.5">Pelapor</th>
+              <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase">
+                <th class="p-3">Nama Anggota</th>
+                <th class="p-3 text-right">Iron 🔩</th>
+                <th class="p-3 text-right">Carbon ⬛</th>
+                <th class="p-3 text-right">Glass 🧊</th>
+                <th class="p-3 text-right">Rubber 🛞</th>
+                <th class="p-3 text-right">Plastik 🧪</th>
+                <th class="p-3 text-center">Status</th>
+                <th class="p-3 text-center editor-only">Aksi</th>
               </tr>
             </thead>
-            <tbody id="vaultHistoryTableBody" class="divide-y divide-slate-800 text-sm">
-              <tr><td colspan="6" class="p-4 text-center text-gray-500">Memuat data...</td></tr>
+            <tbody id="setoranTableBody" class="divide-y divide-slate-800 text-sm">
+              <tr><td colspan="8" class="p-4 text-center text-gray-500">Memuat data...</td></tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- 5. SECTION TRANSAKSI WARGA -->
+    <!-- TRANSAKSI WARGA -->
     <div id="sectionBeliWarga" class="hidden space-y-6">
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
         <h2 id="formWargaTitle" class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-cart-plus"></i> Form Transaksi Warga</h2>
@@ -333,7 +415,7 @@
           </div>
           <div>
             <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Anggota Klub (Perwakilan)</label>
-            <input type="text" id="beliWargaAdmin" placeholder="Nama Anda" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-400 text-sm">
+            <input type="text" id="beliWargaAdmin" placeholder="Nama Anda / Anggota" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-400 text-sm">
           </div>
           <div>
             <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jenis Pembayaran (Kas)</label>
@@ -396,7 +478,125 @@
       </div>
     </div>
 
-    <!-- 6. SECTION BISNIS & KAS -->
+    <!-- KALKULASI BAHAN CRAFTING -->
+    <div id="sectionBahan" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
+          <h2 class="text-lg font-bold text-amber-400 flex items-center gap-2"><i class="fa-solid fa-sliders"></i> Input Resep Crafting</h2>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Tipe Ammo</label>
+            <select id="craftAmmoType" onchange="calcBahan()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-amber-400">
+              <option value="50AE">50AE (50 Iron, 50 Carbon, 20K Umer)</option>
+              <option value="9MM" selected>9MM (50 Iron, 50 Carbon, 60K Umer)</option>
+              <option value="38LC">38LC (50 Iron, 50 Carbon, 70K Umer)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jumlah Pack</label>
+            <input type="number" id="craftPackQty" value="0" min="0" oninput="calcBahan()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-amber-400" placeholder="0">
+          </div>
+          <hr class="border-slate-700 my-3">
+          <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider">🛒 Modal Belanja</h3>
+          <div class="space-y-3">
+            <div><label class="block text-xs text-gray-400 mb-1">Harga Beli 1 Iron</label><input type="number" id="craftIronPrice" value="0" oninput="calcBahan()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-400" placeholder="0"></div>
+            <div><label class="block text-xs text-gray-400 mb-1">Harga Beli 1 Carbon</label><input type="number" id="craftCarbonPrice" value="0" oninput="calcBahan()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-400" placeholder="0"></div>
+            <div><label class="block text-xs text-gray-400 mb-1">Harga Jual 1 Pack Ammo</label><input type="number" id="craftSellPrice" value="0" oninput="calcBahan()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-400" placeholder="0"></div>
+          </div>
+        </div>
+        <div class="lg:col-span-2 space-y-6">
+          <div class="glass-card p-6 rounded-2xl shadow-lg">
+            <h2 class="text-lg font-bold text-amber-400 mb-4 flex items-center justify-between"><span><i class="fa-solid fa-boxes-stacked"></i> Kebutuhan Bahan Dasar</span><span id="badgeCraftAmmo" class="text-xs bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full border border-amber-500/30">9MM x0 Pack</span></h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800"><span class="text-gray-400 text-sm">🔩 Total Iron</span><div id="craftTotalIron" class="text-2xl font-black text-amber-400">0</div><div id="craftCostIron" class="text-xs text-gray-500 mt-1">Modal: 0</div></div>
+              <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800"><span class="text-gray-400 text-sm">⬛ Total Carbon</span><div id="craftTotalCarbon" class="text-2xl font-black text-blue-400">0</div><div id="craftCostCarbon" class="text-xs text-gray-500 mt-1">Modal: 0</div></div>
+              <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800"><span class="text-gray-400 text-sm">💵 Biaya Umer</span><div id="craftTotalUmer" class="text-2xl font-black text-emerald-400">0</div><div class="text-xs text-gray-500 mt-1">Fee Crafting</div></div>
+            </div>
+          </div>
+          <div class="glass-card p-6 rounded-2xl shadow-lg">
+            <h2 class="text-lg font-bold text-blue-400 mb-4 flex items-center gap-2"><i class="fa-solid fa-calculator"></i> Proyeksi Modal & Keuntungan</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800"><div class="text-xs text-gray-400 mb-1">Total Modal</div><div id="craftTotalModal" class="text-xl font-bold text-red-400">0</div></div>
+              <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800"><div class="text-xs text-gray-400 mb-1">Total Omset</div><div id="craftTotalOmset" class="text-xl font-bold text-blue-400">0</div></div>
+              <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800"><div class="text-xs text-gray-400 mb-1">Untung Bersih</div><div id="craftNetProfit" class="text-xl font-bold text-green-400">0</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRANSAKSI PARTNER -->
+    <div id="sectionKalkulator" class="hidden space-y-6">
+      <div class="glass-card p-4 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4">
+        <span class="text-sm font-bold text-red-400"><i class="fa-solid fa-handshake"></i> PILIH KELOMPOK PARTNER:</span>
+        <select id="groupSelect" onchange="loadGroupData()" class="w-full md:w-64 bg-slate-900 border border-red-500/50 rounded-xl p-2.5 text-white font-bold focus:outline-none focus:border-red-400">
+          <!-- Dynamic Options from Firebase -->
+        </select>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="glass-card p-5 rounded-2xl"><h2 class="text-md font-bold text-green-400 mb-3 flex items-center justify-between"><span><i class="fa-solid fa-tag"></i> HARGA JUAL AMMO</span><span id="activeGroupNameBadge" class="text-xs bg-slate-800 text-red-400 px-2.5 py-1 rounded-full border border-slate-700">-</span></h2><div id="ammoPriceList" class="space-y-2 text-sm"></div></div>
+        <div class="glass-card p-5 rounded-2xl"><h2 class="text-md font-bold text-red-400 mb-3 flex items-center justify-between"><span><i class="fa-solid fa-cart-shopping"></i> HARGA BELI / LAYANAN</span></h2><div id="itemPriceList" class="grid grid-cols-2 gap-2 text-xs"></div></div>
+      </div>
+      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
+        <div class="flex justify-between items-center"><h2 class="text-lg font-bold text-green-400 flex items-center gap-2"><i class="fa-solid fa-calculator"></i> KALKULATOR PENJUALAN AMMO</h2><button onclick="addAmmoRow()" class="bg-green-600/80 hover:bg-green-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1 editor-only"><i class="fa-solid fa-plus"></i> Tambah Ammo</button></div>
+        <div id="ammoRowsContainer" class="space-y-3"></div>
+        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex justify-between items-center"><span class="text-sm text-gray-400">Total Tagihan Ammo:</span><span id="grandTotalAmmo" class="text-2xl font-black text-green-400">0</span></div>
+        <button onclick="sendPenjualanToDiscord()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 editor-only"><i class="fa-brands fa-discord"></i> Kirim Log Penjualan ke Discord</button>
+      </div>
+      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
+        <div class="flex justify-between items-center"><h2 class="text-lg font-bold text-red-400 flex items-center gap-2"><i class="fa-solid fa-gun"></i> KALKULATOR PEMBELIAN / LAYANAN</h2><button onclick="addItemRow()" class="bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1 editor-only"><i class="fa-solid fa-plus"></i> Tambah Barang</button></div>
+        <div id="itemRowsContainer" class="space-y-3"></div>
+        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex justify-between items-center"><span class="text-sm text-gray-400">Total Pembelian / Fee:</span><span id="grandTotalItem" class="text-2xl font-black text-red-400">0</span></div>
+        <button onclick="sendPembelianToDiscord()" class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 editor-only"><i class="fa-brands fa-discord"></i> Kirim Log Pembelian ke Discord</button>
+      </div>
+      <button onclick="copySummary()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 border border-slate-700"><i class="fa-solid fa-copy"></i> Salin Ringkasan Transaksi Gabungan</button>
+    </div>
+
+    <!-- DATA BRANKAS -->
+    <div id="sectionBrankas" class="hidden space-y-6">
+      <div id="vaultControlPanel" class="glass-card p-6 rounded-2xl shadow-lg space-y-4 editor-only">
+        <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2"><i class="fa-solid fa-boxes-packing"></i> Update Stok Barang Brankas</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nama Barang</label>
+            <select id="vaultItemName" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400">
+              <optgroup label="Bahan Dasar & Lainnya"><option value="Iron">Iron</option><option value="Carbon">Carbon</option><option value="Glass">Glass</option><option value="Rubber">Rubber</option><option value="Plastik">Plastik</option><option value="Box Recycle">Box Recycle</option></optgroup>
+              <optgroup label="Pack Ammo"><option value="Pack Ammo 38LC">Pack Ammo 38LC</option><option value="Pack Ammo 9MM">Pack Ammo 9MM</option><option value="Pack Ammo 50AE">Pack Ammo 50AE</option></optgroup>
+              <optgroup label="Butiran Ammo"><option value="Ammo 38LC">Ammo 38LC</option><option value="Ammo 9MM">Ammo 9MM</option><option value="Ammo 50AE">Ammo 50AE</option></optgroup>
+              <optgroup label="Barham"><option value="Kecubung">Kecubung</option><option value="Jamur">Jamur</option><option value="Weed">Weed</option><option value="Joint">Joint</option></optgroup>
+              <optgroup label="Senjata, Vest & Item"><option value="Lockpick">Lockpick</option><option value="Vest">Vest</option><option value="Senjata DA">Senjata DA</option><option value="Senjata P50">Senjata P50</option><option value="Senjata TAC9">Senjata TAC9</option><option value="Senjata Ceramic">Senjata Ceramic</option></optgroup>
+            </select>
+          </div>
+          <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Aksi & Qty</label><div class="flex gap-2"><select id="vaultAction" class="bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400 text-sm"><option value="ADD">Masuk (+)</option><option value="SUB">Keluar (-)</option><option value="SET">Set</option></select><input type="number" id="vaultQty" min="0" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400" placeholder="0"></div></div>
+          <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Keterangan / Sumber</label><input type="text" id="vaultDesc" placeholder="Contoh: Hasil Crafting / Ambil Jual" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400"></div>
+          <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nama Pelapor</label><input type="text" id="vaultAuthor" placeholder="Nama Anggota" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400"></div>
+        </div>
+        <div class="flex gap-3 pt-2">
+          <button onclick="updateVaultStock()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2"><i class="fa-solid fa-check"></i> Perbarui & Simpan History</button>
+          <button onclick="sendVaultToDiscord()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 editor-only"><i class="fa-brands fa-discord"></i> Kirim Laporan ke Discord</button>
+        </div>
+      </div>
+      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
+        <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-vault"></i> Inventori Stok Brankas Saat Ini</h2>
+        <div class="vault-grid-layout" id="vaultInventoryGrid"></div>
+      </div>
+      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
+        <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-history"></i> Riwayat (History) Keluar Masuk Barang Brankas</h2>
+        <div class="overflow-x-auto max-h-96 overflow-y-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase sticky top-0 bg-slate-900/95 backdrop-blur z-10">
+                <th class="p-2.5">Waktu</th><th class="p-2.5">Barang</th><th class="p-2.5">Aksi</th><th class="p-2.5 text-right">Jumlah</th><th class="p-2.5">Keterangan</th><th class="p-2.5">Pelapor</th>
+              </tr>
+            </thead>
+            <tbody id="vaultHistoryTableBody" class="divide-y divide-slate-800 text-sm">
+              <tr><td colspan="6" class="p-4 text-center text-gray-500">Memuat data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATA BISNIS -->
     <div id="sectionBisnis" class="hidden space-y-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="glass-card p-6 shadow-lg bg-gradient-to-br from-slate-900 to-red-950/20">
@@ -436,62 +636,7 @@
       </div>
     </div>
 
-    <!-- 7. SECTION SETORAN -->
-    <div id="sectionSetoran" class="hidden space-y-6">
-      <div class="flex border-b border-slate-800 gap-2">
-        <button id="tabBtnHarian" onclick="switchSetoranTab('harian')" class="px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-900 border-t border-x border-slate-700 text-pink-400 transition flex items-center gap-2">
-          <i class="fa-solid fa-calendar-day"></i> Setoran Harian (Agenda)
-        </button>
-        <button id="tabBtnMingguan" onclick="switchSetoranTab('mingguan')" class="px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-950/60 border-t border-x border-transparent text-gray-500 hover:text-gray-300 transition flex items-center gap-2">
-          <i class="fa-solid fa-calendar-week"></i> Setoran Mingguan
-        </button>
-      </div>
-
-      <div class="glass-card p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
-        <div class="w-full md:w-auto flex items-center gap-3">
-          <label class="text-xs font-bold text-red-400 uppercase tracking-wider" id="labelPeriodSelect">Mode Agenda:</label>
-          <select id="selectSetoranPeriod" onchange="changeActiveSetoranPeriod()" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-bold focus:outline-none focus:border-red-500 text-sm"></select>
-        </div>
-        <div class="w-full md:w-auto flex items-center gap-2 editor-only">
-          <input type="text" id="newMemberName" placeholder="Nama Anggota Baru..." class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-red-500">
-          <button onclick="addNewMember()" class="bg-red-700 hover:bg-red-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-user-plus"></i> Tambah Anggota</button>
-        </div>
-      </div>
-
-      <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <h2 class="text-lg font-bold text-red-400 flex items-center gap-2">
-            <i class="fa-solid fa-hand-holding-dollar"></i> <span id="setoranHeaderTitle">Rekap Setoran Harian Agenda</span> (<span id="currentPeriodLabel">Harian</span>)
-          </h2>
-          <div class="flex flex-wrap items-center gap-2">
-            <button onclick="prosesProsesSatuTombolSetoran()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold px-5 py-3 rounded-xl transition flex items-center gap-2 shadow-lg border border-emerald-400/30 editor-only">
-              <i class="fa-solid fa-vault"></i> Masukkan ke Brankas, Kirim Discord & Reset Data
-            </button>
-          </div>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="border-b border-slate-700 text-xs text-gray-400 uppercase">
-                <th class="p-3">Nama Anggota</th>
-                <th class="p-3 text-right">Iron 🔩</th>
-                <th class="p-3 text-right">Carbon ⬛</th>
-                <th class="p-3 text-right">Glass 🧊</th>
-                <th class="p-3 text-right">Rubber 🛞</th>
-                <th class="p-3 text-right">Plastik 🧪</th>
-                <th class="p-3 text-center">Status</th>
-                <th class="p-3 text-center editor-only">Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="setoranTableBody" class="divide-y divide-slate-800 text-sm">
-              <tr><td colspan="8" class="p-4 text-center text-gray-500">Memuat data...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- 8. SECTION MEMBER -->
+    <!-- DATA MEMBER -->
     <div id="sectionMember" class="hidden space-y-6">
       <div class="glass-card p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-center gap-4 editor-only">
         <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-id-badge"></i> Tambah Anggota Klub</h2>
@@ -529,24 +674,74 @@
 
   </div>
 
-  <footer class="max-w-7xl mx-auto w-full pt-10 text-center text-xs text-gray-500 border-t border-slate-800 mt-12">
-    &copy; 2026 TRIAD COMMUNITY. Nakama MC System Management by Bunny.
-  </footer>
-
   <script>
     let currentUserRole = "viewer";
 
-    function showAlert(message) {
-      document.getElementById('alertModalMessage').innerText = message;
-      document.getElementById('customAlertModal').classList.remove('hidden');
+    function showCustomAlert(message, type = 'success') {
+      const existingModal = document.getElementById('customAlertModal');
+      if (existingModal) existingModal.remove();
+
+      let borderColor = 'border-green-500/50';
+      let iconBg = 'bg-green-950/50 text-green-400 border-green-500/40';
+      let iconClass = 'fa-circle-check';
+
+      if (type === 'error') {
+        borderColor = 'border-red-500/50';
+        iconBg = 'bg-red-950/50 text-red-400 border-red-500/40';
+        iconClass = 'fa-circle-exclamation';
+      } else if (type === 'info') {
+        borderColor = 'border-blue-500/50';
+        iconBg = 'bg-blue-950/50 text-blue-400 border-blue-500/40';
+        iconClass = 'fa-circle-info';
+      }
+
+      const modalHtml = `
+        <div id="customAlertModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div class="glass-card p-6 rounded-2xl shadow-2xl w-full max-w-sm text-center space-y-4 border ${borderColor} animate-modal-in">
+            <div class="w-14 h-14 ${iconBg} rounded-2xl flex items-center justify-center text-2xl mx-auto border shadow-inner">
+              <i class="fa-solid ${iconClass}"></i>
+            </div>
+            <div class="space-y-1">
+              <h3 class="text-sm font-black tracking-widest text-white uppercase">NOTIFIKASI SISTEM</h3>
+              <p class="text-xs text-gray-300 leading-relaxed">${message}</p>
+            </div>
+            <button onclick="document.getElementById('customAlertModal').remove()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider shadow">
+              OK
+            </button>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
     }
 
-    function showConfirm(title, message, onConfirm) {
-      document.getElementById('confirmModalTitle').innerText = title;
-      document.getElementById('confirmModalMessage').innerText = message;
-      document.getElementById('customConfirmModal').classList.remove('hidden');
-      document.getElementById('confirmModalYesBtn').onclick = () => {
-        document.getElementById('customConfirmModal').classList.add('hidden');
+    function showCustomConfirm(title, message, btnText, onConfirm) {
+      const existingModal = document.getElementById('customConfirmModal');
+      if (existingModal) existingModal.remove();
+
+      const modalHtml = `
+        <div id="customConfirmModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div class="glass-card p-6 rounded-2xl shadow-2xl w-full max-w-sm text-center space-y-4 border border-amber-500/50 animate-modal-in">
+            <div class="w-14 h-14 bg-amber-950/50 text-amber-400 rounded-2xl flex items-center justify-center text-2xl mx-auto border border-amber-500/40 shadow-inner">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="space-y-1">
+              <h3 class="text-sm font-black tracking-widest text-white uppercase">${title}</h3>
+              <p class="text-xs text-gray-300 leading-relaxed">${message}</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3 pt-2">
+              <button id="confirmYesBtn" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2.5 px-4 rounded-xl transition text-xs tracking-wider shadow">
+                ${btnText}
+              </button>
+              <button onclick="document.getElementById('customConfirmModal').remove()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider shadow">
+                BATAL
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+      document.getElementById('confirmYesBtn').onclick = () => {
+        document.getElementById('customConfirmModal').remove();
         onConfirm();
       };
     }
@@ -566,42 +761,223 @@
 
     window.addEventListener("DOMContentLoaded", () => {
       const savedRole = localStorage.getItem("nmc_user_role");
-      if (!savedRole) {
-        window.location.href = "login.html";
-        return;
+      if (savedRole === "editor" || savedRole === "viewer") {
+        currentUserRole = savedRole;
+      } else {
+        currentUserRole = "viewer";
       }
-      currentUserRole = savedRole;
       applyRolePermissions();
       loadGroupsDataFromCloud();
+      handlePathChange();
     });
 
-    function handleLogout() {
-      localStorage.removeItem("nmc_user_role");
-      localStorage.removeItem("nmc_logged_user");
-      window.location.href = "login.html";
+    function selectCommunity(type, updateUrl = true) {
+      if (type === 'nakama') {
+        const savedRole = localStorage.getItem("nmc_user_role");
+        if (!savedRole || savedRole === "viewer") {
+          openLoginModal();
+          return;
+        }
+
+        if (updateUrl) history.pushState({}, '', '/dashboard/menu');
+
+        document.getElementById('sectionWelcome').classList.add('hidden');
+        document.getElementById('sectionMainMenu').classList.remove('hidden');
+        document.getElementById('sectionBahan').classList.add('hidden');
+        document.getElementById('sectionKalkulator').classList.add('hidden');
+        document.getElementById('sectionBrankas').classList.add('hidden');
+        document.getElementById('sectionBeliWarga').classList.add('hidden');
+        document.getElementById('sectionBisnis').classList.add('hidden');
+        document.getElementById('sectionSetoran').classList.add('hidden');
+        document.getElementById('sectionMember').classList.add('hidden');
+
+        document.getElementById('btnHome').classList.remove('hidden');
+        document.getElementById('btnBackMenu').classList.add('hidden');
+        document.getElementById('headerTitleText').innerText = "NAKAMA MC BLAINE COUNTY";
+        document.getElementById('headerSubtitle').innerText = "SYSTEM MANAGEMENT & CLUB HOUSE";
+        applyRolePermissions();
+      }
+    }
+
+    function handleLogin() {
+      const usernameInput = document.getElementById("loginUsername").value.trim();
+      const passwordInput = document.getElementById("loginPassword").value.trim();
+      const errorDiv = document.getElementById("loginError");
+
+      if (!usernameInput || !passwordInput) {
+        errorDiv.innerText = "Username dan sandi wajib diisi!";
+        errorDiv.classList.remove("hidden");
+        return;
+      }
+
+      db.ref('admin_users').once('value').then((snapshot) => {
+        const admins = snapshot.val();
+        let isAdmin = false;
+
+        if (admins) {
+          for (let userKey in admins) {
+            if (userKey.toLowerCase() === usernameInput.toLowerCase()) {
+              const userData = admins[userKey];
+              const storedPass = (typeof userData === 'object' && userData !== null) ? userData.password : userData;
+              if (String(storedPass) === String(passwordInput)) {
+                isAdmin = true;
+                break;
+              }
+            }
+          }
+        }
+
+        if (isAdmin) {
+          currentUserRole = "editor";
+          localStorage.setItem("nmc_user_role", "editor");
+          localStorage.setItem("nmc_logged_user", usernameInput);
+          closeLoginModal();
+          errorDiv.classList.add("hidden");
+          applyRolePermissions();
+          showCustomAlert(`Verifikasi Berhasil! Selamat datang HighRank, ${usernameInput}!`);
+          selectCommunity('nakama');
+        } else {
+          db.ref('member_users').once('value').then((memSnapshot) => {
+            const members = memSnapshot.val();
+            let isMember = false;
+
+            if (members) {
+              for (let userKey in members) {
+                if (userKey.toLowerCase() === usernameInput.toLowerCase()) {
+                  const userData = members[userKey];
+                  const storedPass = (typeof userData === 'object' && userData !== null) ? userData.password : userData;
+                  if (String(storedPass) === String(passwordInput)) {
+                    isMember = true;
+                    break;
+                  }
+                }
+              }
+            }
+
+            if (isMember) {
+              currentUserRole = "viewer";
+              localStorage.setItem("nmc_user_role", "viewer");
+              localStorage.setItem("nmc_logged_user", usernameInput);
+              closeLoginModal();
+              errorDiv.classList.add("hidden");
+              applyRolePermissions();
+              showCustomAlert(`Verifikasi Berhasil! Selamat datang Member, ${usernameInput}!`);
+              selectCommunity('nakama');
+            } else {
+              errorDiv.innerText = "Username atau sandi salah!";
+              errorDiv.classList.remove("hidden");
+            }
+          }).catch((err) => {
+            errorDiv.innerText = "Gagal terhubung ke database!";
+            errorDiv.classList.remove("hidden");
+          });
+        }
+      }).catch((err) => {
+        errorDiv.innerText = "Gagal terhubung ke database!";
+        errorDiv.classList.remove("hidden");
+      });
+    }
+
+    function openLoginModal() { document.getElementById("loginModal").classList.remove("hidden"); }
+    function closeLoginModal() { document.getElementById("loginModal").classList.add("hidden"); }
+    function handleLogout() { 
+      localStorage.removeItem("nmc_user_role"); 
+      localStorage.removeItem("nmc_logged_user"); 
+      currentUserRole = "viewer";
+      history.pushState({}, '', '/dashboard/'); 
+      showWelcomeScreen();
+      applyRolePermissions();
+      showCustomAlert("Anda telah keluar dari sesi verifikasi divisi.", "info");
     }
 
     function applyRolePermissions() {
       const badge = document.getElementById("userRoleBadge");
-      const loggedUser = localStorage.getItem("nmc_logged_user");
+      const btnLogin = document.getElementById("btnLoginAdminModal");
+      const btnLogout = document.getElementById("btnLogoutBtn");
       const editorElements = document.querySelectorAll(".editor-only");
+      const loggedUser = localStorage.getItem("nmc_logged_user");
 
       if (currentUserRole === "editor") {
         if(badge) {
           badge.innerHTML = `<i class="fa-solid fa-user-shield"></i> ${loggedUser || 'HighRank'} (Editor)`;
           badge.className = "bg-red-950/60 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-800/50 flex items-center gap-2";
         }
+        if(btnLogin) btnLogin.classList.add("hidden");
+        if(btnLogout) btnLogout.classList.remove("hidden");
         editorElements.forEach(el => el.classList.remove("hidden"));
       } else {
         if(badge) {
-          badge.innerHTML = `<i class="fa-solid fa-user-check"></i> ${loggedUser || 'Member'} (Viewer)`;
-          badge.className = "bg-slate-800 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-500/30 flex items-center gap-2";
+          if (loggedUser) {
+            badge.innerHTML = `<i class="fa-solid fa-user-check"></i> ${loggedUser} (Viewer)`;
+            badge.className = "bg-slate-800 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-500/30 flex items-center gap-2";
+            if(btnLogin) btnLogin.classList.add("hidden");
+            if(btnLogout) btnLogout.classList.remove("hidden");
+          } else {
+            badge.innerHTML = `<i class="fa-solid fa-user"></i> Status: Tamu / Publik`;
+            badge.className = "bg-slate-800 text-gray-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2";
+            if(btnLogin) btnLogin.classList.remove("hidden");
+            if(btnLogout) btnLogout.classList.add("hidden");
+          }
         }
         editorElements.forEach(el => el.classList.add("hidden"));
       }
     }
 
-    function showSection(sectionId) {
+    function handlePathChange() {
+      const urlParams = new URLSearchParams(window.location.search);
+      let redirectParam = urlParams.get('p');
+
+      if (redirectParam) {
+        redirectParam = redirectParam.replace(/^dashboard\//, '');
+        window.history.replaceState({}, '', '/dashboard/' + redirectParam);
+      }
+
+      const pathParts = window.location.pathname.split('/').filter(p => p !== '');
+      const lastPart = pathParts[pathParts.length - 1] ? pathParts[pathParts.length - 1].toLowerCase() : '';
+
+      if (!lastPart || lastPart === 'dashboard' || lastPart === 'welcome') {
+        showWelcomeScreen(false);
+      } else if (lastPart === 'menu') {
+        const savedRole = localStorage.getItem("nmc_user_role");
+        if (!savedRole) {
+          showWelcomeScreen(false);
+          openLoginModal();
+        } else {
+          selectCommunity('nakama', false);
+        }
+      } else {
+        const sectionMap = {
+          'bahan': 'sectionBahan',
+          'kalkulator': 'sectionKalkulator',
+          'brankas': 'sectionBrankas',
+          'beliwarga': 'sectionBeliWarga',
+          'bisnis': 'sectionBisnis',
+          'setoran': 'sectionSetoran',
+          'member': 'sectionMember'
+        };
+
+        if (sectionMap[lastPart]) {
+          const savedRole = localStorage.getItem("nmc_user_role");
+          if (!savedRole) {
+            showWelcomeScreen(false);
+            openLoginModal();
+          } else {
+            showSection(sectionMap[lastPart], false);
+          }
+        } else {
+          showWelcomeScreen(false);
+        }
+      }
+    }
+
+    window.addEventListener('popstate', handlePathChange);
+
+    function showWelcomeScreen(updateUrl = true) {
+      if (updateUrl && window.location.pathname !== '/dashboard/') {
+        history.pushState({}, '', '/dashboard/');
+      }
+
+      document.getElementById('sectionWelcome').classList.remove('hidden');
       document.getElementById('sectionMainMenu').classList.add('hidden');
       document.getElementById('sectionBahan').classList.add('hidden');
       document.getElementById('sectionKalkulator').classList.add('hidden');
@@ -611,24 +987,53 @@
       document.getElementById('sectionSetoran').classList.add('hidden');
       document.getElementById('sectionMember').classList.add('hidden');
 
+      document.getElementById('btnHome').classList.remove('hidden');
+      document.getElementById('btnBackMenu').classList.add('hidden');
+      document.getElementById('headerTitleText').innerText = "TRIAD COMMUNITY";
+      document.getElementById('headerSubtitle').innerText = "SYSTEM MANAGEMENT & DASHBOARD";
+      applyRolePermissions();
+    }
+
+    function showSection(sectionId, updateUrl = true) {
+      if (sectionId === 'mainMenu') {
+        selectCommunity('nakama', updateUrl);
+        return;
+      }
+
+      if (updateUrl) {
+        const cleanName = sectionId.replace('section', '').toLowerCase();
+        history.pushState({}, '', `/dashboard/${cleanName}`);
+      }
+
+      document.getElementById('sectionWelcome').classList.add('hidden');
+      document.getElementById('sectionMainMenu').classList.add('hidden');
+      document.getElementById('sectionBahan').classList.add('hidden');
+      document.getElementById('sectionKalkulator').classList.add('hidden');
+      document.getElementById('sectionBrankas').classList.add('hidden');
+      document.getElementById('sectionBeliWarga').classList.add('hidden');
+      document.getElementById('sectionBisnis').classList.add('hidden');
+      document.getElementById('sectionSetoran').classList.add('hidden');
+      document.getElementById('sectionMember').classList.add('hidden');
+
+      const btnHome = document.getElementById('btnHome');
+      const btnBack = document.getElementById('btnBackMenu');
       const subtitle = document.getElementById('headerSubtitle');
 
-      if (sectionId === 'mainMenu') {
-        document.getElementById('sectionMainMenu').classList.remove('hidden');
-        subtitle.innerText = "BLAINE COUNTY MANAGEMENT SYSTEM";
-      } else {
-        document.getElementById(sectionId).classList.remove('hidden');
-        if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
-        else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner Kelompok";
-        else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas";
-        else if(sectionId === 'sectionBeliWarga') subtitle.innerText = "Modul Transaksi Warga";
-        else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Data Bisnis & Kas";
-        else if(sectionId === 'sectionSetoran') {
-          subtitle.innerText = "Modul Data Setoran Klub";
-          switchSetoranTab('harian');
-        }
-        else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Data Member Klub";
+      document.getElementById(sectionId).classList.remove('hidden');
+      btnHome.classList.remove('hidden');
+      btnBack.classList.remove('hidden');
+
+      if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
+      else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner Kelompok";
+      else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris & Riwayat)";
+      else if(sectionId === 'sectionBeliWarga') subtitle.innerText = "Modul Transaksi Warga (Beli & Jual)";
+      else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Data Bisnis (Kas Uang Merah & Putih)";
+      else if(sectionId === 'sectionSetoran') {
+        subtitle.innerText = "Modul Data Setoran Bahan Harian & Mingguan Klub";
+        switchSetoranTab('harian');
       }
+      else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Data Anggota, Hierarki Rank & Status Keaktifan";
+
       applyRolePermissions();
     }
 
@@ -676,13 +1081,16 @@
 
     function saveDataToCloud() {
       db.ref('nmc_data').set({
-        inventory: vaultStock, history: vaultHistory, business: businessHistory,
-        beli_warga: beliWargaHistory, setoran: setoranDataMingguan,
-        setoran_harian: setoranDataHarian, club_members: memberList
+        inventory: vaultStock,
+        history: vaultHistory,
+        business: businessHistory,
+        beli_warga: beliWargaHistory,
+        setoran: setoranDataMingguan,
+        setoran_harian: setoranDataHarian,
+        club_members: memberList
       });
     }
 
-    // --- SETORAN ---
     function switchSetoranTab(type) {
       currentSetoranTab = type;
       const btnH = document.getElementById("tabBtnHarian");
@@ -722,10 +1130,10 @@
 
     function addNewMember() {
       const name = document.getElementById("newMemberName").value.trim();
-      if (!name) { showAlert("Masukkan nama anggota!"); return; }
+      if (!name) { showCustomAlert("Masukkan nama anggota!", "error"); return; }
       const ref = getCurrentSetoranRef();
       if (!ref[activePeriod]) ref[activePeriod] = {};
-      if (ref[activePeriod][name]) { showAlert("Anggota sudah ada di daftar!"); return; }
+      if (ref[activePeriod][name]) { showCustomAlert("Anggota sudah ada di daftar!", "error"); return; }
 
       ref[activePeriod][name] = { iron: 0, carbon: 0, glass: 0, rubber: 0, plastik: 0, lunas: false };
       saveDataToCloud();
@@ -751,7 +1159,7 @@
     }
 
     function removeSetoranMember(name) {
-      showConfirm("KONFIRMASI HAPUS", `Hapus ${name} dari daftar ${activePeriod}?`, () => {
+      showCustomConfirm("KONFIRMASI HAPUS", `Hapus ${name} dari daftar ${activePeriod}?`, "HAPUS", () => {
         const ref = getCurrentSetoranRef();
         delete ref[activePeriod][name];
         saveDataToCloud();
@@ -774,8 +1182,8 @@
       memberNames.forEach(name => {
         const item = currentList[name];
         let statusBadge = item.lunas ? 
-          `<span onclick="toggleStatusLunas('${name}')" class="cursor-pointer bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30">Lunas ✅</span>` : 
-          `<span onclick="toggleStatusLunas('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30">Belum Lunas ❌</span>`;
+          `<span onclick="toggleStatusLunas('${name}')" class="cursor-pointer bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30 hover:bg-green-500/30">Lunas ✅</span>` : 
+          `<span onclick="toggleStatusLunas('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30 hover:bg-green-500/30">Belum Lunas ❌</span>`;
 
         let actionCol = currentUserRole === "editor" ? 
           `<td class="p-3 text-center editor-only"><button onclick="removeSetoranMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></td>` : '';
@@ -783,11 +1191,11 @@
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
             <td class="p-3 text-white font-bold">${name}</td>
-            <td class="p-3 text-right"><input type="number" value="${item.iron}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'iron', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-amber-400 font-bold text-sm focus:outline-none"></td>
-            <td class="p-3 text-right"><input type="number" value="${item.carbon}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'carbon', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-blue-400 font-bold text-sm focus:outline-none"></td>
-            <td class="p-3 text-right"><input type="number" value="${item.glass}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'glass', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-cyan-400 font-bold text-sm focus:outline-none"></td>
-            <td class="p-3 text-right"><input type="number" value="${item.rubber}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'rubber', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-purple-400 font-bold text-sm focus:outline-none"></td>
-            <td class="p-3 text-right"><input type="number" value="${item.plastik}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'plastik', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-emerald-400 font-bold text-sm focus:outline-none"></td>
+            <td class="p-3 text-right"><input type="number" value="${item.iron}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'iron', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-amber-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
+            <td class="p-3 text-right"><input type="number" value="${item.carbon}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'carbon', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-blue-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
+            <td class="p-3 text-right"><input type="number" value="${item.glass}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'glass', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-cyan-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
+            <td class="p-3 text-right"><input type="number" value="${item.rubber}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'rubber', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-purple-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
+            <td class="p-3 text-right"><input type="number" value="${item.plastik}" ${currentUserRole!=='editor'?'disabled':''} onchange="updateSetoranBahan('${name}', 'plastik', this.value)" class="w-20 bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-right text-emerald-400 font-bold text-sm focus:outline-none focus:border-red-500"></td>
             <td class="p-3 text-center">${statusBadge}</td>
             ${actionCol}
           </tr>`;
@@ -797,6 +1205,7 @@
 
     function prosesProsesSatuTombolSetoran() {
       if (currentUserRole !== "editor") return;
+
       const ref = getCurrentSetoranRef();
       const currentList = ref[activePeriod] || {};
       let totalIron = 0, totalCarbon = 0, totalGlass = 0, totalRubber = 0, totalPlastik = 0;
@@ -813,10 +1222,11 @@
       }
 
       if (totalIron === 0 && totalCarbon === 0 && totalGlass === 0 && totalRubber === 0 && totalPlastik === 0) {
-        showAlert("Seluruh bahan bernilai 0! Tidak ada data."); return;
+        showCustomAlert("Seluruh bahan bernilai 0! Tidak ada data setoran untuk diproses.", "error"); 
+        return;
       }
 
-      showConfirm("PROSES & RESET", `Masukkan bahan ke Brankas, kirim Discord, dan reset data ${activePeriod}?`, () => {
+      showCustomConfirm("PROSES & RESET DATA", `Sistem akan memasukkan total bahan ke Brankas, mengirim rekap ke Webhook Discord, lalu mengosongkan/reset data setoran ${activePeriod}. Lanjutkan?`, "PROSES SEKARANG", () => {
         vaultStock["Iron"] = (vaultStock["Iron"] || 0) + totalIron;
         vaultStock["Carbon"] = (vaultStock["Carbon"] || 0) + totalCarbon;
         vaultStock["Glass"] = (vaultStock["Glass"] || 0) + totalGlass;
@@ -824,29 +1234,51 @@
         vaultStock["Plastik"] = (vaultStock["Plastik"] || 0) + totalPlastik;
 
         const timestamp = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-        const authorName = `Setoran ${activePeriod}`;
+        const authorName = `Setoran ${currentSetoranTab === 'harian' ? 'Harian Agenda' : 'Mingguan'} (${activePeriod})`;
 
-        if (totalIron > 0) vaultHistory.unshift({ id: Date.now() + 1, date: timestamp, item: "Iron", action: "ADD", diff: `+${totalIron}`, desc: authorName, author: "Sistem Setoran" });
-        if (totalCarbon > 0) vaultHistory.unshift({ id: Date.now() + 2, date: timestamp, item: "Carbon", action: "ADD", diff: `+${totalCarbon}`, desc: authorName, author: "Sistem Setoran" });
-        if (totalGlass > 0) vaultHistory.unshift({ id: Date.now() + 3, date: timestamp, item: "Glass", action: "ADD", diff: `+${totalGlass}`, desc: authorName, author: "Sistem Setoran" });
-        if (totalRubber > 0) vaultHistory.unshift({ id: Date.now() + 4, date: timestamp, item: "Rubber", action: "ADD", diff: `+${totalRubber}`, desc: authorName, author: "Sistem Setoran" });
-        if (totalPlastik > 0) vaultHistory.unshift({ id: Date.now() + 5, date: timestamp, item: "Plastik", action: "ADD", diff: `+${totalPlastik}`, desc: authorName, author: "Sistem Setoran" });
+        if (totalIron > 0) vaultHistory.unshift({ id: Date.now() + 1, date: timestamp, item: "Iron", action: "ADD", diff: `+${totalIron}`, desc: `Setoran ${activePeriod}`, author: authorName });
+        if (totalCarbon > 0) vaultHistory.unshift({ id: Date.now() + 2, date: timestamp, item: "Carbon", action: "ADD", diff: `+${totalCarbon}`, desc: `Setoran ${activePeriod}`, author: authorName });
+        if (totalGlass > 0) vaultHistory.unshift({ id: Date.now() + 3, date: timestamp, item: "Glass", action: "ADD", diff: `+${totalGlass}`, desc: `Setoran ${activePeriod}`, author: authorName });
+        if (totalRubber > 0) vaultHistory.unshift({ id: Date.now() + 4, date: timestamp, item: "Rubber", action: "ADD", diff: `+${totalRubber}`, desc: `Setoran ${activePeriod}`, author: authorName });
+        if (totalPlastik > 0) vaultHistory.unshift({ id: Date.now() + 5, date: timestamp, item: "Plastik", action: "ADD", diff: `+${totalPlastik}`, desc: `Setoran ${activePeriod}`, author: authorName });
+
+        let text = `📋 **REKAP SETORAN BAHAN ${currentSetoranTab.toUpperCase()} (${activePeriod.toUpperCase()})**\n\n`;
+        for (let name in currentList) {
+          const item = currentList[name];
+          const status = item.lunas ? "Lunas ✅" : "Belum Lunas ❌";
+          text += `• **${name}** | Iron: ${item.iron} | Carbon: ${item.carbon} | Glass: ${item.glass} | Rubber: ${item.rubber} | Plastik: ${item.plastik} | [${status}]\n`;
+        }
+        text += `\n📊 **TOTAL KESELURUHAN DITERIMA BRANKAS:**\n`;
+        text += `• Iron: ${totalIron} | Carbon: ${totalCarbon} | Glass: ${totalGlass} | Rubber: ${totalRubber} | Plastik: ${totalPlastik}`;
 
         db.ref('webhooks/setoran').once('value').then((snapshot) => {
           const webhookUrl = snapshot.val();
           if (webhookUrl) {
-            let text = `📋 **REKAP SETORAN (${activePeriod.toUpperCase()})**\nTotal Iron: ${totalIron} | Carbon: ${totalCarbon} | Glass: ${totalGlass} | Rubber: ${totalRubber} | Plastik: ${totalPlastik}`;
-            fetch(webhookUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text }) }).catch(()=>{});
+            fetch(webhookUrl, {
+              method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
+            }).catch(e => console.error("Webhook Discord Error", e));
           }
         });
 
         ref[activePeriod] = {};
+
         saveDataToCloud();
-        showAlert("Berhasil diproses ke brankas dan data di-reset!");
+        renderVaultInventory();
+        renderVaultHistory();
+        renderSetoranTable();
+
+        showCustomAlert(`Sukses! Setoran ${activePeriod} berhasil dimasukkan ke Brankas, dikirim ke Discord, dan data tabel otomatis di-reset.`);
       });
     }
 
-    // --- TRANSAKSI WARGA ---
+    function removeClubMember(name) {
+      showCustomConfirm("KONFIRMASI HAPUS", `Hapus ${name} dari daftar anggota klub?`, "HAPUS", () => {
+        delete memberList[name];
+        saveDataToCloud();
+        renderMemberTable();
+      });
+    }
+
     function gantiLabelTxWarga() {
       const type = document.getElementById("wargaTxType").value;
       const title = document.getElementById("formWargaTitle");
@@ -856,7 +1288,7 @@
       if (type === 'jual') {
         title.innerHTML = `<i class="fa-solid fa-cart-shopping"></i> Form Transaksi Jual ke Warga`;
         labelNama.innerText = "Nama Warga (Pembeli)";
-        labelItem.innerText = "Daftar Item yang Dijual:";
+        labelItem.innerText = "Daftar Item/Bahan yang Dijual:";
       } else {
         title.innerHTML = `<i class="fa-solid fa-cart-plus"></i> Form Transaksi Beli dari Warga`;
         labelNama.innerText = "Nama Warga (Penjual)";
@@ -886,8 +1318,12 @@
 
     function hapusBarisBeli(btn) {
       const rows = document.querySelectorAll(".beli-row");
-      if (rows.length > 1) { btn.closest(".beli-row").remove(); hitungTotalBeliWarga(); }
-      else { showAlert("Minimal harus ada 1 baris item!"); }
+      if (rows.length > 1) {
+        btn.closest(".beli-row").remove();
+        hitungTotalBeliWarga();
+      } else {
+        showCustomAlert("Minimal harus ada 1 baris item!", "error");
+      }
     }
 
     function hitungTotalBeliWarga() {
@@ -895,6 +1331,7 @@
       const currency = document.getElementById("beliWargaCurrency").value;
       const currSymbol = currency === "Uang Merah" ? "🔴 Uang Merah" : "⚪ Uang Putih";
       let grandTotal = 0;
+      
       rows.forEach(r => {
         const qty = parseFloat(r.querySelector(".row-qty").value) || 0;
         const price = parseFloat(r.querySelector(".row-price").value) || 0;
@@ -912,7 +1349,10 @@
       const admin = document.getElementById("beliWargaAdmin").value.trim();
       const currency = document.getElementById("beliWargaCurrency").value;
 
-      if (!namaWarga || !admin) { showAlert("Nama Warga dan Nama Anggota Klub wajib diisi!"); return; }
+      if (!namaWarga || !admin) {
+        showCustomAlert("Nama Warga dan Nama Anggota Klub wajib diisi!", "error");
+        return;
+      }
 
       const rows = document.querySelectorAll(".beli-row");
       let itemsDetail = [];
@@ -930,15 +1370,26 @@
 
           if (txType === 'beli') {
             vaultStock[item] = (vaultStock[item] || 0) + qty;
-            vaultHistory.unshift({ id: Date.now() + Math.random(), date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }), item, action: "ADD", diff: `+${qty}`, desc: `Beli dari Warga (${namaWarga})`, author: admin });
+            vaultHistory.unshift({
+              id: Date.now() + Math.random(),
+              date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+              item: item, action: "ADD", diff: `+${qty}`, desc: `Beli dari Warga (${namaWarga})`, author: admin
+            });
           } else {
             vaultStock[item] = Math.max(0, (vaultStock[item] || 0) - qty);
-            vaultHistory.unshift({ id: Date.now() + Math.random(), date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }), item, action: "SUB", diff: `-${qty}`, desc: `Jual ke Warga (${namaWarga})`, author: admin });
+            vaultHistory.unshift({
+              id: Date.now() + Math.random(),
+              date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+              item: item, action: "SUB", diff: `-${qty}`, desc: `Jual ke Warga (${namaWarga})`, author: admin
+            });
           }
         }
       });
 
-      if (itemsDetail.length === 0 || totalSemuaHarga <= 0) { showAlert("Masukkan jumlah dan harga dengan benar!"); return; }
+      if (itemsDetail.length === 0 || totalSemuaHarga <= 0) {
+        showCustomAlert("Masukkan jumlah dan harga satuan item dengan benar!", "error");
+        return;
+      }
 
       if (txType === 'beli') {
         businessHistory.unshift({ id: Date.now(), date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }), currency, type: "OUT", amount: totalSemuaHarga, desc: `Beli bahan dari warga (${namaWarga})`, author: admin });
@@ -952,7 +1403,7 @@
       document.getElementById("beliWargaNama").value = "";
       document.getElementById("beliWargaAdmin").value = "";
       hitungTotalBeliWarga();
-      showAlert("Transaksi warga berhasil dicatat dan brankas diperbarui!");
+      showCustomAlert(`Berhasil! Transaksi warga senilai Rp ${totalSemuaHarga.toLocaleString('id-ID')} berhasil dicatat & brankas diperbarui.`);
     }
 
     function renderBeliWargaHistory() {
@@ -968,6 +1419,7 @@
           let color = b.txType === 'jual' ? 'text-red-400' : 'text-emerald-400';
           return `<span class="${color} font-semibold">${i.item} (${sign}${i.qty})</span>`;
         }).join(', ');
+
         let currBadge = b.currency === "Uang Merah" ? "🔴" : "⚪";
         let typeBadge = b.txType === 'jual' ? '<span class="bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded text-xs font-bold">Jual</span>' : '<span class="bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded text-xs font-bold">Beli</span>';
         let costColor = b.txType === 'jual' ? 'text-green-400' : 'text-red-400';
@@ -984,14 +1436,13 @@
       });
     }
 
-    // --- BRANKAS ---
     function updateVaultStock() {
       const itemName = document.getElementById("vaultItemName").value;
       const action = document.getElementById("vaultAction").value;
       const qty = parseInt(document.getElementById("vaultQty").value) || 0;
       const desc = document.getElementById("vaultDesc").value.trim();
       const author = document.getElementById("vaultAuthor").value.trim();
-      if (qty < 0 || !desc || !author) { showAlert("Semua field wajib diisi!"); return; }
+      if (qty < 0 || !desc || !author) { showCustomAlert("Semua field wajib diisi!", "error"); return; }
       let diffText = action === "ADD" ? `+${qty}` : action === "SUB" ? `-${qty}` : `Set: ${qty}`;
       if (action === "ADD") vaultStock[itemName] = (vaultStock[itemName] || 0) + qty;
       else if (action === "SUB") vaultStock[itemName] = Math.max(0, (vaultStock[itemName] || 0) - qty);
@@ -999,7 +1450,7 @@
       vaultHistory.unshift({ id: Date.now(), date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }), item: itemName, action, diff: diffText, desc, author });
       saveDataToCloud();
       document.getElementById("vaultQty").value = "0"; document.getElementById("vaultDesc").value = ""; document.getElementById("vaultAuthor").value = "";
-      showAlert(`Stok ${itemName} berhasil diperbarui!`);
+      showCustomAlert(`Stok ${itemName} berhasil diperbarui!`);
     }
 
     function renderVaultInventory() {
@@ -1007,9 +1458,9 @@
       grid.innerHTML = "";
       for (let item in vaultStock) {
         grid.innerHTML += `
-          <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 flex flex-col justify-between">
-            <span class="text-xs font-semibold text-gray-400 truncate">${item}</span>
-            <span class="text-base font-black text-blue-400 mt-1">${vaultStock[item].toLocaleString('id-ID')}</span>
+          <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
+            <span class="text-xs font-semibold text-gray-400 truncate pr-2">${item}</span>
+            <span class="text-base font-black text-blue-400">${vaultStock[item].toLocaleString('id-ID')}</span>
           </div>`;
       }
     }
@@ -1017,9 +1468,12 @@
     function renderVaultHistory() {
       const tbody = document.getElementById("vaultHistoryTableBody");
       tbody.innerHTML = "";
-      if (vaultHistory.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat.</td></tr>`; return; }
+      if (vaultHistory.length === 0) { 
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada riwayat.</td></tr>`; 
+        return; 
+      }
       vaultHistory.forEach(h => {
-        let badge = h.action === 'ADD' ? '<span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs font-bold">Masuk</span>' : h.action === 'SUB' ? '<span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs font-bold">Keluar</span>' : '<span class="bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded text-xs font-bold">Set</span>';
+        let badge = h.action === 'ADD' ? '<span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs font-bold">Masuk (+)</span>' : h.action === 'SUB' ? '<span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs font-bold">Keluar (-)</span>' : '<span class="bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded text-xs font-bold">Set</span>';
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
             <td class="p-2.5 text-gray-400 text-xs">${h.date}</td>
@@ -1034,43 +1488,52 @@
 
     function sendVaultToDiscord() {
       if (currentUserRole !== "editor") return;
+
       db.ref('webhooks/brankas').once('value').then((snapshot) => {
         const webhookUrl = snapshot.val();
-        if (!webhookUrl) { showAlert("Webhook brankas belum diatur!"); return; }
+        if (!webhookUrl) { showCustomAlert("Webhook brankas belum diatur di Firebase!", "error"); return; }
+
         let text = `📦 **LAPORAN STOK BRANKAS NAKAMA MC**\n\n`;
-        for (let item in vaultStock) { text += `• **${item}**: ${vaultStock[item].toLocaleString('id-ID')}\n`; }
-        fetch(webhookUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text }) })
-        .then(() => showAlert("Laporan brankas terkirim ke Discord!"))
-        .catch(() => showAlert("Gagal mengirim laporan ke Discord!"));
+        for (let item in vaultStock) {
+          text += `• **${item}**: ${vaultStock[item].toLocaleString('id-ID')}\n`;
+        }
+
+        fetch(webhookUrl, {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
+        })
+        .then(() => showCustomAlert("Laporan brankas berhasil dikirim ke Discord!"))
+        .catch(() => showCustomAlert("Gagal mengirim laporan ke Discord!", "error"));
       });
     }
 
-    // --- BISNIS & KAS ---
     function addBusinessTransaction() {
       const currency = document.getElementById("businessCurrency").value;
       const type = document.getElementById("businessType").value;
       const amount = parseInt(document.getElementById("businessAmount").value) || 0;
       const desc = document.getElementById("businessDesc").value.trim();
       const author = document.getElementById("businessAuthor").value.trim();
-      if (amount <= 0 || !desc || !author) { showAlert("Isi nominal dan keterangan dengan benar!"); return; }
+      if (amount <= 0 || !desc || !author) { showCustomAlert("Isi nominal dan keterangan dengan benar!", "error"); return; }
       businessHistory.unshift({ id: Date.now(), date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }), currency, type, amount, desc, author });
       saveDataToCloud();
       document.getElementById("businessAmount").value = "0"; document.getElementById("businessDesc").value = ""; document.getElementById("businessAuthor").value = "";
-      showAlert("Transaksi kas berhasil disimpan!");
+      showCustomAlert("Transaksi kas berhasil disimpan!");
     }
 
     function renderBusinessData() {
       let saldoMerah = 0, saldoPutih = 0;
       const tbody = document.getElementById("businessHistoryTableBody");
       tbody.innerHTML = "";
+      
       if (businessHistory.length === 0) {
         tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada transaksi.</td></tr>`;
       } else {
         businessHistory.forEach(b => {
           if (b.currency === "Uang Merah") { if (b.type === "IN") saldoMerah += b.amount; else saldoMerah -= b.amount; }
           else { if (b.type === "IN") saldoPutih += b.amount; else saldoPutih -= b.amount; }
-          let typeBadge = b.type === 'IN' ? '<span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs font-bold">Masuk</span>' : '<span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs font-bold">Keluar</span>';
-          let currLabel = b.currency === "Uang Merah" ? '<span class="text-red-400 font-bold text-xs">Uang Merah</span>' : '<span class="text-gray-300 font-bold text-xs">Uang Putih</span>';
+
+          let typeBadge = b.type === 'IN' ? '<span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs font-bold">Masuk (+)</span>' : '<span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs font-bold">Keluar (-)</span>';
+          let currLabel = b.currency === "Uang Merah" ? '<span class="text-red-400 font-bold text-xs">Uang Merah 🔴</span>' : '<span class="text-gray-300 font-bold text-xs">Uang Putih ⚪</span>';
+          
           tbody.innerHTML += `
             <tr class="hover:bg-slate-800/40 transition">
               <td class="p-2.5 text-gray-400 text-xs">${b.date}</td>
@@ -1086,13 +1549,19 @@
       document.getElementById("totalUangPutih").innerText = saldoPutih.toLocaleString('id-ID');
     }
 
-    // --- MEMBER ---
     function addClubMember() {
       const name = document.getElementById("clubMemberName").value.trim();
       const rank = document.getElementById("clubMemberRank").value;
-      if (!name) { showAlert("Masukkan nama anggota!"); return; }
-      if (memberList[name]) { showAlert("Anggota sudah terdaftar!"); return; }
+      if (!name) { showCustomAlert("Masukkan nama anggota!", "error"); return; }
+      if (memberList[name]) { showCustomAlert("Anggota sudah terdaftar!", "error"); return; }
+
       memberList[name] = { rank: rank, status: "Aktif" };
+
+      const sortedKeys = Object.keys(memberList).sort((a, b) => a.localeCompare(b));
+      let sortedObj = {};
+      sortedKeys.forEach(k => { sortedObj[k] = memberList[k]; });
+      memberList = sortedObj;
+
       saveDataToCloud();
       document.getElementById("clubMemberName").value = "";
       renderMemberTable();
@@ -1112,34 +1581,35 @@
       saveDataToCloud();
     }
 
-    function removeClubMember(name) {
-      showConfirm("KONFIRMASI", `Hapus ${name} dari daftar anggota?`, () => {
-        delete memberList[name];
-        saveDataToCloud();
-        renderMemberTable();
-      });
-    }
-
     function renderMemberTable() {
       const tbody = document.getElementById("memberTableBody");
       tbody.innerHTML = "";
+      
       const memberNames = Object.keys(memberList).sort((a, b) => a.localeCompare(b));
-      if (memberNames.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">Belum ada anggota.</td></tr>`; return; }
+
+      if (memberNames.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">Belum ada anggota terdaftar.</td></tr>`;
+        return;
+      }
+
       const ranksList = ["President", "Vice President", "Sergeant at Arms", "Road Captain", "Secretary", "Treasurer", "Enforcer", "Member / Patched", "Prospect", "Hangaround"];
 
       memberNames.forEach(name => {
         const item = memberList[name];
         let rankOptions = "";
         ranksList.forEach(r => { rankOptions += `<option value="${r}" ${item.rank === r ? 'selected' : ''}>${r}</option>`; });
+
         let statusBadge = item.status === "Aktif" ? 
-          `<span onclick="toggleMemberStatus('${name}')" class="cursor-pointer bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30">Aktif ✅</span>` : 
-          `<span onclick="toggleMemberStatus('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30">Inactive ❌</span>`;
-        let actionCol = currentUserRole === "editor" ? `<td class="p-3 text-center editor-only"><button onclick="removeClubMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></td>` : '';
+          `<span onclick="toggleMemberStatus('${name}')" class="cursor-pointer bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30 hover:bg-green-500/30">Aktif ✅</span>` : 
+          `<span onclick="toggleMemberStatus('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30 hover:bg-green-500/30">Inactive ❌</span>`;
+
+        let actionCol = currentUserRole === "editor" ? 
+          `<td class="p-3 text-center editor-only"><button onclick="removeClubMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></td>` : '';
 
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
             <td class="p-3 text-white font-bold">${name}</td>
-            <td class="p-3"><select ${currentUserRole!=='editor'?'disabled':''} onchange="updateMemberRank('${name}', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs text-amber-300 font-bold focus:outline-none">${rankOptions}</select></td>
+            <td class="p-3"><select ${currentUserRole!=='editor'?'disabled':''} onchange="updateMemberRank('${name}', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs text-amber-300 font-bold focus:outline-none focus:border-emerald-400">${rankOptions}</select></td>
             <td class="p-3 text-center">${statusBadge}</td>
             ${actionCol}
           </tr>`;
@@ -1149,20 +1619,31 @@
 
     function sendMembersToDiscord() {
       if (currentUserRole !== "editor") return;
+
       db.ref('webhooks/member').once('value').then((snapshot) => {
         const webhookUrl = snapshot.val();
-        if (!webhookUrl) { showAlert("Webhook member belum diatur!"); return; }
+        if (!webhookUrl) { showCustomAlert("Webhook member belum diatur di Firebase!", "error"); return; }
+
         const memberNames = Object.keys(memberList);
-        let text = `👥 **DAFTAR ANGGOTA NAKAMA MC**\n\n`;
-        memberNames.forEach(name => { text += `• **${name}** | *${memberList[name].rank}* | [${memberList[name].status}]\n`; });
+        let text = `👥 **DAFTAR ANGGOTA & HIERARKI KLUB NAKAMA MC**\n\n`;
+        let totalAktif = 0, totalInactive = 0;
+
+        memberNames.forEach(name => {
+          const item = memberList[name];
+          if (item.status === "Aktif") totalAktif++; else totalInactive++;
+          text += `• **${name}** | *${item.rank}* | [${item.status}]\n`;
+        });
+        text += `\n📊 **RINGKASAN ANGGOTA:**\n• Aktif: ${totalAktif} | Inactive: ${totalInactive} | Total: ${memberNames.length}`;
+
         navigator.clipboard.writeText(text);
-        fetch(webhookUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text }) })
-        .then(() => showAlert("Daftar anggota dikirim dan disalin ke clipboard!"))
-        .catch(() => showAlert("Gagal kirim Discord, teks disalin ke clipboard!"));
+        fetch(webhookUrl, {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
+        })
+        .then(() => showCustomAlert("Daftar anggota berhasil dikirim & disalin!"))
+        .catch(() => showCustomAlert("Gagal mengirim ke Discord, teks disalin ke clipboard!", "error"));
       });
     }
 
-    // --- KALKULATOR BAHAN ---
     const craftRecipes = { "50AE": { iron: 50, carbon: 50, umer: 20000 }, "9MM": { iron: 50, carbon: 50, umer: 60000 }, "38LC": { iron: 50, carbon: 50, umer: 70000 } };
     function calcBahan() {
       const type = document.getElementById("craftAmmoType").value;
@@ -1183,9 +1664,9 @@
       document.getElementById("craftNetProfit").innerText = (netProfit >= 0 ? '+' : '') + netProfit.toLocaleString('id-ID');
     }
 
-    // --- HARGA KELOMPOK PARTNER ---
+    // --- TARIK DATA HARGA KELOMPOK DARI FIREBASE SECARA AMAN ---
     let groupsData = {};
-    let currentGroupKey = "";
+    let currentGroupKey = "mayans";
 
     function loadGroupsDataFromCloud() {
       db.ref('groups_data').once('value').then((snapshot) => {
@@ -1194,72 +1675,51 @@
         if (groupSelect) {
           groupSelect.innerHTML = "";
           let index = 1;
-          let firstKey = "";
           for (let key in groupsData) {
-            if (!firstKey) firstKey = key;
-            const groupObj = groupsData[key];
-            const groupName = (typeof groupObj === 'object' && groupObj !== null && groupObj.name) 
-                              ? groupObj.name 
-                              : key.replace(/_/g, ' ').toUpperCase();
-            groupSelect.innerHTML += `<option value="${key}">${index}. ${groupName}</option>`;
+            const isSelected = (key === currentGroupKey) ? "selected" : "";
+            groupSelect.innerHTML += `<option value="${key}" ${isSelected}>${index}. ${groupsData[key].name}</option>`;
             index++;
-          }
-          if (firstKey) {
-            currentGroupKey = firstKey;
-            groupSelect.value = firstKey;
           }
         }
         loadGroupData();
-      }).catch((err) => {
-        console.error("Gagal memuat groups_data:", err);
+      }).catch((error) => {
+        console.error("Gagal memuat harga kelompok:", error);
       });
     }
 
     function loadGroupData() {
       const groupSelect = document.getElementById("groupSelect");
-      if (groupSelect && groupSelect.value) { 
-        currentGroupKey = groupSelect.value; 
+      if (groupSelect && groupSelect.value) {
+        currentGroupKey = groupSelect.value;
       }
       
       if (!groupsData[currentGroupKey]) return;
       const group = groupsData[currentGroupKey];
+      document.getElementById("activeGroupNameBadge").innerText = group.name;
       
-      const displayName = (typeof group === 'object' && group !== null && group.name) 
-                          ? group.name 
-                          : currentGroupKey.replace(/_/g, ' ').toUpperCase();
-                          
-      document.getElementById("activeGroupNameBadge").innerText = displayName;
-
       const ammoListDiv = document.getElementById("ammoPriceList");
       ammoListDiv.innerHTML = "";
-      if (group && group.ammo) {
+      if (group.ammo) {
         for (let ammo in group.ammo) {
-          ammoListDiv.innerHTML += `<div class="flex justify-between bg-slate-900/80 p-3 rounded-xl border border-slate-800"><span>${ammo} (1 pack)</span><span class="font-bold text-green-400">${Number(group.ammo[ammo] || 0).toLocaleString('id-ID')}</span></div>`;
+          ammoListDiv.innerHTML += `<div class="flex justify-between bg-slate-900/80 p-3 rounded-xl border border-slate-800"><span>${ammo} (1 pack)</span><span class="font-bold text-green-400">${group.ammo[ammo].toLocaleString('id-ID')}</span></div>`;
         }
-      } else {
-        ammoListDiv.innerHTML = `<div class="text-xs text-gray-500 text-center py-2">Tidak ada data harga ammo.</div>`;
       }
 
       const itemListDiv = document.getElementById("itemPriceList");
       itemListDiv.innerHTML = "";
-      if (group && group.items) {
+      if (group.items) {
         for (let item in group.items) {
           const data = group.items[item];
-          let promoText = data && data.promo ? `<div class="text-[10px] text-amber-400 mt-0.5">${data.promo}</div>` : '';
-          let priceVal = data && data.price !== undefined ? data.price : data;
-          let isRate = data && data.isRate;
-          
+          let promoText = data.promo ? `<div class="text-[10px] text-amber-400 mt-0.5"><i class="fa-solid fa-tag"></i> ${data.promo}</div>` : '';
           itemListDiv.innerHTML += `
             <div class="glass-card p-3 rounded-xl border border-slate-800 flex flex-col justify-between">
               <div>
                 <div class="text-gray-300 font-semibold text-xs">${item}</div>
-                <div class="font-bold text-red-400 text-sm mt-1">${isRate ? (priceVal * 100) + '%' : 'Rp ' + Number(priceVal || 0).toLocaleString('id-ID')}</div>
+                <div class="font-bold text-red-400 text-sm mt-1">${data.isRate ? (data.price * 100) + '%' : 'Rp ' + data.price.toLocaleString('id-ID') + ' / PC'}</div>
               </div>
               ${promoText}
             </div>`;
         }
-      } else {
-        itemListDiv.innerHTML = `<div class="text-xs text-gray-500 text-center py-2 col-span-2">Tidak ada data barang/layanan.</div>`;
       }
 
       document.getElementById("ammoRowsContainer").innerHTML = "";
@@ -1269,16 +1729,16 @@
 
     function addAmmoRow() {
       const group = groupsData[currentGroupKey];
-      if (!group || !group.ammo) return;
+      if (!group) return;
       const container = document.getElementById("ammoRowsContainer"), rowId = "ammo_" + Date.now();
-      let opts = ""; for (let a in group.ammo) opts += `<option value="${a}">${a} (${Number(group.ammo[a]||0).toLocaleString('id-ID')}/pack)</option>`;
+      let opts = ""; for (let a in group.ammo) opts += `<option value="${a}">${a} (${group.ammo[a].toLocaleString('id-ID')}/pack)</option>`;
       container.insertAdjacentHTML('beforeend', `<div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800"><div class="md:col-span-5"><select class="ammo-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" onchange="calculateAll()">${opts}</select></div><div class="md:col-span-3"><input type="number" value="0" min="0" class="ammo-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" placeholder="0" oninput="calculateAll()"></div><div class="md:col-span-3 text-right font-bold text-green-400 text-sm">Rp <span class="ammo-row-total">0</span></div><div class="md:col-span-1 text-center"><button onclick="removeRow('${rowId}')" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div></div>`);
       calculateAll();
     }
 
     function addItemRow() {
       const group = groupsData[currentGroupKey];
-      if (!group || !group.items) return;
+      if (!group) return;
       const container = document.getElementById("itemRowsContainer"), rowId = "item_" + Date.now();
       let opts = ""; for (let i in group.items) opts += `<option value="${i}">${i}</option>`;
       container.insertAdjacentHTML('beforeend', `<div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800"><div class="md:col-span-5"><select class="item-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" onchange="calculateAll()">${opts}</select></div><div class="md:col-span-3"><input type="number" value="0" min="0" class="item-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" placeholder="0" oninput="calculateAll()"></div><div class="md:col-span-3 text-right font-bold text-red-400 text-sm">Rp <span class="item-row-total">0</span></div><div class="md:col-span-1 text-center"><button onclick="removeRow('${rowId}')" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div></div>`);
@@ -1290,80 +1750,72 @@
     function calculateAll() {
       const group = groupsData[currentGroupKey];
       if (!group) return;
-      
-      let tAmmo = 0; 
-      document.querySelectorAll("#ammoRowsContainer > div").forEach(r => { 
-        const t = r.querySelector(".ammo-type-select").value;
-        const q = parseFloat(r.querySelector(".ammo-qty-input").value) || 0; 
-        const unitPrice = (group.ammo && group.ammo[t]) ? group.ammo[t] : 0;
-        const tot = unitPrice * q; 
-        tAmmo += tot; 
-        r.querySelector(".ammo-row-total").innerText = tot.toLocaleString('id-ID'); 
-      });
+      let tAmmo = 0; document.querySelectorAll("#ammoRowsContainer > div").forEach(r => { const t = r.querySelector(".ammo-type-select").value, q = parseFloat(r.querySelector(".ammo-qty-input").value) || 0, tot = (group.ammo[t]||0)*q; tAmmo += tot; r.querySelector(".ammo-row-total").innerText = tot.toLocaleString('id-ID'); });
       document.getElementById("grandTotalAmmo").innerText = tAmmo.toLocaleString('id-ID');
-      
-      let tItem = 0; 
-      document.querySelectorAll("#itemRowsContainer > div").forEach(r => { 
-        const t = r.querySelector(".item-type-select").value;
-        const q = parseFloat(r.querySelector(".item-qty-input").value) || 0; 
-        const d = (group.items && group.items[t]) ? group.items[t] : null; 
-        if(!d) return; 
-        let priceVal = d.price !== undefined ? d.price : d;
-        let tot = d.isRate ? q * priceVal : priceVal * q; 
-        tItem += tot; 
-        r.querySelector(".item-row-total").innerText = tot.toLocaleString('id-ID'); 
-      });
+      let tItem = 0; document.querySelectorAll("#itemRowsContainer > div").forEach(r => { const t = r.querySelector(".item-type-select").value, q = parseFloat(r.querySelector(".item-qty-input").value) || 0, d = group.items[t]; if(!d) return; let tot = d.isRate ? q * d.price : d.price * q; tItem += tot; r.querySelector(".item-row-total").innerText = tot.toLocaleString('id-ID'); });
       document.getElementById("grandTotalItem").innerText = tItem.toLocaleString('id-ID');
     }
 
     function sendPenjualanToDiscord() {
       if (currentUserRole !== "editor") return;
+
       db.ref('webhooks/penjualan').once('value').then((snapshot) => {
         const webhookUrl = snapshot.val();
-        if (!webhookUrl) { showAlert("Webhook penjualan belum diatur!"); return; }
+        if (!webhookUrl) { showCustomAlert("Webhook penjualan belum diatur di Firebase!", "error"); return; }
+
         const group = groupsData[currentGroupKey];
-        const groupName = group.name || currentGroupKey.toUpperCase();
-        let text = `🛒 **LOG PENJUALAN AMMO (${groupName})**\n\n`;
+        let text = `🛒 **LOG PENJUALAN AMMO (${group.name})**\n\n`;
         let total = 0;
         document.querySelectorAll("#ammoRowsContainer > div").forEach(r => {
           const t = r.querySelector(".ammo-type-select").value;
           const q = parseFloat(r.querySelector(".ammo-qty-input").value) || 0;
-          const unitPrice = (group.ammo && group.ammo[t]) ? group.ammo[t] : 0;
-          if(q > 0) { const tot = unitPrice * q; total += tot; text += `• ${t} x${q} Pack = Rp ${tot.toLocaleString('id-ID')}\n`; }
+          if(q > 0) {
+            const tot = (group.ammo[t]||0)*q;
+            total += tot;
+            text += `• ${t} x${q} Pack = Rp ${tot.toLocaleString('id-ID')}\n`;
+          }
         });
-        text += `\n💵 **Total Tagihan: Rp ${total.toLocaleString('id-ID')}**`;
-        fetch(webhookUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text }) })
-        .then(() => showAlert("Log penjualan terkirim ke Discord!"))
-        .catch(() => showAlert("Gagal mengirim log penjualan!"));
+        text += `\n💵 **Total Tagihan Ammo: Rp ${total.toLocaleString('id-ID')}**`;
+
+        fetch(webhookUrl, {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
+        })
+        .then(() => showCustomAlert("Log penjualan berhasil dikirim ke Discord!"))
+        .catch(() => showCustomAlert("Gagal mengirim log penjualan ke Discord!", "error"));
       });
     }
 
     function sendPembelianToDiscord() {
       if (currentUserRole !== "editor") return;
+
       db.ref('webhooks/pembelian').once('value').then((snapshot) => {
         const webhookUrl = snapshot.val();
-        if (!webhookUrl) { showAlert("Webhook pembelian belum diatur!"); return; }
+        if (!webhookUrl) { showCustomAlert("Webhook pembelian belum diatur di Firebase!", "error"); return; }
+
         const group = groupsData[currentGroupKey];
-        const groupName = group.name || currentGroupKey.toUpperCase();
-        let text = `🔫 **LOG PEMBELIAN / LAYANAN (${groupName})**\n\n`;
+        let text = `🔫 **LOG PEMBELIAN / LAYANAN (${group.name})**\n\n`;
         let total = 0;
         document.querySelectorAll("#itemRowsContainer > div").forEach(r => {
           const t = r.querySelector(".item-type-select").value;
           const q = parseFloat(r.querySelector(".item-qty-input").value) || 0;
-          const d = (group.items && group.items[t]) ? group.items[t] : null;
-          if(q > 0 && d) { 
-            let priceVal = d.price !== undefined ? d.price : d;
-            const tot = d.isRate ? q * priceVal : priceVal * q; 
-            total += tot; 
-            text += `• ${t} x${q} = Rp ${tot.toLocaleString('id-ID')}\n`; 
+          const d = group.items[t];
+          if(q > 0 && d) {
+            const tot = d.isRate ? q * d.price : d.price * q;
+            total += tot;
+            text += `• ${t} x${q} = Rp ${tot.toLocaleString('id-ID')}\n`;
           }
         });
-        text += `\n💵 **Total Pembelian: Rp ${total.toLocaleString('id-ID')}**`;
-        fetch(webhookUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text }) })
-        .then(() => showAlert("Log pembelian terkirim ke Discord!"))
-        .catch(() => showAlert("Gagal mengirim log pembelian!"));
+        text += `\n💵 **Total Pembelian / Fee: Rp ${total.toLocaleString('id-ID')}**`;
+
+        fetch(webhookUrl, {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text })
+        })
+        .then(() => showCustomAlert("Log pembelian berhasil dikirim ke Discord!"))
+        .catch(() => showCustomAlert("Gagal mengirim log pembelian ke Discord!", "error"));
       });
     }
+
+    function copySummary() { showCustomAlert("Ringkasan berhasil disalin!"); }
 
     calcBahan();
   </script>
