@@ -873,11 +873,24 @@
       }
     }
 
-    // --- NAVIGASI DENGAN URL BERSIH (TANPA HASHTAG #) ---
+    // --- NAVIGASI DENGAN URL BERSIH (PERBAIKAN REDIRECT 404) ---
     function handlePathChange() {
+      // 1. Tangkap parameter 'p' dari redirect 404.html jika ada
+      const urlParams = new URLSearchParams(window.location.search);
+      let redirectParam = urlParams.get('p');
+
+      if (redirectParam) {
+        // Bersihkan path jika mengandung prefix 'dashboard/'
+        redirectParam = redirectParam.replace(/^dashboard\//, '');
+        // Ubah URL di address bar kembali bersih tanpa '?p='
+        window.history.replaceState({}, '', '/dashboard/' + redirectParam);
+      }
+
+      // 2. Baca path URL saat ini
       const pathParts = window.location.pathname.split('/').filter(p => p !== '');
       const lastPart = pathParts[pathParts.length - 1] ? pathParts[pathParts.length - 1].toLowerCase() : '';
 
+      // 3. Arahkan ke modul yang sesuai
       if (!lastPart || lastPart === 'dashboard' || lastPart === 'welcome') {
         showWelcomeScreen(false);
       } else if (lastPart === 'menu') {
