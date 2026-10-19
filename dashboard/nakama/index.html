@@ -138,13 +138,13 @@
   <div class="bg-ambient-glow"></div>
 
   <!-- MODAL LOGIN -->
-  <div id="loginModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+  <div id="loginModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6 border border-red-600/40 relative overflow-hidden">
       <div class="absolute -top-12 -left-12 w-32 h-32 bg-red-600/20 rounded-full blur-2xl pointer-events-none"></div>
 
       <div class="text-center space-y-3 relative z-10">
         <div class="w-20 h-20 bg-red-950/50 rounded-2xl flex items-center justify-center mx-auto border border-red-600/40 shadow-inner overflow-hidden p-1">
-          <img src="Nakama.png" alt="Logo" class="w-full h-full object-cover rounded-xl" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+          <img src="../../NakamaLogo.png" alt="Logo" class="w-full h-full object-cover rounded-xl" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
         </div>
         <div>
           <h2 class="text-2xl font-black tracking-wider text-red-500">TRIAD COMMUNITY ACCESS</h2>
@@ -173,7 +173,7 @@
           Username atau sandi salah!
         </div>
 
-        <button id="loginSubmitBtn" onclick="handleLogin()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider mt-2">
+        <button id="loginSubmitBtn" onclick="handleLogin()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider mt-2 cursor-pointer">
           <i class="fa-solid fa-right-to-bracket"></i> MASUK SISTEM
         </button>
       </div>
@@ -185,18 +185,18 @@
     <!-- HEADER -->
     <div class="flex flex-col md:flex-row justify-between items-center bg-slate-900/90 p-6 rounded-2xl border border-red-900/40 shadow-2xl">
       <div class="flex items-center gap-4">
-        <button id="btnHome" onclick="showWelcomeScreen()" class="bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700" title="Kembali ke Home">
+        <a href="../../index.html" class="bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700 flex items-center justify-center" title="Kembali ke Portal Utama">
           <i class="fa-solid fa-house"></i>
-        </button>
-        <button id="btnBackMenu" onclick="showSection('mainMenu')" class="hidden bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700" title="Kembali ke Menu">
+        </a>
+        <button id="btnBackMenu" onclick="showSection('mainMenu')" class="hidden bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700 cursor-pointer" title="Kembali ke Menu">
           <i class="fa-solid fa-arrow-left"></i>
         </button>
 
         <div class="flex items-center gap-3">
-          <img src="Nakama.png" alt="Logo" class="w-12 h-12 object-contain rounded-xl border border-red-600/50 bg-black p-1 shadow-md" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+          <img src="../../NakamaLogo.png" alt="Logo" class="w-12 h-12 object-contain rounded-xl border border-red-600/50 bg-black p-1 shadow-md" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
           <div>
-            <h1 class="text-2xl md:text-3xl font-black tracking-wide mc-gradient-text" id="headerTitleText">TRIAD COMMUNITY</h1>
-            <p class="text-xs text-gray-400 mt-0.5 tracking-wider" id="headerSubtitle">SYSTEM MANAGEMENT & DASHBOARD</p>
+            <h1 class="text-2xl md:text-3xl font-black tracking-wide mc-gradient-text" id="headerTitleText">NAKAMA MC BLAINE COUNTY</h1>
+            <p class="text-xs text-gray-400 mt-0.5 tracking-wider" id="headerSubtitle">SYSTEM MANAGEMENT & CLUB HOUSE</p>
           </div>
         </div>
       </div>
@@ -206,66 +206,20 @@
           <i class="fa-solid fa-eye"></i> Role: Viewer
         </span>
 
-        <button id="btnLoginAdminModal" onclick="openLoginModal()" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-500/30 transition flex items-center gap-1">
+        <button id="btnLoginAdminModal" onclick="openLoginModal()" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-500/30 transition flex items-center gap-1 cursor-pointer">
           <i class="fa-solid fa-right-to-bracket"></i> Login Ulang
         </button>
 
-        <button id="btnLogoutBtn" onclick="handleLogout()" class="hidden bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-500/30 transition flex items-center gap-1">
+        <button id="btnLogoutBtn" onclick="handleLogout()" class="bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-500/30 transition flex items-center gap-1 cursor-pointer">
           <i class="fa-solid fa-right-from-bracket"></i> Keluar / Ganti Akun
         </button>
       </div>
     </div>
 
-    <!-- HALAMAN WELCOME -->
-    <div id="sectionWelcome" class="space-y-8 py-12 animate-fade-in">
-      <div class="text-center space-y-3 max-w-2xl mx-auto">
-        <span class="bg-red-950/50 text-red-400 text-xs font-bold px-4 py-1.5 rounded-full border border-red-800/40 tracking-widest uppercase inline-flex items-center gap-2 shadow-inner">
-          <i class="fa-solid fa-shield-halved"></i> Pusat Triad Community
-        </span>
-        <h2 class="text-4xl md:text-6xl font-black tracking-wider welcome-title-glow leading-tight">WELCOME TO <br> TRIAD COMMUNITY</h2>
-        <p class="text-sm text-gray-400">Silakan pilih divisi atau klub organisasi di bawah ini untuk mengakses sistem management by Bunny.</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto pt-4">
-        <div onclick="selectCommunity('nakama')" class="menu-card glass-card p-8 rounded-2xl cursor-pointer flex flex-col justify-between border border-red-600/40 shadow-xl relative overflow-hidden group">
-          <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-red-600/10 rounded-full blur-2xl group-hover:bg-red-600/20 transition"></div>
-          <div class="space-y-5 relative z-10">
-            <div class="w-16 h-16 bg-gradient-to-br from-red-950 to-red-900/60 text-red-500 rounded-2xl flex items-center justify-center text-3xl border border-red-600/40 shadow-lg">
-              <i class="fa-solid fa-skull"></i>
-            </div>
-            <div>
-              <h3 class="text-2xl font-black text-white mb-2 group-hover:text-red-400 transition">Nakama MC Blaine County</h3>
-              <p class="text-sm text-gray-400 leading-relaxed">Modul manajemen lengkap: Kalkulator bahan, transaksi partner, brankas, kas bisnis, setoran & data member.</p>
-            </div>
-          </div>
-          <div class="mt-8 flex justify-between items-center text-sm font-bold text-red-400 relative z-10 pt-4 border-t border-slate-800/80">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk Sistem Klub</span>
-            <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
-          </div>
-        </div>
-
-        <div onclick="showCustomAlert('Divisi atau klub lain akan segera hadir (Coming Soon)!', 'info')" class="coming-soon-card p-8 rounded-2xl cursor-pointer flex flex-col justify-between shadow-xl opacity-75 hover:opacity-100 transition">
-          <div class="space-y-5">
-            <div class="w-16 h-16 bg-slate-900 text-gray-400 rounded-2xl flex items-center justify-center text-3xl border border-slate-800 shadow-inner">
-              <i class="fa-solid fa-clock-rotate-left"></i>
-            </div>
-            <div>
-              <h3 class="text-2xl font-bold text-gray-300 mb-2">Coming Soon</h3>
-              <p class="text-sm text-gray-500 leading-relaxed">Persiapan modul untuk divisi, bisnis, atau organisasi tambahan lainnya di masa mendatang.</p>
-            </div>
-          </div>
-          <div class="mt-8 flex justify-between items-center text-sm font-semibold text-gray-500 pt-4 border-t border-slate-800/80">
-            <span>Segera Hadir</span>
-            <i class="fa-solid fa-lock text-gray-600"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- MENU UTAMA NAKAMA MC -->
-    <div id="sectionMainMenu" class="hidden space-y-6">
+    <div id="sectionMainMenu" class="space-y-6">
       <h2 class="text-sm font-bold text-red-400 tracking-widest uppercase flex items-center gap-2">
-        <i class="fa-solid fa-bars"></i> NAKAMA MC BLAINE COUNTY - PILIH MODUL MANAGEMENT
+        <i class="fa-solid fa-bars"></i> PILIH MODUL MANAGEMENT
       </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 menu-grid-layout">
@@ -334,13 +288,13 @@
       </div>
     </div>
 
-    <!-- DATA SETORAN (RINGKAS: HARIAN TUNGGAL & MINGGUAN) -->
+    <!-- DATA SETORAN -->
     <div id="sectionSetoran" class="hidden space-y-6">
       <div class="flex border-b border-slate-800 gap-2">
-        <button id="tabBtnHarian" onclick="switchSetoranTab('harian')" class="px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-900 border-t border-x border-slate-700 text-pink-400 transition flex items-center gap-2">
+        <button id="tabBtnHarian" onclick="switchSetoranTab('harian')" class="px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-900 border-t border-x border-slate-700 text-pink-400 transition flex items-center gap-2 cursor-pointer">
           <i class="fa-solid fa-calendar-day"></i> Setoran Harian (Agenda)
         </button>
-        <button id="tabBtnMingguan" onclick="switchSetoranTab('mingguan')" class="px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-950/60 border-t border-x border-transparent text-gray-500 hover:text-gray-300 transition flex items-center gap-2">
+        <button id="tabBtnMingguan" onclick="switchSetoranTab('mingguan')" class="px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-950/60 border-t border-x border-transparent text-gray-500 hover:text-gray-300 transition flex items-center gap-2 cursor-pointer">
           <i class="fa-solid fa-calendar-week"></i> Setoran Mingguan
         </button>
       </div>
@@ -349,12 +303,11 @@
         <div class="w-full md:w-auto flex items-center gap-3">
           <label class="text-xs font-bold text-red-400 uppercase tracking-wider" id="labelPeriodSelect">Mode Agenda:</label>
           <select id="selectSetoranPeriod" onchange="changeActiveSetoranPeriod()" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-bold focus:outline-none focus:border-red-500 text-sm">
-            <!-- Dynamic Options via JS -->
           </select>
         </div>
         <div class="w-full md:w-auto flex items-center gap-2 editor-only">
           <input type="text" id="newMemberName" placeholder="Nama Anggota Baru..." class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-red-500">
-          <button onclick="addNewMember()" class="bg-red-700 hover:bg-red-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-user-plus"></i> Tambah Anggota</button>
+          <button onclick="addNewMember()" class="bg-red-700 hover:bg-red-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1 cursor-pointer"><i class="fa-solid fa-user-plus"></i> Tambah Anggota</button>
         </div>
       </div>
 
@@ -364,7 +317,7 @@
             <i class="fa-solid fa-hand-holding-dollar"></i> <span id="setoranHeaderTitle">Rekap Setoran Harian Agenda</span> (<span id="currentPeriodLabel">Harian</span>)
           </h2>
           <div class="flex flex-wrap items-center gap-2">
-            <button onclick="prosesProsesSatuTombolSetoran()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold px-5 py-3 rounded-xl transition flex items-center gap-2 shadow-lg border border-emerald-400/30 editor-only">
+            <button onclick="prosesProsesSatuTombolSetoran()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold px-5 py-3 rounded-xl transition flex items-center gap-2 shadow-lg border border-emerald-400/30 editor-only cursor-pointer">
               <i class="fa-solid fa-vault"></i> Masukkan ke Brankas, Kirim Discord & Reset Data
             </button>
           </div>
@@ -436,11 +389,11 @@
               <div class="md:col-span-2"><input type="number" min="1" value="1" placeholder="Qty" class="row-qty w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()"></div>
               <div class="md:col-span-3"><input type="number" min="0" value="0" placeholder="Harga Satuan" class="row-price w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()"></div>
               <div class="md:col-span-2 text-right font-bold text-emerald-400 text-sm pt-1 md:pt-0">Rp <span class="row-total-text">0</span></div>
-              <div class="md:col-span-1 text-center"><button type="button" onclick="hapusBarisBeli(this)" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></div>
+              <div class="md:col-span-1 text-center"><button type="button" onclick="hapusBarisBeli(this)" class="text-red-400 hover:text-red-300 p-2 cursor-pointer"><i class="fa-solid fa-trash"></i></button></div>
             </div>
           </div>
 
-          <button type="button" onclick="tambahBarisBeli()" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/40 text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2">
+          <button type="button" onclick="tambahBarisBeli()" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/40 text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 cursor-pointer">
             <i class="fa-solid fa-plus"></i> Tambah Item Lain (+)
           </button>
         </div>
@@ -450,7 +403,7 @@
             <span class="text-xs text-gray-400 block">Total Keseluruhan Transaksi:</span>
             <span id="grandTotalBeliText" class="text-2xl font-black text-emerald-400">Rp 0 (⚪ Uang Putih)</span>
           </div>
-          <button onclick="prosesTransaksiWarga()" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+          <button onclick="prosesTransaksiWarga()" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer">
             <i class="fa-solid fa-check-to-slot"></i> Proses, Update Brankas & Kas
           </button>
         </div>
@@ -524,26 +477,34 @@
       <div class="glass-card p-4 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4">
         <span class="text-sm font-bold text-red-400"><i class="fa-solid fa-handshake"></i> PILIH KELOMPOK PARTNER:</span>
         <select id="groupSelect" onchange="loadGroupData()" class="w-full md:w-64 bg-slate-900 border border-red-500/50 rounded-xl p-2.5 text-white font-bold focus:outline-none focus:border-red-400">
-          <!-- Dynamic Options via Firebase -->
         </select>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <!-- KOTAK HARGA (KHUSUS EDITOR / ADMIN) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 editor-only">
         <div class="glass-card p-5 rounded-2xl"><h2 class="text-md font-bold text-green-400 mb-3 flex items-center justify-between"><span><i class="fa-solid fa-tag"></i> HARGA JUAL AMMO</span><span id="activeGroupNameBadge" class="text-xs bg-slate-800 text-red-400 px-2.5 py-1 rounded-full border border-slate-700">-</span></h2><div id="ammoPriceList" class="space-y-2 text-sm"></div></div>
         <div class="glass-card p-5 rounded-2xl"><h2 class="text-md font-bold text-red-400 mb-3 flex items-center justify-between"><span><i class="fa-solid fa-cart-shopping"></i> HARGA BELI / LAYANAN</span></h2><div id="itemPriceList" class="grid grid-cols-2 gap-2 text-xs"></div></div>
       </div>
+
+      <!-- PESAN PEMBERITAHUAN KHUSUS MEMBER (VIEWER) -->
+      <div id="memberPriceWarning" class="glass-card p-6 rounded-2xl text-center text-red-400 text-xs font-semibold hidden">
+        <i class="fa-solid fa-lock text-sm mb-1 block"></i> Modul Transaksi & Harga Rahasia ini khusus untuk akses <b>Editor / Admin</b>.
+      </div>
+
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-        <div class="flex justify-between items-center"><h2 class="text-lg font-bold text-green-400 flex items-center gap-2"><i class="fa-solid fa-calculator"></i> KALKULATOR PENJUALAN AMMO</h2><button onclick="addAmmoRow()" class="bg-green-600/80 hover:bg-green-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1 editor-only"><i class="fa-solid fa-plus"></i> Tambah Ammo</button></div>
+        <div class="flex justify-between items-center"><h2 class="text-lg font-bold text-green-400 flex items-center gap-2"><i class="fa-solid fa-calculator"></i> KALKULATOR PENJUALAN AMMO</h2><button onclick="addAmmoRow()" class="bg-green-600/80 hover:bg-green-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1 editor-only cursor-pointer"><i class="fa-solid fa-plus"></i> Tambah Ammo</button></div>
         <div id="ammoRowsContainer" class="space-y-3"></div>
         <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex justify-between items-center"><span class="text-sm text-gray-400">Total Tagihan Ammo:</span><span id="grandTotalAmmo" class="text-2xl font-black text-green-400">0</span></div>
-        <button onclick="sendPenjualanToDiscord()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 editor-only"><i class="fa-brands fa-discord"></i> Kirim Log Penjualan ke Discord</button>
+        <button onclick="sendPenjualanToDiscord()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 editor-only cursor-pointer"><i class="fa-brands fa-discord"></i> Kirim Log Penjualan ke Discord</button>
       </div>
+
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-        <div class="flex justify-between items-center"><h2 class="text-lg font-bold text-red-400 flex items-center gap-2"><i class="fa-solid fa-gun"></i> KALKULATOR PEMBELIAN / LAYANAN</h2><button onclick="addItemRow()" class="bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1 editor-only"><i class="fa-solid fa-plus"></i> Tambah Barang</button></div>
+        <div class="flex justify-between items-center"><h2 class="text-lg font-bold text-red-400 flex items-center gap-2"><i class="fa-solid fa-gun"></i> KALKULATOR PEMBELIAN / LAYANAN</h2><button onclick="addItemRow()" class="bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1 editor-only cursor-pointer"><i class="fa-solid fa-plus"></i> Tambah Barang</button></div>
         <div id="itemRowsContainer" class="space-y-3"></div>
         <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 flex justify-between items-center"><span class="text-sm text-gray-400">Total Pembelian / Fee:</span><span id="grandTotalItem" class="text-2xl font-black text-red-400">0</span></div>
-        <button onclick="sendPembelianToDiscord()" class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 editor-only"><i class="fa-brands fa-discord"></i> Kirim Log Pembelian ke Discord</button>
+        <button onclick="sendPembelianToDiscord()" class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 editor-only cursor-pointer"><i class="fa-brands fa-discord"></i> Kirim Log Pembelian ke Discord</button>
       </div>
-      <button onclick="copySummary()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 border border-slate-700"><i class="fa-solid fa-copy"></i> Salin Ringkasan Transaksi Gabungan</button>
+      <button onclick="copySummary()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 border border-slate-700 cursor-pointer"><i class="fa-solid fa-copy"></i> Salin Ringkasan Transaksi Gabungan</button>
     </div>
 
     <!-- DATA BRANKAS -->
@@ -566,8 +527,8 @@
           <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nama Pelapor</label><input type="text" id="vaultAuthor" placeholder="Nama Anggota" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-400"></div>
         </div>
         <div class="flex gap-3 pt-2">
-          <button onclick="updateVaultStock()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2"><i class="fa-solid fa-check"></i> Perbarui & Simpan History</button>
-          <button onclick="sendVaultToDiscord()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 editor-only"><i class="fa-brands fa-discord"></i> Kirim Laporan ke Discord</button>
+          <button onclick="updateVaultStock()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"><i class="fa-solid fa-check"></i> Perbarui & Simpan History</button>
+          <button onclick="sendVaultToDiscord()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 editor-only cursor-pointer"><i class="fa-brands fa-discord"></i> Kirim Laporan ke Discord</button>
         </div>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
@@ -612,7 +573,7 @@
           <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Keterangan</label><input type="text" id="businessDesc" placeholder="Contoh: Jual barang" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400"></div>
           <div><label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Pelapor</label><input type="text" id="businessAuthor" placeholder="Nama" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400"></div>
         </div>
-        <button onclick="addBusinessTransaction()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2"><i class="fa-solid fa-plus"></i> Simpan Catatan Kas</button>
+        <button onclick="addBusinessTransaction()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"><i class="fa-solid fa-plus"></i> Simpan Catatan Kas</button>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
         <h2 class="text-lg font-bold text-gray-200 flex items-center gap-2"><i class="fa-solid fa-history"></i> Riwayat Arus Kas Bisnis</h2>
@@ -640,14 +601,14 @@
           <select id="clubMemberRank" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
             <option value="President">1. President</option><option value="Vice President">2. Vice President</option><option value="Sergeant at Arms">3. Sergeant at Arms</option><option value="Road Captain">4. Road Captain</option><option value="Secretary">5. Secretary</option><option value="Treasurer">6. Treasurer</option><option value="Enforcer">7. Enforcer</option><option value="Member / Patched">8. Member / Patched</option><option value="Prospect" selected>9. Prospect</option><option value="Hangaround">10. Hangaround</option>
           </select>
-          <button onclick="addClubMember()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-user-plus"></i> Tambah</button>
+          <button onclick="addClubMember()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1 cursor-pointer"><i class="fa-solid fa-user-plus"></i> Tambah</button>
         </div>
       </div>
 
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
         <div class="flex justify-between items-center">
           <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-users"></i> Daftar Anggota Aktif & Hierarki Klub</h2>
-          <button onclick="sendMembersToDiscord()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg editor-only">
+          <button onclick="sendMembersToDiscord()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-lg editor-only cursor-pointer">
             <i class="fa-brands fa-discord"></i> Kirim Daftar Anggota ke Discord & Salin
           </button>
         </div>
@@ -700,7 +661,7 @@
               <h3 class="text-sm font-black tracking-widest text-white uppercase">NOTIFIKASI SISTEM</h3>
               <p class="text-xs text-gray-300 leading-relaxed">${message}</p>
             </div>
-            <button onclick="document.getElementById('customAlertModal').remove()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider shadow">
+            <button onclick="document.getElementById('customAlertModal').remove()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider shadow cursor-pointer">
               OK
             </button>
           </div>
@@ -724,10 +685,10 @@
               <p class="text-xs text-gray-300 leading-relaxed">${message}</p>
             </div>
             <div class="grid grid-cols-2 gap-3 pt-2">
-              <button id="confirmYesBtn" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2.5 px-4 rounded-xl transition text-xs tracking-wider shadow">
+              <button id="confirmYesBtn" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2.5 px-4 rounded-xl transition text-xs tracking-wider shadow cursor-pointer">
                 ${btnText}
               </button>
-              <button onclick="document.getElementById('customConfirmModal').remove()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider shadow">
+              <button onclick="document.getElementById('customConfirmModal').remove()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider shadow cursor-pointer">
                 BATAL
               </button>
             </div>
@@ -759,7 +720,7 @@
       if (savedRole === "editor" || savedRole === "viewer") {
         currentUserRole = savedRole;
         document.getElementById("loginModal").classList.add("hidden");
-        showWelcomeScreen();
+        selectCommunity('nakama');
       } else {
         document.getElementById("loginModal").classList.remove("hidden");
       }
@@ -801,7 +762,7 @@
           document.getElementById("loginModal").classList.add("hidden");
           errorDiv.classList.add("hidden");
           applyRolePermissions();
-          showWelcomeScreen();
+          selectCommunity('nakama');
           showCustomAlert(`Selamat datang HighRank, ${usernameInput}!`);
         } else {
           db.ref('member_users').once('value').then((memSnapshot) => {
@@ -828,7 +789,7 @@
               document.getElementById("loginModal").classList.add("hidden");
               errorDiv.classList.add("hidden");
               applyRolePermissions();
-              showWelcomeScreen();
+              selectCommunity('nakama');
               showCustomAlert(`Selamat datang Member, ${usernameInput}!`);
             } else {
               errorDiv.innerText = "Username atau sandi salah!";
@@ -853,6 +814,7 @@
       const btnLogin = document.getElementById("btnLoginAdminModal");
       const btnLogout = document.getElementById("btnLogoutBtn");
       const editorElements = document.querySelectorAll(".editor-only");
+      const memberWarning = document.getElementById("memberPriceWarning");
 
       if (currentUserRole === "editor") {
         if(badge) {
@@ -862,6 +824,7 @@
         if(btnLogin) btnLogin.classList.add("hidden");
         if(btnLogout) btnLogout.classList.remove("hidden");
         editorElements.forEach(el => el.classList.remove("hidden"));
+        if(memberWarning) memberWarning.classList.add("hidden");
       } else {
         if(badge) {
           badge.innerHTML = `<i class="fa-solid fa-eye"></i> Role: Member (Viewer)`;
@@ -870,35 +833,15 @@
         if(btnLogin) btnLogin.classList.add("hidden");
         if(btnLogout) btnLogout.classList.remove("hidden");
         editorElements.forEach(el => el.classList.add("hidden"));
+        if(memberWarning) memberWarning.classList.remove("hidden");
       }
     }
 
     // --- NAVIGASI BERSIH TANPA HASH (#) ---
-    function showWelcomeScreen() {
-      window.history.replaceState({}, document.title, window.location.pathname);
-
-      document.getElementById('sectionWelcome').classList.remove('hidden');
-      document.getElementById('sectionMainMenu').classList.add('hidden');
-      document.getElementById('sectionBahan').classList.add('hidden');
-      document.getElementById('sectionKalkulator').classList.add('hidden');
-      document.getElementById('sectionBrankas').classList.add('hidden');
-      document.getElementById('sectionBeliWarga').classList.add('hidden');
-      document.getElementById('sectionBisnis').classList.add('hidden');
-      document.getElementById('sectionSetoran').classList.add('hidden');
-      document.getElementById('sectionMember').classList.add('hidden');
-
-      document.getElementById('btnHome').classList.remove('hidden');
-      document.getElementById('btnBackMenu').classList.add('hidden');
-      document.getElementById('headerTitleText').innerText = "TRIAD COMMUNITY";
-      document.getElementById('headerSubtitle').innerText = "SYSTEM MANAGEMENT & DASHBOARD";
-      applyRolePermissions();
-    }
-
     function selectCommunity(type) {
       if (type === 'nakama') {
         window.history.replaceState({}, document.title, window.location.pathname);
 
-        document.getElementById('sectionWelcome').classList.add('hidden');
         document.getElementById('sectionMainMenu').classList.remove('hidden');
         document.getElementById('sectionBahan').classList.add('hidden');
         document.getElementById('sectionKalkulator').classList.add('hidden');
@@ -908,7 +851,6 @@
         document.getElementById('sectionSetoran').classList.add('hidden');
         document.getElementById('sectionMember').classList.add('hidden');
 
-        document.getElementById('btnHome').classList.remove('hidden');
         document.getElementById('btnBackMenu').classList.add('hidden');
         document.getElementById('headerTitleText').innerText = "NAKAMA MC BLAINE COUNTY";
         document.getElementById('headerSubtitle').innerText = "SYSTEM MANAGEMENT & CLUB HOUSE";
@@ -924,7 +866,6 @@
 
       window.history.replaceState({}, document.title, window.location.pathname);
 
-      document.getElementById('sectionWelcome').classList.add('hidden');
       document.getElementById('sectionMainMenu').classList.add('hidden');
       document.getElementById('sectionBahan').classList.add('hidden');
       document.getElementById('sectionKalkulator').classList.add('hidden');
@@ -934,12 +875,10 @@
       document.getElementById('sectionSetoran').classList.add('hidden');
       document.getElementById('sectionMember').classList.add('hidden');
 
-      const btnHome = document.getElementById('btnHome');
       const btnBack = document.getElementById('btnBackMenu');
       const subtitle = document.getElementById('headerSubtitle');
 
       document.getElementById(sectionId).classList.remove('hidden');
-      btnHome.classList.remove('hidden');
       btnBack.classList.remove('hidden');
 
       if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
@@ -977,7 +916,7 @@
     let groupsData = {};
     let currentGroupKey = "";
 
-    // --- REALTIME SYNC FIREBASE (DIPISAH SESUAI STRUKTUR ROOT) ---
+    // --- REALTIME SYNC FIREBASE ---
     db.ref('nmc_data').on('value', (snapshot) => {
       const data = snapshot.val();
       if (data) {
@@ -1002,7 +941,6 @@
       renderMemberTable();
     });
 
-    // Memantau groups_data dari root Firebase
     db.ref('groups_data').on('value', (snapshot) => {
       const data = snapshot.val();
       groupsData = data || {};
@@ -1058,15 +996,15 @@
       const titleH = document.getElementById("setoranHeaderTitle");
 
       if (type === 'harian') {
-        btnH.className = "px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-900 border-t border-x border-slate-700 text-pink-400 transition flex items-center gap-2";
-        btnM.className = "px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-950/60 border-t border-x border-transparent text-gray-500 hover:text-gray-300 transition flex items-center gap-2";
+        btnH.className = "px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-900 border-t border-x border-slate-700 text-pink-400 transition flex items-center gap-2 cursor-pointer";
+        btnM.className = "px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-950/60 border-t border-x border-transparent text-gray-500 hover:text-gray-300 transition flex items-center gap-2 cursor-pointer";
         labelP.innerText = "Mode Agenda:";
         titleH.innerText = "Rekap Setoran Harian Agenda";
         selectP.innerHTML = `<option value="Harian">Setoran Harian (Agenda)</option>`;
         activePeriod = "Harian";
       } else {
-        btnM.className = "px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-900 border-t border-x border-slate-700 text-pink-400 transition flex items-center gap-2";
-        btnH.className = "px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-950/60 border-t border-x border-transparent text-gray-500 hover:text-gray-300 transition flex items-center gap-2";
+        btnM.className = "px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-900 border-t border-x border-slate-700 text-pink-400 transition flex items-center gap-2 cursor-pointer";
+        btnH.className = "px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-950/60 border-t border-x border-transparent text-gray-500 hover:text-gray-300 transition flex items-center gap-2 cursor-pointer";
         labelP.innerText = "Pilih Minggu:";
         titleH.innerText = "Rekap Setoran Mingguan";
         selectP.innerHTML = `<option value="Minggu 1">Minggu 1</option><option value="Minggu 2">Minggu 2</option><option value="Minggu 3">Minggu 3</option><option value="Minggu 4">Minggu 4</option>`;
@@ -1144,7 +1082,7 @@
           `<span onclick="toggleStatusLunas('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-red-500/30 hover:bg-green-500/30">Belum Lunas ❌</span>`;
 
         let actionCol = currentUserRole === "editor" ? 
-          `<td class="p-3 text-center editor-only"><button onclick="removeSetoranMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></td>` : '';
+          `<td class="p-3 text-center editor-only"><button onclick="removeSetoranMember('${name}')" class="text-red-400 hover:text-red-300 p-2 cursor-pointer"><i class="fa-solid fa-trash"></i></button></td>` : '';
 
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
@@ -1269,7 +1207,7 @@
           <div class="md:col-span-2"><input type="number" min="1" value="1" placeholder="Qty" class="row-qty w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()"></div>
           <div class="md:col-span-3"><input type="number" min="0" value="0" placeholder="Harga Satuan" class="row-price w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()"></div>
           <div class="md:col-span-2 text-right font-bold text-emerald-400 text-sm pt-1 md:pt-0">Rp <span class="row-total-text">0</span></div>
-          <div class="md:col-span-1 text-center"><button type="button" onclick="hapusBarisBeli(this)" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></div>
+          <div class="md:col-span-1 text-center"><button type="button" onclick="hapusBarisBeli(this)" class="text-red-400 hover:text-red-300 p-2 cursor-pointer"><i class="fa-solid fa-trash"></i></button></div>
         </div>`;
       container.insertAdjacentHTML('beforeend', rowHtml);
     }
@@ -1562,7 +1500,7 @@
           `<span onclick="toggleMemberStatus('${name}')" class="cursor-pointer bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/30 hover:bg-green-500/30">Inactive ❌</span>`;
 
         let actionCol = currentUserRole === "editor" ? 
-          `<td class="p-3 text-center editor-only"><button onclick="removeClubMember('${name}')" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash"></i></button></td>` : '';
+          `<td class="p-3 text-center editor-only"><button onclick="removeClubMember('${name}')" class="text-red-400 hover:text-red-300 p-2 cursor-pointer"><i class="fa-solid fa-trash"></i></button></td>` : '';
 
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40 transition">
@@ -1668,7 +1606,7 @@
       
       const container = document.getElementById("ammoRowsContainer"), rowId = "ammo_" + Date.now();
       let opts = ""; for (let a in group.ammo) opts += `<option value="${a}">${a} (${group.ammo[a].toLocaleString('id-ID')}/pack)</option>`;
-      container.insertAdjacentHTML('beforeend', `<div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800"><div class="md:col-span-5"><select class="ammo-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" onchange="calculateAll()">${opts}</select></div><div class="md:col-span-3"><input type="number" value="0" min="0" class="ammo-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" placeholder="0" oninput="calculateAll()"></div><div class="md:col-span-3 text-right font-bold text-green-400 text-sm">Rp <span class="ammo-row-total">0</span></div><div class="md:col-span-1 text-center"><button onclick="removeRow('${rowId}')" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div></div>`);
+      container.insertAdjacentHTML('beforeend', `<div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800"><div class="md:col-span-5"><select class="ammo-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" onchange="calculateAll()">${opts}</select></div><div class="md:col-span-3"><input type="number" value="0" min="0" class="ammo-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" placeholder="0" oninput="calculateAll()"></div><div class="md:col-span-3 text-right font-bold text-green-400 text-sm">Rp <span class="ammo-row-total">0</span></div><div class="md:col-span-1 text-center"><button onclick="removeRow('${rowId}')" class="text-red-400 p-2 cursor-pointer"><i class="fa-solid fa-trash"></i></button></div></div>`);
       calculateAll();
     }
 
@@ -1678,7 +1616,7 @@
 
       const container = document.getElementById("itemRowsContainer"), rowId = "item_" + Date.now();
       let opts = ""; for (let i in group.items) opts += `<option value="${i}">${i}</option>`;
-      container.insertAdjacentHTML('beforeend', `<div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800"><div class="md:col-span-5"><select class="item-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" onchange="calculateAll()">${opts}</select></div><div class="md:col-span-3"><input type="number" value="0" min="0" class="item-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" placeholder="0" oninput="calculateAll()"></div><div class="md:col-span-3 text-right font-bold text-red-400 text-sm">Rp <span class="item-row-total">0</span></div><div class="md:col-span-1 text-center"><button onclick="removeRow('${rowId}')" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div></div>`);
+      container.insertAdjacentHTML('beforeend', `<div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800"><div class="md:col-span-5"><select class="item-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" onchange="calculateAll()">${opts}</select></div><div class="md:col-span-3"><input type="number" value="0" min="0" class="item-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" placeholder="0" oninput="calculateAll()"></div><div class="md:col-span-3 text-right font-bold text-red-400 text-sm">Rp <span class="item-row-total">0</span></div><div class="md:col-span-1 text-center"><button onclick="removeRow('${rowId}')" class="text-red-400 p-2 cursor-pointer"><i class="fa-solid fa-trash"></i></button></div></div>`);
       calculateAll();
     }
 
