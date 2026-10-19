@@ -1197,7 +1197,10 @@
           let firstKey = "";
           for (let key in groupsData) {
             if (!firstKey) firstKey = key;
-            const groupName = groupsData[key].name || key;
+            const groupObj = groupsData[key];
+            const groupName = (typeof groupObj === 'object' && groupObj !== null && groupObj.name) 
+                              ? groupObj.name 
+                              : key.replace(/_/g, ' ').toUpperCase();
             groupSelect.innerHTML += `<option value="${key}">${index}. ${groupName}</option>`;
             index++;
           }
@@ -1220,13 +1223,18 @@
       
       if (!groupsData[currentGroupKey]) return;
       const group = groupsData[currentGroupKey];
-      document.getElementById("activeGroupNameBadge").innerText = group.name || currentGroupKey;
+      
+      const displayName = (typeof group === 'object' && group !== null && group.name) 
+                          ? group.name 
+                          : currentGroupKey.replace(/_/g, ' ').toUpperCase();
+                          
+      document.getElementById("activeGroupNameBadge").innerText = displayName;
 
       const ammoListDiv = document.getElementById("ammoPriceList");
       ammoListDiv.innerHTML = "";
-      if (group.ammo) {
+      if (group && group.ammo) {
         for (let ammo in group.ammo) {
-          ammoListDiv.innerHTML += `<div class="flex justify-between bg-slate-900/80 p-3 rounded-xl border border-slate-800"><span>${ammo} (1 pack)</span><span class="font-bold text-green-400">${group.ammo[ammo].toLocaleString('id-ID')}</span></div>`;
+          ammoListDiv.innerHTML += `<div class="flex justify-between bg-slate-900/80 p-3 rounded-xl border border-slate-800"><span>${ammo} (1 pack)</span><span class="font-bold text-green-400">${Number(group.ammo[ammo] || 0).toLocaleString('id-ID')}</span></div>`;
         }
       } else {
         ammoListDiv.innerHTML = `<div class="text-xs text-gray-500 text-center py-2">Tidak ada data harga ammo.</div>`;
@@ -1234,15 +1242,18 @@
 
       const itemListDiv = document.getElementById("itemPriceList");
       itemListDiv.innerHTML = "";
-      if (group.items) {
+      if (group && group.items) {
         for (let item in group.items) {
           const data = group.items[item];
-          let promoText = data.promo ? `<div class="text-[10px] text-amber-400 mt-0.5">${data.promo}</div>` : '';
+          let promoText = data && data.promo ? `<div class="text-[10px] text-amber-400 mt-0.5">${data.promo}</div>` : '';
+          let priceVal = data && data.price !== undefined ? data.price : data;
+          let isRate = data && data.isRate;
+          
           itemListDiv.innerHTML += `
             <div class="glass-card p-3 rounded-xl border border-slate-800 flex flex-col justify-between">
               <div>
                 <div class="text-gray-300 font-semibold text-xs">${item}</div>
-                <div class="font-bold text-red-400 text-sm mt-1">${data.isRate ? (data.price * 100) + '%' : 'Rp ' + Number(data.price || 0).toLocaleString('id-ID')}</div>
+                <div class="font-bold text-red-400 text-sm mt-1">${isRate ? (priceVal * 100) + '%' : 'Rp ' + Number(priceVal || 0).toLocaleString('id-ID')}</div>
               </div>
               ${promoText}
             </div>`;
@@ -1258,16 +1269,16 @@
 
     function addAmmoRow() {
       const group = groupsData[currentGroupKey];
-      if (!group) return;
+      if (!group || !group.ammo) return;
       const container = document.getElementById("ammoRowsContainer"), rowId = "ammo_" + Date.now();
-      let opts = ""; for (let a in group.ammo) opts += `<option value="${a}">${a} (${group.ammo[a].toLocaleString('id-ID')}/pack)</option>`;
+      let opts = ""; for (let a in group.ammo) opts += `<option value="${a}">${a} (${Number(group.ammo[a]||0).toLocaleString('id-ID')}/pack)</option>`;
       container.insertAdjacentHTML('beforeend', `<div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800"><div class="md:col-span-5"><select class="ammo-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" onchange="calculateAll()">${opts}</select></div><div class="md:col-span-3"><input type="number" value="0" min="0" class="ammo-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" placeholder="0" oninput="calculateAll()"></div><div class="md:col-span-3 text-right font-bold text-green-400 text-sm">Rp <span class="ammo-row-total">0</span></div><div class="md:col-span-1 text-center"><button onclick="removeRow('${rowId}')" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div></div>`);
       calculateAll();
     }
 
     function addItemRow() {
       const group = groupsData[currentGroupKey];
-      if (!group) return;
+      if (!group || !group.items) return;
       const container = document.getElementById("itemRowsContainer"), rowId = "item_" + Date.now();
       let opts = ""; for (let i in group.items) opts += `<option value="${i}">${i}</option>`;
       container.insertAdjacentHTML('beforeend', `<div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800"><div class="md:col-span-5"><select class="item-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" onchange="calculateAll()">${opts}</select></div><div class="md:col-span-3"><input type="number" value="0" min="0" class="item-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" placeholder="0" oninput="calculateAll()"></div><div class="md:col-span-3 text-right font-bold text-red-400 text-sm">Rp <span class="item-row-total">0</span></div><div class="md:col-span-1 text-center"><button onclick="removeRow('${rowId}')" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div></div>`);
@@ -1279,9 +1290,29 @@
     function calculateAll() {
       const group = groupsData[currentGroupKey];
       if (!group) return;
-      let tAmmo = 0; document.querySelectorAll("#ammoRowsContainer > div").forEach(r => { const t = r.querySelector(".ammo-type-select").value, q = parseFloat(r.querySelector(".ammo-qty-input").value) || 0, tot = (group.ammo[t]||0)*q; tAmmo += tot; r.querySelector(".ammo-row-total").innerText = tot.toLocaleString('id-ID'); });
+      
+      let tAmmo = 0; 
+      document.querySelectorAll("#ammoRowsContainer > div").forEach(r => { 
+        const t = r.querySelector(".ammo-type-select").value;
+        const q = parseFloat(r.querySelector(".ammo-qty-input").value) || 0; 
+        const unitPrice = (group.ammo && group.ammo[t]) ? group.ammo[t] : 0;
+        const tot = unitPrice * q; 
+        tAmmo += tot; 
+        r.querySelector(".ammo-row-total").innerText = tot.toLocaleString('id-ID'); 
+      });
       document.getElementById("grandTotalAmmo").innerText = tAmmo.toLocaleString('id-ID');
-      let tItem = 0; document.querySelectorAll("#itemRowsContainer > div").forEach(r => { const t = r.querySelector(".item-type-select").value, q = parseFloat(r.querySelector(".item-qty-input").value) || 0, d = group.items[t]; if(!d) return; let tot = d.isRate ? q * d.price : d.price * q; tItem += tot; r.querySelector(".item-row-total").innerText = tot.toLocaleString('id-ID'); });
+      
+      let tItem = 0; 
+      document.querySelectorAll("#itemRowsContainer > div").forEach(r => { 
+        const t = r.querySelector(".item-type-select").value;
+        const q = parseFloat(r.querySelector(".item-qty-input").value) || 0; 
+        const d = (group.items && group.items[t]) ? group.items[t] : null; 
+        if(!d) return; 
+        let priceVal = d.price !== undefined ? d.price : d;
+        let tot = d.isRate ? q * priceVal : priceVal * q; 
+        tItem += tot; 
+        r.querySelector(".item-row-total").innerText = tot.toLocaleString('id-ID'); 
+      });
       document.getElementById("grandTotalItem").innerText = tItem.toLocaleString('id-ID');
     }
 
@@ -1291,12 +1322,14 @@
         const webhookUrl = snapshot.val();
         if (!webhookUrl) { showAlert("Webhook penjualan belum diatur!"); return; }
         const group = groupsData[currentGroupKey];
-        let text = `🛒 **LOG PENJUALAN AMMO (${group.name})**\n\n`;
+        const groupName = group.name || currentGroupKey.toUpperCase();
+        let text = `🛒 **LOG PENJUALAN AMMO (${groupName})**\n\n`;
         let total = 0;
         document.querySelectorAll("#ammoRowsContainer > div").forEach(r => {
           const t = r.querySelector(".ammo-type-select").value;
           const q = parseFloat(r.querySelector(".ammo-qty-input").value) || 0;
-          if(q > 0) { const tot = (group.ammo[t]||0)*q; total += tot; text += `• ${t} x${q} Pack = Rp ${tot.toLocaleString('id-ID')}\n`; }
+          const unitPrice = (group.ammo && group.ammo[t]) ? group.ammo[t] : 0;
+          if(q > 0) { const tot = unitPrice * q; total += tot; text += `• ${t} x${q} Pack = Rp ${tot.toLocaleString('id-ID')}\n`; }
         });
         text += `\n💵 **Total Tagihan: Rp ${total.toLocaleString('id-ID')}**`;
         fetch(webhookUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text }) })
@@ -1311,13 +1344,19 @@
         const webhookUrl = snapshot.val();
         if (!webhookUrl) { showAlert("Webhook pembelian belum diatur!"); return; }
         const group = groupsData[currentGroupKey];
-        let text = `🔫 **LOG PEMBELIAN / LAYANAN (${group.name})**\n\n`;
+        const groupName = group.name || currentGroupKey.toUpperCase();
+        let text = `🔫 **LOG PEMBELIAN / LAYANAN (${groupName})**\n\n`;
         let total = 0;
         document.querySelectorAll("#itemRowsContainer > div").forEach(r => {
           const t = r.querySelector(".item-type-select").value;
           const q = parseFloat(r.querySelector(".item-qty-input").value) || 0;
-          const d = group.items[t];
-          if(q > 0 && d) { const tot = d.isRate ? q * d.price : d.price * q; total += tot; text += `• ${t} x${q} = Rp ${tot.toLocaleString('id-ID')}\n`; }
+          const d = (group.items && group.items[t]) ? group.items[t] : null;
+          if(q > 0 && d) { 
+            let priceVal = d.price !== undefined ? d.price : d;
+            const tot = d.isRate ? q * priceVal : priceVal * q; 
+            total += tot; 
+            text += `• ${t} x${q} = Rp ${tot.toLocaleString('id-ID')}\n`; 
+          }
         });
         text += `\n💵 **Total Pembelian: Rp ${total.toLocaleString('id-ID')}**`;
         fetch(webhookUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text }) })
