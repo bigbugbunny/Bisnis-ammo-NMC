@@ -137,9 +137,9 @@
 <body class="min-h-screen p-4 md:p-8">
   <div class="bg-ambient-glow"></div>
 
-  <!-- MODAL LOGIN -->
-  <div id="loginModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
-    <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6 border border-red-600/40 relative overflow-hidden">
+  <!-- MODAL LOGIN / VERIFIKASI IDENTITAS MASUK DIVISI -->
+  <div id="loginModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6 border border-red-600/40 relative overflow-hidden animate-modal-in">
       <div class="absolute -top-12 -left-12 w-32 h-32 bg-red-600/20 rounded-full blur-2xl pointer-events-none"></div>
 
       <div class="text-center space-y-3 relative z-10">
@@ -147,8 +147,8 @@
           <img src="Nakama.png" alt="Logo" class="w-full h-full object-cover rounded-xl" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
         </div>
         <div>
-          <h2 class="text-2xl font-black tracking-wider text-red-500">TRIAD COMMUNITY ACCESS</h2>
-          <p class="text-xs text-gray-400 mt-1">Masukkan kredensial akun Anda untuk masuk</p>
+          <h2 class="text-2xl font-black tracking-wider text-red-500">VERIFIKASI IDENTITAS</h2>
+          <p class="text-xs text-gray-400 mt-1">Masukkan kredensial Anda untuk masuk ke sistem divisi Nakama MC</p>
         </div>
       </div>
 
@@ -173,9 +173,14 @@
           Username atau sandi salah!
         </div>
 
-        <button id="loginSubmitBtn" onclick="handleLogin()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider mt-2">
-          <i class="fa-solid fa-right-to-bracket"></i> MASUK SISTEM
-        </button>
+        <div class="grid grid-cols-2 gap-3 pt-2">
+          <button id="loginSubmitBtn" onclick="handleLogin()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider text-xs">
+            <i class="fa-solid fa-check"></i> MASUK
+          </button>
+          <button onclick="closeLoginModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-gray-300 font-bold py-3.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider">
+            BATAL
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -203,11 +208,11 @@
       
       <div class="mt-4 md:mt-0 flex items-center gap-3">
         <span id="userRoleBadge" class="bg-slate-800 text-gray-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2">
-          <i class="fa-solid fa-eye"></i> Role: Viewer
+          <i class="fa-solid fa-user"></i> Status: Tamu / Publik
         </span>
 
         <button id="btnLoginAdminModal" onclick="openLoginModal()" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-500/30 transition flex items-center gap-1">
-          <i class="fa-solid fa-right-to-bracket"></i> Login Ulang
+          <i class="fa-solid fa-right-to-bracket"></i> Login Identitas
         </button>
 
         <button id="btnLogoutBtn" onclick="handleLogout()" class="hidden bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-500/30 transition flex items-center gap-1">
@@ -216,7 +221,7 @@
       </div>
     </div>
 
-    <!-- HALAMAN WELCOME -->
+    <!-- HALAMAN WELCOME (BISA DIAKSES BEBAS TANPA LOGIN) -->
     <div id="sectionWelcome" class="space-y-8 py-12 animate-fade-in">
       <div class="text-center space-y-3 max-w-2xl mx-auto">
         <span class="bg-red-950/50 text-red-400 text-xs font-bold px-4 py-1.5 rounded-full border border-red-800/40 tracking-widest uppercase inline-flex items-center gap-2 shadow-inner">
@@ -334,7 +339,7 @@
       </div>
     </div>
 
-    <!-- DATA SETORAN (RINGKAS: HARIAN TUNGGAL & MINGGUAN) -->
+    <!-- DATA SETORAN -->
     <div id="sectionSetoran" class="hidden space-y-6">
       <div class="flex border-b border-slate-800 gap-2">
         <button id="tabBtnHarian" onclick="switchSetoranTab('harian')" class="px-5 py-3 font-bold text-sm rounded-t-xl bg-slate-900 border-t border-x border-slate-700 text-pink-400 transition flex items-center gap-2">
@@ -524,11 +529,11 @@
       <div class="glass-card p-4 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4">
         <span class="text-sm font-bold text-red-400"><i class="fa-solid fa-handshake"></i> PILIH KELOMPOK PARTNER:</span>
         <select id="groupSelect" onchange="loadGroupData()" class="w-full md:w-64 bg-slate-900 border border-red-500/50 rounded-xl p-2.5 text-white font-bold focus:outline-none focus:border-red-400">
-          <option value="th21">1. 21TH</option><option value="voldemort">2. Voldemort</option><option value="mugen">3. Mugen</option><option value="atlanta">4. Atlanta</option><option value="brooklyn">5. Brooklyn</option><option value="alk">6. ALK</option><option value="s90">7. 90S</option><option value="angker">8. Angker</option><option value="white_tiger">9. White Tiger</option><option value="mayans" selected>10. Mayans</option>
+          <!-- Dynamic Options from Firebase -->
         </select>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="glass-card p-5 rounded-2xl"><h2 class="text-md font-bold text-green-400 mb-3 flex items-center justify-between"><span><i class="fa-solid fa-tag"></i> HARGA JUAL AMMO</span><span id="activeGroupNameBadge" class="text-xs bg-slate-800 text-red-400 px-2.5 py-1 rounded-full border border-slate-700">Mayans</span></h2><div id="ammoPriceList" class="space-y-2 text-sm"></div></div>
+        <div class="glass-card p-5 rounded-2xl"><h2 class="text-md font-bold text-green-400 mb-3 flex items-center justify-between"><span><i class="fa-solid fa-tag"></i> HARGA JUAL AMMO</span><span id="activeGroupNameBadge" class="text-xs bg-slate-800 text-red-400 px-2.5 py-1 rounded-full border border-slate-700">-</span></h2><div id="ammoPriceList" class="space-y-2 text-sm"></div></div>
         <div class="glass-card p-5 rounded-2xl"><h2 class="text-md font-bold text-red-400 mb-3 flex items-center justify-between"><span><i class="fa-solid fa-cart-shopping"></i> HARGA BELI / LAYANAN</span></h2><div id="itemPriceList" class="grid grid-cols-2 gap-2 text-xs"></div></div>
       </div>
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
@@ -727,7 +732,7 @@
               <button id="confirmYesBtn" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2.5 px-4 rounded-xl transition text-xs tracking-wider shadow">
                 ${btnText}
               </button>
-              <button onclick="document.getElementById('customConfirmModal').remove()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider shadow">
+              <button onclick="document.getElementById('customConfirmModal').remove()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider shadow">
                 BATAL
               </button>
             </div>
@@ -758,13 +763,41 @@
       const savedRole = localStorage.getItem("nmc_user_role");
       if (savedRole === "editor" || savedRole === "viewer") {
         currentUserRole = savedRole;
-        document.getElementById("loginModal").classList.add("hidden");
-        handlePathChange();
       } else {
-        document.getElementById("loginModal").classList.remove("hidden");
+        currentUserRole = "viewer";
       }
       applyRolePermissions();
+      loadGroupsDataFromCloud();
+      handlePathChange();
     });
+
+    function selectCommunity(type, updateUrl = true) {
+      if (type === 'nakama') {
+        const savedRole = localStorage.getItem("nmc_user_role");
+        if (!savedRole || savedRole === "viewer") {
+          openLoginModal();
+          return;
+        }
+
+        if (updateUrl) history.pushState({}, '', '/dashboard/menu');
+
+        document.getElementById('sectionWelcome').classList.add('hidden');
+        document.getElementById('sectionMainMenu').classList.remove('hidden');
+        document.getElementById('sectionBahan').classList.add('hidden');
+        document.getElementById('sectionKalkulator').classList.add('hidden');
+        document.getElementById('sectionBrankas').classList.add('hidden');
+        document.getElementById('sectionBeliWarga').classList.add('hidden');
+        document.getElementById('sectionBisnis').classList.add('hidden');
+        document.getElementById('sectionSetoran').classList.add('hidden');
+        document.getElementById('sectionMember').classList.add('hidden');
+
+        document.getElementById('btnHome').classList.remove('hidden');
+        document.getElementById('btnBackMenu').classList.add('hidden');
+        document.getElementById('headerTitleText').innerText = "NAKAMA MC BLAINE COUNTY";
+        document.getElementById('headerSubtitle').innerText = "SYSTEM MANAGEMENT & CLUB HOUSE";
+        applyRolePermissions();
+      }
+    }
 
     function handleLogin() {
       const usernameInput = document.getElementById("loginUsername").value.trim();
@@ -798,11 +831,11 @@
           currentUserRole = "editor";
           localStorage.setItem("nmc_user_role", "editor");
           localStorage.setItem("nmc_logged_user", usernameInput);
-          document.getElementById("loginModal").classList.add("hidden");
+          closeLoginModal();
           errorDiv.classList.add("hidden");
           applyRolePermissions();
-          handlePathChange();
-          showCustomAlert(`Selamat datang HighRank, ${usernameInput}!`);
+          showCustomAlert(`Verifikasi Berhasil! Selamat datang HighRank, ${usernameInput}!`);
+          selectCommunity('nakama');
         } else {
           db.ref('member_users').once('value').then((memSnapshot) => {
             const members = memSnapshot.val();
@@ -825,11 +858,11 @@
               currentUserRole = "viewer";
               localStorage.setItem("nmc_user_role", "viewer");
               localStorage.setItem("nmc_logged_user", usernameInput);
-              document.getElementById("loginModal").classList.add("hidden");
+              closeLoginModal();
               errorDiv.classList.add("hidden");
               applyRolePermissions();
-              handlePathChange();
-              showCustomAlert(`Selamat datang Member, ${usernameInput}!`);
+              showCustomAlert(`Verifikasi Berhasil! Selamat datang Member, ${usernameInput}!`);
+              selectCommunity('nakama');
             } else {
               errorDiv.innerText = "Username atau sandi salah!";
               errorDiv.classList.remove("hidden");
@@ -846,17 +879,27 @@
     }
 
     function openLoginModal() { document.getElementById("loginModal").classList.remove("hidden"); }
-    function handleLogout() { localStorage.removeItem("nmc_user_role"); localStorage.removeItem("nmc_logged_user"); history.pushState({}, '', '/dashboard/'); location.reload(); }
+    function closeLoginModal() { document.getElementById("loginModal").classList.add("hidden"); }
+    function handleLogout() { 
+      localStorage.removeItem("nmc_user_role"); 
+      localStorage.removeItem("nmc_logged_user"); 
+      currentUserRole = "viewer";
+      history.pushState({}, '', '/dashboard/'); 
+      showWelcomeScreen();
+      applyRolePermissions();
+      showCustomAlert("Anda telah keluar dari sesi verifikasi divisi.", "info");
+    }
 
     function applyRolePermissions() {
       const badge = document.getElementById("userRoleBadge");
       const btnLogin = document.getElementById("btnLoginAdminModal");
       const btnLogout = document.getElementById("btnLogoutBtn");
       const editorElements = document.querySelectorAll(".editor-only");
+      const loggedUser = localStorage.getItem("nmc_logged_user");
 
       if (currentUserRole === "editor") {
         if(badge) {
-          badge.innerHTML = `<i class="fa-solid fa-user-shield"></i> Role: HighRank (Editor)`;
+          badge.innerHTML = `<i class="fa-solid fa-user-shield"></i> ${loggedUser || 'HighRank'} (Editor)`;
           badge.className = "bg-red-950/60 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-800/50 flex items-center gap-2";
         }
         if(btnLogin) btnLogin.classList.add("hidden");
@@ -864,37 +907,44 @@
         editorElements.forEach(el => el.classList.remove("hidden"));
       } else {
         if(badge) {
-          badge.innerHTML = `<i class="fa-solid fa-eye"></i> Role: Member (Viewer)`;
-          badge.className = "bg-slate-800 text-gray-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2";
+          if (loggedUser) {
+            badge.innerHTML = `<i class="fa-solid fa-user-check"></i> ${loggedUser} (Viewer)`;
+            badge.className = "bg-slate-800 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-500/30 flex items-center gap-2";
+            if(btnLogin) btnLogin.classList.add("hidden");
+            if(btnLogout) btnLogout.classList.remove("hidden");
+          } else {
+            badge.innerHTML = `<i class="fa-solid fa-user"></i> Status: Tamu / Publik`;
+            badge.className = "bg-slate-800 text-gray-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2";
+            if(btnLogin) btnLogin.classList.remove("hidden");
+            if(btnLogout) btnLogout.classList.add("hidden");
+          }
         }
-        if(btnLogin) btnLogin.classList.add("hidden");
-        if(btnLogout) btnLogout.classList.remove("hidden");
         editorElements.forEach(el => el.classList.add("hidden"));
       }
     }
 
-    // --- NAVIGASI DENGAN URL BERSIH (PERBAIKAN REDIRECT 404) ---
     function handlePathChange() {
-      // 1. Tangkap parameter 'p' dari redirect 404.html jika ada
       const urlParams = new URLSearchParams(window.location.search);
       let redirectParam = urlParams.get('p');
 
       if (redirectParam) {
-        // Bersihkan path jika mengandung prefix 'dashboard/'
         redirectParam = redirectParam.replace(/^dashboard\//, '');
-        // Ubah URL di address bar kembali bersih tanpa '?p='
         window.history.replaceState({}, '', '/dashboard/' + redirectParam);
       }
 
-      // 2. Baca path URL saat ini
       const pathParts = window.location.pathname.split('/').filter(p => p !== '');
       const lastPart = pathParts[pathParts.length - 1] ? pathParts[pathParts.length - 1].toLowerCase() : '';
 
-      // 3. Arahkan ke modul yang sesuai
       if (!lastPart || lastPart === 'dashboard' || lastPart === 'welcome') {
         showWelcomeScreen(false);
       } else if (lastPart === 'menu') {
-        selectCommunity('nakama', false);
+        const savedRole = localStorage.getItem("nmc_user_role");
+        if (!savedRole) {
+          showWelcomeScreen(false);
+          openLoginModal();
+        } else {
+          selectCommunity('nakama', false);
+        }
       } else {
         const sectionMap = {
           'bahan': 'sectionBahan',
@@ -907,7 +957,13 @@
         };
 
         if (sectionMap[lastPart]) {
-          showSection(sectionMap[lastPart], false);
+          const savedRole = localStorage.getItem("nmc_user_role");
+          if (!savedRole) {
+            showWelcomeScreen(false);
+            openLoginModal();
+          } else {
+            showSection(sectionMap[lastPart], false);
+          }
         } else {
           showWelcomeScreen(false);
         }
@@ -936,28 +992,6 @@
       document.getElementById('headerTitleText').innerText = "TRIAD COMMUNITY";
       document.getElementById('headerSubtitle').innerText = "SYSTEM MANAGEMENT & DASHBOARD";
       applyRolePermissions();
-    }
-
-    function selectCommunity(type, updateUrl = true) {
-      if (type === 'nakama') {
-        if (updateUrl) history.pushState({}, '', '/dashboard/menu');
-
-        document.getElementById('sectionWelcome').classList.add('hidden');
-        document.getElementById('sectionMainMenu').classList.remove('hidden');
-        document.getElementById('sectionBahan').classList.add('hidden');
-        document.getElementById('sectionKalkulator').classList.add('hidden');
-        document.getElementById('sectionBrankas').classList.add('hidden');
-        document.getElementById('sectionBeliWarga').classList.add('hidden');
-        document.getElementById('sectionBisnis').classList.add('hidden');
-        document.getElementById('sectionSetoran').classList.add('hidden');
-        document.getElementById('sectionMember').classList.add('hidden');
-
-        document.getElementById('btnHome').classList.remove('hidden');
-        document.getElementById('btnBackMenu').classList.add('hidden');
-        document.getElementById('headerTitleText').innerText = "NAKAMA MC BLAINE COUNTY";
-        document.getElementById('headerSubtitle').innerText = "SYSTEM MANAGEMENT & CLUB HOUSE";
-        applyRolePermissions();
-      }
     }
 
     function showSection(sectionId, updateUrl = true) {
@@ -1057,7 +1091,6 @@
       });
     }
 
-    // --- FITUR SETORAN HARIAN (RINGKAS TUNGGAL) & MINGGUAN ---
     function switchSetoranTab(type) {
       currentSetoranTab = type;
       const btnH = document.getElementById("tabBtnHarian");
@@ -1631,44 +1664,62 @@
       document.getElementById("craftNetProfit").innerText = (netProfit >= 0 ? '+' : '') + netProfit.toLocaleString('id-ID');
     }
 
-    const groupsData = {
-      "th21": { name: "21TH", ammo: { "50AE": 200000, "9MM": 260000, "38LC": 275000, "4MM": 290000 }, items: { "Baju Hangat": { price: 160000, promo: "", isRate: false } } },
-      "voldemort": { name: "Voldemort", ammo: { "50AE": 75000, "9MM": 120000, "38LC": 140000 }, items: { "Baju Hangat": { price: 110000, promo: "Max 50 Pcs", isRate: false } } },
-      "mugen": { name: "Mugen", ammo: { "50AE": 75000, "9MM": 115000, "38LC": 130000 }, items: { "Cuci Uang (20%)": { price: 0.80, promo: "Max 15 Juta", isRate: true }, "Cuci Uang (30%)": { price: 0.70, promo: "Tanpa Max", isRate: true } } },
-      "atlanta": { name: "Atlanta", ammo: { "50AE": 100000, "9MM": 150000, "38LC": 145000 }, items: { "Kecubung": { price: 23000, promo: "", isRate: false }, "Jamur": { price: 23000, promo: "", isRate: false }, "Weed": { price: 23000, promo: "", isRate: false } } },
-      "brooklyn": { name: "Brooklyn", ammo: { "50AE": 75000, "9MM": 110000, "38LC": 140000 }, items: { "Kecubung": { price: 20000, promo: "", isRate: false }, "Jamur": { price: 20000, promo: "", isRate: false }, "Weed": { price: 20000, promo: "", isRate: false } } },
-      "alk": { name: "ALK", ammo: { "9MM": 250000, "38LC": 260000 }, items: { "Kecubung": { price: 21500, promo: "", isRate: false }, "Jamur": { price: 21500, promo: "", isRate: false }, "Weed": { price: 21500, promo: "", isRate: false } } },
-      "s90": { name: "90S", ammo: { "50AE": 80000, "9MM": 115000, "38LC": 140000 }, items: { "Baju Hangat": { price: 100000, promo: "", isRate: false } } },
-      "angker": { name: "Angker", ammo: { "50AE": 80000, "9MM": 120000, "38LC": 155000 }, items: { "Kecubung": { price: 23000, promo: "", isRate: false }, "Jamur": { price: 23000, promo: "", isRate: false }, "Weed": { price: 23000, promo: "", isRate: false } } },
-      "white_tiger": { name: "White Tiger", ammo: { "50AE": 195000, "9MM": 260000, "38LC": 275000, "4MM": 290000 }, items: { "Umer ke Putih (25%)": { price: 0.75, promo: "1 Juta - 10 juta", isRate: true }, "Umer ke Putih (20%)": { price: 0.80, promo: "15 Juta - 19 juta", isRate: true }, "Umer ke Putih (15%)": { price: 0.85, promo: "20 Juta Keatas", isRate: true }, "Putih ke Umer (25%)": { price: 0.75, promo: "Tanpa limit", isRate: true } } },
-      "mayans": { name: "Mayans", ammo: { "500AE": 190000, "9MM": 250000, "38LC": 265000, "4MM": 280000 }, items: { "DA": { price: 150000, promo: "10 Free 2", isRate: false }, "P50": { price: 130000, promo: "", isRate: false }, "TAC9": { price: 110000, promo: "", isRate: false }, "CERAMIC": { price: 90000, promo: "", isRate: false }, "PITON": { price: 350000, promo: "", isRate: false } } }
-    };
+    // --- TARIK DATA HARGA KELOMPOK DARI FIREBASE SECARA AMAN ---
+    let groupsData = {};
     let currentGroupKey = "mayans";
 
+    function loadGroupsDataFromCloud() {
+      db.ref('groups_data').once('value').then((snapshot) => {
+        groupsData = snapshot.val() || {};
+        const groupSelect = document.getElementById("groupSelect");
+        if (groupSelect) {
+          groupSelect.innerHTML = "";
+          let index = 1;
+          for (let key in groupsData) {
+            const isSelected = (key === currentGroupKey) ? "selected" : "";
+            groupSelect.innerHTML += `<option value="${key}" ${isSelected}>${index}. ${groupsData[key].name}</option>`;
+            index++;
+          }
+        }
+        loadGroupData();
+      }).catch((error) => {
+        console.error("Gagal memuat harga kelompok:", error);
+      });
+    }
+
     function loadGroupData() {
-      currentGroupKey = document.getElementById("groupSelect").value;
+      const groupSelect = document.getElementById("groupSelect");
+      if (groupSelect && groupSelect.value) {
+        currentGroupKey = groupSelect.value;
+      }
+      
+      if (!groupsData[currentGroupKey]) return;
       const group = groupsData[currentGroupKey];
       document.getElementById("activeGroupNameBadge").innerText = group.name;
       
       const ammoListDiv = document.getElementById("ammoPriceList");
       ammoListDiv.innerHTML = "";
-      for (let ammo in group.ammo) {
-        ammoListDiv.innerHTML += `<div class="flex justify-between bg-slate-900/80 p-3 rounded-xl border border-slate-800"><span>${ammo} (1 pack)</span><span class="font-bold text-green-400">${group.ammo[ammo].toLocaleString('id-ID')}</span></div>`;
+      if (group.ammo) {
+        for (let ammo in group.ammo) {
+          ammoListDiv.innerHTML += `<div class="flex justify-between bg-slate-900/80 p-3 rounded-xl border border-slate-800"><span>${ammo} (1 pack)</span><span class="font-bold text-green-400">${group.ammo[ammo].toLocaleString('id-ID')}</span></div>`;
+        }
       }
 
       const itemListDiv = document.getElementById("itemPriceList");
       itemListDiv.innerHTML = "";
-      for (let item in group.items) {
-        const data = group.items[item];
-        let promoText = data.promo ? `<div class="text-[10px] text-amber-400 mt-0.5"><i class="fa-solid fa-tag"></i> ${data.promo}</div>` : '';
-        itemListDiv.innerHTML += `
-          <div class="glass-card p-3 rounded-xl border border-slate-800 flex flex-col justify-between">
-            <div>
-              <div class="text-gray-300 font-semibold text-xs">${item}</div>
-              <div class="font-bold text-red-400 text-sm mt-1">${data.isRate ? (data.price * 100) + '%' : 'Rp ' + data.price.toLocaleString('id-ID') + ' / PC'}</div>
-            </div>
-            ${promoText}
-          </div>`;
+      if (group.items) {
+        for (let item in group.items) {
+          const data = group.items[item];
+          let promoText = data.promo ? `<div class="text-[10px] text-amber-400 mt-0.5"><i class="fa-solid fa-tag"></i> ${data.promo}</div>` : '';
+          itemListDiv.innerHTML += `
+            <div class="glass-card p-3 rounded-xl border border-slate-800 flex flex-col justify-between">
+              <div>
+                <div class="text-gray-300 font-semibold text-xs">${item}</div>
+                <div class="font-bold text-red-400 text-sm mt-1">${data.isRate ? (data.price * 100) + '%' : 'Rp ' + data.price.toLocaleString('id-ID') + ' / PC'}</div>
+              </div>
+              ${promoText}
+            </div>`;
+        }
       }
 
       document.getElementById("ammoRowsContainer").innerHTML = "";
@@ -1677,14 +1728,18 @@
     }
 
     function addAmmoRow() {
-      const group = groupsData[currentGroupKey], container = document.getElementById("ammoRowsContainer"), rowId = "ammo_" + Date.now();
+      const group = groupsData[currentGroupKey];
+      if (!group) return;
+      const container = document.getElementById("ammoRowsContainer"), rowId = "ammo_" + Date.now();
       let opts = ""; for (let a in group.ammo) opts += `<option value="${a}">${a} (${group.ammo[a].toLocaleString('id-ID')}/pack)</option>`;
       container.insertAdjacentHTML('beforeend', `<div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800"><div class="md:col-span-5"><select class="ammo-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" onchange="calculateAll()">${opts}</select></div><div class="md:col-span-3"><input type="number" value="0" min="0" class="ammo-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" placeholder="0" oninput="calculateAll()"></div><div class="md:col-span-3 text-right font-bold text-green-400 text-sm">Rp <span class="ammo-row-total">0</span></div><div class="md:col-span-1 text-center"><button onclick="removeRow('${rowId}')" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div></div>`);
       calculateAll();
     }
 
     function addItemRow() {
-      const group = groupsData[currentGroupKey], container = document.getElementById("itemRowsContainer"), rowId = "item_" + Date.now();
+      const group = groupsData[currentGroupKey];
+      if (!group) return;
+      const container = document.getElementById("itemRowsContainer"), rowId = "item_" + Date.now();
       let opts = ""; for (let i in group.items) opts += `<option value="${i}">${i}</option>`;
       container.insertAdjacentHTML('beforeend', `<div id="${rowId}" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800"><div class="md:col-span-5"><select class="item-type-select w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" onchange="calculateAll()">${opts}</select></div><div class="md:col-span-3"><input type="number" value="0" min="0" class="item-qty-input w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" placeholder="0" oninput="calculateAll()"></div><div class="md:col-span-3 text-right font-bold text-red-400 text-sm">Rp <span class="item-row-total">0</span></div><div class="md:col-span-1 text-center"><button onclick="removeRow('${rowId}')" class="text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div></div>`);
       calculateAll();
@@ -1694,6 +1749,7 @@
 
     function calculateAll() {
       const group = groupsData[currentGroupKey];
+      if (!group) return;
       let tAmmo = 0; document.querySelectorAll("#ammoRowsContainer > div").forEach(r => { const t = r.querySelector(".ammo-type-select").value, q = parseFloat(r.querySelector(".ammo-qty-input").value) || 0, tot = (group.ammo[t]||0)*q; tAmmo += tot; r.querySelector(".ammo-row-total").innerText = tot.toLocaleString('id-ID'); });
       document.getElementById("grandTotalAmmo").innerText = tAmmo.toLocaleString('id-ID');
       let tItem = 0; document.querySelectorAll("#itemRowsContainer > div").forEach(r => { const t = r.querySelector(".item-type-select").value, q = parseFloat(r.querySelector(".item-qty-input").value) || 0, d = group.items[t]; if(!d) return; let tot = d.isRate ? q * d.price : d.price * q; tItem += tot; r.querySelector(".item-row-total").innerText = tot.toLocaleString('id-ID'); });
@@ -1761,7 +1817,7 @@
 
     function copySummary() { showCustomAlert("Ringkasan berhasil disalin!"); }
 
-    calcBahan(); loadGroupData();
+    calcBahan();
   </script>
 </body>
 </html>
