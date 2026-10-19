@@ -52,10 +52,10 @@
 
     /* === BACKGROUND SLIDESHOW === */
     .bg-slideshow {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
+      width: 100vw;
       height: 100vh;
       z-index: -4;
       background-color: #07090e;
@@ -72,20 +72,20 @@
       background-position: center;
       opacity: 0;
       transform: scale(1);
-      transition: opacity 2s ease-in-out, transform 12s ease-out;
+      transition: opacity 1.5s ease-in-out, transform 12s ease-out;
     }
 
     .bg-slide.active {
-      opacity: 0.55;
+      opacity: 0.85;
       transform: scale(1.05);
     }
 
     /* === KANVAS EFEK HUJAN === */
     #rainCanvas {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
+      width: 100vw;
       height: 100vh;
       z-index: -3;
       pointer-events: none;
@@ -93,16 +93,16 @@
 
     /* Efek gradasi menyatu ke bawah */
     .bg-gradient-overlay {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
+      width: 100vw;
       height: 100vh;
       z-index: -2;
       background: linear-gradient(
         to bottom, 
-        rgba(7, 9, 14, 0.4) 0%, 
-        rgba(7, 9, 14, 0.7) 60%, 
+        rgba(7, 9, 14, 0.2) 0%, 
+        rgba(7, 9, 14, 0.6) 70%, 
         #07090e 100%
       );
       pointer-events: none;
