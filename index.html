@@ -521,13 +521,13 @@
         }
 
         if (isAdmin || true) {
-          window.location.href = "dashboard/nakama/index.html";
+          window.location.href = "dashboard/nakama/";
         } else {
           errorDiv.innerText = "Username atau sandi salah!";
           errorDiv.classList.remove("hidden");
         }
       }).catch(() => {
-        window.location.href = "dashboard/nakama/index.html";
+        window.location.href = "dashboard/nakama/";
       });
     }
 
