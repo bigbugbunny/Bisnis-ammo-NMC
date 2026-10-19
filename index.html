@@ -126,29 +126,31 @@
       transform: translateY(-3px);
     }
 
-    /* === CAROUSEL DOKUMENTASI EFEK MENGINTIP KIRI-KANAN === */
-    .carousel-container {
+    /* === CAROUSEL DOKUMENTASI EFEK MULTI-SLIDE (MENGINTIP KIRI-KANAN) === */
+    .gallery-wrapper {
       position: relative;
-      width: 100%;
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
       overflow: hidden;
       padding: 10px 0;
     }
 
-    .carousel-track {
+    .gallery-track {
       display: flex;
-      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       gap: 20px;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .carousel-slide {
-      min-width: 100%;
+    .gallery-item {
+      min-width: calc(100% - 40px);
       box-sizing: border-box;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: opacity 0.4s ease;
+      flex-shrink: 0;
+    }
+
+    @media (min-width: 768px) {
+      .gallery-item {
+        min-width: calc(50% - 10px); /* Menampilkan 2 foto berdampingan di layar besar agar sisi kiri-kanan mengintip */
+      }
     }
 
     input[type=range] {
@@ -178,7 +180,7 @@
   <!-- Lapisan Gradasi Elegan -->
   <div class="bg-gradient-overlay"></div>
 
-  <!-- Header / Navbar -->
+  <!-- Header / Navbar (Tanpa Tag A dengan Tanda #) -->
   <header class="border-b border-red-900/30 bg-slate-950/70 backdrop-blur-md sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -189,9 +191,9 @@
       </div>
       
       <nav class="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest font-bold text-gray-300">
-        <a href="#" onclick="scrollToSection('home')" class="text-red-500 hover:text-white transition-colors">Home</a>
-        <a href="#" onclick="scrollToSection('gallery')" class="hover:text-red-400 transition-colors">Dokumentasi</a>
-        <a href="#" onclick="scrollToSection('about')" class="hover:text-red-400 transition-colors">Nilai & Visi</a>
+        <button onclick="scrollToSection('home')" class="text-red-500 hover:text-white transition-colors bg-transparent border-none cursor-pointer">Home</button>
+        <button onclick="scrollToSection('gallery')" class="hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer">Dokumentasi</button>
+        <button onclick="scrollToSection('about')" class="hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer">Nilai & Visi</button>
         <a href="/dashboard/" class="hover:text-red-400 transition-colors">Dashboard System</a>
       </nav>
 
@@ -227,34 +229,33 @@
       </div>
     </section>
 
-    <!-- SECTION GALERI DOKUMENTASI (EFEK MENGINTIP KIRI-KANAN, PURE FOTO TANPA TEKS) -->
+    <!-- SECTION GALERI DOKUMENTASI (EFEK MENGINTIP KIRI-KANAN BERGESER HALUS) -->
     <section id="gallery" class="max-w-6xl mx-auto px-6 pt-16 pb-12 relative z-10">
       <div class="text-center mb-8">
         <span class="text-xs font-bold text-red-400 uppercase tracking-widest bg-red-950/50 px-3 py-1 rounded-full border border-red-600/30">Galeri Kegiatan</span>
         <h3 class="text-2xl font-black text-white uppercase tracking-wider mt-2">DOKUMENTASI KELUARGA BESAR</h3>
       </div>
 
-      <!-- Wrapper Carousel -->
-      <div class="carousel-container relative">
-        <div class="carousel-track" id="carouselTrack">
+      <div class="gallery-wrapper">
+        <div class="gallery-track" id="galleryTrack">
           
-          <!-- Slide 1 -->
-          <div class="carousel-slide">
-            <div class="w-full max-w-3xl h-72 md:h-[380px] rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
+          <!-- Foto 1 -->
+          <div class="gallery-item">
+            <div class="h-72 md:h-80 rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
               <img src="bg1.png" alt="Dokumentasi 1" class="w-full h-full object-cover rounded-xl">
             </div>
           </div>
 
-          <!-- Slide 2 -->
-          <div class="carousel-slide">
-            <div class="w-full max-w-3xl h-72 md:h-[380px] rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
+          <!-- Foto 2 -->
+          <div class="gallery-item">
+            <div class="h-72 md:h-80 rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
               <img src="bg2.png" alt="Dokumentasi 2" class="w-full h-full object-cover rounded-xl">
             </div>
           </div>
 
-          <!-- Slide 3 -->
-          <div class="carousel-slide">
-            <div class="w-full max-w-3xl h-72 md:h-[380px] rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
+          <!-- Foto 3 -->
+          <div class="gallery-item">
+            <div class="h-72 md:h-80 rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
               <img src="bg3.png" alt="Dokumentasi 3" class="w-full h-full object-cover rounded-xl">
             </div>
           </div>
@@ -262,10 +263,10 @@
         </div>
 
         <!-- Tombol Navigasi Kiri Kanan -->
-        <button onclick="prevSlide()" class="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/70 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/20 shadow-xl z-20">
+        <button onclick="prevGallerySlide()" class="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/70 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/20 shadow-xl z-20 cursor-pointer">
           <i class="fa-solid fa-chevron-left text-sm"></i>
         </button>
-        <button onclick="nextSlide()" class="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/70 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/20 shadow-xl z-20">
+        <button onclick="nextGallerySlide()" class="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/70 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/20 shadow-xl z-20 cursor-pointer">
           <i class="fa-solid fa-chevron-right text-sm"></i>
         </button>
       </div>
@@ -310,7 +311,7 @@
       </div>
     </section>
 
-    <!-- Stat Counter Section (DIPERKECIL JAUH LEBIH RAPI & TIPIS) -->
+    <!-- Stat Counter Section (Kecil, Rapi, & Tipis) -->
     <section class="max-w-3xl mx-auto px-6 py-6 relative z-10">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 text-center">
         <div class="glass-card py-2 px-3 rounded-lg">
@@ -378,27 +379,28 @@
   </footer>
 
   <script>
-    // --- SKRIP CAROUSEL DOKUMENTASI (FOTO BERGESER DENGAN INTIPAN KIRI-KANAN) ---
-    const track = document.getElementById('carouselTrack');
-    const slides = track.children;
-    let currentIndex = 0;
+    // --- SKRIP GALERI DOKUMENTASI BERGESER MENGINTIP KIRI-KANAN ---
+    const galleryTrack = document.getElementById('galleryTrack');
+    const galleryItems = galleryTrack.children;
+    let galleryIndex = 0;
 
-    function updateCarousel() {
-      track.style.transform = `translateX(-${currentIndex * 100}%)`;
+    function updateGallery() {
+      const itemWidth = galleryItems[0].getBoundingClientRect().width + 20;
+      galleryTrack.style.transform = `translateX(-${galleryIndex * itemWidth}px)`;
     }
 
-    function nextSlide() {
-      currentIndex = (currentIndex + 1) % slides.length;
-      updateCarousel();
+    function nextGallerySlide() {
+      galleryIndex = (galleryIndex + 1) % galleryItems.length;
+      updateGallery();
     }
 
-    function prevSlide() {
-      currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-      updateCarousel();
+    function prevGallerySlide() {
+      galleryIndex = (galleryIndex - 1 + galleryItems.length) % galleryItems.length;
+      updateGallery();
     }
 
-    // Geser otomatis setiap 5 detik
-    setInterval(nextSlide, 5000);
+    // Geser otomatis galeri setiap 4 detik
+    setInterval(nextGallerySlide, 4000);
 
 
     // --- SKRIP EFEK HUJAN ---
