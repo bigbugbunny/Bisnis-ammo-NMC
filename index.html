@@ -56,7 +56,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 95vh; /* Tinggi pas untuk menampilkan utuh bagian atas foto */
+      height: 95vh;
       z-index: 1;
       overflow: hidden;
       pointer-events: none;
@@ -78,7 +78,7 @@
       width: 100%;
       height: 100%;
       background-size: cover;
-      background-position: center top; /* Fokus ke bagian atas foto agar tidak terpotong canggung */
+      background-position: center top;
       opacity: 0;
       transform: scale(1);
       transition: opacity 1.5s ease-in-out, transform 12s ease-out;
@@ -100,7 +100,6 @@
       pointer-events: none;
     }
 
-    /* Gradasi halus untuk menutup bagian bawah foto agar menyatu mulus ke hitam */
     .bg-gradient-overlay {
       position: absolute;
       top: 0;
@@ -213,7 +212,7 @@
 </head>
 <body class="bg-[#07090e] text-gray-200 font-sans antialiased min-h-screen flex flex-col justify-between relative pb-24">
 
-  <!-- === WRAPPER BACKGROUND ATAS (FOTO UTUH + HUJAN + GRADASI) === -->
+  <!-- === WRAPPER BACKGROUND ATAS === -->
   <div class="hero-bg-container">
     <div class="bg-slideshow">
       <div class="bg-slide active" style="background-image: url('bg1.png');"></div>
@@ -238,11 +237,11 @@
         <button onclick="scrollToSection('home')" class="text-red-500 hover:text-white transition-colors bg-transparent border-none cursor-pointer">Home</button>
         <button onclick="scrollToSection('gallery')" class="hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer">Dokumentasi</button>
         <button onclick="scrollToSection('about')" class="hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer">Nilai & Visi</button>
-        <a href="/dashboard/" class="hover:text-red-400 transition-colors">Dashboard System</a>
+        <a href="dashboard/nakama/login.html" class="hover:text-red-400 transition-colors">Dashboard System</a>
       </nav>
 
       <div class="flex items-center gap-3">
-        <a href="/dashboard/" class="px-5 py-2.5 text-xs font-black tracking-wider uppercase text-white bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 rounded-xl shadow-lg border border-red-500/30 flex items-center gap-2">
+        <a href="dashboard/nakama/login.html" class="px-5 py-2.5 text-xs font-black tracking-wider uppercase text-white bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 rounded-xl shadow-lg border border-red-500/30 flex items-center gap-2">
           <i class="fa-solid fa-right-to-bracket"></i> Akses System
         </a>
       </div>
@@ -267,7 +266,7 @@
       </p>
 
       <div class="mt-8 flex flex-wrap justify-center gap-4">
-        <a href="/dashboard/" class="px-8 py-3.5 font-bold text-sm tracking-wider uppercase text-white bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 rounded-xl shadow-2xl border border-red-500/40 flex items-center gap-2">
+        <a href="dashboard/nakama/login.html" class="px-8 py-3.5 font-bold text-sm tracking-wider uppercase text-white bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 rounded-xl shadow-2xl border border-red-500/40 flex items-center gap-2">
           <i class="fa-solid fa-gauge-high"></i> Masuk Dashboard Internal
         </a>
       </div>
@@ -316,7 +315,7 @@
       </div>
     </section>
 
-    <!-- WRAPPER AREA BAWAH BERWARNA BERBEDA -->
+    <!-- WRAPPER AREA BAWAH -->
     <div class="w-full bg-[#030406] border-t border-red-950/80 shadow-[0_-15px_30px_rgba(0,0,0,0.8)] relative z-10 mt-16 pt-8 pb-12">
       
       <!-- SECTION VISI & PILAR ORGANISASI -->
@@ -384,7 +383,7 @@
       <footer class="max-w-7xl mx-auto px-6 pt-10 mt-6 border-t border-red-950/50 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400">
         <p>&copy; 2026 <span class="text-red-500 font-bold">TRIAD COMMUNITY</span>. System Management by Bunny.</p>
         <div class="flex gap-6">
-          <a href="/dashboard/" class="hover:text-gray-200 transition-colors">Dashboard Internal</a>
+          <a href="dashboard/nakama/login.html" class="hover:text-gray-200 transition-colors">Dashboard Internal</a>
         </div>
       </footer>
     </div>
@@ -396,12 +395,10 @@
     <audio id="bgMusic" loop preload="auto" src="kota ini tak sama tanpamu.mp3"></audio>
 
     <div class="glass-card p-3 rounded-2xl shadow-2xl border border-red-500/40 flex items-center gap-3 backdrop-blur-md">
-      <!-- Tombol Play/Pause -->
       <button id="playBtn" onclick="togglePlay()" class="w-10 h-10 bg-gradient-to-br from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white rounded-xl flex items-center justify-center text-sm shadow-lg shrink-0">
         <i class="fa-solid fa-play" id="playIcon"></i>
       </button>
 
-      <!-- Informasi Judul Lagu -->
       <div>
         <div class="text-[10px] font-bold text-red-400 uppercase tracking-wider flex items-center gap-1.5">
           <i class="fa-solid fa-music animate-pulse"></i> Background Music
@@ -409,7 +406,6 @@
         <div class="text-xs font-semibold text-white max-w-[120px] truncate">Kota Ini Tak Sama</div>
       </div>
 
-      <!-- Tombol Mute & Slider Volume -->
       <div class="flex items-center gap-2 pl-2 border-l border-slate-800">
         <button onclick="toggleMute()" class="text-gray-400 hover:text-white text-sm p-1">
           <i class="fa-solid fa-volume-high" id="muteIcon"></i>
@@ -417,7 +413,6 @@
         <input type="range" id="volumeControl" min="0" max="1" step="0.05" value="1" oninput="changeVolume(this.value)" class="w-16 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer">
       </div>
 
-      <!-- Shortcut Spotify -->
       <a href="https://open.spotify.com/track/13CwOTXUgBugeBByE9oIWb?si=b05d989b3dbf4cb4" target="_blank" class="p-1.5 text-emerald-400 hover:text-emerald-300 transition" title="Buka di Spotify">
         <i class="fa-brands fa-spotify text-lg"></i>
       </a>
@@ -425,7 +420,6 @@
   </div>
 
   <script>
-    // --- CAROUSEL AMAN & STABIL ---
     const galleryTrack = document.getElementById('galleryTrack');
     const gallerySlides = galleryTrack.querySelectorAll('.gallery-slide');
     let galleryIndex = 0;
@@ -481,7 +475,6 @@
       scrollToSlide(galleryIndex - 1);
     }
 
-    // Auto slide setiap 5 detik
     setInterval(() => {
       nextGallerySlide();
     }, 5000);
@@ -490,8 +483,6 @@
       scrollToSlide(gallerySlides.length - 1);
     });
 
-
-    // --- SKRIP EFEK HUJAN ---
     const canvas = document.getElementById('rainCanvas');
     const ctx = canvas.getContext('2d');
 
@@ -540,8 +531,6 @@
     }
     animateRain();
 
-
-    // --- FUNGSI SCROLL HALUS TANPA TANDA # DI URL ---
     function scrollToSection(sectionId) {
       if (sectionId === 'home') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -554,7 +543,6 @@
       history.replaceState(null, null, ' ');
     }
 
-    // --- SKRIP SLIDER BACKGROUND 3 FOTO ---
     const bgSlides = document.querySelectorAll('.bg-slide');
     let currentBgSlide = 0;
 
@@ -565,8 +553,6 @@
     }
     setInterval(nextBgSlide, 6000);
 
-
-    // --- SKRIP MUSIC PLAYER & AUTOPLAY ---
     const music = document.getElementById('bgMusic');
     const playIcon = document.getElementById('playIcon');
     const muteIcon = document.getElementById('muteIcon');
