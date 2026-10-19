@@ -126,11 +126,11 @@
       transform: translateY(-3px);
     }
 
-    /* === CAROUSEL CENTER FOCUS (FOKUS UTAMA DI TENGAH) === */
+    /* === CAROUSEL CENTER FOCUS (SIMETRIS DI TENGAH) === */
     .gallery-container {
       position: relative;
       width: 100%;
-      max-width: 1100px;
+      max-width: 900px;
       margin: 0 auto;
       overflow: hidden;
       padding: 20px 0;
@@ -145,23 +145,17 @@
     .gallery-slide {
       min-width: 100%;
       box-sizing: border-box;
-      padding: 0 15px;
+      padding: 0 10px;
       display: flex;
       justify-content: center;
       transition: all 0.5s ease;
-      opacity: 0.4;
-      transform: scale(0.85);
+      opacity: 0.35;
+      transform: scale(0.9);
     }
 
     .gallery-slide.active-center {
       opacity: 1;
       transform: scale(1);
-    }
-
-    @media (min-width: 768px) {
-      .gallery-slide {
-        min-width: 70%; /* Membuat foto kiri & kanan ikut mengintip di layar */
-      }
     }
 
     input[type=range] {
@@ -191,7 +185,7 @@
   <!-- Lapisan Gradasi Elegan -->
   <div class="bg-gradient-overlay"></div>
 
-  <!-- Header / Navbar -->
+  <!-- Header / Navbar (Tanpa Tanda # di URL) -->
   <header class="border-b border-red-900/30 bg-slate-950/70 backdrop-blur-md sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -240,7 +234,7 @@
       </div>
     </section>
 
-    <!-- SECTION GALERI DOKUMENTASI (FOKUS TENGAH & MENGINTIP KIRI-KANAN) -->
+    <!-- SECTION GALERI DOKUMENTASI (FOKUS TENGAH SEMPURNA) -->
     <section id="gallery" class="max-w-7xl mx-auto px-6 pt-16 pb-12 relative z-10">
       <div class="text-center mb-8">
         <span class="text-xs font-bold text-red-400 uppercase tracking-widest bg-red-950/50 px-3 py-1 rounded-full border border-red-600/30">Galeri Kegiatan</span>
@@ -390,18 +384,17 @@
   </footer>
 
   <script>
-    // --- SKRIP CAROUSEL CENTER FOCUS (FOKUS DI TENGAH, SISI KIRI-KANAN MENGINTIP) ---
+    // --- SKRIP CAROUSEL CENTER FOCUS (TERKUNCI PAS DI TENGAH) ---
     const galleryTrack = document.getElementById('galleryTrack');
     const gallerySlides = galleryTrack.children;
     let galleryIndex = 0;
 
     function updateGallery() {
-      // Menghitung pergeseran agar foto aktif selalu berada tepat di tengah
       const slideWidth = gallerySlides[0].getBoundingClientRect().width;
-      const offset = (galleryTrack.parentElement.clientWidth / 2) - (slideWidth / 2) - (galleryIndex * slideWidth);
+      const containerWidth = galleryTrack.parentElement.clientWidth;
+      const offset = (containerWidth / 2) - (slideWidth / 2) - (galleryIndex * slideWidth);
       galleryTrack.style.transform = `translateX(${offset}px)`;
 
-      // Mengatur efek aktif / fokus pada slide tengah
       for (let i = 0; i < gallerySlides.length; i++) {
         gallerySlides[i].classList.remove('active-center');
       }
@@ -418,12 +411,10 @@
       updateGallery();
     }
 
-    // Jalankan pertama kali dan sinkronisasi saat ukuran layar berubah
     window.addEventListener('load', updateGallery);
     window.addEventListener('resize', updateGallery);
     updateGallery();
 
-    // Geser otomatis galeri setiap 5 detik
     setInterval(nextGallerySlide, 5000);
 
 
