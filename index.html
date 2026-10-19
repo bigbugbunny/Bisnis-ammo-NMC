@@ -37,7 +37,6 @@
       overflow-x: hidden;
     }
     
-    /* Radial Background Glow Effect */
     @keyframes pulseGlow {
       0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.2; }
       50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.35; }
@@ -81,7 +80,7 @@
     }
   </style>
 </head>
-<body class="bg-brand-dark text-gray-200 font-sans antialiased min-h-screen flex flex-col justify-between relative">
+<body class="bg-brand-dark text-gray-200 font-sans antialiased min-h-screen flex flex-col justify-between relative pb-24">
 
   <!-- Ambient Glowing Background -->
   <div class="bg-ambient-glow"></div>
@@ -98,7 +97,6 @@
       
       <nav class="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest font-bold text-gray-400">
         <a href="/" class="text-red-500 hover:text-white transition-colors">Home</a>
-        <a href="#about" class="hover:text-red-400 transition-colors">Nilai & Visi</a>
         <a href="#divisions" class="hover:text-red-400 transition-colors">Divisi</a>
         <a href="/dashboard/" class="hover:text-red-400 transition-colors">Dashboard System</a>
       </nav>
@@ -115,7 +113,7 @@
   <main class="flex-1">
     
     <!-- Hero Section -->
-    <section class="max-w-5xl mx-auto px-6 py-20 text-center relative z-10">
+    <section class="max-w-5xl mx-auto px-6 pt-16 pb-12 text-center relative z-10">
       <span class="px-4 py-1.5 text-xs font-bold tracking-widest text-red-400 uppercase border border-red-800/40 rounded-full bg-red-950/40 inline-flex items-center gap-2 shadow-inner">
         <i class="fa-solid fa-shield-halved"></i> KEADILAN • KEBERSAMAAN • PERSAUDARAAN
       </span>
@@ -128,7 +126,7 @@
         Wadah resmi persaudaraan, manajemen sistem organisasi, dan pusat koordinasi divisi <span class="text-red-400 font-semibold">Nakama MC</span> serta grup usaha bersama by Bunny.
       </p>
 
-      <div class="mt-10 flex flex-wrap justify-center gap-4">
+      <div class="mt-8 flex flex-wrap justify-center gap-4">
         <a href="/dashboard/" class="px-8 py-3.5 font-bold text-sm tracking-wider uppercase text-white bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 rounded-xl shadow-xl border border-red-500/40 flex items-center gap-2">
           <i class="fa-solid fa-gauge-high"></i> Masuk Dashboard Internal
         </a>
@@ -136,26 +134,14 @@
           <i class="fa-solid fa-layer-group"></i> Lihat Divisi
         </a>
       </div>
-    </section>
 
-    <!-- Stat Counter Section -->
-    <section class="max-w-5xl mx-auto px-6 pb-12">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-        <div class="glass-card p-4 rounded-xl">
-          <div class="text-2xl font-black text-red-500">100%</div>
-          <div class="text-[11px] uppercase tracking-wider text-gray-400 mt-1">Realtime Sync</div>
-        </div>
-        <div class="glass-card p-4 rounded-xl">
-          <div class="text-2xl font-black text-amber-500">24/7</div>
-          <div class="text-[11px] uppercase tracking-wider text-gray-400 mt-1">System Active</div>
-        </div>
-        <div class="glass-card p-4 rounded-xl">
-          <div class="text-2xl font-black text-emerald-500">Integrated</div>
-          <div class="text-[11px] uppercase tracking-wider text-gray-400 mt-1">Discord Webhook</div>
-        </div>
-        <div class="glass-card p-4 rounded-xl">
-          <div class="text-2xl font-black text-blue-500">Multi-Role</div>
-          <div class="text-[11px] uppercase tracking-wider text-gray-400 mt-1">Security Access</div>
+      <!-- FOTO BANNER UTAMA (LINK DARI DISCORD KAMU) -->
+      <div class="mt-12 rounded-2xl overflow-hidden border border-red-600/30 shadow-2xl relative group max-w-4xl mx-auto">
+        <img src="https://media.discordapp.net/attachments/1420902399601541261/1557278353935831151/FiveM_b3258_GTAProcess_2026-10-07_13-26-12_496.png?backend=b2&ex=6ad709fc&is=6ad5b87c&hm=5a6784e8be974df8f9e23645f0fd98733bdf6e27adae3247c9132d575c6d020d&=&format=webp&quality=lossless&width=1536&height=864" alt="Triad Community Banner" class="w-full h-64 md:h-[450px] object-cover transform group-hover:scale-105 transition duration-500">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+        <div class="absolute bottom-6 left-6 text-left">
+          <span class="text-xs font-bold text-amber-400 tracking-widest uppercase bg-black/60 px-3 py-1 rounded-full border border-amber-500/30">Official Headquarters</span>
+          <h3 class="text-2xl md:text-3xl font-black text-white mt-1">TRIAD COMMUNITY CLUBHOUSE</h3>
         </div>
       </div>
     </section>
@@ -169,66 +155,80 @@
       <div class="grid md:grid-cols-2 gap-6">
         
         <!-- Card 1: Nakama MC -->
-        <div class="glass-card p-8 rounded-2xl flex flex-col justify-between group relative overflow-hidden">
-          <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-red-600/10 rounded-full blur-2xl group-hover:bg-red-600/20 transition"></div>
-          
-          <div class="space-y-4 relative z-10">
-            <div class="flex items-center justify-between">
-              <div class="w-14 h-14 bg-gradient-to-br from-red-950 to-red-900/60 text-red-500 rounded-2xl flex items-center justify-center text-2xl border border-red-600/40 shadow-lg">
-                <i class="fa-solid fa-skull"></i>
-              </div>
-              <span class="text-xs px-3 py-1 bg-emerald-950/80 text-emerald-400 border border-emerald-600/40 font-bold rounded-full flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Aktif
-              </span>
-            </div>
-            
-            <div>
-              <h4 class="text-2xl font-black text-white group-hover:text-red-400 transition">Nakama MC Blaine County</h4>
-              <p class="text-gray-400 text-sm leading-relaxed mt-2">
-                Modul manajemen klub resmi: Kalkulator bahan crafting (Iron, Carbon, Umer), rekapitulasi setoran anggota, brankas, serta transaksi partner.
-              </p>
-            </div>
+        <div class="glass-card rounded-2xl flex flex-col justify-between group relative overflow-hidden">
+          <div class="h-48 w-full overflow-hidden relative">
+            <img src="https://media.discordapp.net/attachments/1420902399601541261/1557278353935831151/FiveM_b3258_GTAProcess_2026-10-07_13-26-12_496.png?backend=b2&ex=6ad709fc&is=6ad5b87c&hm=5a6784e8be974df8f9e23645f0fd98733bdf6e27adae3247c9132d575c6d020d&=&format=webp&quality=lossless&width=1536&height=864" alt="Nakama MC" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
+            <span class="absolute top-4 right-4 text-xs px-3 py-1 bg-emerald-950/80 text-emerald-400 border border-emerald-600/40 font-bold rounded-full flex items-center gap-1.5 backdrop-blur">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Aktif
+            </span>
           </div>
 
-          <div class="mt-8 pt-4 border-t border-slate-800/80 relative z-10">
-            <a href="/dashboard/menu" class="inline-flex items-center gap-2 text-sm font-bold text-red-400 hover:text-red-300 transition">
-              Buka Modul Nakama MC <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition"></i>
-            </a>
+          <div class="p-6 space-y-3">
+            <h4 class="text-2xl font-black text-white group-hover:text-red-400 transition">Nakama MC Blaine County</h4>
+            <p class="text-gray-400 text-sm leading-relaxed">
+              Modul manajemen klub resmi: Kalkulator bahan crafting (Iron, Carbon, Umer), rekapitulasi setoran anggota, brankas, serta transaksi partner.
+            </p>
+            <div class="pt-4 border-t border-slate-800">
+              <a href="/dashboard/menu" class="inline-flex items-center gap-2 text-sm font-bold text-red-400 hover:text-red-300 transition">
+                Buka Modul Nakama MC <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition"></i>
+              </a>
+            </div>
           </div>
         </div>
 
         <!-- Card 2: Bisnis & Kas -->
-        <div class="glass-card p-8 rounded-2xl flex flex-col justify-between group relative overflow-hidden">
-          <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-purple-600/10 rounded-full blur-2xl group-hover:bg-purple-600/20 transition"></div>
-
-          <div class="space-y-4 relative z-10">
-            <div class="flex items-center justify-between">
-              <div class="w-14 h-14 bg-gradient-to-br from-purple-950 to-purple-900/60 text-purple-400 rounded-2xl flex items-center justify-center text-2xl border border-purple-600/40 shadow-lg">
-                <i class="fa-solid fa-wallet"></i>
-              </div>
-              <span class="text-xs px-3 py-1 bg-emerald-950/80 text-emerald-400 border border-emerald-600/40 font-bold rounded-full flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Aktif
-              </span>
-            </div>
-
-            <div>
-              <h4 class="text-2xl font-black text-white group-hover:text-purple-400 transition">Data Bisnis & Kas Organisasi</h4>
-              <p class="text-gray-400 text-sm leading-relaxed mt-2">
-                Pencatatan real-time laporan arus kas Uang Merah 🔴 dan Uang Putih ⚪ serta riwayat transaksi warga dan kelompok partner.
-              </p>
-            </div>
+        <div class="glass-card rounded-2xl flex flex-col justify-between group relative overflow-hidden">
+          <div class="h-48 w-full overflow-hidden relative">
+            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=80" alt="Data Bisnis" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
+            <span class="absolute top-4 right-4 text-xs px-3 py-1 bg-emerald-950/80 text-emerald-400 border border-emerald-600/40 font-bold rounded-full flex items-center gap-1.5 backdrop-blur">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Aktif
+            </span>
           </div>
 
-          <div class="mt-8 pt-4 border-t border-slate-800/80 relative z-10">
-            <a href="/dashboard/bisnis" class="inline-flex items-center gap-2 text-sm font-bold text-purple-400 hover:text-purple-300 transition">
-              Lihat Laporan Kas <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition"></i>
-            </a>
+          <div class="p-6 space-y-3">
+            <h4 class="text-2xl font-black text-white group-hover:text-purple-400 transition">Data Bisnis & Kas Organisasi</h4>
+            <p class="text-gray-400 text-sm leading-relaxed">
+              Pencatatan real-time laporan arus kas Uang Merah 🔴 dan Uang Putih ⚪ serta riwayat transaksi warga dan kelompok partner.
+            </p>
+            <div class="pt-4 border-t border-slate-800">
+              <a href="/dashboard/bisnis" class="inline-flex items-center gap-2 text-sm font-bold text-purple-400 hover:text-purple-300 transition">
+                Lihat Laporan Kas <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition"></i>
+              </a>
+            </div>
           </div>
         </div>
 
       </div>
     </section>
   </main>
+
+  <!-- WIDGET MUSIC PLAYER (POJOK KANAN BAWAH) -->
+  <div class="fixed bottom-6 right-6 z-50">
+    <audio id="bgMusic" loop src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3"></audio>
+
+    <div class="glass-card p-3 rounded-2xl shadow-2xl border border-red-500/40 flex items-center gap-3 backdrop-blur-md">
+      <button id="playBtn" onclick="togglePlay()" class="w-10 h-10 bg-gradient-to-br from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white rounded-xl flex items-center justify-center text-sm shadow-lg">
+        <i class="fa-solid fa-play" id="playIcon"></i>
+      </button>
+      <div>
+        <div class="text-[10px] font-bold text-red-400 uppercase tracking-wider flex items-center gap-1.5">
+          <i class="fa-solid fa-music animate-pulse"></i> Background Music
+        </div>
+        <div class="text-xs font-semibold text-white max-w-[130px] truncate">Triad Anthem</div>
+      </div>
+      
+      <!-- Tombol Link Spotify -->
+      <a href="https://open.spotify.com/track/13CwOTXUgBugeBByE9oIWb?si=b05d989b3dbf4cb4" target="_blank" class="p-2 text-emerald-400 hover:text-emerald-300" title="Buka di Spotify">
+        <i class="fa-brands fa-spotify text-lg"></i>
+      </a>
+
+      <button onclick="toggleMute()" class="text-gray-400 hover:text-white p-2">
+        <i class="fa-solid fa-volume-high" id="muteIcon"></i>
+      </button>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer class="border-t border-red-900/30 bg-slate-950/90 py-8 mt-16">
@@ -241,5 +241,29 @@
     </div>
   </footer>
 
+  <script>
+    const music = document.getElementById('bgMusic');
+    const playIcon = document.getElementById('playIcon');
+    const muteIcon = document.getElementById('muteIcon');
+
+    function togglePlay() {
+      if (music.paused) {
+        music.play();
+        playIcon.className = "fa-solid fa-pause";
+      } else {
+        music.pause();
+        playIcon.className = "fa-solid fa-play";
+      }
+    }
+
+    function toggleMute() {
+      music.muted = !music.muted;
+      if (music.muted) {
+        muteIcon.className = "fa-solid fa-volume-xmark text-red-400";
+      } else {
+        muteIcon.className = "fa-solid fa-volume-high";
+      }
+    }
+  </script>
 </body>
 </html>
