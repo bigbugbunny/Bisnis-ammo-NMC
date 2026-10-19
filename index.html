@@ -4,8 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TRIAD COMMUNITY - Portal Utama</title>
+  
+  <link rel="icon" type="image/png" href="NakamaLogo.png">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -13,93 +18,212 @@
         extend: {
           colors: {
             brand: {
-              dark: '#0a0a0c',
-              card: '#121215',
-              border: '#222226',
-              accent: '#ffffff'
+              dark: '#07090e',
+              card: 'rgba(18, 24, 38, 0.85)',
+              border: 'rgba(220, 38, 38, 0.25)',
+              accent: '#ef4444'
             }
           }
         }
       }
     }
   </script>
+
+  <style>
+    body {
+      background-color: #07090e;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #e2e8f0;
+      overflow-x: hidden;
+    }
+    
+    /* Radial Background Glow Effect */
+    @keyframes pulseGlow {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.2; }
+      50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.35; }
+    }
+    .bg-ambient-glow {
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      width: 750px;
+      height: 750px;
+      background: radial-gradient(circle, rgba(239, 68, 68, 0.3) 0%, rgba(245, 158, 11, 0.1) 40%, transparent 70%);
+      z-index: -1;
+      pointer-events: none;
+      animation: pulseGlow 10s ease-in-out infinite;
+    }
+
+    .title-gradient {
+      background: linear-gradient(135deg, #ffffff 20%, #f59e0b 60%, #ef4444 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 40px rgba(239, 68, 68, 0.3);
+    }
+
+    .glass-card {
+      background: rgba(18, 24, 38, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(220, 38, 38, 0.25);
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-card:hover {
+      border-color: rgba(239, 68, 68, 0.8);
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.2), inset 0 0 15px rgba(239, 68, 68, 0.05);
+      transform: translateY(-5px);
+    }
+
+    button, a {
+      transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    button:active, a:active {
+      transform: scale(0.96);
+    }
+  </style>
 </head>
-<body class="bg-brand-dark text-gray-200 font-sans antialiased min-h-screen flex flex-col justify-between">
+<body class="bg-brand-dark text-gray-200 font-sans antialiased min-h-screen flex flex-col justify-between relative">
+
+  <!-- Ambient Glowing Background -->
+  <div class="bg-ambient-glow"></div>
 
   <!-- Header / Navbar -->
-  <header class="border-b border-brand-border bg-brand-card/80 backdrop-blur sticky top-0 z-50">
+  <header class="border-b border-red-900/30 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <img src="NakamaLogo.png" alt="Logo" class="h-9 w-auto">
-        <h1 class="text-xl font-bold tracking-widest text-white">TRIAD<span class="text-gray-400 font-light"> COMMUNITY</span></h1>
+        <div class="w-10 h-10 bg-black rounded-xl border border-red-600/50 p-1 flex items-center justify-center shadow-lg">
+          <img src="NakamaLogo.png" alt="Logo" class="h-full w-auto object-contain" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+        </div>
+        <h1 class="text-xl font-black tracking-widest text-white">TRIAD<span class="text-red-500 font-light"> COMMUNITY</span></h1>
       </div>
-      <nav class="hidden md:flex items-center gap-6 text-sm text-gray-300 font-medium">
-        <a href="/" class="hover:text-white transition-colors">Home</a>
-        <a href="#about" class="hover:text-white transition-colors">Nilai & Visi</a>
-        <a href="#divisions" class="hover:text-white transition-colors">Divisi</a>
-        <a href="/dashboard/" class="hover:text-white transition-colors">Dashboard System</a>
+      
+      <nav class="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest font-bold text-gray-400">
+        <a href="/" class="text-red-500 hover:text-white transition-colors">Home</a>
+        <a href="#about" class="hover:text-red-400 transition-colors">Nilai & Visi</a>
+        <a href="#divisions" class="hover:text-red-400 transition-colors">Divisi</a>
+        <a href="/dashboard/" class="hover:text-red-400 transition-colors">Dashboard System</a>
       </nav>
+
       <div class="flex items-center gap-3">
-        <a href="/dashboard/" class="px-4 py-2 text-sm font-semibold text-black bg-white rounded-lg hover:bg-gray-200 transition-all">
-          Akses System
+        <a href="/dashboard/" class="px-5 py-2.5 text-xs font-black tracking-wider uppercase text-white bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 rounded-xl shadow-lg border border-red-500/30 flex items-center gap-2">
+          <i class="fa-solid fa-right-to-bracket"></i> Akses System
         </a>
       </div>
     </div>
   </header>
 
-  <!-- Hero Section -->
+  <!-- Main Content -->
   <main class="flex-1">
-    <section class="max-w-5xl mx-auto px-6 py-24 text-center">
-      <span class="px-4 py-1.5 text-xs font-semibold tracking-wider text-gray-300 uppercase border border-brand-border rounded-full bg-brand-card">
-        Keadilan • Kebersamaan • Persaudaraan
+    
+    <!-- Hero Section -->
+    <section class="max-w-5xl mx-auto px-6 py-20 text-center relative z-10">
+      <span class="px-4 py-1.5 text-xs font-bold tracking-widest text-red-400 uppercase border border-red-800/40 rounded-full bg-red-950/40 inline-flex items-center gap-2 shadow-inner">
+        <i class="fa-solid fa-shield-halved"></i> KEADILAN • KEBERSAMAAN • PERSAUDARAAN
       </span>
-      <h2 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight mt-6 mb-6">
-        WELCOME TO TRIAD COMMUNITY
+      
+      <h2 class="text-4xl md:text-7xl font-black tracking-wider mt-6 mb-6 leading-tight title-gradient">
+        WELCOME TO <br> TRIAD COMMUNITY
       </h2>
-      <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-        Wadah resmi persaudaraan, manajemen sistem organisasi, dan pusat koordinasi divisi Nakama MC serta grup usaha bersama.
+      
+      <p class="text-gray-400 text-base md:text-xl max-w-2xl mx-auto leading-relaxed">
+        Wadah resmi persaudaraan, manajemen sistem organisasi, dan pusat koordinasi divisi <span class="text-red-400 font-semibold">Nakama MC</span> serta grup usaha bersama by Bunny.
       </p>
-      <div class="mt-8 flex flex-wrap justify-center gap-4">
-        <a href="/dashboard/" class="px-6 py-3 font-semibold text-black bg-white rounded-lg hover:bg-gray-200 transition-all shadow-lg">
-          Masuk Dashboard Internal
+
+      <div class="mt-10 flex flex-wrap justify-center gap-4">
+        <a href="/dashboard/" class="px-8 py-3.5 font-bold text-sm tracking-wider uppercase text-white bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 rounded-xl shadow-xl border border-red-500/40 flex items-center gap-2">
+          <i class="fa-solid fa-gauge-high"></i> Masuk Dashboard Internal
         </a>
-        <a href="#divisions" class="px-6 py-3 font-semibold text-white bg-brand-card border border-brand-border rounded-lg hover:border-gray-500 transition-all">
-          Lihat Divisi
+        <a href="#divisions" class="px-8 py-3.5 font-bold text-sm tracking-wider uppercase text-gray-300 bg-slate-900/80 border border-slate-700 rounded-xl hover:border-red-500 hover:text-white flex items-center gap-2 shadow-lg">
+          <i class="fa-solid fa-layer-group"></i> Lihat Divisi
         </a>
+      </div>
+    </section>
+
+    <!-- Stat Counter Section -->
+    <section class="max-w-5xl mx-auto px-6 pb-12">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        <div class="glass-card p-4 rounded-xl">
+          <div class="text-2xl font-black text-red-500">100%</div>
+          <div class="text-[11px] uppercase tracking-wider text-gray-400 mt-1">Realtime Sync</div>
+        </div>
+        <div class="glass-card p-4 rounded-xl">
+          <div class="text-2xl font-black text-amber-500">24/7</div>
+          <div class="text-[11px] uppercase tracking-wider text-gray-400 mt-1">System Active</div>
+        </div>
+        <div class="glass-card p-4 rounded-xl">
+          <div class="text-2xl font-black text-emerald-500">Integrated</div>
+          <div class="text-[11px] uppercase tracking-wider text-gray-400 mt-1">Discord Webhook</div>
+        </div>
+        <div class="glass-card p-4 rounded-xl">
+          <div class="text-2xl font-black text-blue-500">Multi-Role</div>
+          <div class="text-[11px] uppercase tracking-wider text-gray-400 mt-1">Security Access</div>
+        </div>
       </div>
     </section>
 
     <!-- Divisi Section -->
     <section id="divisions" class="max-w-6xl mx-auto px-6 py-12">
-      <h3 class="text-2xl font-bold text-white mb-8 border-l-4 border-white pl-3">Portal Divisi & Organisasi</h3>
+      <h3 class="text-xl font-black text-white uppercase tracking-widest mb-8 border-l-4 border-red-600 pl-3 flex items-center gap-3">
+        <i class="fa-solid fa-sitemap text-red-500"></i> Portal Divisi & Organisasi
+      </h3>
+      
       <div class="grid md:grid-cols-2 gap-6">
         
         <!-- Card 1: Nakama MC -->
-        <div class="bg-brand-card border border-brand-border p-6 rounded-xl hover:border-gray-500 transition-all">
-          <div class="flex items-center justify-between mb-4">
-            <h4 class="text-xl font-bold text-white">Nakama MC Blaine County</h4>
-            <span class="text-xs px-2.5 py-1 bg-green-950 text-green-400 border border-green-800 rounded">Aktif</span>
+        <div class="glass-card p-8 rounded-2xl flex flex-col justify-between group relative overflow-hidden">
+          <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-red-600/10 rounded-full blur-2xl group-hover:bg-red-600/20 transition"></div>
+          
+          <div class="space-y-4 relative z-10">
+            <div class="flex items-center justify-between">
+              <div class="w-14 h-14 bg-gradient-to-br from-red-950 to-red-900/60 text-red-500 rounded-2xl flex items-center justify-center text-2xl border border-red-600/40 shadow-lg">
+                <i class="fa-solid fa-skull"></i>
+              </div>
+              <span class="text-xs px-3 py-1 bg-emerald-950/80 text-emerald-400 border border-emerald-600/40 font-bold rounded-full flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Aktif
+              </span>
+            </div>
+            
+            <div>
+              <h4 class="text-2xl font-black text-white group-hover:text-red-400 transition">Nakama MC Blaine County</h4>
+              <p class="text-gray-400 text-sm leading-relaxed mt-2">
+                Modul manajemen klub resmi: Kalkulator bahan crafting (Iron, Carbon, Umer), rekapitulasi setoran anggota, brankas, serta transaksi partner.
+              </p>
+            </div>
           </div>
-          <p class="text-gray-400 text-sm leading-relaxed mb-6">
-            Modul manajemen klub resmi: Kalkulator bahan crafting (Iron, Carbon, Umer), rekapitulasi setoran anggota, brankas, serta transaksi partner.
-          </p>
-          <a href="/dashboard/" class="inline-flex items-center text-sm font-semibold text-white hover:underline">
-            Buka Modul Nakama MC &rarr;
-          </a>
+
+          <div class="mt-8 pt-4 border-t border-slate-800/80 relative z-10">
+            <a href="/dashboard/menu" class="inline-flex items-center gap-2 text-sm font-bold text-red-400 hover:text-red-300 transition">
+              Buka Modul Nakama MC <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition"></i>
+            </a>
+          </div>
         </div>
 
         <!-- Card 2: Bisnis & Kas -->
-        <div class="bg-brand-card border border-brand-border p-6 rounded-xl hover:border-gray-500 transition-all">
-          <div class="flex items-center justify-between mb-4">
-            <h4 class="text-xl font-bold text-white">Data Bisnis & Kas Organisasi</h4>
-            <span class="text-xs px-2.5 py-1 bg-green-950 text-green-400 border border-green-800 rounded">Aktif</span>
+        <div class="glass-card p-8 rounded-2xl flex flex-col justify-between group relative overflow-hidden">
+          <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-purple-600/10 rounded-full blur-2xl group-hover:bg-purple-600/20 transition"></div>
+
+          <div class="space-y-4 relative z-10">
+            <div class="flex items-center justify-between">
+              <div class="w-14 h-14 bg-gradient-to-br from-purple-950 to-purple-900/60 text-purple-400 rounded-2xl flex items-center justify-center text-2xl border border-purple-600/40 shadow-lg">
+                <i class="fa-solid fa-wallet"></i>
+              </div>
+              <span class="text-xs px-3 py-1 bg-emerald-950/80 text-emerald-400 border border-emerald-600/40 font-bold rounded-full flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Aktif
+              </span>
+            </div>
+
+            <div>
+              <h4 class="text-2xl font-black text-white group-hover:text-purple-400 transition">Data Bisnis & Kas Organisasi</h4>
+              <p class="text-gray-400 text-sm leading-relaxed mt-2">
+                Pencatatan real-time laporan arus kas Uang Merah 🔴 dan Uang Putih ⚪ serta riwayat transaksi warga dan kelompok partner.
+              </p>
+            </div>
           </div>
-          <p class="text-gray-400 text-sm leading-relaxed mb-6">
-            Pencatatan real-time laporan arus kas Uang Merah 🔴 dan Uang Putih ⚪ serta riwayat transaksi warga dan kelompok partner.
-          </p>
-          <a href="/dashboard/" class="inline-flex items-center text-sm font-semibold text-white hover:underline">
-            Lihat Laporan Kas &rarr;
-          </a>
+
+          <div class="mt-8 pt-4 border-t border-slate-800/80 relative z-10">
+            <a href="/dashboard/bisnis" class="inline-flex items-center gap-2 text-sm font-bold text-purple-400 hover:text-purple-300 transition">
+              Lihat Laporan Kas <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition"></i>
+            </a>
+          </div>
         </div>
 
       </div>
@@ -107,11 +231,12 @@
   </main>
 
   <!-- Footer -->
-  <footer class="border-t border-brand-border bg-brand-card py-6 mt-12">
+  <footer class="border-t border-red-900/30 bg-slate-950/90 py-8 mt-16">
     <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
-      <p>&copy; 2026 TRIAD COMMUNITY. System Management by Bunny.</p>
-      <div class="flex gap-4">
-        <a href="/dashboard/" class="hover:text-gray-300">Dashboard Internal</a>
+      <p>&copy; 2026 <span class="text-red-500 font-bold">TRIAD COMMUNITY</span>. System Management by Bunny.</p>
+      <div class="flex gap-6">
+        <a href="/dashboard/" class="hover:text-gray-300 transition-colors">Dashboard Internal</a>
+        <a href="#divisions" class="hover:text-gray-300 transition-colors">Divisi</a>
       </div>
     </div>
   </footer>
