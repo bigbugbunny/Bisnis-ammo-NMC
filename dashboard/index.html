@@ -60,9 +60,9 @@
 
   <!-- MODAL NOTIFIKASI CUSTOM -->
   <div id="customAlertModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card p-6 rounded-2xl shadow-2xl w-full max-w-sm text-center space-y-4 border border-red-500/50 animate-modal-in" id="alertModalCard">
-      <div id="alertModalIconBg" class="w-14 h-14 bg-red-950/50 text-red-400 rounded-2xl flex items-center justify-center text-2xl mx-auto border border-red-500/40 shadow-inner">
-        <i class="fa-solid fa-circle-exclamation" id="alertModalIcon"></i>
+    <div class="glass-card p-6 rounded-2xl shadow-2xl w-full max-w-sm text-center space-y-4 border border-red-500/50 animate-modal-in">
+      <div class="w-14 h-14 bg-red-950/50 text-red-400 rounded-2xl flex items-center justify-center text-2xl mx-auto border border-red-500/40 shadow-inner">
+        <i class="fa-solid fa-circle-exclamation"></i>
       </div>
       <div class="space-y-1">
         <h3 class="text-sm font-black tracking-widest text-white uppercase">NOTIFIKASI SISTEM</h3>
@@ -1036,7 +1036,7 @@
       if (currentUserRole !== "editor") return;
       db.ref('webhooks/brankas').once('value').then((snapshot) => {
         const webhookUrl = snapshot.val();
-        if (!webhookUrl) { showAlert("Webhook brankas belum diatur di Firebase!"); return; }
+        if (!webhookUrl) { showAlert("Webhook brankas belum diatur!"); return; }
         let text = `📦 **LAPORAN STOK BRANKAS NAKAMA MC**\n\n`;
         for (let item in vaultStock) { text += `• **${item}**: ${vaultStock[item].toLocaleString('id-ID')}\n`; }
         fetch(webhookUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: text }) })
@@ -1185,7 +1185,7 @@
 
     // --- HARGA KELOMPOK PARTNER ---
     let groupsData = {};
-    let currentGroupKey = "mayans";
+    let currentGroupKey = "";
 
     function loadGroupsDataFromCloud() {
       db.ref('groups_data').once('value').then((snapshot) => {
@@ -1194,22 +1194,33 @@
         if (groupSelect) {
           groupSelect.innerHTML = "";
           let index = 1;
+          let firstKey = "";
           for (let key in groupsData) {
-            const isSelected = (key === currentGroupKey) ? "selected" : "";
-            groupSelect.innerHTML += `<option value="${key}" ${isSelected}>${index}. ${groupsData[key].name}</option>`;
+            if (!firstKey) firstKey = key;
+            const groupName = groupsData[key].name || key;
+            groupSelect.innerHTML += `<option value="${key}">${index}. ${groupName}</option>`;
             index++;
+          }
+          if (firstKey) {
+            currentGroupKey = firstKey;
+            groupSelect.value = firstKey;
           }
         }
         loadGroupData();
-      }).catch(()=>{});
+      }).catch((err) => {
+        console.error("Gagal memuat groups_data:", err);
+      });
     }
 
     function loadGroupData() {
       const groupSelect = document.getElementById("groupSelect");
-      if (groupSelect && groupSelect.value) { currentGroupKey = groupSelect.value; }
+      if (groupSelect && groupSelect.value) { 
+        currentGroupKey = groupSelect.value; 
+      }
+      
       if (!groupsData[currentGroupKey]) return;
       const group = groupsData[currentGroupKey];
-      document.getElementById("activeGroupNameBadge").innerText = group.name;
+      document.getElementById("activeGroupNameBadge").innerText = group.name || currentGroupKey;
 
       const ammoListDiv = document.getElementById("ammoPriceList");
       ammoListDiv.innerHTML = "";
@@ -1217,6 +1228,8 @@
         for (let ammo in group.ammo) {
           ammoListDiv.innerHTML += `<div class="flex justify-between bg-slate-900/80 p-3 rounded-xl border border-slate-800"><span>${ammo} (1 pack)</span><span class="font-bold text-green-400">${group.ammo[ammo].toLocaleString('id-ID')}</span></div>`;
         }
+      } else {
+        ammoListDiv.innerHTML = `<div class="text-xs text-gray-500 text-center py-2">Tidak ada data harga ammo.</div>`;
       }
 
       const itemListDiv = document.getElementById("itemPriceList");
@@ -1229,12 +1242,15 @@
             <div class="glass-card p-3 rounded-xl border border-slate-800 flex flex-col justify-between">
               <div>
                 <div class="text-gray-300 font-semibold text-xs">${item}</div>
-                <div class="font-bold text-red-400 text-sm mt-1">${data.isRate ? (data.price * 100) + '%' : 'Rp ' + data.price.toLocaleString('id-ID')}</div>
+                <div class="font-bold text-red-400 text-sm mt-1">${data.isRate ? (data.price * 100) + '%' : 'Rp ' + Number(data.price || 0).toLocaleString('id-ID')}</div>
               </div>
               ${promoText}
             </div>`;
         }
+      } else {
+        itemListDiv.innerHTML = `<div class="text-xs text-gray-500 text-center py-2 col-span-2">Tidak ada data barang/layanan.</div>`;
       }
+
       document.getElementById("ammoRowsContainer").innerHTML = "";
       document.getElementById("itemRowsContainer").innerHTML = "";
       calculateAll();
