@@ -212,7 +212,7 @@
 
   <!-- WIDGET MUSIC PLAYER DENGAN PENGATUR VOLUME LENGKAP -->
   <div class="fixed bottom-6 right-6 z-50">
-    <audio id="bgMusic" loop src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a7315b.mp3?filename=synthwave-80s-110045.mp3"></audio>
+    <audio id="bgMusic" loop preload="auto" src="https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/7L2iMxl3v6fM1L38I1VfX3yD1uO8aE6B7Xp5fW.mp3"></audio>
 
     <div class="glass-card p-3 rounded-2xl shadow-2xl border border-red-500/40 flex items-center gap-3 backdrop-blur-md">
       <!-- Tombol Play/Pause -->
@@ -259,22 +259,20 @@
     const muteIcon = document.getElementById('muteIcon');
     const volumeControl = document.getElementById('volumeControl');
 
-    // Set default volume ke 50%
     music.volume = 0.5;
 
     // Trigger Autoplay otomatis begitu pengguna melakukan klik pertama di mana saja di layar
-    function enableAutoplayOnFirstInteraction() {
+    function startAudioOnFirstClick() {
       music.play().then(() => {
         playIcon.className = "fa-solid fa-pause";
-        document.removeEventListener('click', enableAutoplayOnFirstInteraction);
-        document.removeEventListener('keydown', enableAutoplayOnFirstInteraction);
-      }).catch(error => {
-        console.log("Autoplay ditahan oleh browser sampai interaksi pertama.");
-      });
+      }).catch(err => console.log("Menunggu interaksi pengguna..."));
+      
+      document.removeEventListener('click', startAudioOnFirstClick);
+      document.removeEventListener('keydown', startAudioOnFirstClick);
     }
 
-    document.addEventListener('click', enableAutoplayOnFirstInteraction, { once: true });
-    document.addEventListener('keydown', enableAutoplayOnFirstInteraction, { once: true });
+    document.addEventListener('click', startAudioOnFirstClick);
+    document.addEventListener('keydown', startAudioOnFirstClick);
 
     function togglePlay() {
       if (music.paused) {
