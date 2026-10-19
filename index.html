@@ -126,6 +126,12 @@
       transform: translateY(-5px);
     }
 
+    /* === SLIDER DOKUMENTASI GESER KESAMPING === */
+    .doc-slider-container {
+      display: flex;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
     input[type=range] {
       accent-color: #ef4444;
     }
@@ -165,8 +171,8 @@
       
       <nav class="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest font-bold text-gray-300">
         <a href="#" onclick="scrollToSection('home')" class="text-red-500 hover:text-white transition-colors">Home</a>
-        <a href="#" onclick="scrollToSection('about')" class="hover:text-red-400 transition-colors">Nilai & Visi</a>
         <a href="#" onclick="scrollToSection('gallery')" class="hover:text-red-400 transition-colors">Dokumentasi</a>
+        <a href="#" onclick="scrollToSection('about')" class="hover:text-red-400 transition-colors">Nilai & Visi</a>
         <a href="/dashboard/" class="hover:text-red-400 transition-colors">Dashboard System</a>
       </nav>
 
@@ -202,7 +208,78 @@
       </div>
     </section>
 
-    <!-- SECTION VISI & PILAR ORGANISASI -->
+    <!-- SECTION GALERI DOKUMENTASI FOTO (GESER OTOMATIS KE SAMPING / SLIDER) -->
+    <section id="gallery" class="max-w-4xl mx-auto px-6 py-12 relative z-10">
+      <div class="text-center mb-8">
+        <span class="text-xs font-bold text-red-400 uppercase tracking-widest bg-red-950/50 px-3 py-1 rounded-full border border-red-600/30">Galeri Kegiatan</span>
+        <h3 class="text-2xl font-black text-white uppercase tracking-wider mt-2">DOKUMENTASI KELUARGA BESAR</h3>
+      </div>
+
+      <!-- Container Slider Dokumentasi -->
+      <div class="relative overflow-hidden rounded-2xl shadow-2xl border border-red-500/30 glass-card">
+        <div id="docSlider" class="doc-slider-container">
+          
+          <!-- Slide 1 -->
+          <div class="w-full shrink-0 p-4 md:p-6 flex flex-col md:flex-row items-center gap-6">
+            <div class="w-full md:w-3/5 h-64 md:h-80 rounded-xl overflow-hidden relative shadow-lg">
+              <img src="bg1.png" alt="Dokumentasi 1" class="w-full h-full object-cover">
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 to-transparent"></div>
+              <span class="absolute bottom-3 left-3 text-xs font-bold text-white bg-black/70 px-3 py-1 rounded-lg border border-white/10">Clubhouse Gathering</span>
+            </div>
+            <div class="w-full md:w-2/5 text-left space-y-3">
+              <div class="text-xs font-bold text-red-400 uppercase tracking-widest"><i class="fa-solid fa-calendar-days"></i> Sesi Utama</div>
+              <h4 class="text-xl font-bold text-white">Markas & Pertemuan Rutin</h4>
+              <p class="text-xs text-gray-300 leading-relaxed">
+                Momen kebersamaan seluruh anggota saat berkumpul di markas utama Triad Community untuk mempererat tali persaudaraan.
+              </p>
+            </div>
+          </div>
+
+          <!-- Slide 2 -->
+          <div class="w-full shrink-0 p-4 md:p-6 flex flex-col md:flex-row items-center gap-6">
+            <div class="w-full md:w-3/5 h-64 md:h-80 rounded-xl overflow-hidden relative shadow-lg">
+              <img src="bg2.png" alt="Dokumentasi 2" class="w-full h-full object-cover">
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 to-transparent"></div>
+              <span class="absolute bottom-3 left-3 text-xs font-bold text-white bg-black/70 px-3 py-1 rounded-lg border border-white/10">Convoy & Riding</span>
+            </div>
+            <div class="w-full md:w-2/5 text-left space-y-3">
+              <div class="text-xs font-bold text-amber-400 uppercase tracking-widest"><i class="fa-solid fa-route"></i> Divisi Lapangan</div>
+              <h4 class="text-xl font-bold text-white">Konvoi & Perjalanan Bersama</h4>
+              <p class="text-xs text-gray-300 leading-relaxed">
+                Aksi konvoi tertib divisi Nakama MC dalam menjalankan misi, pengawalan, dan rute perjalanan harian secara solid.
+              </p>
+            </div>
+          </div>
+
+          <!-- Slide 3 -->
+          <div class="w-full shrink-0 p-4 md:p-6 flex flex-col md:flex-row items-center gap-6">
+            <div class="w-full md:w-3/5 h-64 md:h-80 rounded-xl overflow-hidden relative shadow-lg">
+              <img src="bg3.png" alt="Dokumentasi 3" class="w-full h-full object-cover">
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 to-transparent"></div>
+              <span class="absolute bottom-3 left-3 text-xs font-bold text-white bg-black/70 px-3 py-1 rounded-lg border border-white/10">Operation Briefing</span>
+            </div>
+            <div class="w-full md:w-2/5 text-left space-y-3">
+              <div class="text-xs font-bold text-emerald-400 uppercase tracking-widest"><i class="fa-solid fa-briefcase"></i> Manajemen Bisnis</div>
+              <h4 class="text-xl font-bold text-white">Koordinasi & Briefing Strategi</h4>
+              <p class="text-xs text-gray-300 leading-relaxed">
+                Koordinasi terpusat dan briefing pengelolaan kas serta operasional bisnis bersama seluruh anggota aktif.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Tombol Navigasi Slider Kiri Kanan -->
+        <button onclick="prevDocSlide()" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/10 shadow-lg z-20">
+          <i class="fa-solid fa-chevron-left text-xs"></i>
+        </button>
+        <button onclick="nextDocSlide()" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/10 shadow-lg z-20">
+          <i class="fa-solid fa-chevron-right text-xs"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- SECTION VISI & PILAR ORGANISASI (DI BAWAH DOKUMENTASI) -->
     <section id="about" class="max-w-6xl mx-auto px-6 py-12 relative z-10">
       <h3 class="text-xl font-black text-white uppercase tracking-widest text-center mb-8">
         NILAI & PILAR UTAMA ORGANISASI
@@ -241,53 +318,7 @@
       </div>
     </section>
 
-    <!-- SECTION GALERI DOKUMENTASI FOTO -->
-    <section id="gallery" class="max-w-6xl mx-auto px-6 py-12 relative z-10">
-      <div class="text-center mb-8">
-        <span class="text-xs font-bold text-red-400 uppercase tracking-widest bg-red-950/50 px-3 py-1 rounded-full border border-red-600/30">Galeri Kegiatan</span>
-        <h3 class="text-2xl font-black text-white uppercase tracking-wider mt-2">DOKUMENTASI KELUARGA BESAR</h3>
-      </div>
-
-      <div class="grid md:grid-cols-3 gap-6">
-        <!-- Foto Dokumentasi 1 -->
-        <div class="glass-card rounded-2xl overflow-hidden group shadow-xl">
-          <div class="h-48 overflow-hidden relative">
-            <img src="bg1.png" alt="Dokumentasi 1" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent"></div>
-            <span class="absolute bottom-3 left-3 text-xs font-bold text-white bg-black/60 px-2.5 py-1 rounded-lg border border-white/10">Clubhouse Gathering</span>
-          </div>
-          <div class="p-4">
-            <p class="text-xs text-gray-300">Momen kebersamaan anggota saat berkumpul di markas utama Triad Community.</p>
-          </div>
-        </div>
-
-        <!-- Foto Dokumentasi 2 -->
-        <div class="glass-card rounded-2xl overflow-hidden group shadow-xl">
-          <div class="h-48 overflow-hidden relative">
-            <img src="bg2.png" alt="Dokumentasi 2" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent"></div>
-            <span class="absolute bottom-3 left-3 text-xs font-bold text-white bg-black/60 px-2.5 py-1 rounded-lg border border-white/10">Convoy & Riding</span>
-          </div>
-          <div class="p-4">
-            <p class="text-xs text-gray-300">Aksi konvoi tertib divisi Nakama MC dalam menjalankan misi dan rute harian.</p>
-          </div>
-        </div>
-
-        <!-- Foto Dokumentasi 3 -->
-        <div class="glass-card rounded-2xl overflow-hidden group shadow-xl">
-          <div class="h-48 overflow-hidden relative">
-            <img src="bg3.png" alt="Dokumentasi 3" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent"></div>
-            <span class="absolute bottom-3 left-3 text-xs font-bold text-white bg-black/60 px-2.5 py-1 rounded-lg border border-white/10">Operation Briefing</span>
-          </div>
-          <div class="p-4">
-            <p class="text-xs text-gray-300">Koordinasi terpusat dan briefing strategi bisnis bersama seluruh anggota aktif.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Stat Counter Section (Dipindah ke Paling Bawah, di atas Footer) -->
+    <!-- Stat Counter Section (Di Paling Bawah, di atas Footer) -->
     <section class="max-w-5xl mx-auto px-6 py-8 relative z-10">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
         <div class="glass-card p-4 rounded-xl">
@@ -355,7 +386,30 @@
   </footer>
 
   <script>
-    // --- SKRIP EFEK HUJAN DI KACA (RAINDROPS) ---
+    // --- SKRIP SLIDER DOKUMENTASI GESER KESAMPING ---
+    const docSlider = document.getElementById('docSlider');
+    const docSlides = docSlider.children;
+    let currentDocIndex = 0;
+
+    function updateDocSlider() {
+      docSlider.style.transform = `translateX(-${currentDocIndex * 100}%)`;
+    }
+
+    function nextDocSlide() {
+      currentDocIndex = (currentDocIndex + 1) % docSlides.length;
+      updateDocSlider();
+    }
+
+    function prevDocSlide() {
+      currentDocIndex = (currentDocIndex - 1 + docSlides.length) % docSlides.length;
+      updateDocSlider();
+    }
+
+    // Geser otomatis galeri dokumentasi setiap 5 detik
+    setInterval(nextDocSlide, 5000);
+
+
+    // --- SKRIP EFEK HUJAN DI KACA ---
     const canvas = document.getElementById('rainCanvas');
     const ctx = canvas.getContext('2d');
 
