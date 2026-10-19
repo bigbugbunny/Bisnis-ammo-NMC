@@ -34,6 +34,7 @@
     html, body {
       overflow-y: auto;
       scrollbar-width: none;
+      scroll-behavior: smooth;
     }
     ::-webkit-scrollbar {
       display: none;
@@ -48,14 +49,14 @@
       padding: 0;
     }
 
-    /* === BACKGROUND SLIDESHOW MENGIKUTI SCROLL & ADA GRADASI KE BAWAH === */
+    /* === BACKGROUND SLIDESHOW === */
     .bg-slideshow {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: 100vh; /* Mengisi layar utama atas */
-      z-index: -3;
+      height: 100vh;
+      z-index: -4;
       background-color: #07090e;
       overflow: hidden;
     }
@@ -74,11 +75,22 @@
     }
 
     .bg-slide.active {
-      opacity: 0.55; /* Tingkat kecerahan foto */
+      opacity: 0.55;
       transform: scale(1.05);
     }
 
-    /* Efek gradasi menyatu ke bawah (menuju warna gelap #07090e) */
+    /* === KANVAS EFEK HUJAN DI KACA === */
+    #rainCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: -3;
+      pointer-events: none;
+    }
+
+    /* Efek gradasi menyatu ke bawah */
     .bg-gradient-overlay {
       position: absolute;
       top: 0;
@@ -128,16 +140,20 @@
 </head>
 <body class="bg-brand-dark text-gray-200 font-sans antialiased min-h-screen flex flex-col justify-between relative pb-24">
 
-  <!-- === BACKGROUND SLIDESHOW MENGIKUTI SCROLL === -->
+  <!-- === BACKGROUND SLIDESHOW 3 FOTO === -->
   <div class="bg-slideshow">
     <div class="bg-slide active" style="background-image: url('bg1.png');"></div>
     <div class="bg-slide" style="background-image: url('bg2.png');"></div>
     <div class="bg-slide" style="background-image: url('bg3.png');"></div>
   </div>
-  <!-- Lapisan Gradasi Penyatuan ke Bawah -->
+
+  <!-- === KANVAS EFEK HUJAN DI KACA === -->
+  <canvas id="rainCanvas"></canvas>
+
+  <!-- Lapisan Gradasi Elegan -->
   <div class="bg-gradient-overlay"></div>
 
-  <!-- Header / Navbar -->
+  <!-- Header / Navbar (Navigasi Polos Tanpa #) -->
   <header class="border-b border-red-900/30 bg-slate-950/70 backdrop-blur-md sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -148,8 +164,9 @@
       </div>
       
       <nav class="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest font-bold text-gray-300">
-        <a href="/" class="text-red-500 hover:text-white transition-colors">Home</a>
-        <a href="#about" class="hover:text-red-400 transition-colors">Nilai & Visi</a>
+        <a href="#" onclick="scrollToSection('home')" class="text-red-500 hover:text-white transition-colors">Home</a>
+        <a href="#" onclick="scrollToSection('about')" class="hover:text-red-400 transition-colors">Nilai & Visi</a>
+        <a href="#" onclick="scrollToSection('gallery')" class="hover:text-red-400 transition-colors">Dokumentasi</a>
         <a href="/dashboard/" class="hover:text-red-400 transition-colors">Dashboard System</a>
       </nav>
 
@@ -165,7 +182,7 @@
   <main class="flex-1">
     
     <!-- Hero Section -->
-    <section class="max-w-5xl mx-auto px-6 pt-20 pb-12 text-center relative z-10">
+    <section id="home" class="max-w-5xl mx-auto px-6 pt-20 pb-12 text-center relative z-10">
       <span class="px-4 py-1.5 text-xs font-bold tracking-widest text-red-400 uppercase border border-red-800/40 rounded-full bg-slate-950/60 backdrop-blur inline-flex items-center gap-2 shadow-inner">
         <i class="fa-solid fa-shield-halved"></i> KEADILAN • KEBERSAMAAN • PERSAUDARAAN
       </span>
@@ -182,28 +199,6 @@
         <a href="/dashboard/" class="px-8 py-3.5 font-bold text-sm tracking-wider uppercase text-white bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 rounded-xl shadow-2xl border border-red-500/40 flex items-center gap-2">
           <i class="fa-solid fa-gauge-high"></i> Masuk Dashboard Internal
         </a>
-      </div>
-    </section>
-
-    <!-- Stat Counter Section -->
-    <section class="max-w-5xl mx-auto px-6 pb-12 relative z-10">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-        <div class="glass-card p-4 rounded-xl">
-          <div class="text-2xl font-black text-red-500">100%</div>
-          <div class="text-[11px] uppercase tracking-wider text-gray-300 mt-1">Realtime Sync</div>
-        </div>
-        <div class="glass-card p-4 rounded-xl">
-          <div class="text-2xl font-black text-amber-500">24/7</div>
-          <div class="text-[11px] uppercase tracking-wider text-gray-300 mt-1">System Active</div>
-        </div>
-        <div class="glass-card p-4 rounded-xl">
-          <div class="text-2xl font-black text-emerald-500">Integrated</div>
-          <div class="text-[11px] uppercase tracking-wider text-gray-300 mt-1">Discord Webhook</div>
-        </div>
-        <div class="glass-card p-4 rounded-xl">
-          <div class="text-2xl font-black text-blue-500">Multi-Role</div>
-          <div class="text-[11px] uppercase tracking-wider text-gray-300 mt-1">Security Access</div>
-        </div>
       </div>
     </section>
 
@@ -242,6 +237,74 @@
           <p class="text-xs text-gray-300 leading-relaxed">
             Membangun hubungan erat antar anggota dan divisi di bawah naungan Triad Community secara solid.
           </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION GALERI DOKUMENTASI FOTO -->
+    <section id="gallery" class="max-w-6xl mx-auto px-6 py-12 relative z-10">
+      <div class="text-center mb-8">
+        <span class="text-xs font-bold text-red-400 uppercase tracking-widest bg-red-950/50 px-3 py-1 rounded-full border border-red-600/30">Galeri Kegiatan</span>
+        <h3 class="text-2xl font-black text-white uppercase tracking-wider mt-2">DOKUMENTASI KELUARGA BESAR</h3>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Foto Dokumentasi 1 -->
+        <div class="glass-card rounded-2xl overflow-hidden group shadow-xl">
+          <div class="h-48 overflow-hidden relative">
+            <img src="bg1.png" alt="Dokumentasi 1" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent"></div>
+            <span class="absolute bottom-3 left-3 text-xs font-bold text-white bg-black/60 px-2.5 py-1 rounded-lg border border-white/10">Clubhouse Gathering</span>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-gray-300">Momen kebersamaan anggota saat berkumpul di markas utama Triad Community.</p>
+          </div>
+        </div>
+
+        <!-- Foto Dokumentasi 2 -->
+        <div class="glass-card rounded-2xl overflow-hidden group shadow-xl">
+          <div class="h-48 overflow-hidden relative">
+            <img src="bg2.png" alt="Dokumentasi 2" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent"></div>
+            <span class="absolute bottom-3 left-3 text-xs font-bold text-white bg-black/60 px-2.5 py-1 rounded-lg border border-white/10">Convoy & Riding</span>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-gray-300">Aksi konvoi tertib divisi Nakama MC dalam menjalankan misi dan rute harian.</p>
+          </div>
+        </div>
+
+        <!-- Foto Dokumentasi 3 -->
+        <div class="glass-card rounded-2xl overflow-hidden group shadow-xl">
+          <div class="h-48 overflow-hidden relative">
+            <img src="bg3.png" alt="Dokumentasi 3" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent"></div>
+            <span class="absolute bottom-3 left-3 text-xs font-bold text-white bg-black/60 px-2.5 py-1 rounded-lg border border-white/10">Operation Briefing</span>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-gray-300">Koordinasi terpusat dan briefing strategi bisnis bersama seluruh anggota aktif.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stat Counter Section (Dipindah ke Paling Bawah, di atas Footer) -->
+    <section class="max-w-5xl mx-auto px-6 py-8 relative z-10">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        <div class="glass-card p-4 rounded-xl">
+          <div class="text-2xl font-black text-red-500">100%</div>
+          <div class="text-[11px] uppercase tracking-wider text-gray-300 mt-1">Realtime Sync</div>
+        </div>
+        <div class="glass-card p-4 rounded-xl">
+          <div class="text-2xl font-black text-amber-500">24/7</div>
+          <div class="text-[11px] uppercase tracking-wider text-gray-300 mt-1">System Active</div>
+        </div>
+        <div class="glass-card p-4 rounded-xl">
+          <div class="text-2xl font-black text-emerald-500">Integrated</div>
+          <div class="text-[11px] uppercase tracking-wider text-gray-300 mt-1">Discord Webhook</div>
+        </div>
+        <div class="glass-card p-4 rounded-xl">
+          <div class="text-2xl font-black text-blue-500">Multi-Role</div>
+          <div class="text-[11px] uppercase tracking-wider text-gray-300 mt-1">Security Access</div>
         </div>
       </div>
     </section>
@@ -292,6 +355,67 @@
   </footer>
 
   <script>
+    // --- SKRIP EFEK HUJAN DI KACA (RAINDROPS) ---
+    const canvas = document.getElementById('rainCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const raindrops = [];
+    const maxDrops = 60;
+
+    for (let i = 0; i < maxDrops; i++) {
+      raindrops.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        length: Math.random() * 20 + 10,
+        speed: Math.random() * 4 + 2,
+        opacity: Math.random() * 0.3 + 0.1
+      });
+    }
+
+    function animateRain() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+      ctx.lineWidth = 1.5;
+      ctx.lineCap = 'round';
+
+      for (let drop of raindrops) {
+        ctx.beginPath();
+        ctx.globalAlpha = drop.opacity;
+        ctx.moveTo(drop.x, drop.y);
+        ctx.lineTo(drop.x, drop.y + drop.length);
+        ctx.stroke();
+
+        drop.y += drop.speed;
+        if (drop.y > canvas.height) {
+          drop.y = -20;
+          drop.x = Math.random() * canvas.width;
+        }
+      }
+      requestAnimationFrame(animateRain);
+    }
+    animateRain();
+
+
+    // --- FUNGSI SCROLL HALUS TANPA TANDA # DI URL ---
+    function scrollToSection(sectionId) {
+      if (sectionId === 'home') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+      history.replaceState(null, null, ' ');
+    }
+
     // --- SKRIP SLIDER BACKGROUND 3 FOTO ---
     const slides = document.querySelectorAll('.bg-slide');
     let currentSlide = 0;
@@ -301,8 +425,6 @@
       currentSlide = (currentSlide + 1) % slides.length;
       slides[currentSlide].classList.add('active');
     }
-
-    // Ganti foto setiap 6 detik secara halus
     setInterval(nextSlide, 6000);
 
 
