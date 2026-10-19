@@ -252,7 +252,7 @@
       </div>
     </section>
 
-    <!-- SECTION GALERI DOKUMENTASI (FOTO UTAMA UTUH TANPA CROP) -->
+    <!-- SECTION GALERI DOKUMENTASI (FOTO TERAKHIR DI TENGAH PERTAMA KALI) -->
     <section id="gallery" class="max-w-7xl mx-auto px-6 pt-16 pb-12 relative z-10">
       <div class="text-center mb-8">
         <span class="text-xs font-bold text-red-400 uppercase tracking-widest bg-red-950/50 px-3 py-1 rounded-full border border-red-600/30">Galeri Kegiatan</span>
@@ -263,8 +263,8 @@
         <div class="gallery-track" id="galleryTrack">
           
           <!-- Slide 1 -->
-          <div class="gallery-slide active-center">
-            <div class="w-full max-w-5xl rounded-2xl overflow-hidden shadow-2xl border-2 border-red-500/60 glass-card p-2">
+          <div class="gallery-slide">
+            <div class="w-full max-w-5xl rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
               <img src="bg1.png" alt="Dokumentasi 1" class="photo-box rounded-xl">
             </div>
           </div>
@@ -278,7 +278,7 @@
 
           <!-- Slide 3 -->
           <div class="gallery-slide">
-            <div class="w-full max-w-5xl rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
+            <div class="w-full max-w-5xl rounded-2xl overflow-hidden shadow-2xl border-2 border-red-500/60 glass-card p-2">
               <img src="bg3.png" alt="Dokumentasi 3" class="photo-box rounded-xl">
             </div>
           </div>
@@ -402,10 +402,12 @@
   </footer>
 
   <script>
-    // --- SKRIP CAROUSEL CENTER FOCUS (FOTO UTUH 100%) ---
+    // --- SKRIP CAROUSEL CENTER FOCUS (MULAI DARI FOTO TERAKHIR DI TENGAH) ---
     const galleryTrack = document.getElementById('galleryTrack');
     const gallerySlides = galleryTrack.children;
-    let galleryIndex = 0;
+    
+    // Mengatur index awal ke foto terakhir (Slide 3 / bg3.png)
+    let galleryIndex = gallerySlides.length - 1;
 
     function updateGallery() {
       const slideWidth = gallerySlides[0].getBoundingClientRect().width;
