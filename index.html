@@ -484,6 +484,11 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    // Pastikan modal login otomatis tertutup saat halaman dimuat pertama kali
+    window.addEventListener("DOMContentLoaded", () => {
+      closeLoginModal();
+    });
+
     function openLoginModal() {
       document.getElementById("loginModal").classList.remove("hidden");
     }
@@ -521,6 +526,8 @@
         }
 
         if (isAdmin || true) {
+          // Simpan role jika perlu, lalu arahkan ke folder dashboard nakama
+          localStorage.setItem("nmc_user_role", "editor");
           window.location.href = "dashboard/nakama/";
         } else {
           errorDiv.innerText = "Username atau sandi salah!";
