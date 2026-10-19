@@ -123,13 +123,32 @@
     .glass-card:hover {
       border-color: rgba(239, 68, 68, 0.8);
       box-shadow: 0 0 30px rgba(239, 68, 68, 0.2), inset 0 0 15px rgba(239, 68, 68, 0.05);
-      transform: translateY(-5px);
+      transform: translateY(-3px);
     }
 
-    /* === SLIDER DOKUMENTASI GESER KESAMPING === */
-    .doc-slider-container {
+    /* === CAROUSEL DOKUMENTASI EFEK MENGINTIP KIRI-KANAN === */
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      overflow: hidden;
+      padding: 10px 0;
+    }
+
+    .carousel-track {
       display: flex;
-      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      gap: 20px;
+    }
+
+    .carousel-slide {
+      min-width: 100%;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.4s ease;
     }
 
     input[type=range] {
@@ -208,45 +227,45 @@
       </div>
     </section>
 
-    <!-- SECTION GALERI DOKUMENTASI (PURES FOTO TANPA TEKS DI DALAMNYA) -->
-    <section id="gallery" class="max-w-5xl mx-auto px-6 py-12 relative z-10">
+    <!-- SECTION GALERI DOKUMENTASI (EFEK MENGINTIP KIRI-KANAN, PURE FOTO TANPA TEKS) -->
+    <section id="gallery" class="max-w-6xl mx-auto px-6 pt-16 pb-12 relative z-10">
       <div class="text-center mb-8">
         <span class="text-xs font-bold text-red-400 uppercase tracking-widest bg-red-950/50 px-3 py-1 rounded-full border border-red-600/30">Galeri Kegiatan</span>
         <h3 class="text-2xl font-black text-white uppercase tracking-wider mt-2">DOKUMENTASI KELUARGA BESAR</h3>
       </div>
 
-      <!-- Container Slider Dokumentasi -->
-      <div class="relative overflow-hidden rounded-2xl shadow-2xl border border-red-500/30 glass-card max-w-4xl mx-auto">
-        <div id="docSlider" class="doc-slider-container">
+      <!-- Wrapper Carousel -->
+      <div class="carousel-container relative">
+        <div class="carousel-track" id="carouselTrack">
           
-          <!-- Slide 1 (Pure Foto Tanpa Teks) -->
-          <div class="w-full shrink-0 p-4 md:p-6 flex flex-col items-center">
-            <div class="w-full h-80 md:h-[420px] rounded-xl overflow-hidden relative shadow-2xl border border-white/10">
-              <img src="bg1.png" alt="Dokumentasi 1" class="w-full h-full object-cover">
+          <!-- Slide 1 -->
+          <div class="carousel-slide">
+            <div class="w-full max-w-3xl h-72 md:h-[380px] rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
+              <img src="bg1.png" alt="Dokumentasi 1" class="w-full h-full object-cover rounded-xl">
             </div>
           </div>
 
-          <!-- Slide 2 (Pure Foto Tanpa Teks) -->
-          <div class="w-full shrink-0 p-4 md:p-6 flex flex-col items-center">
-            <div class="w-full h-80 md:h-[420px] rounded-xl overflow-hidden relative shadow-2xl border border-white/10">
-              <img src="bg2.png" alt="Dokumentasi 2" class="w-full h-full object-cover">
+          <!-- Slide 2 -->
+          <div class="carousel-slide">
+            <div class="w-full max-w-3xl h-72 md:h-[380px] rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
+              <img src="bg2.png" alt="Dokumentasi 2" class="w-full h-full object-cover rounded-xl">
             </div>
           </div>
 
-          <!-- Slide 3 (Pure Foto Tanpa Teks) -->
-          <div class="w-full shrink-0 p-4 md:p-6 flex flex-col items-center">
-            <div class="w-full h-80 md:h-[420px] rounded-xl overflow-hidden relative shadow-2xl border border-white/10">
-              <img src="bg3.png" alt="Dokumentasi 3" class="w-full h-full object-cover">
+          <!-- Slide 3 -->
+          <div class="carousel-slide">
+            <div class="w-full max-w-3xl h-72 md:h-[380px] rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
+              <img src="bg3.png" alt="Dokumentasi 3" class="w-full h-full object-cover rounded-xl">
             </div>
           </div>
 
         </div>
 
-        <!-- Tombol Navigasi Slider Kiri Kanan -->
-        <button onclick="prevDocSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/10 shadow-lg z-20">
+        <!-- Tombol Navigasi Kiri Kanan -->
+        <button onclick="prevSlide()" class="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/70 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/20 shadow-xl z-20">
           <i class="fa-solid fa-chevron-left text-sm"></i>
         </button>
-        <button onclick="nextDocSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/10 shadow-lg z-20">
+        <button onclick="nextSlide()" class="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/70 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/20 shadow-xl z-20">
           <i class="fa-solid fa-chevron-right text-sm"></i>
         </button>
       </div>
@@ -291,24 +310,24 @@
       </div>
     </section>
 
-    <!-- Stat Counter Section (Proporsional & Rapi di Bawah) -->
-    <section class="max-w-4xl mx-auto px-6 py-6 relative z-10">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
-        <div class="glass-card p-3 rounded-xl">
-          <div class="text-xl font-black text-red-500">100%</div>
-          <div class="text-[10px] uppercase tracking-wider text-gray-300 mt-0.5">Realtime Sync</div>
+    <!-- Stat Counter Section (DIPERKECIL JAUH LEBIH RAPI & TIPIS) -->
+    <section class="max-w-3xl mx-auto px-6 py-6 relative z-10">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 text-center">
+        <div class="glass-card py-2 px-3 rounded-lg">
+          <div class="text-base font-black text-red-500">100%</div>
+          <div class="text-[9px] uppercase tracking-wider text-gray-400">Realtime Sync</div>
         </div>
-        <div class="glass-card p-3 rounded-xl">
-          <div class="text-xl font-black text-amber-500">24/7</div>
-          <div class="text-[10px] uppercase tracking-wider text-gray-300 mt-0.5">System Active</div>
+        <div class="glass-card py-2 px-3 rounded-lg">
+          <div class="text-base font-black text-amber-500">24/7</div>
+          <div class="text-[9px] uppercase tracking-wider text-gray-400">System Active</div>
         </div>
-        <div class="glass-card p-3 rounded-xl">
-          <div class="text-xl font-black text-emerald-500">Integrated</div>
-          <div class="text-[10px] uppercase tracking-wider text-gray-300 mt-0.5">Discord Webhook</div>
+        <div class="glass-card py-2 px-3 rounded-lg">
+          <div class="text-base font-black text-emerald-500">Integrated</div>
+          <div class="text-[9px] uppercase tracking-wider text-gray-400">Discord Webhook</div>
         </div>
-        <div class="glass-card p-3 rounded-xl">
-          <div class="text-xl font-black text-blue-500">Multi-Role</div>
-          <div class="text-[10px] uppercase tracking-wider text-gray-300 mt-0.5">Security Access</div>
+        <div class="glass-card py-2 px-3 rounded-lg">
+          <div class="text-base font-black text-blue-500">Multi-Role</div>
+          <div class="text-[9px] uppercase tracking-wider text-gray-400">Security Access</div>
         </div>
       </div>
     </section>
@@ -359,26 +378,27 @@
   </footer>
 
   <script>
-    // --- SKRIP SLIDER DOKUMENTASI GESER KESAMPING ---
-    const docSlider = document.getElementById('docSlider');
-    const docSlides = docSlider.children;
-    let currentDocIndex = 0;
+    // --- SKRIP CAROUSEL DOKUMENTASI (FOTO BERGESER DENGAN INTIPAN KIRI-KANAN) ---
+    const track = document.getElementById('carouselTrack');
+    const slides = track.children;
+    let currentIndex = 0;
 
-    function updateDocSlider() {
-      docSlider.style.transform = `translateX(-${currentDocIndex * 100}%)`;
+    function updateCarousel() {
+      track.style.transform = `translateX(-${currentIndex * 100}%)`;
     }
 
-    function nextDocSlide() {
-      currentDocIndex = (currentDocIndex + 1) % docSlides.length;
-      updateDocSlider();
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % slides.length;
+      updateCarousel();
     }
 
-    function prevDocSlide() {
-      currentDocIndex = (currentDocIndex - 1 + docSlides.length) % docSlides.length;
-      updateDocSlider();
+    function prevSlide() {
+      currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+      updateCarousel();
     }
 
-    setInterval(nextDocSlide, 5000);
+    // Geser otomatis setiap 5 detik
+    setInterval(nextSlide, 5000);
 
 
     // --- SKRIP EFEK HUJAN ---
@@ -444,15 +464,15 @@
     }
 
     // --- SKRIP SLIDER BACKGROUND 3 FOTO ---
-    const slides = document.querySelectorAll('.bg-slide');
-    let currentSlide = 0;
+    const bgSlides = document.querySelectorAll('.bg-slide');
+    let currentBgSlide = 0;
 
-    function nextSlide() {
-      slides[currentSlide].classList.remove('active');
-      currentSlide = (currentSlide + 1) % slides.length;
-      slides[currentSlide].classList.add('active');
+    function nextBgSlide() {
+      bgSlides[currentBgSlide].classList.remove('active');
+      currentBgSlide = (currentBgSlide + 1) % bgSlides.length;
+      bgSlides[currentBgSlide].classList.add('active');
     }
-    setInterval(nextSlide, 6000);
+    setInterval(nextBgSlide, 6000);
 
 
     // --- SKRIP MUSIC PLAYER & AUTOPLAY ---
