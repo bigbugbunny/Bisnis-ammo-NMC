@@ -385,7 +385,7 @@
       </div>
     </section>
 
-    <!-- === SECTION LIVE STREAMING MONITOR (DIREVISI & DIPERBAGUS) === -->
+    <!-- === SECTION LIVE STREAMING MONITOR === -->
     <section id="live-stream" class="max-w-7xl mx-auto px-6 pt-12 pb-12">
       <div class="text-center mb-8">
         <span class="px-4 py-1.5 text-xs font-bold tracking-widest text-red-500 uppercase border border-red-600/40 rounded-full bg-red-950/40 backdrop-blur inline-flex items-center gap-2 shadow-inner">
@@ -403,14 +403,14 @@
         <!-- Kotak Pemutar Utama YouTube Live -->
         <div class="lg:col-span-2 glass-card rounded-2xl overflow-hidden border border-red-600/30 p-2 bg-slate-900/80 shadow-2xl">
           <div class="relative w-full aspect-ratio-video rounded-xl overflow-hidden bg-slate-950 flex flex-col items-center justify-center" style="aspect-ratio: 16/9;">
-            <!-- Pesan / Background Elegan Saat Offline (Di Bawah Iframe) -->
+            <!-- Pesan / Background Elegan Saat Offline -->
             <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-slate-950 z-0">
               <i class="fa-solid fa-tower-broadcast text-4xl text-red-600/30 mb-3 animate-pulse"></i>
               <p class="text-xs font-bold text-gray-300">Channel sedang offline / belum mulai siaran.</p>
               <p class="text-[10px] text-gray-500 mt-1 max-w-xs">Player akan otomatis menampilkan siaran langsung saat anggota mulai streaming.</p>
             </div>
 
-            <!-- Iframe YouTube Live dengan Channel ID Asli -->
+            <!-- Iframe YouTube Live -->
             <iframe id="mainLivePlayer" class="w-full h-full absolute inset-0 z-10" src="https://www.youtube.com/embed/live_stream?channel=UCrmo8CToKr1ugHZHpvITPfQ" title="YouTube Live Stream" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
 
@@ -419,7 +419,8 @@
               <h4 id="streamTitle" class="text-sm sm:text-base font-bold text-white">Daily Livestream & Roleplay Action</h4>
               <p class="text-xs text-gray-400 mt-0.5">Status Channel: <span id="streamStatus" class="text-amber-400 font-semibold">⚡ STANDBY / OFFLINE</span></p>
             </div>
-            <a href="https://www.youtube.com/@bigbug_bunny" target="_blank" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg shrink-0">
+            <!-- Tombol Buka Channel Dinamis (id="channelLink") -->
+            <a id="channelLink" href="https://www.youtube.com/@bigbug_bunny" target="_blank" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg shrink-0">
               <i class="fa-brands fa-youtube"></i> Buka Channel
             </a>
           </div>
@@ -436,18 +437,7 @@
             <div class="space-y-3">
               
               <!-- Channel 1: Bigbug Bunny -->
-              <div onclick="switchStream('UCrmo8CToKr1ugHZHpvITPfQ', 'Daily Livestream & Roleplay Action')" class="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 hover:bg-slate-800 cursor-pointer border border-slate-800 transition group">
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-full bg-red-600/20 border border-red-500/40 flex items-center justify-center font-bold text-red-400 text-sm group-hover:scale-105 transition">B</div>
-                  <div>
-                    <p class="text-xs font-bold text-white">Bigbug Bunny</p>
-                    <p class="text-[10px] text-gray-400">Nakama MC</p>
-                  </div>
-                </div>
-                <span class="text-[9px] bg-red-500/20 text-red-400 border border-red-500/30 px-2.5 py-1 rounded-full font-bold">PILIH</span>
-              </div>
-               <!-- Channel 2: Bigbug Bunny -->
-              <div onclick="switchStream('UCjXtiMRdCpV7_PrC0wOyq7Q', 'Daily Livestream & Roleplay Action')" class="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 hover:bg-slate-800 cursor-pointer border border-slate-800 transition group">
+              <div onclick="switchStream('UCrmo8CToKr1ugHZHpvITPfQ', 'Daily Livestream & Roleplay Action', 'bigbug_bunny')" class="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 hover:bg-slate-800 cursor-pointer border border-slate-800 transition group">
                 <div class="flex items-center gap-3">
                   <div class="w-10 h-10 rounded-full bg-red-600/20 border border-red-500/40 flex items-center justify-center font-bold text-red-400 text-sm group-hover:scale-105 transition">B</div>
                   <div>
@@ -458,7 +448,19 @@
                 <span class="text-[9px] bg-red-500/20 text-red-400 border border-red-500/30 px-2.5 py-1 rounded-full font-bold">PILIH</span>
               </div>
 
-              <!-- Channel 20: Slot Kosong Anggota Lain -->
+              <!-- Channel 2: Teman Anda -->
+              <div onclick="switchStream('UCjXtiMRdCpV7_PrC0wOyq7Q', 'City Patrol & Action', 'username_teman')" class="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 hover:bg-slate-800 cursor-pointer border border-slate-800 transition group">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-blue-600/20 border border-blue-500/40 flex items-center justify-center font-bold text-blue-400 text-sm group-hover:scale-105 transition">T</div>
+                  <div>
+                    <p class="text-xs font-bold text-white">Nama Teman Anda</p>
+                    <p class="text-[10px] text-gray-400">Member</p>
+                  </div>
+                </div>
+                <span class="text-[9px] bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2.5 py-1 rounded-full font-bold">PILIH</span>
+              </div>
+
+              <!-- Slot Kosong Anggota Lain -->
               <div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/30 border border-slate-800/50 opacity-60">
                 <div class="flex items-center gap-3">
                   <div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-gray-400 text-sm">+</div>
@@ -597,7 +599,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Pastikan modal login otomatis tertutup saat halaman dimuat pertama kali
     window.addEventListener("DOMContentLoaded", () => {
       closeLoginModal();
     });
@@ -669,11 +670,19 @@
       });
     }
 
-    // Fungsi Switch Stream YouTube Live
-    function switchStream(channelId, titleText) {
+    // Fungsi Switch Stream YouTube Live & Update Tombol Channel Dinamis
+    function switchStream(channelId, titleText, channelHandle) {
       const player = document.getElementById('mainLivePlayer');
       player.src = `https://www.youtube.com/embed/live_stream?channel=${channelId}`;
       document.getElementById('streamTitle').innerText = titleText;
+
+      // Update link tombol "Buka Channel" secara otomatis sesuai yang diklik
+      const channelLink = document.getElementById('channelLink');
+      if (channelHandle) {
+        channelLink.href = `https://www.youtube.com/@${channelHandle}`;
+      } else {
+        channelLink.href = `https://www.youtube.com/channel/${channelId}`;
+      }
     }
 
     // Gallery Carousel Script
