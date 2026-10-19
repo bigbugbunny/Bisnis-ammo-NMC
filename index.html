@@ -670,11 +670,18 @@
       });
     }
 
-    // Fungsi Switch Stream YouTube Live & Update Tombol Channel Dinamis
+    // Fungsi Switch Stream YouTube Live, Update Judul, Status Live, & Link Tombol Channel
     function switchStream(channelId, titleText, channelHandle) {
       const player = document.getElementById('mainLivePlayer');
       player.src = `https://www.youtube.com/embed/live_stream?channel=${channelId}`;
+      
+      // Update judul siaran
       document.getElementById('streamTitle').innerText = titleText;
+
+      // Update status menjadi LIVE NOW secara dinamis
+      const statusSpan = document.getElementById('streamStatus');
+      statusSpan.className = "text-red-400 font-semibold animate-pulse";
+      statusSpan.innerText = "🔴 LIVE NOW";
 
       // Update link tombol "Buka Channel" secara otomatis sesuai yang diklik
       const channelLink = document.getElementById('channelLink');
