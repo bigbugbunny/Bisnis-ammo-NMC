@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Triad Community Management System</title>
   
-  <link rel="icon" type="image/png" href="../../NakamaLogo.png">
+  <link rel="icon" type="image/png" href="NakamaLogo.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   
@@ -137,18 +137,18 @@
 <body class="min-h-screen p-4 md:p-8">
   <div class="bg-ambient-glow"></div>
 
-  <!-- MODAL LOGIN OPSIONAL -->
-  <div id="loginModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+  <!-- MODAL LOGIN -->
+  <div id="loginModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
     <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6 border border-red-600/40 relative overflow-hidden">
       <div class="absolute -top-12 -left-12 w-32 h-32 bg-red-600/20 rounded-full blur-2xl pointer-events-none"></div>
 
       <div class="text-center space-y-3 relative z-10">
         <div class="w-20 h-20 bg-red-950/50 rounded-2xl flex items-center justify-center mx-auto border border-red-600/40 shadow-inner overflow-hidden p-1">
-          <img src="../../Nakama.png" alt="Logo" class="w-full h-full object-cover rounded-xl" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+          <img src="Nakama.png" alt="Logo" class="w-full h-full object-cover rounded-xl" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
         </div>
         <div>
           <h2 class="text-2xl font-black tracking-wider text-red-500">TRIAD COMMUNITY ACCESS</h2>
-          <p class="text-xs text-gray-400 mt-1">Masukkan kredensial akun Anda (Opsional)</p>
+          <p class="text-xs text-gray-400 mt-1">Masukkan kredensial akun Anda untuk masuk</p>
         </div>
       </div>
 
@@ -173,14 +173,9 @@
           Username atau sandi salah!
         </div>
 
-        <div class="grid grid-cols-2 gap-3 pt-2">
-          <button id="loginSubmitBtn" onclick="handleLogin()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider text-xs">
-            <i class="fa-solid fa-right-to-bracket"></i> MASUK
-          </button>
-          <button onclick="closeLoginModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider shadow">
-            TUTUP
-          </button>
-        </div>
+        <button id="loginSubmitBtn" onclick="handleLogin()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider mt-2">
+          <i class="fa-solid fa-right-to-bracket"></i> MASUK SISTEM
+        </button>
       </div>
     </div>
   </div>
@@ -190,42 +185,87 @@
     <!-- HEADER -->
     <div class="flex flex-col md:flex-row justify-between items-center bg-slate-900/90 p-6 rounded-2xl border border-red-900/40 shadow-2xl">
       <div class="flex items-center gap-4">
-        <!-- Tombol Home langsung kembali ke portal utama atau menu root -->
-        <a href="../../index.html" class="bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700" title="Kembali ke Portal Utama">
+        <button id="btnHome" onclick="showWelcomeScreen()" class="bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700" title="Kembali ke Home">
           <i class="fa-solid fa-house"></i>
-        </a>
+        </button>
         <button id="btnBackMenu" onclick="showSection('mainMenu')" class="hidden bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700" title="Kembali ke Menu">
           <i class="fa-solid fa-arrow-left"></i>
         </button>
 
         <div class="flex items-center gap-3">
-          <img src="../../Nakama.png" alt="Logo" class="w-12 h-12 object-contain rounded-xl border border-red-600/50 bg-black p-1 shadow-md" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+          <img src="Nakama.png" alt="Logo" class="w-12 h-12 object-contain rounded-xl border border-red-600/50 bg-black p-1 shadow-md" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
           <div>
-            <h1 class="text-2xl md:text-3xl font-black tracking-wide mc-gradient-text" id="headerTitleText">NAKAMA MC BLAINE COUNTY</h1>
-            <p class="text-xs text-gray-400 mt-0.5 tracking-wider" id="headerSubtitle">SYSTEM MANAGEMENT & CLUB HOUSE</p>
+            <h1 class="text-2xl md:text-3xl font-black tracking-wide mc-gradient-text" id="headerTitleText">TRIAD COMMUNITY</h1>
+            <p class="text-xs text-gray-400 mt-0.5 tracking-wider" id="headerSubtitle">SYSTEM MANAGEMENT & DASHBOARD</p>
           </div>
         </div>
       </div>
       
       <div class="mt-4 md:mt-0 flex items-center gap-3">
-        <span id="userRoleBadge" class="bg-red-950/60 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-800/50 flex items-center gap-2">
-          <i class="fa-solid fa-user-shield"></i> Role: Full Access (Editor)
+        <span id="userRoleBadge" class="bg-slate-800 text-gray-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2">
+          <i class="fa-solid fa-eye"></i> Role: Viewer
         </span>
 
-        <button id="btnLoginAdminModal" onclick="openLoginModal()" class="hidden bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-500/30 transition flex items-center gap-1">
-          <i class="fa-solid fa-right-to-bracket"></i> Login Akun
+        <button id="btnLoginAdminModal" onclick="openLoginModal()" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-500/30 transition flex items-center gap-1">
+          <i class="fa-solid fa-right-to-bracket"></i> Login Ulang
         </button>
 
         <button id="btnLogoutBtn" onclick="handleLogout()" class="hidden bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-500/30 transition flex items-center gap-1">
-          <i class="fa-solid fa-right-from-bracket"></i> Keluar
+          <i class="fa-solid fa-right-from-bracket"></i> Keluar / Ganti Akun
         </button>
       </div>
     </div>
 
+    <!-- HALAMAN WELCOME -->
+    <div id="sectionWelcome" class="space-y-8 py-12 animate-fade-in">
+      <div class="text-center space-y-3 max-w-2xl mx-auto">
+        <span class="bg-red-950/50 text-red-400 text-xs font-bold px-4 py-1.5 rounded-full border border-red-800/40 tracking-widest uppercase inline-flex items-center gap-2 shadow-inner">
+          <i class="fa-solid fa-shield-halved"></i> Pusat Triad Community
+        </span>
+        <h2 class="text-4xl md:text-6xl font-black tracking-wider welcome-title-glow leading-tight">WELCOME TO <br> TRIAD COMMUNITY</h2>
+        <p class="text-sm text-gray-400">Silakan pilih divisi atau klub organisasi di bawah ini untuk mengakses sistem management by Bunny.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto pt-4">
+        <div onclick="selectCommunity('nakama')" class="menu-card glass-card p-8 rounded-2xl cursor-pointer flex flex-col justify-between border border-red-600/40 shadow-xl relative overflow-hidden group">
+          <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-red-600/10 rounded-full blur-2xl group-hover:bg-red-600/20 transition"></div>
+          <div class="space-y-5 relative z-10">
+            <div class="w-16 h-16 bg-gradient-to-br from-red-950 to-red-900/60 text-red-500 rounded-2xl flex items-center justify-center text-3xl border border-red-600/40 shadow-lg">
+              <i class="fa-solid fa-skull"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-black text-white mb-2 group-hover:text-red-400 transition">Nakama MC Blaine County</h3>
+              <p class="text-sm text-gray-400 leading-relaxed">Modul manajemen lengkap: Kalkulator bahan, transaksi partner, brankas, kas bisnis, setoran & data member.</p>
+            </div>
+          </div>
+          <div class="mt-8 flex justify-between items-center text-sm font-bold text-red-400 relative z-10 pt-4 border-t border-slate-800/80">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk Sistem Klub</span>
+            <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition"></i>
+          </div>
+        </div>
+
+        <div onclick="showCustomAlert('Divisi atau klub lain akan segera hadir (Coming Soon)!', 'info')" class="coming-soon-card p-8 rounded-2xl cursor-pointer flex flex-col justify-between shadow-xl opacity-75 hover:opacity-100 transition">
+          <div class="space-y-5">
+            <div class="w-16 h-16 bg-slate-900 text-gray-400 rounded-2xl flex items-center justify-center text-3xl border border-slate-800 shadow-inner">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold text-gray-300 mb-2">Coming Soon</h3>
+              <p class="text-sm text-gray-500 leading-relaxed">Persiapan modul untuk divisi, bisnis, atau organisasi tambahan lainnya di masa mendatang.</p>
+            </div>
+          </div>
+          <div class="mt-8 flex justify-between items-center text-sm font-semibold text-gray-500 pt-4 border-t border-slate-800/80">
+            <span>Segera Hadir</span>
+            <i class="fa-solid fa-lock text-gray-600"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- MENU UTAMA NAKAMA MC -->
-    <div id="sectionMainMenu" class="space-y-6">
+    <div id="sectionMainMenu" class="hidden space-y-6">
       <h2 class="text-sm font-bold text-red-400 tracking-widest uppercase flex items-center gap-2">
-        <i class="fa-solid fa-bars"></i> PILIH MODUL MANAGEMENT NAKAMA MC
+        <i class="fa-solid fa-bars"></i> NAKAMA MC BLAINE COUNTY - PILIH MODUL MANAGEMENT
       </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 menu-grid-layout">
@@ -630,8 +670,7 @@
   </div>
 
   <script>
-    // Secara default diatur ke "editor" (Full Access) agar langsung terbuka tanpa batasan login yang menyulitkan
-    let currentUserRole = "editor";
+    let currentUserRole = "viewer";
 
     function showCustomAlert(message, type = 'success') {
       const existingModal = document.getElementById('customAlertModal');
@@ -716,8 +755,15 @@
     const db = firebase.database();
 
     window.addEventListener("DOMContentLoaded", () => {
+      const savedRole = localStorage.getItem("nmc_user_role");
+      if (savedRole === "editor" || savedRole === "viewer") {
+        currentUserRole = savedRole;
+        document.getElementById("loginModal").classList.add("hidden");
+        handleHashChange();
+      } else {
+        document.getElementById("loginModal").classList.remove("hidden");
+      }
       applyRolePermissions();
-      handleHashChange();
     });
 
     function handleLogin() {
@@ -750,27 +796,57 @@
 
         if (isAdmin) {
           currentUserRole = "editor";
+          localStorage.setItem("nmc_user_role", "editor");
+          localStorage.setItem("nmc_logged_user", usernameInput);
           document.getElementById("loginModal").classList.add("hidden");
           errorDiv.classList.add("hidden");
           applyRolePermissions();
+          handleHashChange();
           showCustomAlert(`Selamat datang HighRank, ${usernameInput}!`);
         } else {
-          currentUserRole = "viewer";
-          document.getElementById("loginModal").classList.add("hidden");
-          errorDiv.classList.add("hidden");
-          applyRolePermissions();
-          showCustomAlert(`Login berhasil sebagai Viewer!`);
+          db.ref('member_users').once('value').then((memSnapshot) => {
+            const members = memSnapshot.val();
+            let isMember = false;
+
+            if (members) {
+              for (let userKey in members) {
+                if (userKey.toLowerCase() === usernameInput.toLowerCase()) {
+                  const userData = members[userKey];
+                  const storedPass = (typeof userData === 'object' && userData !== null) ? userData.password : userData;
+                  if (String(storedPass) === String(passwordInput)) {
+                    isMember = true;
+                    break;
+                  }
+                }
+              }
+            }
+
+            if (isMember) {
+              currentUserRole = "viewer";
+              localStorage.setItem("nmc_user_role", "viewer");
+              localStorage.setItem("nmc_logged_user", usernameInput);
+              document.getElementById("loginModal").classList.add("hidden");
+              errorDiv.classList.add("hidden");
+              applyRolePermissions();
+              handleHashChange();
+              showCustomAlert(`Selamat datang Member, ${usernameInput}!`);
+            } else {
+              errorDiv.innerText = "Username atau sandi salah!";
+              errorDiv.classList.remove("hidden");
+            }
+          }).catch((err) => {
+            errorDiv.innerText = "Gagal terhubung ke database!";
+            errorDiv.classList.remove("hidden");
+          });
         }
-      }).catch(() => {
-        currentUserRole = "editor";
-        document.getElementById("loginModal").classList.add("hidden");
-        applyRolePermissions();
+      }).catch((err) => {
+        errorDiv.innerText = "Gagal terhubung ke database!";
+        errorDiv.classList.remove("hidden");
       });
     }
 
     function openLoginModal() { document.getElementById("loginModal").classList.remove("hidden"); }
-    function closeLoginModal() { document.getElementById("loginModal").classList.add("hidden"); }
-    function handleLogout() { currentUserRole = "editor"; applyRolePermissions(); showCustomAlert("Mode kembali ke Full Access (Editor)."); }
+    function handleLogout() { localStorage.removeItem("nmc_user_role"); localStorage.removeItem("nmc_logged_user"); window.location.hash = ""; location.reload(); }
 
     function applyRolePermissions() {
       const badge = document.getElementById("userRoleBadge");
@@ -780,19 +856,19 @@
 
       if (currentUserRole === "editor") {
         if(badge) {
-          badge.innerHTML = `<i class="fa-solid fa-user-shield"></i> Role: Full Access (Editor)`;
+          badge.innerHTML = `<i class="fa-solid fa-user-shield"></i> Role: HighRank (Editor)`;
           badge.className = "bg-red-950/60 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-800/50 flex items-center gap-2";
         }
-        if(btnLogin) btnLogin.classList.remove("hidden");
-        if(btnLogout) btnLogout.classList.add("hidden");
+        if(btnLogin) btnLogin.classList.add("hidden");
+        if(btnLogout) btnLogout.classList.remove("hidden");
         editorElements.forEach(el => el.classList.remove("hidden"));
       } else {
         if(badge) {
           badge.innerHTML = `<i class="fa-solid fa-eye"></i> Role: Member (Viewer)`;
           badge.className = "bg-slate-800 text-gray-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2";
         }
-        if(btnLogin) btnLogin.classList.remove("hidden");
-        if(btnLogout) btnLogout.classList.add("hidden");
+        if(btnLogin) btnLogin.classList.add("hidden");
+        if(btnLogout) btnLogout.classList.remove("hidden");
         editorElements.forEach(el => el.classList.add("hidden"));
       }
     }
@@ -801,8 +877,10 @@
     function handleHashChange() {
       const hash = window.location.hash.replace('#', '').toLowerCase();
       
-      if (!hash || hash === 'menu') {
-        showSection('mainMenu', false);
+      if (!hash || hash === 'welcome') {
+        showWelcomeScreen(false);
+      } else if (hash === 'menu') {
+        selectCommunity('nakama', false);
       } else {
         const sectionMap = {
           'bahan': 'sectionBahan',
@@ -817,38 +895,17 @@
         if (sectionMap[hash]) {
           showSection(sectionMap[hash], false);
         } else {
-          showSection('mainMenu', false);
+          showWelcomeScreen(false);
         }
       }
     }
 
     window.addEventListener('hashchange', handleHashChange);
 
-    function showSection(sectionId, updateHash = true) {
-      if (sectionId === 'mainMenu') {
-        if (updateHash) window.location.hash = "menu";
+    function showWelcomeScreen(updateHash = true) {
+      if (updateHash) window.location.hash = "welcome";
 
-        document.getElementById('sectionMainMenu').classList.remove('hidden');
-        document.getElementById('sectionBahan').classList.add('hidden');
-        document.getElementById('sectionKalkulator').classList.add('hidden');
-        document.getElementById('sectionBrankas').classList.add('hidden');
-        document.getElementById('sectionBeliWarga').classList.add('hidden');
-        document.getElementById('sectionBisnis').classList.add('hidden');
-        document.getElementById('sectionSetoran').classList.add('hidden');
-        document.getElementById('sectionMember').classList.add('hidden');
-
-        document.getElementById('btnBackMenu').classList.add('hidden');
-        document.getElementById('headerTitleText').innerText = "NAKAMA MC BLAINE COUNTY";
-        document.getElementById('headerSubtitle').innerText = "SYSTEM MANAGEMENT & CLUB HOUSE";
-        applyRolePermissions();
-        return;
-      }
-
-      if (updateHash) {
-        const cleanName = sectionId.replace('section', '').toLowerCase();
-        window.location.hash = cleanName;
-      }
-
+      document.getElementById('sectionWelcome').classList.remove('hidden');
       document.getElementById('sectionMainMenu').classList.add('hidden');
       document.getElementById('sectionBahan').classList.add('hidden');
       document.getElementById('sectionKalkulator').classList.add('hidden');
@@ -858,10 +915,62 @@
       document.getElementById('sectionSetoran').classList.add('hidden');
       document.getElementById('sectionMember').classList.add('hidden');
 
+      document.getElementById('btnHome').classList.remove('hidden');
+      document.getElementById('btnBackMenu').classList.add('hidden');
+      document.getElementById('headerTitleText').innerText = "TRIAD COMMUNITY";
+      document.getElementById('headerSubtitle').innerText = "SYSTEM MANAGEMENT & DASHBOARD";
+      applyRolePermissions();
+    }
+
+    function selectCommunity(type, updateHash = true) {
+      if (type === 'nakama') {
+        if (updateHash) window.location.hash = "menu";
+
+        document.getElementById('sectionWelcome').classList.add('hidden');
+        document.getElementById('sectionMainMenu').classList.remove('hidden');
+        document.getElementById('sectionBahan').classList.add('hidden');
+        document.getElementById('sectionKalkulator').classList.add('hidden');
+        document.getElementById('sectionBrankas').classList.add('hidden');
+        document.getElementById('sectionBeliWarga').classList.add('hidden');
+        document.getElementById('sectionBisnis').classList.add('hidden');
+        document.getElementById('sectionSetoran').classList.add('hidden');
+        document.getElementById('sectionMember').classList.add('hidden');
+
+        document.getElementById('btnHome').classList.remove('hidden');
+        document.getElementById('btnBackMenu').classList.add('hidden');
+        document.getElementById('headerTitleText').innerText = "NAKAMA MC BLAINE COUNTY";
+        document.getElementById('headerSubtitle').innerText = "SYSTEM MANAGEMENT & CLUB HOUSE";
+        applyRolePermissions();
+      }
+    }
+
+    function showSection(sectionId, updateHash = true) {
+      if (sectionId === 'mainMenu') {
+        selectCommunity('nakama', updateHash);
+        return;
+      }
+
+      if (updateHash) {
+        const cleanName = sectionId.replace('section', '').toLowerCase();
+        window.location.hash = cleanName;
+      }
+
+      document.getElementById('sectionWelcome').classList.add('hidden');
+      document.getElementById('sectionMainMenu').classList.add('hidden');
+      document.getElementById('sectionBahan').classList.add('hidden');
+      document.getElementById('sectionKalkulator').classList.add('hidden');
+      document.getElementById('sectionBrankas').classList.add('hidden');
+      document.getElementById('sectionBeliWarga').classList.add('hidden');
+      document.getElementById('sectionBisnis').classList.add('hidden');
+      document.getElementById('sectionSetoran').classList.add('hidden');
+      document.getElementById('sectionMember').classList.add('hidden');
+
+      const btnHome = document.getElementById('btnHome');
       const btnBack = document.getElementById('btnBackMenu');
       const subtitle = document.getElementById('headerSubtitle');
 
       document.getElementById(sectionId).classList.remove('hidden');
+      btnHome.classList.remove('hidden');
       btnBack.classList.remove('hidden');
 
       if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
@@ -932,7 +1041,7 @@
       });
     }
 
-    // --- FITUR SETORAN HARIAN & MINGGUAN ---
+    // --- FITUR SETORAN HARIAN (RINGKAS TUNGGAL) & MINGGUAN ---
     function switchSetoranTab(type) {
       currentSetoranTab = type;
       const btnH = document.getElementById("tabBtnHarian");
@@ -992,6 +1101,7 @@
     }
 
     function toggleStatusLunas(name) {
+      if (currentUserRole !== "editor") return;
       const ref = getCurrentSetoranRef();
       if (!ref[activePeriod][name]) return;
       ref[activePeriod][name].lunas = !ref[activePeriod][name].lunas;
@@ -1045,6 +1155,8 @@
     }
 
     function prosesProsesSatuTombolSetoran() {
+      if (currentUserRole !== "editor") return;
+
       const ref = getCurrentSetoranRef();
       const currentList = ref[activePeriod] || {};
       let totalIron = 0, totalCarbon = 0, totalGlass = 0, totalRubber = 0, totalPlastik = 0;
@@ -1326,6 +1438,8 @@
     }
 
     function sendVaultToDiscord() {
+      if (currentUserRole !== "editor") return;
+
       db.ref('webhooks/brankas').once('value').then((snapshot) => {
         const webhookUrl = snapshot.val();
         if (!webhookUrl) { showCustomAlert("Webhook brankas belum diatur di Firebase!", "error"); return; }
@@ -1405,6 +1519,7 @@
     }
 
     function toggleMemberStatus(name) {
+      if (currentUserRole !== "editor") return;
       if (!memberList[name]) return;
       memberList[name].status = memberList[name].status === "Aktif" ? "Inactive" : "Aktif";
       saveDataToCloud();
@@ -1454,6 +1569,8 @@
     }
 
     function sendMembersToDiscord() {
+      if (currentUserRole !== "editor") return;
+
       db.ref('webhooks/member').once('value').then((snapshot) => {
         const webhookUrl = snapshot.val();
         if (!webhookUrl) { showCustomAlert("Webhook member belum diatur di Firebase!", "error"); return; }
@@ -1568,6 +1685,8 @@
     }
 
     function sendPenjualanToDiscord() {
+      if (currentUserRole !== "editor") return;
+
       db.ref('webhooks/penjualan').once('value').then((snapshot) => {
         const webhookUrl = snapshot.val();
         if (!webhookUrl) { showCustomAlert("Webhook penjualan belum diatur di Firebase!", "error"); return; }
@@ -1595,6 +1714,8 @@
     }
 
     function sendPembelianToDiscord() {
+      if (currentUserRole !== "editor") return;
+
       db.ref('webhooks/pembelian').once('value').then((snapshot) => {
         const webhookUrl = snapshot.val();
         if (!webhookUrl) { showCustomAlert("Webhook pembelian belum diatur di Firebase!", "error"); return; }
