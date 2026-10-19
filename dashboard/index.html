@@ -359,7 +359,7 @@
       </div>
 
       <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
-       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <h2 class="text-lg font-bold text-red-400 flex items-center gap-2">
             <i class="fa-solid fa-hand-holding-dollar"></i> <span id="setoranHeaderTitle">Rekap Setoran Harian Agenda</span> (<span id="currentPeriodLabel">Harian</span>)
           </h2>
@@ -759,7 +759,7 @@
       if (savedRole === "editor" || savedRole === "viewer") {
         currentUserRole = savedRole;
         document.getElementById("loginModal").classList.add("hidden");
-        handleHashChange();
+        handlePathChange();
       } else {
         document.getElementById("loginModal").classList.remove("hidden");
       }
@@ -801,7 +801,7 @@
           document.getElementById("loginModal").classList.add("hidden");
           errorDiv.classList.add("hidden");
           applyRolePermissions();
-          handleHashChange();
+          handlePathChange();
           showCustomAlert(`Selamat datang HighRank, ${usernameInput}!`);
         } else {
           db.ref('member_users').once('value').then((memSnapshot) => {
@@ -828,7 +828,7 @@
               document.getElementById("loginModal").classList.add("hidden");
               errorDiv.classList.add("hidden");
               applyRolePermissions();
-              handleHashChange();
+              handlePathChange();
               showCustomAlert(`Selamat datang Member, ${usernameInput}!`);
             } else {
               errorDiv.innerText = "Username atau sandi salah!";
@@ -846,7 +846,7 @@
     }
 
     function openLoginModal() { document.getElementById("loginModal").classList.remove("hidden"); }
-    function handleLogout() { localStorage.removeItem("nmc_user_role"); localStorage.removeItem("nmc_logged_user"); window.location.hash = ""; location.reload(); }
+    function handleLogout() { localStorage.removeItem("nmc_user_role"); localStorage.removeItem("nmc_logged_user"); history.pushState({}, '', '/dashboard/'); location.reload(); }
 
     function applyRolePermissions() {
       const badge = document.getElementById("userRoleBadge");
@@ -873,13 +873,14 @@
       }
     }
 
-    // --- NAVIGASI DAN HASH URL ---
-    function handleHashChange() {
-      const hash = window.location.hash.replace('#', '').toLowerCase();
-      
-      if (!hash || hash === 'welcome') {
+    // --- NAVIGASI DENGAN URL BERSIH (TANPA HASHTAG #) ---
+    function handlePathChange() {
+      const pathParts = window.location.pathname.split('/').filter(p => p !== '');
+      const lastPart = pathParts[pathParts.length - 1] ? pathParts[pathParts.length - 1].toLowerCase() : '';
+
+      if (!lastPart || lastPart === 'dashboard' || lastPart === 'welcome') {
         showWelcomeScreen(false);
-      } else if (hash === 'menu') {
+      } else if (lastPart === 'menu') {
         selectCommunity('nakama', false);
       } else {
         const sectionMap = {
@@ -892,18 +893,20 @@
           'member': 'sectionMember'
         };
 
-        if (sectionMap[hash]) {
-          showSection(sectionMap[hash], false);
+        if (sectionMap[lastPart]) {
+          showSection(sectionMap[lastPart], false);
         } else {
           showWelcomeScreen(false);
         }
       }
     }
 
-    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener('popstate', handlePathChange);
 
-    function showWelcomeScreen(updateHash = true) {
-      if (updateHash) window.location.hash = "welcome";
+    function showWelcomeScreen(updateUrl = true) {
+      if (updateUrl && window.location.pathname !== '/dashboard/') {
+        history.pushState({}, '', '/dashboard/');
+      }
 
       document.getElementById('sectionWelcome').classList.remove('hidden');
       document.getElementById('sectionMainMenu').classList.add('hidden');
@@ -922,9 +925,9 @@
       applyRolePermissions();
     }
 
-    function selectCommunity(type, updateHash = true) {
+    function selectCommunity(type, updateUrl = true) {
       if (type === 'nakama') {
-        if (updateHash) window.location.hash = "menu";
+        if (updateUrl) history.pushState({}, '', '/dashboard/menu');
 
         document.getElementById('sectionWelcome').classList.add('hidden');
         document.getElementById('sectionMainMenu').classList.remove('hidden');
@@ -944,15 +947,15 @@
       }
     }
 
-    function showSection(sectionId, updateHash = true) {
+    function showSection(sectionId, updateUrl = true) {
       if (sectionId === 'mainMenu') {
-        selectCommunity('nakama', updateHash);
+        selectCommunity('nakama', updateUrl);
         return;
       }
 
-      if (updateHash) {
+      if (updateUrl) {
         const cleanName = sectionId.replace('section', '').toLowerCase();
-        window.location.hash = cleanName;
+        history.pushState({}, '', `/dashboard/${cleanName}`);
       }
 
       document.getElementById('sectionWelcome').classList.add('hidden');
