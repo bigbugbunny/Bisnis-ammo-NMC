@@ -126,30 +126,41 @@
       transform: translateY(-3px);
     }
 
-    /* === CAROUSEL DOKUMENTASI EFEK MULTI-SLIDE (MENGINTIP KIRI-KANAN) === */
-    .gallery-wrapper {
+    /* === CAROUSEL CENTER FOCUS (FOKUS UTAMA DI TENGAH) === */
+    .gallery-container {
       position: relative;
-      max-width: 1000px;
+      width: 100%;
+      max-width: 1100px;
       margin: 0 auto;
       overflow: hidden;
-      padding: 10px 0;
+      padding: 20px 0;
     }
 
     .gallery-track {
       display: flex;
-      gap: 20px;
+      align-items: center;
       transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .gallery-item {
-      min-width: calc(100% - 40px);
+    .gallery-slide {
+      min-width: 100%;
       box-sizing: border-box;
-      flex-shrink: 0;
+      padding: 0 15px;
+      display: flex;
+      justify-content: center;
+      transition: all 0.5s ease;
+      opacity: 0.4;
+      transform: scale(0.85);
+    }
+
+    .gallery-slide.active-center {
+      opacity: 1;
+      transform: scale(1);
     }
 
     @media (min-width: 768px) {
-      .gallery-item {
-        min-width: calc(50% - 10px); /* Menampilkan 2 foto berdampingan di layar besar agar sisi kiri-kanan mengintip */
+      .gallery-slide {
+        min-width: 70%; /* Membuat foto kiri & kanan ikut mengintip di layar */
       }
     }
 
@@ -180,7 +191,7 @@
   <!-- Lapisan Gradasi Elegan -->
   <div class="bg-gradient-overlay"></div>
 
-  <!-- Header / Navbar (Tanpa Tag A dengan Tanda #) -->
+  <!-- Header / Navbar -->
   <header class="border-b border-red-900/30 bg-slate-950/70 backdrop-blur-md sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -229,33 +240,33 @@
       </div>
     </section>
 
-    <!-- SECTION GALERI DOKUMENTASI (EFEK MENGINTIP KIRI-KANAN BERGESER HALUS) -->
-    <section id="gallery" class="max-w-6xl mx-auto px-6 pt-16 pb-12 relative z-10">
+    <!-- SECTION GALERI DOKUMENTASI (FOKUS TENGAH & MENGINTIP KIRI-KANAN) -->
+    <section id="gallery" class="max-w-7xl mx-auto px-6 pt-16 pb-12 relative z-10">
       <div class="text-center mb-8">
         <span class="text-xs font-bold text-red-400 uppercase tracking-widest bg-red-950/50 px-3 py-1 rounded-full border border-red-600/30">Galeri Kegiatan</span>
         <h3 class="text-2xl font-black text-white uppercase tracking-wider mt-2">DOKUMENTASI KELUARGA BESAR</h3>
       </div>
 
-      <div class="gallery-wrapper">
+      <div class="gallery-container">
         <div class="gallery-track" id="galleryTrack">
           
-          <!-- Foto 1 -->
-          <div class="gallery-item">
-            <div class="h-72 md:h-80 rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
+          <!-- Slide 1 -->
+          <div class="gallery-slide active-center">
+            <div class="w-full max-w-3xl h-72 md:h-[400px] rounded-2xl overflow-hidden shadow-2xl border-2 border-red-500/50 glass-card p-2">
               <img src="bg1.png" alt="Dokumentasi 1" class="w-full h-full object-cover rounded-xl">
             </div>
           </div>
 
-          <!-- Foto 2 -->
-          <div class="gallery-item">
-            <div class="h-72 md:h-80 rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
+          <!-- Slide 2 -->
+          <div class="gallery-slide">
+            <div class="w-full max-w-3xl h-72 md:h-[400px] rounded-2xl overflow-hidden shadow-2xl border-2 border-red-500/50 glass-card p-2">
               <img src="bg2.png" alt="Dokumentasi 2" class="w-full h-full object-cover rounded-xl">
             </div>
           </div>
 
-          <!-- Foto 3 -->
-          <div class="gallery-item">
-            <div class="h-72 md:h-80 rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
+          <!-- Slide 3 -->
+          <div class="gallery-slide">
+            <div class="w-full max-w-3xl h-72 md:h-[400px] rounded-2xl overflow-hidden shadow-2xl border-2 border-red-500/50 glass-card p-2">
               <img src="bg3.png" alt="Dokumentasi 3" class="w-full h-full object-cover rounded-xl">
             </div>
           </div>
@@ -263,11 +274,11 @@
         </div>
 
         <!-- Tombol Navigasi Kiri Kanan -->
-        <button onclick="prevGallerySlide()" class="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/70 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/20 shadow-xl z-20 cursor-pointer">
-          <i class="fa-solid fa-chevron-left text-sm"></i>
+        <button onclick="prevGallerySlide()" class="absolute left-2 top-1/2 -translate-y-1/2 w-11 h-11 bg-black/80 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/20 shadow-2xl z-20 cursor-pointer">
+          <i class="fa-solid fa-chevron-left text-base"></i>
         </button>
-        <button onclick="nextGallerySlide()" class="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/70 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/20 shadow-xl z-20 cursor-pointer">
-          <i class="fa-solid fa-chevron-right text-sm"></i>
+        <button onclick="nextGallerySlide()" class="absolute right-2 top-1/2 -translate-y-1/2 w-11 h-11 bg-black/80 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/20 shadow-2xl z-20 cursor-pointer">
+          <i class="fa-solid fa-chevron-right text-base"></i>
         </button>
       </div>
     </section>
@@ -379,28 +390,41 @@
   </footer>
 
   <script>
-    // --- SKRIP GALERI DOKUMENTASI BERGESER MENGINTIP KIRI-KANAN ---
+    // --- SKRIP CAROUSEL CENTER FOCUS (FOKUS DI TENGAH, SISI KIRI-KANAN MENGINTIP) ---
     const galleryTrack = document.getElementById('galleryTrack');
-    const galleryItems = galleryTrack.children;
+    const gallerySlides = galleryTrack.children;
     let galleryIndex = 0;
 
     function updateGallery() {
-      const itemWidth = galleryItems[0].getBoundingClientRect().width + 20;
-      galleryTrack.style.transform = `translateX(-${galleryIndex * itemWidth}px)`;
+      // Menghitung pergeseran agar foto aktif selalu berada tepat di tengah
+      const slideWidth = gallerySlides[0].getBoundingClientRect().width;
+      const offset = (galleryTrack.parentElement.clientWidth / 2) - (slideWidth / 2) - (galleryIndex * slideWidth);
+      galleryTrack.style.transform = `translateX(${offset}px)`;
+
+      // Mengatur efek aktif / fokus pada slide tengah
+      for (let i = 0; i < gallerySlides.length; i++) {
+        gallerySlides[i].classList.remove('active-center');
+      }
+      gallerySlides[galleryIndex].classList.add('active-center');
     }
 
     function nextGallerySlide() {
-      galleryIndex = (galleryIndex + 1) % galleryItems.length;
+      galleryIndex = (galleryIndex + 1) % gallerySlides.length;
       updateGallery();
     }
 
     function prevGallerySlide() {
-      galleryIndex = (galleryIndex - 1 + galleryItems.length) % galleryItems.length;
+      galleryIndex = (galleryIndex - 1 + gallerySlides.length) % gallerySlides.length;
       updateGallery();
     }
 
-    // Geser otomatis galeri setiap 4 detik
-    setInterval(nextGallerySlide, 4000);
+    // Jalankan pertama kali dan sinkronisasi saat ukuran layar berubah
+    window.addEventListener('load', updateGallery);
+    window.addEventListener('resize', updateGallery);
+    updateGallery();
+
+    // Geser otomatis galeri setiap 5 detik
+    setInterval(nextGallerySlide, 5000);
 
 
     // --- SKRIP EFEK HUJAN ---
