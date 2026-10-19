@@ -79,7 +79,7 @@
       transform: scale(1.05);
     }
 
-    /* === KANVAS EFEK HUJAN JELAS & TEBAL === */
+    /* === KANVAS EFEK HUJAN === */
     #rainCanvas {
       position: absolute;
       top: 0;
@@ -129,7 +129,7 @@
     /* === SLIDER DOKUMENTASI GESER KESAMPING === */
     .doc-slider-container {
       display: flex;
-      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     input[type=range] {
@@ -153,13 +153,13 @@
     <div class="bg-slide" style="background-image: url('bg3.png');"></div>
   </div>
 
-  <!-- === KANVAS EFEK HUJAN JELAS & TEBAL === -->
+  <!-- === KANVAS EFEK HUJAN === -->
   <canvas id="rainCanvas"></canvas>
 
   <!-- Lapisan Gradasi Elegan -->
   <div class="bg-gradient-overlay"></div>
 
-  <!-- Header / Navbar (Navigasi Polos Tanpa #) -->
+  <!-- Header / Navbar -->
   <header class="border-b border-red-900/30 bg-slate-950/70 backdrop-blur-md sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -208,66 +208,51 @@
       </div>
     </section>
 
-    <!-- SECTION GALERI DOKUMENTASI FOTO (UKURAN LEBIH KECIL & TANPA TEKS DI FOTO) -->
-    <section id="gallery" class="max-w-2xl mx-auto px-6 py-12 relative z-10">
+    <!-- SECTION GALERI DOKUMENTASI (PURES FOTO TANPA TEKS DI DALAMNYA) -->
+    <section id="gallery" class="max-w-5xl mx-auto px-6 py-12 relative z-10">
       <div class="text-center mb-8">
         <span class="text-xs font-bold text-red-400 uppercase tracking-widest bg-red-950/50 px-3 py-1 rounded-full border border-red-600/30">Galeri Kegiatan</span>
         <h3 class="text-2xl font-black text-white uppercase tracking-wider mt-2">DOKUMENTASI KELUARGA BESAR</h3>
       </div>
 
-      <!-- Container Slider Dokumentasi (Diperkecil ukurannya) -->
-      <div class="relative overflow-hidden rounded-2xl shadow-2xl border border-red-500/30 glass-card">
+      <!-- Container Slider Dokumentasi -->
+      <div class="relative overflow-hidden rounded-2xl shadow-2xl border border-red-500/30 glass-card max-w-4xl mx-auto">
         <div id="docSlider" class="doc-slider-container">
           
-          <!-- Slide 1 -->
-          <div class="w-full shrink-0 p-4 flex flex-col items-center text-center">
-            <div class="w-full h-52 md:h-64 rounded-xl overflow-hidden relative shadow-lg">
+          <!-- Slide 1 (Pure Foto Tanpa Teks) -->
+          <div class="w-full shrink-0 p-4 md:p-6 flex flex-col items-center">
+            <div class="w-full h-80 md:h-[420px] rounded-xl overflow-hidden relative shadow-2xl border border-white/10">
               <img src="bg1.png" alt="Dokumentasi 1" class="w-full h-full object-cover">
-              <!-- Teks di foto sudah dihapus sepenuhnya -->
-            </div>
-            <div class="mt-4 space-y-1">
-              <h4 class="text-base font-bold text-white">Markas & Pertemuan Rutin</h4>
-              <p class="text-xs text-gray-300">Momen kebersamaan seluruh anggota saat berkumpul di markas utama.</p>
             </div>
           </div>
 
-          <!-- Slide 2 -->
-          <div class="w-full shrink-0 p-4 flex flex-col items-center text-center">
-            <div class="w-full h-52 md:h-64 rounded-xl overflow-hidden relative shadow-lg">
+          <!-- Slide 2 (Pure Foto Tanpa Teks) -->
+          <div class="w-full shrink-0 p-4 md:p-6 flex flex-col items-center">
+            <div class="w-full h-80 md:h-[420px] rounded-xl overflow-hidden relative shadow-2xl border border-white/10">
               <img src="bg2.png" alt="Dokumentasi 2" class="w-full h-full object-cover">
-              <!-- Teks di foto sudah dihapus sepenuhnya -->
-            </div>
-            <div class="mt-4 space-y-1">
-              <h4 class="text-base font-bold text-white">Konvoi & Perjalanan Bersama</h4>
-              <p class="text-xs text-gray-300">Aksi konvoi tertib divisi Nakama MC dalam menjalankan misi harian.</p>
             </div>
           </div>
 
-          <!-- Slide 3 -->
-          <div class="w-full shrink-0 p-4 flex flex-col items-center text-center">
-            <div class="w-full h-52 md:h-64 rounded-xl overflow-hidden relative shadow-lg">
+          <!-- Slide 3 (Pure Foto Tanpa Teks) -->
+          <div class="w-full shrink-0 p-4 md:p-6 flex flex-col items-center">
+            <div class="w-full h-80 md:h-[420px] rounded-xl overflow-hidden relative shadow-2xl border border-white/10">
               <img src="bg3.png" alt="Dokumentasi 3" class="w-full h-full object-cover">
-              <!-- Teks di foto sudah dihapus sepenuhnya -->
-            </div>
-            <div class="mt-4 space-y-1">
-              <h4 class="text-base font-bold text-white">Koordinasi & Briefing Strategi</h4>
-              <p class="text-xs text-gray-300">Koordinasi terpusat dan briefing pengelolaan kas bersama anggota.</p>
             </div>
           </div>
 
         </div>
 
         <!-- Tombol Navigasi Slider Kiri Kanan -->
-        <button onclick="prevDocSlide()" class="absolute left-3 top-[38%] -translate-y-1/2 w-8 h-8 bg-black/60 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/10 shadow-lg z-20">
-          <i class="fa-solid fa-chevron-left text-xs"></i>
+        <button onclick="prevDocSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/10 shadow-lg z-20">
+          <i class="fa-solid fa-chevron-left text-sm"></i>
         </button>
-        <button onclick="nextDocSlide()" class="absolute right-3 top-[38%] -translate-y-1/2 w-8 h-8 bg-black/60 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/10 shadow-lg z-20">
-          <i class="fa-solid fa-chevron-right text-xs"></i>
+        <button onclick="nextDocSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/10 shadow-lg z-20">
+          <i class="fa-solid fa-chevron-right text-sm"></i>
         </button>
       </div>
     </section>
 
-    <!-- SECTION VISI & PILAR ORGANISASI (DENGAN KATA/ARTI YANG TELAH DISESUAIKAN) -->
+    <!-- SECTION VISI & PILAR ORGANISASI -->
     <section id="about" class="max-w-6xl mx-auto px-6 py-12 relative z-10">
       <h3 class="text-xl font-black text-white uppercase tracking-widest text-center mb-8">
         NILAI & PILAR UTAMA ORGANISASI
@@ -306,24 +291,24 @@
       </div>
     </section>
 
-    <!-- Stat Counter Section (Di Paling Bawah, di atas Footer) -->
-    <section class="max-w-5xl mx-auto px-6 py-8 relative z-10">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-        <div class="glass-card p-4 rounded-xl">
-          <div class="text-2xl font-black text-red-500">100%</div>
-          <div class="text-[11px] uppercase tracking-wider text-gray-300 mt-1">Realtime Sync</div>
+    <!-- Stat Counter Section (Proporsional & Rapi di Bawah) -->
+    <section class="max-w-4xl mx-auto px-6 py-6 relative z-10">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+        <div class="glass-card p-3 rounded-xl">
+          <div class="text-xl font-black text-red-500">100%</div>
+          <div class="text-[10px] uppercase tracking-wider text-gray-300 mt-0.5">Realtime Sync</div>
         </div>
-        <div class="glass-card p-4 rounded-xl">
-          <div class="text-2xl font-black text-amber-500">24/7</div>
-          <div class="text-[11px] uppercase tracking-wider text-gray-300 mt-1">System Active</div>
+        <div class="glass-card p-3 rounded-xl">
+          <div class="text-xl font-black text-amber-500">24/7</div>
+          <div class="text-[10px] uppercase tracking-wider text-gray-300 mt-0.5">System Active</div>
         </div>
-        <div class="glass-card p-4 rounded-xl">
-          <div class="text-2xl font-black text-emerald-500">Integrated</div>
-          <div class="text-[11px] uppercase tracking-wider text-gray-300 mt-1">Discord Webhook</div>
+        <div class="glass-card p-3 rounded-xl">
+          <div class="text-xl font-black text-emerald-500">Integrated</div>
+          <div class="text-[10px] uppercase tracking-wider text-gray-300 mt-0.5">Discord Webhook</div>
         </div>
-        <div class="glass-card p-4 rounded-xl">
-          <div class="text-2xl font-black text-blue-500">Multi-Role</div>
-          <div class="text-[11px] uppercase tracking-wider text-gray-300 mt-1">Security Access</div>
+        <div class="glass-card p-3 rounded-xl">
+          <div class="text-xl font-black text-blue-500">Multi-Role</div>
+          <div class="text-[10px] uppercase tracking-wider text-gray-300 mt-0.5">Security Access</div>
         </div>
       </div>
     </section>
@@ -396,7 +381,7 @@
     setInterval(nextDocSlide, 5000);
 
 
-    // --- SKRIP EFEK HUJAN JELAS & TEBAL ---
+    // --- SKRIP EFEK HUJAN ---
     const canvas = document.getElementById('rainCanvas');
     const ctx = canvas.getContext('2d');
 
