@@ -123,17 +123,16 @@
     .glass-card:hover {
       border-color: rgba(239, 68, 68, 0.8);
       box-shadow: 0 0 30px rgba(239, 68, 68, 0.2), inset 0 0 15px rgba(239, 68, 68, 0.05);
-      transform: translateY(-3px);
     }
 
-    /* === CAROUSEL 3-ITEM (YOUTUBE STYLE SEPERTI CONTOH) === */
+    /* === CAROUSEL 3-ITEM BESAR & RAPI === */
     .gallery-container {
       position: relative;
       width: 100%;
-      max-width: 1200px;
+      max-width: 1280px;
       margin: 0 auto;
       overflow: hidden;
-      padding: 30px 0;
+      padding: 40px 0;
     }
 
     .gallery-track {
@@ -143,22 +142,28 @@
     }
 
     .gallery-slide {
-      min-width: 33.333%;
+      min-width: 55%;
       box-sizing: border-box;
-      padding: 0 12px;
+      padding: 0 15px;
       display: flex;
       justify-content: center;
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       opacity: 0.35;
-      transform: scale(0.85);
-      filter: brightness(0.6);
+      transform: scale(0.8);
+      filter: brightness(0.5);
     }
 
     .gallery-slide.active-center {
       opacity: 1;
-      transform: scale(1.05);
+      transform: scale(1);
       filter: brightness(1);
       z-index: 10;
+    }
+
+    @media (min-width: 768px) {
+      .gallery-slide {
+        min-width: 45%;
+      }
     }
 
     input[type=range] {
@@ -237,7 +242,7 @@
       </div>
     </section>
 
-    <!-- SECTION GALERI DOKUMENTASI (LAYOUT 3 ITEM SEPERTI CONTOH YOUTUBE) -->
+    <!-- SECTION GALERI DOKUMENTASI (FOTO UTAMA BESAR & RAPI) -->
     <section id="gallery" class="max-w-7xl mx-auto px-6 pt-16 pb-12 relative z-10">
       <div class="text-center mb-8">
         <span class="text-xs font-bold text-red-400 uppercase tracking-widest bg-red-950/50 px-3 py-1 rounded-full border border-red-600/30">Galeri Kegiatan</span>
@@ -249,21 +254,21 @@
           
           <!-- Slide 1 -->
           <div class="gallery-slide active-center">
-            <div class="w-full h-64 md:h-80 rounded-2xl overflow-hidden shadow-2xl border-2 border-red-500/60 glass-card p-1.5">
+            <div class="w-full max-w-4xl h-80 md:h-[450px] rounded-2xl overflow-hidden shadow-2xl border-2 border-red-500/60 glass-card p-2">
               <img src="bg1.png" alt="Dokumentasi 1" class="w-full h-full object-cover rounded-xl">
             </div>
           </div>
 
           <!-- Slide 2 -->
           <div class="gallery-slide">
-            <div class="w-full h-64 md:h-80 rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-1.5">
+            <div class="w-full max-w-4xl h-80 md:h-[450px] rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
               <img src="bg2.png" alt="Dokumentasi 2" class="w-full h-full object-cover rounded-xl">
             </div>
           </div>
 
           <!-- Slide 3 -->
           <div class="gallery-slide">
-            <div class="w-full h-64 md:h-80 rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-1.5">
+            <div class="w-full max-w-4xl h-80 md:h-[450px] rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
               <img src="bg3.png" alt="Dokumentasi 3" class="w-full h-full object-cover rounded-xl">
             </div>
           </div>
@@ -271,11 +276,11 @@
         </div>
 
         <!-- Tombol Navigasi Kiri Kanan -->
-        <button onclick="prevGallerySlide()" class="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-black/80 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/20 shadow-2xl z-20 cursor-pointer">
-          <i class="fa-solid fa-chevron-left text-base"></i>
+        <button onclick="prevGallerySlide()" class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/80 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/20 shadow-2xl z-20 cursor-pointer">
+          <i class="fa-solid fa-chevron-left text-lg"></i>
         </button>
-        <button onclick="nextGallerySlide()" class="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-black/80 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/20 shadow-2xl z-20 cursor-pointer">
-          <i class="fa-solid fa-chevron-right text-base"></i>
+        <button onclick="nextGallerySlide()" class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/80 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/20 shadow-2xl z-20 cursor-pointer">
+          <i class="fa-solid fa-chevron-right text-lg"></i>
         </button>
       </div>
     </section>
@@ -387,7 +392,7 @@
   </footer>
 
   <script>
-    // --- SKRIP CAROUSEL 3-ITEM (YOUTUBE STYLE) ---
+    // --- SKRIP CAROUSEL CENTER FOCUS ---
     const galleryTrack = document.getElementById('galleryTrack');
     const gallerySlides = galleryTrack.children;
     let galleryIndex = 0;
@@ -395,12 +400,9 @@
     function updateGallery() {
       const slideWidth = gallerySlides[0].getBoundingClientRect().width;
       const containerWidth = galleryTrack.parentElement.clientWidth;
-      
-      // Menempatkan slide aktif tepat di tengah-tengah kontainer
       const offset = (containerWidth / 2) - (slideWidth / 2) - (galleryIndex * slideWidth);
       galleryTrack.style.transform = `translateX(${offset}px)`;
 
-      // Menandai slide aktif di tengah dan meredupkan sisi kiri-kanan
       for (let i = 0; i < gallerySlides.length; i++) {
         gallerySlides[i].classList.remove('active-center');
       }
@@ -421,7 +423,6 @@
     window.addEventListener('resize', updateGallery);
     updateGallery();
 
-    // Rotasi otomatis setiap 5 detik
     setInterval(nextGallerySlide, 5000);
 
 
