@@ -125,14 +125,14 @@
       box-shadow: 0 0 30px rgba(239, 68, 68, 0.2), inset 0 0 15px rgba(239, 68, 68, 0.05);
     }
 
-    /* === CAROUSEL 1920x1080 (RASIO 16:9 PENUH TANPA CROP) === */
+    /* === CAROUSEL 3-ITEM (YOUTUBE STYLE - FULL UTUH TANPA CROP) === */
     .gallery-container {
       position: relative;
       width: 100%;
-      max-width: 1300px;
+      max-width: 1350px;
       margin: 0 auto;
       overflow: hidden;
-      padding: 30px 0;
+      padding: 40px 0;
     }
 
     .gallery-track {
@@ -142,14 +142,14 @@
     }
 
     .gallery-slide {
-      min-width: 70%;
+      min-width: 65%;
       box-sizing: border-box;
       padding: 0 15px;
       display: flex;
       justify-content: center;
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       opacity: 0.3;
-      transform: scale(0.85);
+      transform: scale(0.8);
       filter: brightness(0.5);
     }
 
@@ -160,17 +160,19 @@
       z-index: 10;
     }
 
-    /* Memastikan kotak foto menggunakan rasio 16:9 persis (1920x1080) */
+    /* Memastikan gambar tampil penuh utuh tanpa terpotong */
     .photo-box {
       width: 100%;
+      height: auto;
       aspect-ratio: 16 / 9;
       object-fit: contain;
-      background-color: #000000;
+      background-color: #05070a;
+      display: block;
     }
 
     @media (min-width: 768px) {
       .gallery-slide {
-        min-width: 60%;
+        min-width: 50%;
       }
     }
 
@@ -250,7 +252,7 @@
       </div>
     </section>
 
-    <!-- SECTION GALERI DOKUMENTASI (RASIO 16:9 PENUH TANPA CROP) -->
+    <!-- SECTION GALERI DOKUMENTASI (FOTO UTAMA UTUH TANPA CROP) -->
     <section id="gallery" class="max-w-7xl mx-auto px-6 pt-16 pb-12 relative z-10">
       <div class="text-center mb-8">
         <span class="text-xs font-bold text-red-400 uppercase tracking-widest bg-red-950/50 px-3 py-1 rounded-full border border-red-600/30">Galeri Kegiatan</span>
@@ -400,7 +402,7 @@
   </footer>
 
   <script>
-    // --- SKRIP CAROUSEL CENTER FOCUS (RASIO 16:9 UTUH) ---
+    // --- SKRIP CAROUSEL CENTER FOCUS (FOTO UTUH 100%) ---
     const galleryTrack = document.getElementById('galleryTrack');
     const gallerySlides = galleryTrack.children;
     let galleryIndex = 0;
