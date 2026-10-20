@@ -417,7 +417,6 @@
           <div class="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 relative z-20 bg-slate-900/90 backdrop-blur border-t border-slate-800">
             <div>
               <h4 id="streamTitle" class="text-sm sm:text-base font-bold text-white">Daily Livestream & Roleplay Action</h4>
-              <p class="text-xs text-gray-400 mt-0.5">Status Channel: <span id="streamStatus" class="text-amber-400 font-semibold">⚡ STANDBY / OFFLINE</span></p>
             </div>
             <!-- Tombol Buka Channel Dinamis (id="channelLink") -->
             <a id="channelLink" href="https://www.youtube.com/@bigbug_bunny" target="_blank" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg shrink-0">
@@ -436,8 +435,8 @@
             <!-- List Channel / Anggota -->
             <div class="space-y-3">
               
-              <!-- Channel 1: Bigbug Bunny (Milik Anda - Standby/Offline) -->
-              <div onclick="switchStream('UCrmo8CToKr1ugHZHpvITPfQ', 'Daily Livestream & Roleplay Action', 'bigbug_bunny', '⚡ STANDBY / OFFLINE', 'text-amber-400')" class="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 hover:bg-slate-800 cursor-pointer border border-slate-800 transition group">
+              <!-- Channel 1: Bigbug Bunny -->
+              <div onclick="switchStream('UCrmo8CToKr1ugHZHpvITPfQ', 'Daily Livestream & Roleplay Action', 'bigbug_bunny')" class="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 hover:bg-slate-800 cursor-pointer border border-slate-800 transition group">
                 <div class="flex items-center gap-3">
                   <div class="w-10 h-10 rounded-full bg-red-600/20 border border-red-500/40 flex items-center justify-center font-bold text-red-400 text-sm group-hover:scale-105 transition">B</div>
                   <div>
@@ -448,8 +447,8 @@
                 <span class="text-[9px] bg-red-500/20 text-red-400 border border-red-500/30 px-2.5 py-1 rounded-full font-bold">PILIH</span>
               </div>
 
-              <!-- Channel 2: Teman Anda (Sedang Live) -->
-              <div onclick="switchStream('UCFHBoYW_XUy46ojXPKh_BwQ', 'City Patrol & Action', 'JakaTriad', '🔴 LIVE NOW', 'text-red-400 animate-pulse')" class="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 hover:bg-slate-800 cursor-pointer border border-slate-800 transition group">
+              <!-- Channel 2: Teman Anda -->
+              <div onclick="switchStream('UCFHBoYW_XUy46ojXPKh_BwQ', 'City Patrol & Action', 'JakaTriad')" class="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 hover:bg-slate-800 cursor-pointer border border-slate-800 transition group">
                 <div class="flex items-center gap-3">
                   <div class="w-10 h-10 rounded-full bg-blue-600/20 border border-blue-500/40 flex items-center justify-center font-bold text-blue-400 text-sm group-hover:scale-105 transition">T</div>
                   <div>
@@ -670,18 +669,13 @@
       });
     }
 
-    // Fungsi Switch Stream YouTube Live, Update Judul, Status Dinamis, & Tombol Channel
-    function switchStream(channelId, titleText, channelHandle, statusText, statusClass) {
+    // Fungsi Switch Stream YouTube Live, Update Judul & Tombol Channel
+    function switchStream(channelId, titleText, channelHandle) {
       const player = document.getElementById('mainLivePlayer');
       player.src = `https://www.youtube.com/embed/live_stream?channel=${channelId}`;
       
       // Update judul siaran
       document.getElementById('streamTitle').innerText = titleText;
-
-      // Update teks status dan warnanya secara dinamis sesuai parameter yang diklik
-      const statusSpan = document.getElementById('streamStatus');
-      statusSpan.className = `font-semibold ${statusClass}`;
-      statusSpan.innerText = statusText;
 
       // Update link tombol "Buka Channel" secara otomatis sesuai yang diklik
       const channelLink = document.getElementById('channelLink');
