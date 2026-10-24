@@ -25,7 +25,7 @@
     <style>
         /* Latar Belakang Foto Komunitas (Digelapkan sama seperti Multiview) */
         body {
-            background: linear-gradient(to bottom, rgba(7, 9, 14, 0.65), rgba(7, 9, 14, 0.85)), url('../bg2.png') no-repeat center center fixed;
+            background: linear-gradient(to bottom, rgba(7, 9, 14, 0.65), rgba(7, 9, 14, 0.85)), url('../bg1.png') no-repeat center center fixed;
             background-size: cover;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
@@ -86,10 +86,20 @@
         <!-- Banner Header Berkelas -->
         <div class="glass-card p-8 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
             <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="space-y-2 z-10">
-                <span class="px-3.5 py-1.5 text-[10px] font-extrabold tracking-widest text-red-400 uppercase border border-red-800/40 rounded-full bg-red-950/50 inline-flex items-center gap-2 shadow-inner">
-                    <i class="fa-solid fa-trophy text-amber-500"></i> Hall of Fame Clipper
-                </span>
+            <div class="space-y-3 z-10">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="px-3.5 py-1.5 text-[10px] font-extrabold tracking-widest text-red-400 uppercase border border-red-800/40 rounded-full bg-red-950/50 inline-flex items-center gap-2 shadow-inner">
+                        <i class="fa-solid fa-trophy text-amber-500"></i> Hall of Fame Clipper
+                    </span>
+                    <!-- HASTAG TAMBAHAN -->
+                    <span class="px-3 py-1 text-[10px] font-extrabold tracking-widest text-amber-400 uppercase border border-amber-500/40 rounded-full bg-amber-950/50 shadow-inner">
+                        #NAKAMA
+                    </span>
+                    <span class="px-3 py-1 text-[10px] font-extrabold tracking-widest text-blue-400 uppercase border border-blue-500/40 rounded-full bg-blue-950/50 shadow-inner">
+                        #NFFN
+                    </span>
+                </div>
+                
                 <h2 class="text-2xl md:text-3xl font-black text-white uppercase tracking-wider title-glow">
                     Papan Peringkat Clipper
                 </h2>
@@ -105,10 +115,10 @@
 
         <!-- Tab Navigasi Divisi Clipper -->
         <div class="flex items-center gap-3 border-b border-red-950/60 pb-4 overflow-x-auto">
-            <button onclick="switchTab('Sonofsukri')" id="tab-sonofsukri" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer">
+            <button onclick="switchTab('NMC')" id="tab-NMC" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer">
                 NMC
             </button>
-            <button onclick="switchTab('GiString')" id="tab-gistring" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer">
+            <button onclick="switchTab('NMC7G')" id="tab-NMC7G" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer">
                 NMC7G
             </button>
             <button onclick="switchTab('TriadCommunity')" id="tab-triad" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer">
@@ -144,15 +154,10 @@
 
     </main>
 
-    <!-- Footer Elegan -->
-    <footer class="w-full border-t border-red-950/50 bg-[#07090e]/95 px-6 py-5 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-gray-400">
+    <!-- Footer Bersih -->
+    <footer class="w-full border-t border-red-950/50 bg-[#07090e]/95 px-6 py-5 flex justify-between items-center text-xs text-gray-400 max-w-7xl mx-auto">
         <div>
             <span>&copy; 2026 <strong class="text-white tracking-wide">Triad Community</strong>. Hak Cipta Dilindungi.</span>
-        </div>
-        <div class="bg-cardBg border border-borderCol px-4 py-2 rounded-xl flex items-center space-x-3 shadow-lg">
-            <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
-            <span class="text-[11px] font-medium text-gray-300">Background Audio: Kota Ini Tak Sama</span>
-            <i class="fa-solid fa-music text-red-500 text-xs"></i>
         </div>
     </footer>
 
@@ -170,7 +175,7 @@
         }
         const db = firebase.database();
 
-        let currentTab = 'Sonofsukri';
+        let currentTab = 'NMC';
 
         window.addEventListener('load', () => {
             loadLeaderboardData();
@@ -178,18 +183,18 @@
 
         function switchTab(tab) {
             currentTab = tab;
-            const btnSonofsukri = document.getElementById('tab-sonofsukri');
-            const btnGiString = document.getElementById('tab-gistring');
+            const btnNMC = document.getElementById('tab-NMC');
+            const btnNMC7G = document.getElementById('tab-NMC7G');
             const btnTriad = document.getElementById('tab-triad');
 
-            [btnSonofsukri, btnGiString, btnTriad].forEach(b => {
+            [btnNMC, btnNMC7G, btnTriad].forEach(b => {
                 b.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer";
             });
 
-            if (tab === 'Sonofsukri') {
-                btnSonofsukri.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer";
-            } else if (tab === 'GiString') {
-                btnGiString.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer";
+            if (tab === 'NMC') {
+                btnNMC.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer";
+            } else if (tab === 'NMC7G') {
+                btnNMC7G.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer";
             } else if (tab === 'TriadCommunity') {
                 btnTriad.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer";
             }
