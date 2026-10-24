@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiview Keluarga - Triad Community</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#080c14',
+                        cardBg: '#0f172a',
+                        borderCol: '#1e293b',
+                        accentOrange: '#f97316',
+                        roseLive: '#f43f5e'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-darkBg text-gray-100 min-h-screen flex flex-col justify-between selection:bg-orange-500 selection:text-white">
+
+    <!-- Header / Navbar -->
+    <header class="w-full border-b border-borderCol bg-darkBg/95 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex justify-between items-center shadow-lg">
+        <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-lg bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-orange-500 font-bold text-sm">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <span class="text-sm font-black tracking-wider text-white uppercase">TRIAD <span class="text-orange-500">COMMUNITY</span></span>
+        </div>
+
+        <nav class="hidden md:flex items-center space-x-8 text-xs font-semibold text-gray-400">
+            <a href="../" class="hover:text-white transition">Home</a>
+            <a href="../dokumentasi" class="hover:text-white transition">Dokumentasi</a>
+            <a href="../nilai-visi" class="hover:text-white transition">Nilai & Visi</a>
+        </nav>
+
+        <div class="flex items-center space-x-3">
+            <span id="api-status" class="text-[11px] text-gray-400 hidden sm:flex items-center gap-1.5 bg-cardBg border border-borderCol px-3 py-1.5 rounded-xl">
+                <i class="fa-solid fa-satellite-dish text-orange-500 animate-pulse"></i> Memeriksa Live...
+            </span>
+            <button onclick="openAdminModal()" class="px-4 py-2 text-xs bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-xl transition flex items-center gap-2 shadow-lg shadow-orange-950">
+                <i class="fa-solid fa-lock" id="lock-icon"></i> <span id="admin-toggle-text">Mode Admin</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-4 md:p-6 max-w-7xl mx-auto w-full flex flex-col gap-6">
+        
+        <div class="flex justify-between items-center bg-cardBg border border-borderCol px-5 py-4 rounded-2xl shadow-xl">
+            <div>
+                <h2 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-tv text-orange-500"></i> Multiview Siaran Langsung Keluarga
+                </h2>
+                <p class="text-[11px] text-gray-400 mt-0.5">Pantau siaran aktif anggota secara otomatis melalui integrasi database pusat.</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="checkLiveStatusWithAPI()" class="px-3 py-1.5 text-xs bg-darkBg hover:bg-gray-800 border border-borderCol rounded-xl transition text-gray-300 font-medium flex items-center gap-1.5" title="Refresh Status Live">
+                    <i class="fa-solid fa-rotate text-orange-500"></i> Refresh Live
+                </button>
+                <button onclick="togglePanel()" class="px-3 py-1.5 text-xs bg-darkBg hover:bg-gray-800 border border-borderCol rounded-xl transition text-gray-300 font-medium flex items-center gap-1.5">
+                    <i class="fa-solid fa-sliders text-orange-500"></i> <span id="panel-toggle-text">Tutup Panel</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Control & Stream Selector Panel -->
+        <div id="control-panel" class="bg-cardBg border border-borderCol rounded-2xl p-4 md:p-5 shadow-2xl transition-all duration-300">
+            <div class="flex justify-between items-center mb-3 pb-2 border-b border-borderCol text-xs font-semibold text-gray-400">
+                <span id="active-summary">Siaran Aktif (0/0)</span>
+                <span class="text-orange-500 cursor-pointer hover:underline" onclick="resetSelection()">Reset Pilihan</span>
+            </div>
+
+            <!-- List Tombol Semua Anggota -->
+            <div id="streamer-buttons-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2 max-h-64 overflow-y-auto pr-1">
+                <div class="col-span-full text-center py-6 text-gray-500 text-xs">Memuat data dari database...</div>
+            </div>
+
+            <!-- Form Tambah Channel Baru / Override Manual -->
+            <div id="admin-form-section" class="mt-4 pt-3 border-t border-borderCol hidden space-y-3">
+                <div class="text-[11px] text-orange-400 font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-shield-halved"></i> Panel Kontrol Admin (Tambah Channel / Paksa Status Live)
+                </div>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <input type="text" id="input-name" placeholder="Nama Anggota (contoh: APINPALINGSERIUS)" class="bg-darkBg border border-borderCol px-3 py-2 rounded-xl text-xs flex-1 text-white focus:outline-none focus:border-orange-500">
+                    <input type="text" id="input-channel" placeholder="YouTube Channel ID (awalan UC...)" class="bg-darkBg border border-borderCol px-3 py-2 rounded-xl text-xs flex-1 text-white focus:outline-none focus:border-orange-500">
+                    <input type="text" id="input-videoid" placeholder="ID Video Live Opsional (opsional)" class="bg-darkBg border border-borderCol px-3 py-2 rounded-xl text-xs flex-1 text-white focus:outline-none focus:border-orange-500">
+                    <button onclick="addNewStreamer()" class="bg-orange-600 hover:bg-orange-500 text-white font-semibold px-4 py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow">
+                        <i class="fa-solid fa-plus"></i> Simpan
+                    </button>
+                    <button onclick="logoutAdmin()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-2 rounded-xl text-xs transition" title="Kunci Kembali">
+                        <i class="fa-solid fa-lock"></i>
+                    </button>
+                </div>
+                <p class="text-[10px] text-gray-500">*Tips: Jika sistem otomatis YouTube API sedang delay, masukkan ID video (kode setelah `watch?v=`) agar tombol langsung aktif menjadi LIVE.</p>
+            </div>
+        </div>
+
+        <!-- Dynamic Grid Video Players -->
+        <div id="active-players-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+            <div class="col-span-full text-center py-20 text-gray-500 text-xs border border-dashed border-borderCol rounded-2xl">
+                <i class="fa-solid fa-tv text-3xl mb-2 text-gray-600"></i>
+                <p>Belum ada siaran yang dipilih. Klik salah satu nama anggota berstatus LIVE di atas.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full border-t border-borderCol bg-darkBg/90 px-6 py-3 flex justify-between items-center text-xs text-gray-400">
+        <div>
+            <span>&copy; 2026 <strong class="text-white">Triad Community</strong>. All rights reserved.</span>
+        </div>
+        <div class="bg-cardBg border border-borderCol px-3 py-1.5 rounded-xl flex items-center space-x-3 shadow-lg">
+            <div class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></div>
+            <span class="text-[11px] font-medium text-gray-300 truncate max-w-[150px]">Background Music: Kota Ini Tak Sama</span>
+            <i class="fa-solid fa-music text-orange-500 text-xs"></i>
+        </div>
+    </footer>
+
+    <!-- CUSTOM MODAL POPUP -->
+    <div id="custom-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-cardBg border border-borderCol rounded-2xl p-6 max-w-sm w-full shadow-2xl flex flex-col gap-4 text-center transform transition-all scale-95 opacity-0 duration-200" id="modal-box">
+            <div id="modal-icon" class="w-12 h-12 rounded-full bg-orange-500/20 border border-orange-500/40 text-orange-500 flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <h3 id="modal-title" class="text-sm font-bold text-white uppercase tracking-wider mb-1">Pemberitahuan</h3>
+                <p id="modal-message" class="text-xs text-gray-400">Pesan keterangan muncul di sini.</p>
+            </div>
+            
+            <div id="modal-input-container" class="hidden">
+                <input type="password" id="modal-password-input" placeholder="Masukkan password admin..." class="w-full bg-darkBg border border-borderCol px-3 py-2 rounded-xl text-xs text-white text-center focus:outline-none focus:border-orange-500" onkeydown="if(event.key === 'Enter') document.getElementById('modal-btn-ok').click();">
+            </div>
+
+            <div class="flex gap-2 mt-2">
+                <button id="modal-btn-cancel" onclick="closeModal()" class="flex-1 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-semibold rounded-xl transition hidden">Batal</button>
+                <button id="modal-btn-ok" onclick="closeModal()" class="flex-1 py-2 bg-orange-600 hover:bg-orange-500 text-white text-xs font-semibold rounded-xl transition">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK Compat -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            databaseURL: "https://nmc-management-default-rtdb.firebaseio.com/"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.database();
+
+        const YOUTUBE_API_KEY = "AIzaSyCBDW7TXZFi5UB3obnu3TEPd41zvWl8PBU";
+
+        let streamers = [];
+        let activeStreams = [];
+        let isAdmin = sessionStorage.getItem('triad_is_admin') === 'true';
+
+        if (isAdmin) showAdminPanelUI();
+
+        function showPopup(title, message, type = 'warning', showInput = false, onOkCallback = null) {
+            const modal = document.getElementById('custom-modal');
+            const box = document.getElementById('modal-box');
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = message;
+            
+            const iconDiv = document.getElementById('modal-icon');
+            if (type === 'success') {
+                iconDiv.className = "w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto text-xl";
+                iconDiv.innerHTML = `<i class="fa-solid fa-check"></i>`;
+            } else {
+                iconDiv.className = "w-12 h-12 rounded-full bg-orange-500/20 border border-orange-500/40 text-orange-500 flex items-center justify-center mx-auto text-xl";
+                iconDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i>`;
+            }
+
+            const inputContainer = document.getElementById('modal-input-container');
+            const cancelBtn = document.getElementById('modal-btn-cancel');
+            const okBtn = document.getElementById('modal-btn-ok');
+
+            if (showInput) {
+                inputContainer.classList.remove('hidden');
+                cancelBtn.classList.remove('hidden');
+                document.getElementById('modal-password-input').value = '';
+                setTimeout(() => document.getElementById('modal-password-input').focus(), 100);
+            } else {
+                inputContainer.classList.add('hidden');
+                cancelBtn.classList.add('hidden');
+            }
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                box.classList.remove('scale-95', 'opacity-0');
+                box.classList.add('scale-100', 'opacity-100');
+            }, 10);
+
+            okBtn.onclick = () => {
+                if (onOkCallback) {
+                    onOkCallback();
+                } else {
+                    closeModal();
+                }
+            };
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('custom-modal');
+            const box = document.getElementById('modal-box');
+            box.classList.remove('scale-100', 'opacity-100');
+            box.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 150);
+        }
+
+        // Ambil data streamer dari database
+        db.ref('nmc_data/streamers').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                streamers = Object.keys(data).map(key => ({
+                    id: key,
+                    name: data[key].name,
+                    channelId: data[key].channelId,
+                    manualVideoId: data[key].videoId || '',
+                    isLive: false,
+                    videoId: ''
+                }));
+                checkLiveStatusWithAPI();
+            } else {
+                streamers = [];
+                renderStreamerButtons();
+            }
+        });
+
+        // Validasi Admin
+        function openAdminModal() {
+            if (isAdmin) {
+                logoutAdmin();
+                return;
+            }
+
+            showPopup("Autentikasi Admin", "Masukkan password untuk membuka panel kontrol:", "warning", true, () => {
+                const pwd = document.getElementById('modal-password-input').value;
+                if (!pwd) return;
+
+                db.ref('admin_users').once('value').then((snapshot) => {
+                    const data = snapshot.val();
+                    let isValid = false;
+
+                    if (data) {
+                        Object.keys(data).forEach(key => {
+                            if (data[key].password === pwd || key === pwd || data[key] === pwd) {
+                                isValid = true;
+                            }
+                        });
+                    }
+
+                    if (isValid) {
+                        isAdmin = true;
+                        sessionStorage.setItem('triad_is_admin', 'true');
+                        showAdminPanelUI();
+                        closeModal();
+                        showPopup("Berhasil", "Akses admin diberikan!", "success");
+                    } else {
+                        showPopup("Gagal", "Password admin salah!", "warning");
+                    }
+                }).catch(err => {
+                    showPopup("Error", "Gagal terhubung ke database.", "warning");
+                });
+            });
+        }
+
+        function showAdminPanelUI() {
+            document.getElementById('admin-form-section').classList.remove('hidden');
+            document.getElementById('lock-icon').className = "fa-solid fa-unlock text-emerald-400";
+            document.getElementById('admin-toggle-text').innerText = "Admin Aktif";
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            sessionStorage.removeItem('triad_is_admin');
+            document.getElementById('admin-form-section').classList.add('hidden');
+            document.getElementById('lock-icon').className = "fa-solid fa-lock text-orange-500";
+            document.getElementById('admin-toggle-text').innerText = "Mode Admin";
+            showPopup("Informasi", "Anda telah keluar dari mode admin.", "success");
+        }
+
+        // Pengecekan Live Menggunakan Cek Video Terbaru Langsung dari Channel (Tanpa Delay Search API)
+        async function checkLiveStatusWithAPI() {
+            const statusIndicator = document.getElementById('api-status');
+            if (statusIndicator) {
+                statusIndicator.innerHTML = `<i class="fa-solid fa-satellite-dish text-orange-500 animate-pulse"></i> Memeriksa Live...`;
+            }
+
+            let liveCount = 0;
+
+            for (let s of streamers) {
+                // Prioritas 1: Jika admin mengisi video ID manual, langsung aktifkan
+                if (s.manualVideoId && s.manualVideoId.length > 5) {
+                    s.isLive = true;
+                    s.videoId = s.manualVideoId;
+                    liveCount++;
+                    continue;
+                }
+
+                if (!s.channelId || !s.channelId.startsWith('UC')) continue;
+
+                try {
+                    // Ambil video upload/live terbaru dari channel secara langsung menggunakan endpoint channels -> uploads playlist
+                    const channelUrl = `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${s.channelId}&key=${YOUTUBE_API_KEY}`;
+                    const chResponse = await fetch(channelUrl);
+                    const chData = await chResponse.json();
+
+                    if (chData.items && chData.items.length > 0) {
+                        const uploadsPlaylistId = chData.items[0].contentDetails.relatedPlaylists.uploads;
+                        
+                        // Ambil video paling atas dari playlist uploads
+                        const playlistUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=1&key=${YOUTUBE_API_KEY}`;
+                        const plResponse = await fetch(playlistUrl);
+                        const plData = await plResponse.json();
+
+                        if (plData.items && plData.items.length > 0) {
+                            const latestVideoId = plData.items[0].snippet.resourceId.videoId;
+
+                            // Cek detail status live video tersebut via videos endpoint
+                            const videoDetailUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,liveStreamingDetails&id=${latestVideoId}&key=${YOUTUBE_API_KEY}`;
+                            const vResponse = await fetch(videoDetailUrl);
+                            const vData = await vResponse.json();
+
+                            if (vData.items && vData.items.length > 0) {
+                                const videoInfo = vData.items[0];
+                                const broadcastContent = videoInfo.snippet.liveBroadcastContent;
+                                
+                                // Jika statusnya 'live' atau sedang berlangsung siaran langsung
+                                if (broadcastContent === 'live') {
+                                    s.isLive = true;
+                                    s.videoId = latestVideoId;
+                                    liveCount++;
+                                } else {
+                                    s.isLive = false;
+                                    s.videoId = '';
+                                }
+                            } else {
+                                s.isLive = false;
+                                s.videoId = '';
+                            }
+                        } else {
+                            s.isLive = false;
+                            s.videoId = '';
+                        }
+                    } else {
+                        s.isLive = false;
+                        s.videoId = '';
+                    }
+                } catch (e) {
+                    s.isLive = false;
+                    s.videoId = '';
+                }
+            }
+
+            if (statusIndicator) {
+                statusIndicator.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Live Check Selesai (${liveCount} Aktif)`;
+            }
+            renderStreamerButtons();
+        }
+
+        function renderStreamerButtons() {
+            const grid = document.getElementById('streamer-buttons-grid');
+            grid.innerHTML = '';
+            
+            if (streamers.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center py-6 text-gray-500 text-xs">Belum ada channel di database. Gunakan mode admin untuk menambahkan.</div>';
+                document.getElementById('active-summary').innerText = `Siaran Aktif (0/0)`;
+                renderPlayers();
+                return;
+            }
+
+            let liveTotal = 0;
+
+            streamers.forEach(s => {
+                if (s.isLive) liveTotal++;
+                const isActive = activeStreams.includes(s.id);
+                
+                const btn = document.createElement('button');
+                btn.className = `p-2.5 rounded-xl border text-left text-[11px] font-medium transition flex justify-between items-center group relative ${
+                    isActive 
+                    ? 'bg-orange-950/40 border-orange-500 text-white shadow-lg' 
+                    : s.isLive 
+                        ? 'bg-cardBg border-orange-500/50 text-white hover:border-orange-500 animate-pulse' 
+                        : 'bg-darkBg/50 border-borderCol/60 text-gray-500 opacity-60'
+                }`;
+                
+                btn.onclick = () => {
+                    if (!s.isLive) {
+                        showPopup("Status Siaran", `${s.name} sedang TIDAK LIVE!`, "warning");
+                        return;
+                    }
+                    toggleStream(s.id);
+                };
+
+                btn.innerHTML = `
+                    <span class="truncate pr-1 font-semibold">${s.name}</span>
+                    <span class="text-[9px] px-1.5 py-0.5 rounded uppercase font-bold tracking-tighter ${s.isLive ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' : 'bg-gray-800 text-gray-600'}">
+                        ${s.isLive ? 'LIVE' : 'OFF'}
+                    </span>
+                `;
+                grid.appendChild(btn);
+            });
+
+            document.getElementById('active-summary').innerText = `Siaran Aktif (${liveTotal}/${streamers.length})`;
+            renderPlayers();
+        }
+
+        function toggleStream(id) {
+            if (activeStreams.includes(id)) {
+                activeStreams = activeStreams.filter(item => item !== id);
+            } else {
+                activeStreams.push(id);
+            }
+            renderStreamerButtons();
+        }
+
+        function renderPlayers() {
+            const container = document.getElementById('active-players-grid');
+            container.innerHTML = '';
+
+            if (activeStreams.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-20 text-gray-500 text-xs border border-dashed border-borderCol rounded-2xl">
+                        <i class="fa-solid fa-tv text-3xl mb-2 text-gray-600"></i>
+                        <p>Belum ada siaran yang dipilih. Klik salah satu nama anggota berstatus LIVE di atas.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            activeStreams.forEach(id => {
+                const streamer = streamers.find(s => s.id === id);
+                if (!streamer || !streamer.isLive) return;
+
+                const embedSrc = `https://www.youtube.com/embed/${streamer.videoId}?autoplay=1`;
+
+                const playerBox = document.createElement('div');
+                playerBox.className = "bg-cardBg border border-borderCol rounded-2xl overflow-hidden flex flex-col shadow-xl h-[400px]";
+                playerBox.innerHTML = `
+                    <div class="bg-gray-900 px-4 py-2.5 border-b border-borderCol flex justify-between items-center text-xs">
+                        <span class="font-bold text-orange-400 flex items-center gap-2">
+                            <i class="fa-brands fa-youtube"></i> ${streamer.name}
+                        </span>
+                        <button onclick="toggleStream('${streamer.id}')" class="text-gray-400 hover:text-orange-400 transition">
+                            <i class="fa-solid fa-xmark text-sm"></i>
+                        </button>
+                    </div>
+                    <div class="flex-1 w-full bg-black relative">
+                        <iframe class="w-full h-full absolute inset-0" src="${embedSrc}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                `;
+                container.appendChild(playerBox);
+            });
+        }
+
+        function addNewStreamer() {
+            if (!isAdmin) {
+                showPopup("Akses Ditolak", "Anda harus login sebagai admin terlebih dahulu.", "warning");
+                return;
+            }
+
+            const name = document.getElementById('input-name').value.trim().toUpperCase();
+            const channelId = document.getElementById('input-channel').value.trim();
+            const videoId = document.getElementById('input-videoid').value.trim();
+
+            if (!name || !channelId) {
+                showPopup("Form Kosong", "Nama dan Channel ID wajib diisi!", "warning");
+                return;
+            }
+
+            const newKey = name.replace(/[^a-zA-Z0-9]/g, '_');
+
+            db.ref('nmc_data/streamers/' + newKey).set({
+                name: name,
+                channelId: channelId,
+                videoId: videoId
+            }, (error) => {
+                if (error) {
+                    showPopup("Gagal", "Gagal menyimpan ke database.", "warning");
+                } else {
+                    document.getElementById('input-name').value = '';
+                    document.getElementById('input-channel').value = '';
+                    document.getElementById('input-videoid').value = '';
+                    showPopup("Berhasil", "Data channel berhasil disimpan!", "success");
+                }
+            });
+        }
+
+        function togglePanel() {
+            const panel = document.getElementById('control-panel');
+            const text = document.getElementById('panel-toggle-text');
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                text.innerText = 'Tutup Panel';
+            } else {
+                panel.style.display = 'none';
+                text.innerText = 'Buka Panel';
+            }
+        }
+
+        function resetSelection() {
+            activeStreams = [];
+            renderStreamerButtons();
+        }
+    </script>
+</body>
+</html>
