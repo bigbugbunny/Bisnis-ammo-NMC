@@ -131,11 +131,7 @@
       background: rgba(18, 24, 38, 0.85);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(220, 38, 38, 0.25);
-      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .glass-card:hover {
-      border-color: rgba(239, 68, 68, 0.8);
-      box-shadow: 0 0 30px rgba(239, 68, 68, 0.2), inset 0 0 15px rgba(239, 68, 68, 0.05);
+      will-change: transform, box-shadow;
     }
 
     @keyframes modalScaleIn {
@@ -144,6 +140,42 @@
     }
     .animate-modal-in {
       animation: modalScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* === EFEK FRAME HALUS (GPU OPTIMIZED FLOATING) === */
+    @keyframes smoothFloatRed {
+      0%, 100% {
+        transform: translate3d(0, 0, 0);
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.25);
+        border-color: rgba(239, 68, 68, 0.35);
+      }
+      50% {
+        transform: translate3d(0, -8px, 0);
+        box-shadow: 0 0 35px rgba(239, 68, 68, 0.65);
+        border-color: rgba(239, 68, 68, 0.9);
+      }
+    }
+
+    @keyframes smoothFloatAmber {
+      0%, 100% {
+        transform: translate3d(0, 0, 0);
+        box-shadow: 0 0 15px rgba(245, 158, 11, 0.25);
+        border-color: rgba(245, 158, 11, 0.35);
+      }
+      50% {
+        transform: translate3d(0, -8px, 0);
+        box-shadow: 0 0 35px rgba(245, 158, 11, 0.65);
+        border-color: rgba(245, 158, 11, 0.9);
+      }
+    }
+
+    .idle-float-red {
+      animation: smoothFloatRed 4s ease-in-out infinite;
+    }
+
+    .idle-float-amber {
+      animation: smoothFloatAmber 4s ease-in-out infinite;
+      animation-delay: 2s;
     }
 
     /* === CAROUSEL SCROLL-SNAP STABIL === */
@@ -215,7 +247,7 @@
     }
 
     button, a {
-      transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
     }
     button:active, a:active {
       transform: scale(0.96);
@@ -332,7 +364,7 @@
   <main class="flex-1 relative z-10">
     
     <!-- Hero Section -->
-    <section id="home" class="max-w-5xl mx-auto px-6 pt-20 pb-24 text-center">
+    <section id="home" class="max-w-5xl mx-auto px-6 pt-20 pb-20 text-center">
       <span class="px-4 py-1.5 text-xs font-bold tracking-widest text-red-400 uppercase border border-red-800/40 rounded-full bg-slate-950/60 backdrop-blur inline-flex items-center gap-2 shadow-inner">
         <i class="fa-solid fa-shield-halved"></i> KEADILAN • KEBERSAMAAN • PERSAUDARAAN
       </span>
@@ -343,7 +375,7 @@
     </section>
 
     <!-- SECTION GALERI DOKUMENTASI -->
-    <section id="gallery" class="max-w-7xl mx-auto px-6 pt-16 pb-12">
+    <section id="gallery" class="max-w-7xl mx-auto px-6 pt-12 pb-10">
       <div class="text-center mb-8">
         <span class="text-xs font-bold text-red-400 uppercase tracking-widest bg-red-950/50 px-3 py-1 rounded-full border border-red-600/30">Galeri Kegiatan</span>
         <h3 class="text-2xl font-black text-white uppercase tracking-wider mt-2">GALLERY OF MEMORIES</h3>
@@ -385,29 +417,45 @@
       </div>
     </section>
 
-    <!-- === TOMBOL MENU UTAMA (MULTIVIEW & PAPAN PERINGKAT) === -->
-    <section class="max-w-4xl mx-auto px-6 py-8">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <!-- === TOMBOL MENU UTAMA DENGAN EFEK HALUS (GPU ACCELERATED) === -->
+    <section class="max-w-5xl mx-auto px-6 py-12 relative z-25">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         
-        <!-- Tombol ke Multiview -->
-        <a href="multiview.html" class="glass-card p-5 rounded-2xl flex items-center gap-4 group hover:border-red-500 transition shadow-xl no-underline">
-          <div class="w-12 h-12 rounded-xl bg-red-950/60 border border-red-600/40 text-red-400 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition">
+        <!-- Tombol Multiview -->
+        <a href="multiview.html" class="glass-card idle-float-red p-6 md:p-8 rounded-3xl flex items-center gap-6 group hover:border-red-500 hover:shadow-[0_0_60px_rgba(239,68,68,0.7)] transition-all duration-300 no-underline relative overflow-hidden cursor-pointer">
+          <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-red-600/15 rounded-full blur-xl group-hover:scale-150 transition duration-500"></div>
+          
+          <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-red-600 to-red-900 border border-red-400/40 text-white flex items-center justify-center text-2xl md:text-3xl shrink-0 shadow-lg group-hover:rotate-6 group-hover:scale-110 transition duration-300">
             <i class="fa-solid fa-tv"></i>
           </div>
-          <div>
-            <h4 class="text-sm font-bold text-white uppercase tracking-wider group-hover:text-red-400 transition">Multiview Keluarga</h4>
-            <p class="text-[11px] text-gray-400 mt-0.5">Pantau siaran langsung aktif anggota keluarga.</p>
+
+          <div class="relative z-10 flex-1">
+            <span class="text-[10px] font-extrabold tracking-widest text-red-400 uppercase bg-red-950/60 px-2.5 py-1 rounded-full border border-red-800/50 inline-block mb-2">Live Stream</span>
+            <h4 class="text-lg md:text-xl font-black text-white uppercase tracking-wider group-hover:text-red-400 transition">Multiview Keluarga</h4>
+            <p class="text-xs text-gray-400 mt-1">Pantau seluruh siaran langsung aktif anggota keluarga secara real-time.</p>
+          </div>
+
+          <div class="text-red-400 group-hover:translate-x-2 transition duration-300 text-xl font-bold animate-pulse">
+            <i class="fa-solid fa-arrow-right"></i>
           </div>
         </a>
 
-        <!-- Tombol ke Papan Peringkat -->
-        <a href="leaderboard.html" class="glass-card p-5 rounded-2xl flex items-center gap-4 group hover:border-amber-500 transition shadow-xl no-underline">
-          <div class="w-12 h-12 rounded-xl bg-amber-950/60 border border-amber-600/40 text-amber-400 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition">
+        <!-- Tombol Papan Peringkat -->
+        <a href="leaderboard.html" class="glass-card idle-float-amber p-6 md:p-8 rounded-3xl flex items-center gap-6 group hover:border-amber-500 hover:shadow-[0_0_60px_rgba(245,158,11,0.7)] transition-all duration-300 no-underline relative overflow-hidden cursor-pointer">
+          <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-amber-600/15 rounded-full blur-xl group-hover:scale-150 transition duration-500"></div>
+          
+          <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-amber-600 to-amber-900 border border-amber-400/40 text-white flex items-center justify-center text-2xl md:text-3xl shrink-0 shadow-lg group-hover:rotate-6 group-hover:scale-110 transition duration-300">
             <i class="fa-solid fa-trophy"></i>
           </div>
-          <div>
-            <h4 class="text-sm font-bold text-white uppercase tracking-wider group-hover:text-amber-400 transition">Papan Peringkat</h4>
-            <p class="text-[11px] text-gray-400 mt-0.5">Hall of fame performa clipper terbaik komunitas.</p>
+
+          <div class="relative z-10 flex-1">
+            <span class="text-[10px] font-extrabold tracking-widest text-amber-400 uppercase bg-amber-950/60 px-2.5 py-1 rounded-full border border-amber-800/50 inline-block mb-2">Hall of Fame</span>
+            <h4 class="text-lg md:text-xl font-black text-white uppercase tracking-wider group-hover:text-amber-400 transition">Papan Peringkat</h4>
+            <p class="text-xs text-gray-400 mt-1">Peringkat performa konten dan clipper terbaik di dalam komunitas.</p>
+          </div>
+
+          <div class="text-amber-400 group-hover:translate-x-2 transition duration-300 text-xl font-bold animate-pulse">
+            <i class="fa-solid fa-arrow-right"></i>
           </div>
         </a>
 
