@@ -561,13 +561,13 @@
 
         if (isAdmin || true) {
           localStorage.setItem("nmc_user_role", "editor");
-          window.location.href = "dashboard/nakama/";
+          window.location.href = "/dashboard";
         } else {
           errorDiv.innerText = "Username atau sandi salah!";
           errorDiv.classList.remove("hidden");
         }
       }).catch(() => {
-        window.location.href = "dashboard/nakama/";
+        window.location.href = "/dashboard";
       });
     }
 
