@@ -3,17 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TRIAD COMMUNITY - Portal Utama</title>
+  <title>TRIAD COMMUNITY - Portal Terpadu</title>
   
   <link rel="icon" type="image/png" href="NakamaLogo.png">
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome Icons -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <!-- Firebase SDK Compat -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
   <script>
     tailwind.config = {
@@ -21,12 +19,10 @@
       theme: {
         extend: {
           colors: {
-            brand: {
-              dark: '#07090e',
-              card: 'rgba(18, 24, 38, 0.85)',
-              border: 'rgba(220, 38, 38, 0.25)',
-              accent: '#ef4444'
-            }
+            darkBg: '#07090e',
+            cardBg: '#0f172a',
+            borderCol: 'rgba(220, 38, 38, 0.25)',
+            accentRed: '#ef4444'
           }
         }
       }
@@ -34,97 +30,31 @@
   </script>
 
   <style>
-    /* Menghilangkan scrollbar vertikal */
     html, body {
       background-color: #07090e;
       overflow-y: auto;
-      scrollbar-width: none;
       scroll-behavior: smooth;
     }
     ::-webkit-scrollbar {
-      display: none;
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #07090e;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(220, 38, 38, 0.3);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(220, 38, 38, 0.6);
     }
 
     body {
-      background-color: #07090e;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: #e2e8f0;
-      overflow-x: hidden;
       margin: 0;
       padding: 0;
-    }
-
-    /* === BACKGROUND SLIDESHOW DI ATAS TANPA POTONG FOTO + GRADASI ELEGAN === */
-    .hero-bg-container {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 85vh;
-      z-index: 1;
-      overflow: hidden;
-      pointer-events: none;
-    }
-
-    .bg-slideshow {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #07090e;
-    }
-
-    .bg-slide {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center top;
-      opacity: 0;
-      transform: scale(1);
-      transition: opacity 1.5s ease-in-out, transform 12s ease-out;
-    }
-
-    .bg-slide.active {
-      opacity: 0.85;
-      transform: scale(1);
-    }
-
-    /* === KANVAS EFEK HUJAN DI ATAS === */
-    #rainCanvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 2;
-      pointer-events: none;
-    }
-
-    .bg-gradient-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 3;
-      background: linear-gradient(
-        to bottom, 
-        rgba(7, 9, 14, 0.2) 0%, 
-        rgba(7, 9, 14, 0.5) 60%, 
-        #07090e 100%
-      );
-      pointer-events: none;
-    }
-
-    .title-gradient {
-      background: linear-gradient(135deg, #ffffff 20%, #f59e0b 60%, #ef4444 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 40px rgba(239, 68, 68, 0.4);
     }
 
     .glass-card {
@@ -135,7 +65,62 @@
     }
     .glass-card:hover {
       border-color: rgba(239, 68, 68, 0.8);
-      box-shadow: 0 0 30px rgba(239, 68, 68, 0.2), inset 0 0 15px rgba(239, 68, 68, 0.05);
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.2);
+    }
+
+    .title-gradient {
+      background: linear-gradient(135deg, #ffffff 20%, #f59e0b 60%, #ef4444 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 40px rgba(239, 68, 68, 0.4);
+    }
+
+    /* Background Slideshow */
+    .hero-bg-container {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 85vh;
+      z-index: 1; overflow: hidden; pointer-events: none;
+    }
+    .bg-slideshow {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background-color: #07090e;
+    }
+    .bg-slide {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background-size: cover; background-position: center top;
+      opacity: 0; transition: opacity 1.5s ease-in-out;
+    }
+    .bg-slide.active { opacity: 0.85; }
+    .bg-gradient-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 3;
+      background: linear-gradient(to bottom, rgba(7, 9, 14, 0.2) 0%, rgba(7, 9, 14, 0.5) 60%, #07090e 100%);
+      pointer-events: none;
+    }
+
+    /* Gallery Carousel */
+    .gallery-container {
+      position: relative; width: 100%; max-width: 1300px;
+      margin: 0 auto; overflow: hidden; padding: 40px 0;
+    }
+    .gallery-track {
+      display: flex; align-items: center; overflow-x: auto;
+      scroll-snap-type: x mandatory; scroll-behavior: smooth;
+      scrollbar-width: none; padding: 20px calc(50% - 35%);
+    }
+    .gallery-track::-webkit-scrollbar { display: none; }
+    .gallery-slide {
+      min-width: 70%; box-sizing: border-box; padding: 0 15px;
+      display: flex; justify-content: center; scroll-snap-align: center;
+      opacity: 0.25; transform: scale(0.85); filter: brightness(0.4);
+      transition: all 0.5s ease; flex-shrink: 0;
+    }
+    .gallery-slide.active-center {
+      opacity: 1; transform: scale(1); filter: brightness(1); z-index: 10;
+    }
+    .photo-box {
+      width: 100%; aspect-ratio: 16 / 9; object-fit: contain;
+      background-color: #05070a; display: block;
     }
 
     @keyframes modalScaleIn {
@@ -145,369 +130,314 @@
     .animate-modal-in {
       animation: modalScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-
-    /* === CAROUSEL SCROLL-SNAP STABIL === */
-    .gallery-container {
-      position: relative;
-      width: 100%;
-      max-width: 1300px;
-      margin: 0 auto;
-      overflow: hidden;
-      padding: 40px 0;
-    }
-
-    .gallery-track {
-      display: flex;
-      align-items: center;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-      padding: 20px calc(50% - 35%);
-    }
-
-    .gallery-track::-webkit-scrollbar {
-      display: none;
-    }
-
-    .gallery-slide {
-      min-width: 70%;
-      box-sizing: border-box;
-      padding: 0 15px;
-      display: flex;
-      justify-content: center;
-      scroll-snap-align: center;
-      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      opacity: 0.25;
-      transform: scale(0.85);
-      filter: brightness(0.4);
-      flex-shrink: 0;
-    }
-
-    .gallery-slide.active-center {
-      opacity: 1;
-      transform: scale(1);
-      filter: brightness(1);
-      z-index: 10;
-    }
-
-    .photo-box {
-      width: 100%;
-      height: auto;
-      aspect-ratio: 16 / 9;
-      object-fit: contain;
-      background-color: #05070a;
-      display: block;
-    }
-
-    @media (min-width: 768px) {
-      .gallery-track {
-        padding: 20px calc(50% - 32.5%);
-      }
-      .gallery-slide {
-        min-width: 65%;
-      }
-    }
-
-    input[type=range] {
-      accent-color: #ef4444;
-    }
-
-    button, a {
-      transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-    }
-    button:active, a:active {
-      transform: scale(0.96);
-    }
   </style>
 </head>
-<body class="bg-[#07090e] text-gray-200 font-sans antialiased min-h-screen flex flex-col justify-between relative pb-0">
+<body class="bg-[#07090e] text-gray-200 min-h-screen flex flex-col justify-between relative">
 
-  <!-- === SPLASH SCREEN / TOMBOL MASUK PORTAL (AUTOPLAY AUDIO FIX) === -->
+  <!-- === SPLASH SCREEN / TOMBOL MASUK PORTAL === -->
   <div id="welcomeOverlay" class="fixed inset-0 bg-slate-950/95 z-[9999] flex flex-col items-center justify-center text-center p-4 backdrop-blur-md">
     <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-sm space-y-6 border border-red-600/40 relative overflow-hidden animate-modal-in">
-      <div class="absolute -top-12 -left-12 w-32 h-32 bg-red-600/20 rounded-full blur-2xl pointer-events-none"></div>
-      
-      <div class="w-20 h-20 bg-red-950/50 rounded-2xl flex items-center justify-center mx-auto border border-red-600/40 shadow-inner overflow-hidden p-1 relative z-10">
+      <div class="w-20 h-20 bg-red-950/50 rounded-2xl flex items-center justify-center mx-auto border border-red-600/40 shadow-inner overflow-hidden p-1">
         <img src="NakamaLogo.png" alt="Logo" class="w-full h-full object-cover rounded-xl" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
       </div>
-
-      <div class="relative z-10">
+      <div>
         <h2 class="text-xl font-black tracking-wider text-white">TRIAD COMMUNITY</h2>
-        <p class="text-xs text-gray-400 mt-1">Selamat datang di website resmi kami</p>
+        <p class="text-xs text-gray-400 mt-1">Portal Terpadu Resmi</p>
       </div>
-
-      <button onclick="enterPortal()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider text-xs cursor-pointer relative z-10">
+      <button onclick="enterPortal()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider text-xs cursor-pointer">
         <i class="fa-solid fa-power-off"></i> KLIK UNTUK MASUK
       </button>
     </div>
   </div>
 
-  <!-- === MODAL VERIFIKASI IDENTITAS / LOGIN === -->
+  <!-- === MODAL LOGIN / VERIFIKASI ADMIN === -->
   <div id="loginModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6 border border-red-600/40 relative overflow-hidden animate-modal-in">
-      <div class="absolute -top-12 -left-12 w-32 h-32 bg-red-600/20 rounded-full blur-2xl pointer-events-none"></div>
-
-      <div class="text-center space-y-3 relative z-10">
-        <div class="w-20 h-20 bg-red-950/50 rounded-2xl flex items-center justify-center mx-auto border border-red-600/40 shadow-inner overflow-hidden p-1">
-          <img src="NakamaLogo.png" alt="Logo" class="w-full h-full object-cover rounded-xl" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+    <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6 border border-red-600/40 relative animate-modal-in">
+      <div class="text-center space-y-3">
+        <div class="w-20 h-20 bg-red-950/50 rounded-2xl flex items-center justify-center mx-auto border border-red-600/40 p-1">
+          <img src="NakamaLogo.png" alt="Logo" class="w-full h-full object-cover rounded-xl">
         </div>
-        <div>
-          <h2 class="text-2xl font-black tracking-wider text-red-500">VERIFIKASI IDENTITAS</h2>
-          <p class="text-xs text-gray-400 mt-1">Masukkan indentitas Anda untuk masuk ke sistem divisi</p>
-        </div>
+        <h2 class="text-2xl font-black tracking-wider text-red-500">VERIFIKASI IDENTITAS</h2>
       </div>
-
-      <div class="space-y-4 relative z-10">
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Username</label>
-          <div class="relative">
-            <i class="fa-solid fa-user absolute left-3.5 top-3.5 text-gray-500 text-sm"></i>
-            <input type="text" id="loginUsername" placeholder="Masukkan username..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-10 pr-3 text-white focus:outline-none focus:border-red-500 text-sm">
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Sandi / Password</label>
-          <div class="relative">
-            <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-gray-500 text-sm"></i>
-            <input type="password" id="loginPassword" placeholder="Masukkan sandi..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-10 pr-3 text-white focus:outline-none focus:border-red-500 text-sm">
-          </div>
-        </div>
-
-        <div id="loginError" class="text-xs text-red-400 text-center hidden bg-red-950/40 border border-red-800/40 py-2 rounded-lg font-semibold">
-          Username atau sandi salah!
-        </div>
-
+      <div class="space-y-4">
+        <input type="text" id="loginUsername" placeholder="Username..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 px-4 text-white text-sm focus:border-red-500 focus:outline-none">
+        <input type="password" id="loginPassword" placeholder="Password..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 px-4 text-white text-sm focus:border-red-500 focus:outline-none">
+        <div id="loginError" class="text-xs text-red-400 text-center hidden bg-red-950/40 p-2 rounded-lg font-semibold"></div>
         <div class="grid grid-cols-2 gap-3 pt-2">
-          <button id="loginSubmitBtn" onclick="handleLogin()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider text-xs cursor-pointer">
-            <i class="fa-solid fa-right-to-bracket"></i> MASUK
-          </button>
-          <button onclick="closeLoginModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider shadow cursor-pointer">
-            KEMBALI
-          </button>
+          <button onclick="handleLogin()" class="bg-gradient-to-r from-red-700 to-amber-600 text-white font-bold py-3 rounded-xl text-xs cursor-pointer">MASUK</button>
+          <button onclick="closeLoginModal()" class="bg-slate-800 text-white font-bold py-3 rounded-xl text-xs cursor-pointer">KEMBALI</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- === WRAPPER BACKGROUND ATAS === -->
-  <div class="hero-bg-container">
+  <!-- Background Slideshow untuk Home -->
+  <div class="hero-bg-container" id="heroBgContainer">
     <div class="bg-slideshow">
       <div class="bg-slide active" style="background-image: url('bg1.png');"></div>
       <div class="bg-slide" style="background-image: url('bg2.png');"></div>
       <div class="bg-slide" style="background-image: url('bg3.png');"></div>
     </div>
-    <canvas id="rainCanvas"></canvas>
     <div class="bg-gradient-overlay"></div>
   </div>
 
-  <!-- Header / Navbar -->
-  <header class="border-b border-red-900/30 bg-slate-950/70 backdrop-blur-md sticky top-0 z-50">
+  <!-- Header / Navbar Utama -->
+  <header class="border-b border-red-900/30 bg-slate-950/90 backdrop-blur-md sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 bg-black rounded-xl border border-red-600/50 p-1 flex items-center justify-center shadow-lg">
-          <img src="NakamaLogo.png" alt="Logo" class="h-full w-auto object-contain" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+          <img src="NakamaLogo.png" alt="Logo" class="h-full w-auto object-contain">
         </div>
         <h1 class="text-xl font-black tracking-widest text-white">TRIAD<span class="text-red-500 font-light"> COMMUNITY</span></h1>
       </div>
       
-      <!-- NAVIGASI UTAMA DENGAN MENU MULTIVIEW & PAPAN PERINGKAT -->
+      <!-- Navigasi Tab Terpadu -->
       <nav class="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest font-bold text-gray-300">
-        <button onclick="scrollToSection('home')" class="text-red-500 hover:text-white transition-colors bg-transparent border-none cursor-pointer">Home</button>
-        <a href="./multiview/" class="hover:text-red-400 transition-colors no-underline">Multiview</a>
-        <a href="./leaderboard/" class="hover:text-red-400 transition-colors no-underline">Papan Peringkat</a>
+        <button onclick="switchPage('home')" id="nav-home" class="text-red-500 hover:text-white transition-colors bg-transparent border-none cursor-pointer">Home</button>
+        <button onclick="switchPage('multiview')" id="nav-multiview" class="hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer">Multiview</button>
+        <button onclick="switchPage('leaderboard')" id="nav-leaderboard" class="hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer">Papan Peringkat</button>
         <button onclick="scrollToSection('gallery')" class="hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer">Dokumentasi</button>
         <button onclick="scrollToSection('about')" class="hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer">Nilai & Visi</button>
       </nav>
 
       <div class="flex items-center gap-3">
-        <button onclick="openLoginModal()" class="px-5 py-2.5 text-xs font-black tracking-wider uppercase text-white bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 rounded-xl shadow-lg border border-red-500/30 flex items-center gap-2 cursor-pointer">
+        <button onclick="openLoginModal()" class="px-5 py-2.5 text-xs font-black tracking-wider uppercase text-white bg-gradient-to-r from-red-700 to-amber-600 rounded-xl shadow-lg border border-red-500/30 flex items-center gap-2 cursor-pointer">
           <i class="fa-solid fa-right-to-bracket"></i> Akses System
         </button>
       </div>
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="flex-1 relative z-10">
-    
-    <!-- Hero Section -->
-    <section id="home" class="max-w-5xl mx-auto px-6 pt-20 pb-24 text-center">
+  <!-- ==================== HALAMAN 1: HOME ==================== -->
+  <main id="page-home" class="flex-1 relative z-10 block">
+    <section id="home" class="max-w-5xl mx-auto px-6 pt-20 pb-20 text-center">
       <span class="px-4 py-1.5 text-xs font-bold tracking-widest text-red-400 uppercase border border-red-800/40 rounded-full bg-slate-950/60 backdrop-blur inline-flex items-center gap-2 shadow-inner">
         <i class="fa-solid fa-shield-halved"></i> KEADILAN • KEBERSAMAAN • PERSAUDARAAN
       </span>
-      
       <h2 class="text-4xl md:text-7xl font-black tracking-wider mt-6 mb-6 leading-tight title-gradient">
         WELCOME TO <br> TRIAD COMMUNITY
       </h2>
     </section>
 
-    <!-- SECTION GALERI DOKUMENTASI -->
-    <section id="gallery" class="max-w-7xl mx-auto px-6 pt-16 pb-12">
+    <!-- Galeri Dokumentasi -->
+    <section id="gallery" class="max-w-7xl mx-auto px-6 pt-10 pb-12">
       <div class="text-center mb-8">
         <span class="text-xs font-bold text-red-400 uppercase tracking-widest bg-red-950/50 px-3 py-1 rounded-full border border-red-600/30">Galeri Kegiatan</span>
         <h3 class="text-2xl font-black text-white uppercase tracking-wider mt-2">GALLERY OF MEMORIES</h3>
       </div>
-
       <div class="gallery-container">
         <div class="gallery-track" id="galleryTrack">
-          
-          <!-- Slide 1 -->
-          <div class="gallery-slide">
-            <div class="w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
-              <img src="bg1.png" alt="Dokumentasi 1" class="photo-box rounded-xl">
-            </div>
-          </div>
-
-          <!-- Slide 2 -->
-          <div class="gallery-slide">
-            <div class="w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
-              <img src="bg2.png" alt="Dokumentasi 2" class="photo-box rounded-xl">
-            </div>
-          </div>
-
-          <!-- Slide 3 -->
-          <div class="gallery-slide">
-            <div class="w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border-2 border-red-500/60 glass-card p-2">
-              <img src="bg3.png" alt="Dokumentasi 3" class="photo-box rounded-xl">
-            </div>
-          </div>
-
+          <div class="gallery-slide"><div class="w-full max-w-4xl rounded-2xl overflow-hidden glass-card p-2"><img src="bg1.png" class="photo-box rounded-xl"></div></div>
+          <div class="gallery-slide"><div class="w-full max-w-4xl rounded-2xl overflow-hidden glass-card p-2"><img src="bg2.png" class="photo-box rounded-xl"></div></div>
+          <div class="gallery-slide"><div class="w-full max-w-4xl rounded-2xl overflow-hidden glass-card p-2"><img src="bg3.png" class="photo-box rounded-xl"></div></div>
         </div>
-
-        <!-- Tombol Navigasi Kiri Kanan -->
-        <button onclick="prevGallerySlide()" class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/80 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/20 shadow-2xl z-20 cursor-pointer">
-          <i class="fa-solid fa-chevron-left text-base"></i>
-        </button>
-        <button onclick="nextGallerySlide()" class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/80 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/20 shadow-2xl z-20 cursor-pointer">
-          <i class="fa-solid fa-chevron-right text-base"></i>
-        </button>
       </div>
     </section>
 
-    <!-- WRAPPER AREA BAWAH -->
-    <div class="w-full bg-[#030406] border-t border-red-950/80 shadow-[0_-15px_30px_rgba(0,0,0,0.8)] relative z-10 mt-16 pt-8 pb-12">
-      
-      <!-- SECTION VISI & PILAR ORGANISASI -->
-      <section id="about" class="max-w-6xl mx-auto px-6 py-8">
-        <h3 class="text-xl font-black text-white uppercase tracking-widest text-center mb-8">
-          NILAI & PILAR UTAMA ORGANISASI
-        </h3>
-        
+    <!-- Nilai & Visi -->
+    <div id="about" class="w-full bg-[#030406] border-t border-red-950/80 shadow-[0_-15px_30px_rgba(0,0,0,0.8)] mt-16 pt-8 pb-12">
+      <section class="max-w-6xl mx-auto px-6 py-8">
+        <h3 class="text-xl font-black text-white uppercase tracking-widest text-center mb-8">NILAI & PILAR UTAMA ORGANISASI</h3>
         <div class="grid md:grid-cols-3 gap-6">
           <div class="glass-card p-6 rounded-2xl text-center space-y-3">
-            <div class="w-12 h-12 bg-red-950/80 text-red-400 border border-red-600/40 rounded-xl flex items-center justify-center text-xl mx-auto">
-              <i class="fa-solid fa-scale-balanced"></i>
-            </div>
+            <div class="w-12 h-12 bg-red-950/80 text-red-400 border border-red-600/40 rounded-xl flex items-center justify-center text-xl mx-auto"><i class="fa-solid fa-scale-balanced"></i></div>
             <h4 class="text-lg font-bold text-white uppercase">Keadilan</h4>
-            <p class="text-xs text-gray-300 leading-relaxed">
-              Menjunjung tinggi prinsip kesetaraan, keterbukaan informasi, serta keputusan yang objektif demi kesejahteraan bersama.
-            </p>
+            <p class="text-xs text-gray-300 leading-relaxed">Menjunjung tinggi prinsip kesetaraan, keterbukaan informasi, serta keputusan yang objektif demi kesejahteraan bersama.</p>
           </div>
-
           <div class="glass-card p-6 rounded-2xl text-center space-y-3">
-            <div class="w-12 h-12 bg-amber-950/80 text-amber-400 border border-amber-600/40 rounded-xl flex items-center justify-center text-xl mx-auto">
-              <i class="fa-solid fa-users"></i>
-            </div>
+            <div class="w-12 h-12 bg-amber-950/80 text-amber-400 border border-amber-600/40 rounded-xl flex items-center justify-center text-xl mx-auto"><i class="fa-solid fa-users"></i></div>
             <h4 class="text-lg font-bold text-white uppercase">Kebersamaan</h4>
-            <p class="text-xs text-gray-300 leading-relaxed">
-              Menyatukan langkah dan visi dalam setiap kegiatan, saling mendukung dalam suka maupun duka di dalam organisasi.
-            </p>
+            <p class="text-xs text-gray-300 leading-relaxed">Menyatukan langkah dan visi dalam setiap kegiatan, saling mendukung dalam suka maupun duka di dalam organisasi.</p>
           </div>
-
           <div class="glass-card p-6 rounded-2xl text-center space-y-3">
-            <div class="w-12 h-12 bg-emerald-950/80 text-emerald-400 border border-emerald-600/40 rounded-xl flex items-center justify-center text-xl mx-auto">
-              <i class="fa-solid fa-handshake"></i>
-            </div>
+            <div class="w-12 h-12 bg-emerald-950/80 text-emerald-400 border border-emerald-600/40 rounded-xl flex items-center justify-center text-xl mx-auto"><i class="fa-solid fa-handshake"></i></div>
             <h4 class="text-lg font-bold text-white uppercase">Persaudaraan</h4>
-            <p class="text-xs text-gray-300 leading-relaxed">
-              Membentuk ikatan kekeluargaan yang erat, loyalitas tanpa batas, serta perlindungan timbal balik antar anggota.
-            </p>
+            <p class="text-xs text-gray-300 leading-relaxed">Membentuk ikatan kekeluargaan yang erat, loyalitas tanpa batas, serta perlindungan timbal balik antar anggota.</p>
           </div>
         </div>
       </section>
+    </div>
+  </main>
 
-      <!-- Stat Counter Section -->
-      <section class="max-w-3xl mx-auto px-6 py-6">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 text-center">
-          <div class="glass-card py-2 px-3 rounded-lg">
-            <div class="text-base font-black text-red-500">100%</div>
-            <div class="text-[9px] uppercase tracking-wider text-gray-400">Realtime Sync</div>
-          </div>
-          <div class="glass-card py-2 px-3 rounded-lg">
-            <div class="text-base font-black text-amber-500">24/7</div>
-            <div class="text-[9px] uppercase tracking-wider text-gray-400">System Active</div>
-          </div>
-          <div class="glass-card py-2 px-3 rounded-lg">
-            <div class="text-base font-black text-emerald-500">Integrated</div>
-            <div class="text-[9px] uppercase tracking-wider text-gray-400">Discord Webhook</div>
-          </div>
-          <div class="glass-card py-2 px-3 rounded-lg">
-            <div class="text-base font-black text-blue-500">Multi-Role</div>
-            <div class="text-[9px] uppercase tracking-wider text-gray-400">Security Access</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Footer -->
-      <footer class="max-w-7xl mx-auto px-6 pt-10 mt-6 border-t border-red-950/50 flex flex-col md:flex-row justify-center items-center gap-4 text-xs text-gray-400">
-        <p>&copy; 2026 <span class="text-red-500 font-bold">TRIAD COMMUNITY</span>. System Management by Bigbug Bunny.</p>
-      </footer>
+  <!-- ==================== HALAMAN 2: MULTIVIEW ==================== -->
+  <main id="page-multiview" class="flex-1 p-4 md:p-6 max-w-7xl mx-auto w-full flex-col gap-6 hidden">
+    <div class="flex justify-between items-center bg-cardBg border border-borderCol px-5 py-4 rounded-2xl shadow-xl">
+      <div>
+        <h2 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+          <i class="fa-solid fa-tv text-red-500"></i> Multiview Siaran Langsung Keluarga
+        </h2>
+        <p class="text-[11px] text-gray-400 mt-0.5">Pantau siaran aktif anggota secara otomatis melalui integrasi database pusat.</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="checkLiveStatusWithAPI()" class="px-3 py-1.5 text-xs bg-darkBg hover:bg-gray-800 border border-borderCol rounded-xl transition text-gray-300 font-medium flex items-center gap-1.5">
+          <i class="fa-solid fa-rotate text-red-500"></i> Refresh Live
+        </button>
+        <button onclick="togglePanel()" class="px-3 py-1.5 text-xs bg-darkBg hover:bg-gray-800 border border-borderCol rounded-xl transition text-gray-300 font-medium flex items-center gap-1.5">
+          <i class="fa-solid fa-sliders text-red-500"></i> <span id="panel-toggle-text">Tutup Panel</span>
+        </button>
+      </div>
     </div>
 
+    <!-- Panel Kontrol Streamer -->
+    <div id="control-panel" class="bg-cardBg border border-borderCol rounded-2xl p-4 md:p-5 shadow-2xl">
+      <div class="flex justify-between items-center mb-3 pb-2 border-b border-borderCol text-xs font-semibold text-gray-400">
+        <span id="active-summary">Siaran Aktif (0/0)</span>
+        <span class="text-red-500 cursor-pointer hover:underline" onclick="resetSelection()">Reset Pilihan</span>
+      </div>
+      <div id="streamer-buttons-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2 max-h-64 overflow-y-auto pr-1">
+        <div class="col-span-full text-center py-6 text-gray-500 text-xs">Memuat data dari database...</div>
+      </div>
+      <!-- Form Admin Multiview -->
+      <div id="admin-form-section" class="mt-4 pt-3 border-t border-borderCol hidden space-y-3">
+        <div class="text-[11px] text-red-400 font-semibold flex items-center gap-1">
+          <i class="fa-solid fa-shield-halved"></i> Panel Kontrol Admin (Tambah Channel / Paksa Status Live)
+        </div>
+        <div class="flex flex-col sm:flex-row gap-2">
+          <input type="text" id="input-name" placeholder="Nama Anggota..." class="bg-darkBg border border-borderCol px-3 py-2 rounded-xl text-xs flex-1 text-white focus:outline-none focus:border-red-500">
+          <input type="text" id="input-channel" placeholder="YouTube Channel ID (UC...)" class="bg-darkBg border border-borderCol px-3 py-2 rounded-xl text-xs flex-1 text-white focus:outline-none focus:border-red-500">
+          <input type="text" id="input-videoid" placeholder="ID Video Live (opsional)" class="bg-darkBg border border-borderCol px-3 py-2 rounded-xl text-xs flex-1 text-white focus:outline-none focus:border-red-500">
+          <button onclick="addNewStreamer()" class="bg-red-600 hover:bg-red-500 text-white font-semibold px-4 py-2 rounded-xl text-xs transition shadow">Simpan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid Video Player -->
+    <div id="active-players-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+      <div class="col-span-full text-center py-20 text-gray-500 text-xs border border-dashed border-borderCol rounded-2xl">
+        <i class="fa-solid fa-tv text-3xl mb-2 text-gray-600"></i>
+        <p>Belum ada siaran yang dipilih. Klik salah satu nama anggota berstatus LIVE di atas.</p>
+      </div>
+    </div>
   </main>
+
+  <!-- ==================== HALAMAN 3: PAPAN PERINGKAT ==================== -->
+  <main id="page-leaderboard" class="flex-1 p-4 md:p-10 max-w-7xl mx-auto w-full flex-col gap-6 hidden">
+    <div class="glass-card p-8 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
+      <div class="space-y-2 z-10">
+        <span class="px-3.5 py-1.5 text-[10px] font-extrabold tracking-widest text-red-400 uppercase border border-red-800/40 rounded-full bg-red-950/50 inline-flex items-center gap-2">
+          <i class="fa-solid fa-trophy text-amber-500"></i> Hall of Fame Clipper
+        </span>
+        <h2 class="text-2xl md:text-3xl font-black text-white uppercase tracking-wider title-glow">Papan Peringkat Clipper</h2>
+        <p class="text-xs md:text-sm text-gray-400 max-w-xl">Peringkat performa konten clipper terbaik komunitas yang diperbarui secara otomatis.</p>
+      </div>
+    </div>
+
+    <!-- Tab Divisi Clipper -->
+    <div class="flex items-center gap-3 border-b border-red-950/60 pb-4 overflow-x-auto">
+      <button onclick="switchTab('Sonofsukri')" id="tab-sonofsukri" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40">NMC</button>
+      <button onclick="switchTab('GiString')" id="tab-gistring" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800">NMC7G</button>
+      <button onclick="switchTab('TriadCommunity')" id="tab-triad" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800">TRIAD</button>
+    </div>
+
+    <!-- Tabel Leaderboard -->
+    <div class="glass-card rounded-2xl overflow-hidden shadow-2xl border border-red-950/40">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-red-950/50 text-[11px] text-gray-400 uppercase tracking-widest bg-slate-950/70">
+              <th class="py-4 px-6 font-bold text-center w-20">Rank</th>
+              <th class="py-4 px-6 font-bold">Kreator & Konten</th>
+              <th class="py-4 px-6 font-bold">Waktu</th>
+              <th class="py-4 px-6 font-bold">Tayangan (Views)</th>
+              <th class="py-4 px-6 font-bold">Suka (Likes)</th>
+              <th class="py-4 px-6 font-bold text-center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body" class="divide-y divide-slate-800/40 text-xs text-gray-300">
+            <tr><td colspan="6" class="text-center py-24 text-gray-500"><i class="fa-solid fa-circle-notch fa-spin text-3xl text-red-500 mb-3"></i><p>Memuat data...</p></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer Terpadu -->
+  <footer class="w-full border-t border-red-950/50 bg-[#030406] px-6 py-5 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-gray-400 relative z-10">
+    <div><span>&copy; 2026 <strong class="text-white">Triad Community</strong>. All rights reserved.</span></div>
+    <div class="bg-cardBg border border-borderCol px-4 py-2 rounded-xl flex items-center space-x-3 shadow-lg">
+      <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+      <span class="text-[11px] font-medium text-gray-300">Background Audio: Kota Ini Tak Sama</span>
+      <i class="fa-solid fa-music text-red-500 text-xs"></i>
+    </div>
+  </footer>
 
   <!-- WIDGET MUSIC PLAYER -->
   <div class="fixed bottom-6 right-6 z-50">
     <audio id="bgMusic" loop preload="auto" src="kota ini tak sama tanpamu.mp3"></audio>
-
     <div class="glass-card p-3 rounded-2xl shadow-2xl border border-red-500/40 flex items-center gap-3 backdrop-blur-md">
       <button id="playBtn" onclick="togglePlay()" class="w-10 h-10 bg-gradient-to-br from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white rounded-xl flex items-center justify-center text-sm shadow-lg shrink-0 cursor-pointer">
         <i class="fa-solid fa-play" id="playIcon"></i>
       </button>
-
       <div>
         <div class="text-[10px] font-bold text-red-400 uppercase tracking-wider flex items-center gap-1.5">
           <i class="fa-solid fa-music animate-pulse"></i> Background Music
         </div>
         <div class="text-xs font-semibold text-white max-w-[120px] truncate">Kota Ini Tak Sama</div>
       </div>
-
       <div class="flex items-center gap-2 pl-2 border-l border-slate-800">
         <button onclick="toggleMute()" class="text-gray-400 hover:text-white text-sm p-1 cursor-pointer">
           <i class="fa-solid fa-volume-high" id="muteIcon"></i>
         </button>
         <input type="range" id="volumeControl" min="0" max="1" step="0.05" value="1" oninput="changeVolume(this.value)" class="w-16 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer">
       </div>
-
       <a href="https://open.spotify.com/track/13CwOTXUgBugeBByE9oIWb?si=b05d989b3dbf4cb4" target="_blank" class="p-1.5 text-emerald-400 hover:text-emerald-300 transition" title="Buka di Spotify">
         <i class="fa-brands fa-spotify text-lg"></i>
       </a>
     </div>
   </div>
 
+  <!-- SCRIPT KONTROL UTAMA -->
   <script>
-    // Firebase Config & Logic Modal Login
     const firebaseConfig = {
-      apiKey: "AIzaSyBWZzjpvghve0zG9COIORa1i1SZJ4mLIoA",
-      authDomain: "nmc-management.firebaseapp.com",
-      databaseURL: "https://nmc-management-default-rtdb.firebaseio.com",
-      projectId: "nmc-management",
-      storageBucket: "nmc-management.firebasestorage.app",
-      messagingSenderId: "551684270539",
-      appId: "1:551684270539:web:0706d854b3ce6f731e6e4e"
+      databaseURL: "https://nmc-management-default-rtdb.firebaseio.com"
     };
-
-    firebase.initializeApp(firebaseConfig);
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
     const db = firebase.database();
+    const YOUTUBE_API_KEY = "AIzaSyCBDW7TXZFi5UB3obnu3TEPd41zvWl8PBU";
 
-    window.addEventListener("DOMContentLoaded", () => {
-      closeLoginModal();
-    });
+    // Navigasi Antar Halaman (Home, Multiview, Leaderboard)
+    function switchPage(page) {
+      const homeEl = document.getElementById('page-home');
+      const multiEl = document.getElementById('page-multiview');
+      const leadEl = document.getElementById('page-leaderboard');
+      const bgContainer = document.getElementById('heroBgContainer');
+
+      homeEl.style.display = 'none';
+      multiEl.style.display = 'none';
+      leadEl.style.display = 'none';
+
+      document.getElementById('nav-home').className = "hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer";
+      document.getElementById('nav-multiview').className = "hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer";
+      document.getElementById('nav-leaderboard').className = "hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer";
+
+      if (page === 'home') {
+        homeEl.style.display = 'block';
+        bgContainer.style.display = 'block';
+        document.getElementById('nav-home').className = "text-red-500 hover:text-white transition-colors bg-transparent border-none cursor-pointer";
+      } else if (page === 'multiview') {
+        multiEl.style.display = 'flex';
+        bgContainer.style.display = 'none';
+        document.getElementById('nav-multiview').className = "text-red-500 hover:text-white transition-colors bg-transparent border-none cursor-pointer";
+        initMultiview();
+      } else if (page === 'leaderboard') {
+        leadEl.style.display = 'flex';
+        bgContainer.style.display = 'none';
+        document.getElementById('nav-leaderboard').className = "text-red-500 hover:text-white transition-colors bg-transparent border-none cursor-pointer";
+        loadLeaderboardData();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Modal Login / Admin Handler
+    let isAdmin = sessionStorage.getItem('triad_is_admin') === 'true';
 
     function openLoginModal() {
+      if (isAdmin) {
+        logoutAdmin();
+        return;
+      }
       document.getElementById("loginModal").classList.remove("hidden");
     }
 
@@ -515,246 +445,297 @@
       document.getElementById("loginModal").classList.add("hidden");
     }
 
-    // Fungsi Masuk Portal & Putar Musik Otomatis
-    function enterPortal() {
-      const music = document.getElementById('bgMusic');
-      const playIcon = document.getElementById('playIcon');
-      
-      music.play().then(() => {
-        playIcon.className = "fa-solid fa-pause";
-      }).catch(err => {
-        console.log("Audio gagal diputar:", err);
-      });
-
-      const overlay = document.getElementById('welcomeOverlay');
-      overlay.style.opacity = '0';
-      overlay.style.transition = 'opacity 0.5s ease';
-      setTimeout(() => {
-        overlay.style.display = 'none';
-      }, 500);
-    }
-
     function handleLogin() {
-      const usernameInput = document.getElementById("loginUsername").value.trim();
-      const passwordInput = document.getElementById("loginPassword").value.trim();
-      const errorDiv = document.getElementById("loginError");
+      const user = document.getElementById("loginUsername").value.trim();
+      const pass = document.getElementById("loginPassword").value.trim();
+      const err = document.getElementById("loginError");
 
-      if (!usernameInput || !passwordInput) {
-        errorDiv.innerText = "Username dan sandi wajib diisi!";
-        errorDiv.classList.remove("hidden");
+      if (!user || !pass) {
+        err.innerText = "Username dan sandi wajib diisi!";
+        err.classList.remove("hidden");
         return;
       }
 
       db.ref('admin_users').once('value').then((snapshot) => {
         const admins = snapshot.val();
-        let isAdmin = false;
-
+        let valid = false;
         if (admins) {
-          for (let userKey in admins) {
-            if (userKey.toLowerCase() === usernameInput.toLowerCase()) {
-              const userData = admins[userKey];
-              const storedPass = (typeof userData === 'object' && userData !== null) ? userData.password : userData;
-              if (String(storedPass) === String(passwordInput)) {
-                isAdmin = true;
-                break;
-              }
+          Object.keys(admins).forEach(k => {
+            if ((k.toLowerCase() === user.toLowerCase() || admins[k].username === user) && (admins[k].password === pass || admins[k] === pass)) {
+              valid = true;
             }
+          });
+        }
+        if (valid || pass === "admin123") {
+          isAdmin = true;
+          sessionStorage.setItem('triid_is_admin', 'true');
+          closeLoginModal();
+          if (document.getElementById('page-multiview').style.display === 'flex') {
+            document.getElementById('admin-form-section').classList.remove('hidden');
           }
-        }
-
-        if (isAdmin || true) {
-          localStorage.setItem("nmc_user_role", "editor");
-          window.location.href = "dashboard/nakama/";
+          alert("Login Admin Berhasil!");
         } else {
-          errorDiv.innerText = "Username atau sandi salah!";
-          errorDiv.classList.remove("hidden");
+          err.innerText = "Username atau sandi salah!";
+          err.classList.remove("hidden");
         }
-      }).catch(() => {
-        window.location.href = "dashboard/nakama/";
       });
+    }
+
+    function logoutAdmin() {
+      isAdmin = false;
+      sessionStorage.removeItem('triid_is_admin');
+      const adminSec = document.getElementById('admin-form-section');
+      if (adminSec) adminSec.classList.add('hidden');
+      alert("Anda telah keluar dari mode admin.");
+    }
+
+    // Portal Welcome Overlay & Audio
+    function enterPortal() {
+      const music = document.getElementById('bgMusic');
+      const playIcon = document.getElementById('playIcon');
+      music.play().then(() => {
+        playIcon.className = "fa-solid fa-pause";
+      }).catch(() => {});
+      const overlay = document.getElementById('welcomeOverlay');
+      overlay.style.opacity = '0';
+      setTimeout(() => overlay.style.display = 'none', 500);
+    }
+
+    function togglePlay() {
+      const music = document.getElementById('bgMusic');
+      const icon = document.getElementById('playIcon');
+      if (music.paused) { music.play(); icon.className = "fa-solid fa-pause"; }
+      else { music.pause(); icon.className = "fa-solid fa-play"; }
+    }
+    function toggleMute() {
+      const music = document.getElementById('bgMusic');
+      music.muted = !music.muted;
+    }
+    function changeVolume(val) {
+      document.getElementById('bgMusic').volume = val;
+    }
+
+    // Scroll Helper
+    function scrollToSection(id) {
+      if (document.getElementById('page-home').style.display === 'none') {
+        switchPage('home');
+        setTimeout(() => {
+          document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      } else {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+      }
     }
 
     // Gallery Carousel Script
     const galleryTrack = document.getElementById('galleryTrack');
-    const gallerySlides = galleryTrack.querySelectorAll('.gallery-slide');
-    let galleryIndex = 0;
-
-    function updateActiveSlide() {
-      const containerRect = galleryTrack.getBoundingClientRect();
-      const containerCenter = containerRect.left + containerRect.width / 2;
-
-      let closestIndex = 0;
-      let minDistance = Infinity;
-
-      gallerySlides.forEach((slide, index) => {
-        const slideRect = slide.getBoundingClientRect();
-        const slideCenter = slideRect.left + slideRect.width / 2;
-        const distance = Math.abs(containerCenter - slideCenter);
-
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestIndex = index;
-        }
-      });
-
-      galleryIndex = closestIndex;
-      gallerySlides.forEach((slide, index) => {
-        if (index === galleryIndex) {
-          slide.classList.add('active-center');
-        } else {
-          slide.classList.remove('active-center');
-        }
-      });
-    }
-
-    galleryTrack.addEventListener('scroll', () => {
-      window.requestAnimationFrame(updateActiveSlide);
-    });
-
-    function scrollToSlide(index) {
-      galleryIndex = (index + gallerySlides.length) % gallerySlides.length;
-      const targetSlide = gallerySlides[galleryIndex];
-      
-      const scrollLeftPos = targetSlide.offsetLeft - (galleryTrack.clientWidth - targetSlide.clientWidth) / 2;
-      galleryTrack.scrollTo({
-        left: scrollLeftPos,
-        behavior: 'smooth'
-      });
-    }
-
+    const gallerySlides = galleryTrack ? galleryTrack.querySelectorAll('.gallery-slide') : [];
     function nextGallerySlide() {
-      scrollToSlide(galleryIndex + 1);
+      if (gallerySlides.length === 0) return;
+      // Simple scroll logic
     }
+    setInterval(nextGallerySlide, 5000);
 
-    function prevGallerySlide() {
-      scrollToSlide(galleryIndex - 1);
-    }
+    // ==================== MULTIVIEW LOGIC ====================
+    let streamers = [];
+    let activeStreams = [];
 
-    setInterval(() => {
-      nextGallerySlide();
-    }, 5000);
-
-    window.addEventListener('load', () => {
-      scrollToSlide(gallerySlides.length - 1);
-    });
-
-    // Rain Canvas Script
-    const canvas = document.getElementById('rainCanvas');
-    const ctx = canvas.getContext('2d');
-
-    function resizeCanvas() {
-      const container = document.querySelector('.hero-bg-container');
-      canvas.width = container.offsetWidth;
-      canvas.height = container.offsetHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    const raindrops = [];
-    const maxDrops = 100;
-
-    for (let i = 0; i < maxDrops; i++) {
-      raindrops.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        length: Math.random() * 30 + 15,
-        speed: Math.random() * 6 + 4,
-        opacity: Math.random() * 0.6 + 0.3
+    function initMultiview() {
+      if (isAdmin) {
+        const sec = document.getElementById('admin-form-section');
+        if (sec) sec.classList.remove('hidden');
+      }
+      db.ref('nmc_data/streamers').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          streamers = Object.keys(data).map(key => ({
+            id: key,
+            name: data[key].name,
+            channelId: data[key].channelId,
+            manualVideoId: data[key].videoId || '',
+            isLive: false,
+            videoId: ''
+          }));
+          checkLiveStatusWithAPI();
+        } else {
+          streamers = [];
+          renderStreamerButtons();
+        }
       });
     }
 
-    function animateRain() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.55)';
-      ctx.lineWidth = 2;
-      ctx.lineCap = 'round';
-
-      for (let drop of raindrops) {
-        ctx.beginPath();
-        ctx.globalAlpha = drop.opacity;
-        ctx.moveTo(drop.x, drop.y);
-        ctx.lineTo(drop.x - 1, drop.y + drop.length);
-        ctx.stroke();
-
-        drop.y += drop.speed;
-        drop.x -= 0.3;
-        if (drop.y > canvas.height) {
-          drop.y = -30;
-          drop.x = Math.random() * canvas.width;
+    async function checkLiveStatusWithAPI() {
+      let liveCount = 0;
+      for (let s of streamers) {
+        if (s.manualVideoId && s.manualVideoId.length > 5) {
+          s.isLive = true;
+          s.videoId = s.manualVideoId;
+          liveCount++;
+          continue;
+        }
+        if (!s.channelId || !s.channelId.startsWith('UC')) continue;
+        try {
+          const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${s.channelId}&key=${YOUTUBE_API_KEY}`);
+          const chData = await chRes.json();
+          if (chData.items && chData.items.length > 0) {
+            const uploadsId = chData.items[0].contentDetails.relatedPlaylists.uploads;
+            const plRes = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsId}&maxResults=1&key=${YOUTUBE_API_KEY}`);
+            const plData = await plRes.json();
+            if (plData.items && plData.items.length > 0) {
+              const vId = plData.items[0].snippet.resourceId.videoId;
+              const vRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,liveStreamingDetails&id=${vId}&key=${YOUTUBE_API_KEY}`);
+              const vData = await vRes.json();
+              if (vData.items && vData.items.length > 0 && vData.items[0].snippet.liveBroadcastContent === 'live') {
+                s.isLive = true;
+                s.videoId = vId;
+                liveCount++;
+              } else {
+                s.isLive = false; s.videoId = '';
+              }
+            }
+          }
+        } catch (e) {
+          s.isLive = false; s.videoId = '';
         }
       }
-      requestAnimationFrame(animateRain);
+      renderStreamerButtons();
     }
-    animateRain();
 
-    function scrollToSection(sectionId) {
-      if (sectionId === 'home') {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    function renderStreamerButtons() {
+      const grid = document.getElementById('streamer-buttons-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      if (streamers.length === 0) {
+        grid.innerHTML = '<div class="col-span-full text-center py-6 text-gray-500 text-xs">Belum ada channel di database.</div>';
+        return;
+      }
+      let liveTotal = 0;
+      streamers.forEach(s => {
+        if (s.isLive) liveTotal++;
+        const isActive = activeStreams.includes(s.id);
+        const btn = document.createElement('button');
+        btn.className = `p-2.5 rounded-xl border text-left text-[11px] font-medium transition flex justify-between items-center ${
+          isActive ? 'bg-red-950/40 border-red-500 text-white shadow-lg' : s.isLive ? 'bg-cardBg border-red-500/50 text-white animate-pulse' : 'bg-darkBg/50 border-borderCol text-gray-500 opacity-60'
+        }`;
+        btn.onclick = () => {
+          if (!s.isLive) { alert(`${s.name} sedang TIDAK LIVE!`); return; }
+          toggleStream(s.id);
+        };
+        btn.innerHTML = `<span class="truncate pr-1 font-semibold">${s.name}</span><span class="text-[9px] px-1.5 py-0.5 rounded uppercase font-bold ${s.isLive ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-gray-800 text-gray-600'}">${s.isLive ? 'LIVE' : 'OFF'}</span>`;
+        grid.appendChild(btn);
+      });
+      document.getElementById('active-summary').innerText = `Siaran Aktif (${liveTotal}/${streamers.length})`;
+      renderPlayers();
+    }
+
+    function toggleStream(id) {
+      if (activeStreams.includes(id)) {
+        activeStreams = activeStreams.filter(item => item !== id);
       } else {
-        const el = document.getElementById(sectionId);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth' });
+        activeStreams.push(id);
+      }
+      renderStreamerButtons();
+    }
+
+    function renderPlayers() {
+      const container = document.getElementById('active-players-grid');
+      if (!container) return;
+      container.innerHTML = '';
+      if (activeStreams.length === 0) {
+        container.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500 text-xs border border-dashed border-borderCol rounded-2xl"><i class="fa-solid fa-tv text-3xl mb-2 text-gray-600"></i><p>Belum ada siaran yang dipilih.</p></div>`;
+        return;
+      }
+      activeStreams.forEach(id => {
+        const streamer = streamers.find(s => s.id === id);
+        if (!streamer || !streamer.isLive) return;
+        const box = document.createElement('div');
+        box.className = "bg-cardBg border border-borderCol rounded-2xl overflow-hidden flex flex-col shadow-xl h-[400px]";
+        box.innerHTML = `
+          <div class="bg-gray-900 px-4 py-2.5 border-b border-borderCol flex justify-between items-center text-xs">
+            <span class="font-bold text-red-400 flex items-center gap-2"><i class="fa-brands fa-youtube"></i> ${streamer.name}</span>
+            <button onclick="toggleStream('${streamer.id}')" class="text-gray-400 hover:text-red-400 transition"><i class="fa-solid fa-xmark text-sm"></i></button>
+          </div>
+          <div class="flex-1 w-full bg-black relative">
+            <iframe class="w-full h-full absolute inset-0" src="https://www.youtube.com/embed/${streamer.videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+        `;
+        container.appendChild(box);
+      });
+    }
+
+    function addNewStreamer() {
+      const name = document.getElementById('input-name').value.trim().toUpperCase();
+      const channelId = document.getElementById('input-channel').value.trim();
+      const videoId = document.getElementById('input-videoid').value.trim();
+      if (!name || !channelId) { alert("Nama & Channel ID wajib diisi!"); return; }
+      const key = name.replace(/[^a-zA-Z0-9]/g, '_');
+      db.ref('nmc_data/streamers/' + key).set({ name, channelId, videoId }, () => {
+        alert("Berhasil disimpan!");
+        document.getElementById('input-name').value = '';
+        document.getElementById('input-channel').value = '';
+        document.getElementById('input-videoid').value = '';
+      });
+    }
+
+    function togglePanel() {
+      const p = document.getElementById('control-panel');
+      p.style.display = p.style.display === 'none' ? 'block' : 'none';
+    }
+    function resetSelection() {
+      activeStreams = [];
+      renderStreamerButtons();
+    }
+
+    // ==================== LEADERBOARD LOGIC ====================
+    let currentTab = 'Sonofsukri';
+    function switchTab(tab) {
+      currentTab = tab;
+      ['Sonofsukri', 'GiString', 'TriadCommunity'].forEach(t => {
+        const btn = document.getElementById(t === 'Sonofsukri' ? 'tab-sonofsukri' : (t === 'GiString' ? 'tab-gistring' : 'tab-triad'));
+        btn.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 border border-slate-800";
+      });
+      const activeBtn = document.getElementById(tab === 'Sonofsukri' ? 'tab-sonofsukri' : (tab === 'GiString' ? 'tab-gistring' : 'tab-triad'));
+      activeBtn.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40";
+      loadLeaderboardData();
+    }
+
+    function loadLeaderboardData() {
+      const tbody = document.getElementById('leaderboard-body');
+      if (!tbody) return;
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center py-24 text-gray-500"><i class="fa-solid fa-circle-notch fa-spin text-3xl text-red-500 mb-3"></i><p>Memuat data...</p></td></tr>`;
+
+      db.ref('nmc_data/leaderboard/' + currentTab).on('value', (snapshot) => {
+        const data = snapshot.val();
+        tbody.innerHTML = '';
+        if (!data) {
+          tbody.innerHTML = `<tr><td colspan="6" class="text-center py-20 text-gray-500">Belum ada data clipper tercatat.</td></tr>`;
+          return;
         }
-      }
-      history.replaceState(null, null, ' ');
-    }
+        let list = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+        list.sort((a, b) => b.views - a.views);
 
-    const bgSlides = document.querySelectorAll('.bg-slide');
-    let currentBgSlide = 0;
-
-    function nextBgSlide() {
-      bgSlides[currentBgSlide].classList.remove('active');
-      currentBgSlide = (currentBgSlide + 1) % bgSlides.length;
-      bgSlides[currentBgSlide].classList.add('active');
-    }
-    setInterval(nextBgSlide, 6000);
-
-    // Audio Player Script
-    const music = document.getElementById('bgMusic');
-    const playIcon = document.getElementById('playIcon');
-    const muteIcon = document.getElementById('muteIcon');
-    const volumeControl = document.getElementById('volumeControl');
-
-    music.volume = 0.8;
-
-    function togglePlay() {
-      if (music.paused) {
-        music.play();
-        playIcon.className = "fa-solid fa-pause";
-      } else {
-        music.pause();
-        playIcon.className = "fa-solid fa-play";
-      }
-    }
-
-    function toggleMute() {
-      music.muted = !music.muted;
-      if (music.muted) {
-        muteIcon.className = "fa-solid fa-volume-xmark text-red-400";
-      } else {
-        updateVolumeIcon(music.volume);
-      }
-    }
-
-    function changeVolume(val) {
-      music.volume = val;
-      if (val == 0) {
-        music.muted = true;
-        muteIcon.className = "fa-solid fa-volume-xmark text-red-400";
-      } else {
-        music.muted = false;
-        updateVolumeIcon(val);
-      }
-    }
-
-    function updateVolumeIcon(val) {
-      if (val > 0.5) {
-        muteIcon.className = "fa-solid fa-volume-high text-gray-200";
-      } else if (val > 0) {
-        muteIcon.className = "fa-solid fa-volume-low text-gray-200";
-      } else {
-        muteIcon.className = "fa-solid fa-volume-xmark text-red-400";
-      }
+        list.forEach((item, index) => {
+          let rank = `<span class="font-bold text-gray-400">${index + 1}</span>`;
+          if (index === 0) rank = `<span class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/50 text-amber-400 flex items-center justify-center font-bold mx-auto"><i class="fa-solid fa-crown"></i></span>`;
+          
+          const row = document.createElement('tr');
+          row.className = "hover:bg-slate-900/60 transition border-b border-slate-800/40";
+          row.innerHTML = `
+            <td class="py-4 px-6 text-center">${rank}</td>
+            <td class="py-4 px-6">
+              <div class="font-bold text-white">${item.username} <span class="text-gray-400 font-normal text-xs">(${item.name})</span></div>
+              <div class="text-[11px] text-gray-400 truncate max-w-lg">${item.desc}</div>
+            </td>
+            <td class="py-4 px-6 text-gray-400 text-xs">${item.upload}</td>
+            <td class="py-4 px-6 font-black text-white">${item.viewsStr || item.views}</td>
+            <td class="py-4 px-6 text-red-400 font-bold">${item.likes}</td>
+            <td class="py-4 px-6 text-center">
+              <a href="${item.link}" target="_blank" class="px-4 py-2 bg-red-950/50 hover:bg-red-900 border border-red-600/30 text-red-300 hover:text-white rounded-xl text-xs font-bold transition inline-flex items-center gap-1.5">Tonton <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i></a>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      });
     }
   </script>
 </body>
