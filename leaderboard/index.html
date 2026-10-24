@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Papan Peringkat Clipper - Triad Community</title>
+    <link rel="icon" type="image/png" href="../NakamaLogo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#07090e',
+                        cardBg: '#0f172a',
+                        borderCol: 'rgba(220, 38, 38, 0.25)',
+                        accentRed: '#ef4444'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.4);
+        }
+        .title-glow {
+            text-shadow: 0 0 30px rgba(239, 68, 68, 0.35);
+        }
+        /* Custom scrollbar yang elegan */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #07090e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(220, 38, 38, 0.3);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(220, 38, 38, 0.6);
+        }
+    </style>
+</head>
+<body class="bg-[#07090e] text-gray-100 min-h-screen flex flex-col justify-between selection:bg-red-500 selection:text-white">
+
+    <!-- Header / Navbar Elegan -->
+    <header class="border-b border-red-950/50 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-black rounded-xl border border-red-600/40 p-1 flex items-center justify-center shadow-lg">
+                    <img src="../NakamaLogo.png" alt="Logo" class="h-full w-auto object-contain" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+                </div>
+                <h1 class="text-xl font-black tracking-widest text-white">TRIAD<span class="text-red-500 font-light"> COMMUNITY</span></h1>
+            </div>
+            
+            <nav class="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest font-bold text-gray-400">
+                <a href="../" class="hover:text-red-400 transition-colors">Home</a>
+                <a href="../multiview/" class="hover:text-red-400 transition-colors">Multiview</a>
+                <a href="./" class="text-red-400 font-bold transition-colors">Papan Peringkat</a>
+                <a href="../#gallery" class="hover:text-red-400 transition-colors">Dokumentasi</a>
+                <a href="../#about" class="hover:text-red-400 transition-colors">Visi</a>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <a href="../" class="px-5 py-2.5 text-xs font-black tracking-wider uppercase text-white bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 rounded-xl shadow-lg border border-red-500/30 flex items-center gap-2 transition-all no-underline">
+                    <i class="fa-solid fa-house"></i> Portal Utama
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-4 md:p-10 max-w-7xl mx-auto w-full flex flex-col gap-6">
+        
+        <!-- Banner Header Berkelas -->
+        <div class="glass-card p-8 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="space-y-2 z-10">
+                <span class="px-3.5 py-1.5 text-[10px] font-extrabold tracking-widest text-red-400 uppercase border border-red-800/40 rounded-full bg-red-950/50 inline-flex items-center gap-2 shadow-inner">
+                    <i class="fa-solid fa-trophy text-amber-500"></i> Hall of Fame Clipper
+                </span>
+                <h2 class="text-2xl md:text-3xl font-black text-white uppercase tracking-wider title-glow">
+                    Papan Peringkat Clipper
+                </h2>
+                <p class="text-xs md:text-sm text-gray-400 max-w-xl leading-relaxed">
+                    Peringkat performa konten clipper terbaik komunitas yang diperbarui secara otomatis berdasarkan tingkat interaksi dan tayangan tertinggi.
+                </p>
+            </div>
+            <div class="z-10 flex items-center gap-2 bg-slate-900/80 border border-slate-800 px-4 py-3 rounded-2xl text-xs text-gray-300 shadow-inner">
+                <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                <span class="font-medium">Live Auto-Sync Active</span>
+            </div>
+        </div>
+
+        <!-- Tab Navigasi Divisi Clipper -->
+        <div class="flex items-center gap-3 border-b border-red-950/60 pb-4 overflow-x-auto">
+            <button onclick="switchTab('Sonofsukri')" id="tab-sonofsukri" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40">
+                NMC
+            </button>
+            <button onclick="switchTab('GiString')" id="tab-gistring" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800">
+                NMC7G
+            </button>
+            <button onclick="switchTab('TriadCommunity')" id="tab-triad" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800">
+                TRIAD
+            </button>
+        </div>
+
+        <!-- Tabel Leaderboard Elegan -->
+        <div class="glass-card rounded-2xl overflow-hidden shadow-2xl border border-red-950/40">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-red-950/50 text-[11px] text-gray-400 uppercase tracking-widest bg-slate-950/70">
+                            <th class="py-4 px-6 font-bold text-center w-20">Rank</th>
+                            <th class="py-4 px-6 font-bold">Kreator & Konten</th>
+                            <th class="py-4 px-6 font-bold">Waktu</th>
+                            <th class="py-4 px-6 font-bold">Tayangan (Views)</th>
+                            <th class="py-4 px-6 font-bold">Suka (Likes)</th>
+                            <th class="py-4 px-6 font-bold text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body" class="divide-y divide-slate-800/40 text-xs text-gray-300">
+                        <tr>
+                            <td colspan="6" class="text-center py-24 text-gray-500">
+                                <i class="fa-solid fa-circle-notch fa-spin text-3xl text-red-500 mb-3"></i>
+                                <p class="font-medium tracking-wide">Memuat data papan peringkat...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer Elegan -->
+    <footer class="w-full border-t border-red-950/50 bg-darkBg/95 px-6 py-5 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-gray-400">
+        <div>
+            <span>&copy; 2026 <strong class="text-white tracking-wide">Triad Community</strong>. Hak Cipta Dilindungi.</span>
+        </div>
+        <div class="bg-cardBg border border-borderCol px-4 py-2 rounded-xl flex items-center space-x-3 shadow-lg">
+            <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+            <span class="text-[11px] font-medium text-gray-300">Background Audio: Kota Ini Tak Sama</span>
+            <i class="fa-solid fa-music text-red-500 text-xs"></i>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            databaseURL: "https://nmc-management-default-rtdb.firebaseio.com/"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.database();
+
+        let currentTab = 'Sonofsukri';
+
+        window.addEventListener('load', () => {
+            loadLeaderboardData();
+        });
+
+        function switchTab(tab) {
+            currentTab = tab;
+            const btnSonofsukri = document.getElementById('tab-sonofsukri');
+            const btnGiString = document.getElementById('tab-gistring');
+            const btnTriad = document.getElementById('tab-triad');
+
+            // Reset semua tombol tab ke gaya non-aktif
+            [btnSonofsukri, btnGiString, btnTriad].forEach(b => {
+                b.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800";
+            });
+
+            // Berikan gaya aktif pada tab yang dipilih
+            if (tab === 'Sonofsukri') {
+                btnSonofsukri.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40";
+            } else if (tab === 'GiString') {
+                btnGiString.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40";
+            } else if (tab === 'TriadCommunity') {
+                btnTriad.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40";
+            }
+
+            loadLeaderboardData();
+        }
+
+        function loadLeaderboardData() {
+            const tbody = document.getElementById('leaderboard-body');
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-24 text-gray-500"><i class="fa-solid fa-circle-notch fa-spin text-3xl text-red-500 mb-3"></i><p class="font-medium tracking-wide">Menyelaraskan data clipper...</p></td></tr>`;
+
+            db.ref('nmc_data/leaderboard/' + currentTab).on('value', (snapshot) => {
+                const data = snapshot.val();
+                tbody.innerHTML = '';
+
+                if (!data) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-20 text-gray-500"><div class="max-w-xs mx-auto space-y-2"><i class="fa-solid fa-folder-open text-3xl text-red-500/50"></i><p class="text-xs">Belum ada data konten clipper yang tercatat di kategori ini.</p></div></td></tr>`;
+                    return;
+                }
+
+                let list = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                list.sort((a, b) => b.views - a.views);
+
+                list.forEach((item, index) => {
+                    let rankBadge = `<span class="font-bold text-gray-400 text-sm">${index + 1}</span>`;
+                    if (index === 0) {
+                        rankBadge = `<span class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/50 text-amber-400 flex items-center justify-center font-bold mx-auto text-xs shadow-[0_0_20px_rgba(245,158,11,0.25)]"><i class="fa-solid fa-crown"></i></span>`;
+                    } else if (index === 1) {
+                        rankBadge = `<span class="w-9 h-9 rounded-xl bg-slate-300/15 border border-slate-300/40 text-slate-200 flex items-center justify-center font-bold mx-auto text-xs">2</span>`;
+                    } else if (index === 2) {
+                        rankBadge = `<span class="w-9 h-9 rounded-xl bg-amber-700/20 border border-amber-700/40 text-amber-600 flex items-center justify-center font-bold mx-auto text-xs">3</span>`;
+                    }
+
+                    const row = document.createElement('tr');
+                    row.className = "hover:bg-slate-900/60 transition-colors border-b border-slate-800/40";
+                    row.innerHTML = `
+                        <td class="py-4 px-6 text-center">${rankBadge}</td>
+                        <td class="py-4 px-6">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-red-950 to-slate-900 border border-red-600/30 flex items-center justify-center text-red-400 font-black text-sm shrink-0 shadow-md">
+                                    ${item.name ? item.name.charAt(0).toUpperCase() : 'C'}
+                                </div>
+                                <div class="overflow-hidden">
+                                    <div class="font-bold text-white flex items-center gap-2 text-[13px]">
+                                        ${item.username} <span class="text-[11px] text-gray-400 font-normal">(${item.name})</span>
+                                    </div>
+                                    <div class="text-[11px] text-gray-400 truncate max-w-lg mt-0.5 font-normal">${item.desc}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-6 text-gray-400 whitespace-nowrap text-xs">${item.upload}</td>
+                        <td class="py-4 px-6 font-black text-white text-sm whitespace-nowrap tracking-wide">${item.viewsStr || item.views}</td>
+                        <td class="py-4 px-6 text-red-400 font-bold whitespace-nowrap text-xs">${item.likes}</td>
+                        <td class="py-4 px-6 text-center whitespace-nowrap">
+                            <a href="${item.link}" target="_blank" class="px-4 py-2 bg-red-950/50 hover:bg-red-900/80 border border-red-600/30 text-red-300 hover:text-white rounded-xl text-xs font-bold transition-all inline-flex items-center gap-1.5 shadow-sm">
+                                Tonton <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                            </a>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
