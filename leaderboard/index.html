@@ -86,20 +86,10 @@
         <!-- Banner Header Berkelas -->
         <div class="glass-card p-8 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
             <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="space-y-3 z-10">
-                <div class="flex flex-wrap items-center gap-2">
-                    <span class="px-3.5 py-1.5 text-[10px] font-extrabold tracking-widest text-red-400 uppercase border border-red-800/40 rounded-full bg-red-950/50 inline-flex items-center gap-2 shadow-inner">
-                        <i class="fa-solid fa-trophy text-amber-500"></i> Hall of Fame Clipper
-                    </span>
-                    <!-- HASTAG TAMBAHAN -->
-                    <span class="px-3 py-1 text-[10px] font-extrabold tracking-widest text-amber-400 uppercase border border-amber-500/40 rounded-full bg-amber-950/50 shadow-inner">
-                        #NAKAMA
-                    </span>
-                    <span class="px-3 py-1 text-[10px] font-extrabold tracking-widest text-blue-400 uppercase border border-blue-500/40 rounded-full bg-blue-950/50 shadow-inner">
-                        #NFFN
-                    </span>
-                </div>
-                
+            <div class="space-y-2 z-10">
+                <span class="px-3.5 py-1.5 text-[10px] font-extrabold tracking-widest text-red-400 uppercase border border-red-800/40 rounded-full bg-red-950/50 inline-flex items-center gap-2 shadow-inner">
+                    <i class="fa-solid fa-trophy text-amber-500"></i> Hall of Fame Clipper
+                </span>
                 <h2 class="text-2xl md:text-3xl font-black text-white uppercase tracking-wider title-glow">
                     Papan Peringkat Clipper
                 </h2>
@@ -113,17 +103,26 @@
             </div>
         </div>
 
-        <!-- Tab Navigasi Divisi Clipper -->
-        <div class="flex items-center gap-3 border-b border-red-950/60 pb-4 overflow-x-auto">
-            <button onclick="switchTab('NMC')" id="tab-NMC" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer">
-                NMC
-            </button>
-            <button onclick="switchTab('NMC7G')" id="tab-NMC7G" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer">
-                NMC7G
-            </button>
-            <button onclick="switchTab('TriadCommunity')" id="tab-triad" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer">
-                TRIAD
-            </button>
+        <!-- Tab Navigasi Divisi Clipper & Kolom Pencarian -->
+        <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 border-b border-red-950/60 pb-4">
+            <!-- Tombol Divisi -->
+            <div class="flex items-center gap-3 overflow-x-auto">
+                <button onclick="switchTab('NMC')" id="tab-NMC" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer">
+                    NMC
+                </button>
+                <button onclick="switchTab('NMC7G')" id="tab-NMC7G" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer">
+                    NMC7G
+                </button>
+                <button onclick="switchTab('TriadCommunity')" id="tab-triad" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer">
+                    TRIAD
+                </button>
+            </div>
+
+            <!-- Kotak Pencarian (Search Bar) -->
+            <div class="relative w-full md:w-72">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-gray-400 text-xs"></i>
+                <input type="text" id="searchInput" oninput="filterLeaderboard()" placeholder="Cari kreator atau konten..." class="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-xs text-white focus:outline-none focus:border-red-500 shadow-inner">
+            </div>
         </div>
 
         <!-- Tabel Leaderboard Elegan -->
@@ -176,6 +175,7 @@
         const db = firebase.database();
 
         let currentTab = 'NMC';
+        let allLeaderboardData = [];
 
         window.addEventListener('load', () => {
             loadLeaderboardData();
@@ -199,6 +199,7 @@
                 btnTriad.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer";
             }
 
+            document.getElementById('searchInput').value = '';
             loadLeaderboardData();
         }
 
@@ -208,54 +209,77 @@
 
             db.ref('nmc_data/leaderboard/' + currentTab).on('value', (snapshot) => {
                 const data = snapshot.val();
-                tbody.innerHTML = '';
-
+                
                 if (!data) {
-                    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-20 text-gray-500"><div class="max-w-xs mx-auto space-y-2"><i class="fa-solid fa-folder-open text-3xl text-red-500/50"></i><p class="text-xs">Belum ada data konten clipper yang tercatat di kategori ini.</p></div></td></tr>`;
+                    allLeaderboardData = [];
+                    renderTable([]);
                     return;
                 }
 
-                let list = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                list.sort((a, b) => b.views - a.views);
+                allLeaderboardData = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                allLeaderboardData.sort((a, b) => b.views - a.views);
 
-                list.forEach((item, index) => {
-                    let rankBadge = `<span class="font-bold text-gray-400 text-sm">${index + 1}</span>`;
-                    if (index === 0) {
-                        rankBadge = `<span class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/50 text-amber-400 flex items-center justify-center font-bold mx-auto text-xs shadow-[0_0_20px_rgba(245,158,11,0.25)]"><i class="fa-solid fa-crown"></i></span>`;
-                    } else if (index === 1) {
-                        rankBadge = `<span class="w-9 h-9 rounded-xl bg-slate-300/15 border border-slate-300/40 text-slate-200 flex items-center justify-center font-bold mx-auto text-xs">2</span>`;
-                    } else if (index === 2) {
-                        rankBadge = `<span class="w-9 h-9 rounded-xl bg-amber-700/20 border border-amber-700/40 text-amber-600 flex items-center justify-center font-bold mx-auto text-xs">3</span>`;
-                    }
+                renderTable(allLeaderboardData);
+            });
+        }
 
-                    const row = document.createElement('tr');
-                    row.className = "hover:bg-slate-900/60 transition-colors border-b border-slate-800/40";
-                    row.innerHTML = `
-                        <td class="py-4 px-6 text-center">${rankBadge}</td>
-                        <td class="py-4 px-6">
-                            <div class="flex items-center gap-3.5">
-                                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-red-950 to-slate-900 border border-red-600/30 flex items-center justify-center text-red-400 font-black text-sm shrink-0 shadow-md">
-                                    ${item.name ? item.name.charAt(0).toUpperCase() : 'C'}
-                                </div>
-                                <div class="overflow-hidden">
-                                    <div class="font-bold text-white flex items-center gap-2 text-[13px]">
-                                        ${item.username} <span class="text-[11px] text-gray-400 font-normal">(${item.name})</span>
-                                    </div>
-                                    <div class="text-[11px] text-gray-400 truncate max-w-lg mt-0.5 font-normal">${item.desc}</div>
-                                </div>
+        function filterLeaderboard() {
+            const keyword = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allLeaderboardData.filter(item => {
+                const name = (item.name || '').toLowerCase();
+                const username = (item.username || '').toLowerCase();
+                const desc = (item.desc || '').toLowerCase();
+                return name.includes(keyword) || username.includes(keyword) || desc.includes(keyword);
+            });
+            renderTable(filtered);
+        }
+
+        function renderTable(list) {
+            const tbody = document.getElementById('leaderboard-body');
+            tbody.innerHTML = '';
+
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-20 text-gray-500"><div class="max-w-xs mx-auto space-y-2"><i class="fa-solid fa-folder-open text-3xl text-red-500/50"></i><p class="text-xs">Tidak ada data konten atau kreator yang ditemukan.</p></div></td></tr>`;
+                return;
+            }
+
+            list.forEach((item, index) => {
+                let rankBadge = `<span class="font-bold text-gray-400 text-sm">${index + 1}</span>`;
+                if (index === 0) {
+                    rankBadge = `<span class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/50 text-amber-400 flex items-center justify-center font-bold mx-auto text-xs shadow-[0_0_20px_rgba(245,158,11,0.25)]"><i class="fa-solid fa-crown"></i></span>`;
+                } else if (index === 1) {
+                    rankBadge = `<span class="w-9 h-9 rounded-xl bg-slate-300/15 border border-slate-300/40 text-slate-200 flex items-center justify-center font-bold mx-auto text-xs">2</span>`;
+                } else if (index === 2) {
+                    rankBadge = `<span class="w-9 h-9 rounded-xl bg-amber-700/20 border border-amber-700/40 text-amber-600 flex items-center justify-center font-bold mx-auto text-xs">3</span>`;
+                }
+
+                const row = document.createElement('tr');
+                row.className = "hover:bg-slate-900/60 transition-colors border-b border-slate-800/40";
+                row.innerHTML = `
+                    <td class="py-4 px-6 text-center">${rankBadge}</td>
+                    <td class="py-4 px-6">
+                        <div class="flex items-center gap-3.5">
+                            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-red-950 to-slate-900 border border-red-600/30 flex items-center justify-center text-red-400 font-black text-sm shrink-0 shadow-md">
+                                ${item.name ? item.name.charAt(0).toUpperCase() : 'C'}
                             </div>
-                        </td>
-                        <td class="py-4 px-6 text-gray-400 whitespace-nowrap text-xs">${item.upload}</td>
-                        <td class="py-4 px-6 font-black text-white text-sm whitespace-nowrap tracking-wide">${item.viewsStr || item.views}</td>
-                        <td class="py-4 px-6 text-red-400 font-bold whitespace-nowrap text-xs">${item.likes}</td>
-                        <td class="py-4 px-6 text-center whitespace-nowrap">
-                            <a href="${item.link}" target="_blank" class="px-4 py-2 bg-red-950/50 hover:bg-red-900/80 border border-red-600/30 text-red-300 hover:text-white rounded-xl text-xs font-bold transition-all inline-flex items-center gap-1.5 shadow-sm">
-                                Tonton <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
-                            </a>
-                        </td>
-                    `;
-                    tbody.appendChild(row);
-                });
+                            <div class="overflow-hidden">
+                                <div class="font-bold text-white flex items-center gap-2 text-[13px]">
+                                    ${item.username} <span class="text-[11px] text-gray-400 font-normal">(${item.name})</span>
+                                </div>
+                                <div class="text-[11px] text-gray-400 truncate max-w-lg mt-0.5 font-normal">${item.desc}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-4 px-6 text-gray-400 whitespace-nowrap text-xs">${item.upload}</td>
+                    <td class="py-4 px-6 font-black text-white text-sm whitespace-nowrap tracking-wide">${item.viewsStr || item.views}</td>
+                    <td class="py-4 px-6 text-red-400 font-bold whitespace-nowrap text-xs">${item.likes}</td>
+                    <td class="py-4 px-6 text-center whitespace-nowrap">
+                        <a href="${item.link}" target="_blank" class="px-4 py-2 bg-red-950/50 hover:bg-red-900/80 border border-red-600/30 text-red-300 hover:text-white rounded-xl text-xs font-bold transition-all inline-flex items-center gap-1.5 shadow-sm">
+                            Tonton <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                        </a>
+                    </td>
+                `;
+                tbody.appendChild(row);
             });
         }
     </script>
