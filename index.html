@@ -313,7 +313,7 @@
         <h1 class="text-xl font-black tracking-widest text-white">TRIAD<span class="text-red-500 font-light"> COMMUNITY</span></h1>
       </div>
       
-      <!-- NAVIGASI UTAMA (MENU PAPAN PERINGKAT SUDAH DIHAPUS) -->
+      <!-- NAVIGASI UTAMA -->
       <nav class="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest font-bold text-gray-300">
         <button onclick="scrollToSection('home')" class="text-red-500 hover:text-white transition-colors bg-transparent border-none cursor-pointer">Home</button>
         <button onclick="scrollToSection('gallery')" class="hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer">Dokumentasi</button>
@@ -385,8 +385,37 @@
       </div>
     </section>
 
+    <!-- === TOMBOL MENU UTAMA (MULTIVIEW & PAPAN PERINGKAT) === -->
+    <section class="max-w-4xl mx-auto px-6 py-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        
+        <!-- Tombol ke Multiview -->
+        <a href="multiview.html" class="glass-card p-5 rounded-2xl flex items-center gap-4 group hover:border-red-500 transition shadow-xl no-underline">
+          <div class="w-12 h-12 rounded-xl bg-red-950/60 border border-red-600/40 text-red-400 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition">
+            <i class="fa-solid fa-tv"></i>
+          </div>
+          <div>
+            <h4 class="text-sm font-bold text-white uppercase tracking-wider group-hover:text-red-400 transition">Multiview Keluarga</h4>
+            <p class="text-[11px] text-gray-400 mt-0.5">Pantau siaran langsung aktif anggota keluarga.</p>
+          </div>
+        </a>
+
+        <!-- Tombol ke Papan Peringkat -->
+        <a href="leaderboard.html" class="glass-card p-5 rounded-2xl flex items-center gap-4 group hover:border-amber-500 transition shadow-xl no-underline">
+          <div class="w-12 h-12 rounded-xl bg-amber-950/60 border border-amber-600/40 text-amber-400 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition">
+            <i class="fa-solid fa-trophy"></i>
+          </div>
+          <div>
+            <h4 class="text-sm font-bold text-white uppercase tracking-wider group-hover:text-amber-400 transition">Papan Peringkat</h4>
+            <p class="text-[11px] text-gray-400 mt-0.5">Hall of fame performa clipper terbaik komunitas.</p>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
     <!-- WRAPPER AREA BAWAH -->
-    <div class="w-full bg-[#030406] border-t border-red-950/80 shadow-[0_-15px_30px_rgba(0,0,0,0.8)] relative z-10 mt-16 pt-8 pb-12">
+    <div class="w-full bg-[#030406] border-t border-red-950/80 shadow-[0_-15px_30px_rgba(0,0,0,0.8)] relative z-10 mt-12 pt-8 pb-12">
       
       <!-- SECTION VISI & PILAR ORGANISASI -->
       <section id="about" class="max-w-6xl mx-auto px-6 py-8">
