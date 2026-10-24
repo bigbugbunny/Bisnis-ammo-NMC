@@ -8,75 +8,119 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="../NakamaLogo.png">
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        darkBg: '#080c14',
+                        darkBg: '#07090e',
                         cardBg: '#0f172a',
-                        borderCol: '#1e293b',
-                        accentOrange: '#f97316',
-                        roseLive: '#f43f5e'
+                        borderCol: 'rgba(220, 38, 38, 0.25)',
+                        accentRed: '#ef4444',
+                        orangeAccent: '#f97316'
                     }
                 }
             }
         }
     </script>
+    <style>
+        /* Latar Belakang Foto Komunitas (Digelapkan) */
+        body {
+            background: linear-gradient(to bottom, rgba(7, 9, 14, 0.65), rgba(7, 9, 14, 0.85)), url('bg.png') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.82);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(220, 38, 38, 0.25);
+            box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.5);
+        }
+        .title-glow {
+            text-shadow: 0 0 30px rgba(239, 68, 68, 0.35);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #07090e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(220, 38, 38, 0.3);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(220, 38, 38, 0.6);
+        }
+    </style>
 </head>
-<body class="bg-darkBg text-gray-100 min-h-screen flex flex-col justify-between selection:bg-orange-500 selection:text-white">
+<body class="text-gray-100 min-h-screen flex flex-col justify-between selection:bg-red-500 selection:text-white">
 
     <!-- Header / Navbar -->
-    <header class="w-full border-b border-borderCol bg-darkBg/95 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex justify-between items-center shadow-lg">
-        <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 rounded-lg bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-orange-500 font-bold text-sm">
-                <i class="fa-solid fa-shield-halved"></i>
+    <header class="border-b border-red-950/50 bg-slate-950/85 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-black rounded-xl border border-red-600/40 p-1 flex items-center justify-center shadow-lg">
+                    <img src="../NakamaLogo.png" alt="Logo" class="h-full w-auto object-contain" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+                </div>
+                <h1 class="text-xl font-black tracking-widest text-white">TRIAD<span class="text-red-500 font-light"> COMMUNITY</span></h1>
             </div>
-            <span class="text-sm font-black tracking-wider text-white uppercase">TRIAD <span class="text-orange-500">COMMUNITY</span></span>
-        </div>
+            
+            <nav class="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest font-bold text-gray-400">
+                <a href="../" class="hover:text-red-400 transition-colors">Home</a>
+                <a href="./" class="text-red-400 font-bold transition-colors">Multiview</a>
+                <a href="../leaderboard/" class="hover:text-red-400 transition-colors">Papan Peringkat</a>
+            </nav>
 
-        <nav class="hidden md:flex items-center space-x-8 text-xs font-semibold text-gray-400">
-            <a href="../" class="hover:text-white transition">Home</a>
-            <a href="../dokumentasi" class="hover:text-white transition">Dokumentasi</a>
-            <a href="../nilai-visi" class="hover:text-white transition">Nilai & Visi</a>
-        </nav>
-
-        <div class="flex items-center space-x-3">
-            <span id="api-status" class="text-[11px] text-gray-400 hidden sm:flex items-center gap-1.5 bg-cardBg border border-borderCol px-3 py-1.5 rounded-xl">
-                <i class="fa-solid fa-satellite-dish text-orange-500 animate-pulse"></i> Memeriksa Live...
-            </span>
-            <button onclick="openAdminModal()" class="px-4 py-2 text-xs bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-xl transition flex items-center gap-2 shadow-lg shadow-orange-950">
-                <i class="fa-solid fa-lock" id="lock-icon"></i> <span id="admin-toggle-text">Mode Admin</span>
-            </button>
+            <div class="flex items-center space-x-3">
+                <span id="api-status" class="text-[11px] text-gray-400 hidden sm:flex items-center gap-1.5 bg-cardBg border border-borderCol px-3 py-1.5 rounded-xl">
+                    <i class="fa-solid fa-satellite-dish text-orangeAccent animate-pulse"></i> Memeriksa Live...
+                </span>
+                <button onclick="openAdminModal()" class="px-4 py-2 text-xs bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold rounded-xl transition flex items-center gap-2 shadow-lg cursor-pointer">
+                    <i class="fa-solid fa-lock" id="lock-icon"></i> <span id="admin-toggle-text">Mode Admin</span>
+                </button>
+                <a href="../" class="px-5 py-2.5 text-xs font-black tracking-wider uppercase text-white bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 rounded-xl shadow-lg border border-red-500/30 flex items-center gap-2 transition-all no-underline">
+                    <i class="fa-solid fa-house"></i> Portal Utama
+                </a>
+            </div>
         </div>
     </header>
 
     <!-- Main Content Area -->
-    <main class="flex-1 p-4 md:p-6 max-w-7xl mx-auto w-full flex flex-col gap-6">
+    <main class="flex-1 p-4 md:p-10 max-w-7xl mx-auto w-full flex flex-col gap-6">
         
-        <div class="flex justify-between items-center bg-cardBg border border-borderCol px-5 py-4 rounded-2xl shadow-xl">
-            <div>
-                <h2 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-tv text-orange-500"></i> Multiview Siaran Langsung Keluarga
+        <!-- Banner Header Berkelas -->
+        <div class="glass-card p-8 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="space-y-2 z-10">
+                <span class="px-3.5 py-1.5 text-[10px] font-extrabold tracking-widest text-orangeAccent uppercase border border-orange-500/40 rounded-full bg-orange-950/50 inline-flex items-center gap-2 shadow-inner">
+                    <i class="fa-solid fa-tv"></i> Live Stream System
+                </span>
+                <h2 class="text-2xl md:text-3xl font-black text-white uppercase tracking-wider title-glow">
+                    Multiview Siaran Langsung Keluarga
                 </h2>
-                <p class="text-[11px] text-gray-400 mt-0.5">Pantau siaran aktif anggota secara otomatis melalui integrasi database pusat.</p>
+                <p class="text-xs md:text-sm text-gray-400 max-w-xl leading-relaxed">
+                    Pantau siaran aktif anggota secara otomatis melalui integrasi database pusat. Pilih atau aktifkan panel siaran di bawah.
+                </p>
             </div>
-            <div class="flex items-center gap-2">
-                <button onclick="checkLiveStatusWithAPI()" class="px-3 py-1.5 text-xs bg-darkBg hover:bg-gray-800 border border-borderCol rounded-xl transition text-gray-300 font-medium flex items-center gap-1.5" title="Refresh Status Live">
-                    <i class="fa-solid fa-rotate text-orange-500"></i> Refresh Live
+            <div class="z-10 flex items-center gap-2">
+                <button onclick="checkLiveStatusWithAPI()" class="px-4 py-2.5 bg-slate-900/90 hover:bg-slate-800 text-white rounded-xl text-xs font-bold border border-slate-700 flex items-center gap-2 cursor-pointer shadow">
+                    <i class="fa-solid fa-rotate text-orangeAccent"></i> Refresh Live
                 </button>
-                <button onclick="togglePanel()" class="px-3 py-1.5 text-xs bg-darkBg hover:bg-gray-800 border border-borderCol rounded-xl transition text-gray-300 font-medium flex items-center gap-1.5">
-                    <i class="fa-solid fa-sliders text-orange-500"></i> <span id="panel-toggle-text">Tutup Panel</span>
+                <button onclick="togglePanel()" class="px-4 py-2.5 bg-slate-900/90 hover:bg-slate-800 text-white rounded-xl text-xs font-bold border border-slate-700 flex items-center gap-2 cursor-pointer shadow">
+                    <i class="fa-solid fa-sliders text-orangeAccent"></i> <span id="panel-toggle-text">Tutup Panel</span>
                 </button>
             </div>
         </div>
 
         <!-- Control & Stream Selector Panel -->
-        <div id="control-panel" class="bg-cardBg border border-borderCol rounded-2xl p-4 md:p-5 shadow-2xl transition-all duration-300">
-            <div class="flex justify-between items-center mb-3 pb-2 border-b border-borderCol text-xs font-semibold text-gray-400">
+        <div id="control-panel" class="glass-card rounded-2xl p-5 shadow-2xl transition-all duration-300 border border-red-950/40">
+            <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-800 text-xs font-semibold text-gray-400">
                 <span id="active-summary">Siaran Aktif (0/0)</span>
-                <span class="text-orange-500 cursor-pointer hover:underline" onclick="resetSelection()">Reset Pilihan</span>
+                <span class="text-orangeAccent cursor-pointer hover:underline" onclick="resetSelection()">Reset Pilihan</span>
             </div>
 
             <!-- List Tombol Semua Anggota -->
@@ -85,18 +129,18 @@
             </div>
 
             <!-- Form Tambah Channel Baru / Override Manual -->
-            <div id="admin-form-section" class="mt-4 pt-3 border-t border-borderCol hidden space-y-3">
+            <div id="admin-form-section" class="mt-4 pt-3 border-t border-slate-800 hidden space-y-3">
                 <div class="text-[11px] text-orange-400 font-semibold flex items-center gap-1">
                     <i class="fa-solid fa-shield-halved"></i> Panel Kontrol Admin (Tambah Channel / Paksa Status Live)
                 </div>
                 <div class="flex flex-col sm:flex-row gap-2">
-                    <input type="text" id="input-name" placeholder="Nama Anggota (contoh: APINPALINGSERIUS)" class="bg-darkBg border border-borderCol px-3 py-2 rounded-xl text-xs flex-1 text-white focus:outline-none focus:border-orange-500">
-                    <input type="text" id="input-channel" placeholder="YouTube Channel ID (awalan UC...)" class="bg-darkBg border border-borderCol px-3 py-2 rounded-xl text-xs flex-1 text-white focus:outline-none focus:border-orange-500">
-                    <input type="text" id="input-videoid" placeholder="ID Video Live Opsional (opsional)" class="bg-darkBg border border-borderCol px-3 py-2 rounded-xl text-xs flex-1 text-white focus:outline-none focus:border-orange-500">
-                    <button onclick="addNewStreamer()" class="bg-orange-600 hover:bg-orange-500 text-white font-semibold px-4 py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow">
+                    <input type="text" id="input-name" placeholder="Nama Anggota (contoh: APINPALINGSERIUS)" class="bg-darkBg/90 border border-slate-700 px-3 py-2 rounded-xl text-xs flex-1 text-white focus:outline-none focus:border-orangeAccent">
+                    <input type="text" id="input-channel" placeholder="YouTube Channel ID (awalan UC...)" class="bg-darkBg/90 border border-slate-700 px-3 py-2 rounded-xl text-xs flex-1 text-white focus:outline-none focus:border-orangeAccent">
+                    <input type="text" id="input-videoid" placeholder="ID Video Live Opsional (opsional)" class="bg-darkBg/90 border border-slate-700 px-3 py-2 rounded-xl text-xs flex-1 text-white focus:outline-none focus:border-orangeAccent">
+                    <button onclick="addNewStreamer()" class="bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-semibold px-4 py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow cursor-pointer">
                         <i class="fa-solid fa-plus"></i> Simpan
                     </button>
-                    <button onclick="logoutAdmin()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-2 rounded-xl text-xs transition" title="Kunci Kembali">
+                    <button onclick="logoutAdmin()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-2 rounded-xl text-xs transition cursor-pointer" title="Kunci Kembali">
                         <i class="fa-solid fa-lock"></i>
                     </button>
                 </div>
@@ -104,9 +148,9 @@
             </div>
         </div>
 
-        <!-- Dynamic Grid Video Players -->
+        <!-- Dynamic Grid Video Players (Dikembalikan ke ukuran awal h-[400px]) -->
         <div id="active-players-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
-            <div class="col-span-full text-center py-20 text-gray-500 text-xs border border-dashed border-borderCol rounded-2xl">
+            <div class="col-span-full text-center py-20 text-gray-500 text-xs border border-dashed border-slate-800 rounded-2xl glass-card">
                 <i class="fa-solid fa-tv text-3xl mb-2 text-gray-600"></i>
                 <p>Belum ada siaran yang dipilih. Klik salah satu nama anggota berstatus LIVE di atas.</p>
             </div>
@@ -114,22 +158,17 @@
 
     </main>
 
-    <!-- Footer -->
-    <footer class="w-full border-t border-borderCol bg-darkBg/90 px-6 py-3 flex justify-between items-center text-xs text-gray-400">
+    <!-- Footer Bersih (Tanpa Widget Audio) -->
+    <footer class="w-full border-t border-red-950/50 bg-[#07090e]/95 px-6 py-5 flex justify-between items-center text-xs text-gray-400 max-w-7xl mx-auto">
         <div>
-            <span>&copy; 2026 <strong class="text-white">Triad Community</strong>. All rights reserved.</span>
-        </div>
-        <div class="bg-cardBg border border-borderCol px-3 py-1.5 rounded-xl flex items-center space-x-3 shadow-lg">
-            <div class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></div>
-            <span class="text-[11px] font-medium text-gray-300 truncate max-w-[150px]">Background Music: Kota Ini Tak Sama</span>
-            <i class="fa-solid fa-music text-orange-500 text-xs"></i>
+            <span>&copy; 2026 <strong class="text-white tracking-wide">Triad Community</strong>. Hak Cipta Dilindungi.</span>
         </div>
     </footer>
 
     <!-- CUSTOM MODAL POPUP -->
     <div id="custom-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-cardBg border border-borderCol rounded-2xl p-6 max-w-sm w-full shadow-2xl flex flex-col gap-4 text-center transform transition-all scale-95 opacity-0 duration-200" id="modal-box">
-            <div id="modal-icon" class="w-12 h-12 rounded-full bg-orange-500/20 border border-orange-500/40 text-orange-500 flex items-center justify-center mx-auto text-xl">
+        <div class="glass-card rounded-2xl p-6 max-w-sm w-full shadow-2xl flex flex-col gap-4 text-center transform transition-all scale-95 opacity-0 duration-200" id="modal-box">
+            <div id="modal-icon" class="w-12 h-12 rounded-full bg-orange-500/20 border border-orange-500/40 text-orangeAccent flex items-center justify-center mx-auto text-xl">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <div>
@@ -138,12 +177,12 @@
             </div>
             
             <div id="modal-input-container" class="hidden">
-                <input type="password" id="modal-password-input" placeholder="Masukkan password admin..." class="w-full bg-darkBg border border-borderCol px-3 py-2 rounded-xl text-xs text-white text-center focus:outline-none focus:border-orange-500" onkeydown="if(event.key === 'Enter') document.getElementById('modal-btn-ok').click();">
+                <input type="password" id="modal-password-input" placeholder="Masukkan password admin..." class="w-full bg-darkBg border border-slate-700 px-3 py-2 rounded-xl text-xs text-white text-center focus:outline-none focus:border-orangeAccent">
             </div>
 
             <div class="flex gap-2 mt-2">
-                <button id="modal-btn-cancel" onclick="closeModal()" class="flex-1 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-semibold rounded-xl transition hidden">Batal</button>
-                <button id="modal-btn-ok" onclick="closeModal()" class="flex-1 py-2 bg-orange-600 hover:bg-orange-500 text-white text-xs font-semibold rounded-xl transition">OK</button>
+                <button id="modal-btn-cancel" onclick="closeModal()" class="flex-1 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-semibold rounded-xl transition hidden cursor-pointer">Batal</button>
+                <button id="modal-btn-ok" onclick="closeModal()" class="flex-1 py-2 bg-gradient-to-r from-red-700 to-amber-600 text-white text-xs font-semibold rounded-xl transition cursor-pointer">OK</button>
             </div>
         </div>
     </div>
@@ -181,7 +220,7 @@
                 iconDiv.className = "w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto text-xl";
                 iconDiv.innerHTML = `<i class="fa-solid fa-check"></i>`;
             } else {
-                iconDiv.className = "w-12 h-12 rounded-full bg-orange-500/20 border border-orange-500/40 text-orange-500 flex items-center justify-center mx-auto text-xl";
+                iconDiv.className = "w-12 h-12 rounded-full bg-orange-500/20 border border-orange-500/40 text-orangeAccent flex items-center justify-center mx-auto text-xl";
                 iconDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i>`;
             }
 
@@ -224,7 +263,6 @@
             }, 150);
         }
 
-        // Ambil data streamer dari database
         db.ref('nmc_data/streamers').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -243,7 +281,6 @@
             }
         });
 
-        // Validasi Admin
         function openAdminModal() {
             if (isAdmin) {
                 logoutAdmin();
@@ -291,22 +328,20 @@
             isAdmin = false;
             sessionStorage.removeItem('triad_is_admin');
             document.getElementById('admin-form-section').classList.add('hidden');
-            document.getElementById('lock-icon').className = "fa-solid fa-lock text-orange-500";
+            document.getElementById('lock-icon').className = "fa-solid fa-lock text-orangeAccent";
             document.getElementById('admin-toggle-text').innerText = "Mode Admin";
             showPopup("Informasi", "Anda telah keluar dari mode admin.", "success");
         }
 
-        // Pengecekan Live Menggunakan Cek Video Terbaru Langsung dari Channel (Tanpa Delay Search API)
         async function checkLiveStatusWithAPI() {
             const statusIndicator = document.getElementById('api-status');
             if (statusIndicator) {
-                statusIndicator.innerHTML = `<i class="fa-solid fa-satellite-dish text-orange-500 animate-pulse"></i> Memeriksa Live...`;
+                statusIndicator.innerHTML = `<i class="fa-solid fa-satellite-dish text-orangeAccent animate-pulse"></i> Memeriksa Live...`;
             }
 
             let liveCount = 0;
 
             for (let s of streamers) {
-                // Prioritas 1: Jika admin mengisi video ID manual, langsung aktifkan
                 if (s.manualVideoId && s.manualVideoId.length > 5) {
                     s.isLive = true;
                     s.videoId = s.manualVideoId;
@@ -317,7 +352,6 @@
                 if (!s.channelId || !s.channelId.startsWith('UC')) continue;
 
                 try {
-                    // Ambil video upload/live terbaru dari channel secara langsung menggunakan endpoint channels -> uploads playlist
                     const channelUrl = `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${s.channelId}&key=${YOUTUBE_API_KEY}`;
                     const chResponse = await fetch(channelUrl);
                     const chData = await chResponse.json();
@@ -325,7 +359,6 @@
                     if (chData.items && chData.items.length > 0) {
                         const uploadsPlaylistId = chData.items[0].contentDetails.relatedPlaylists.uploads;
                         
-                        // Ambil video paling atas dari playlist uploads
                         const playlistUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=1&key=${YOUTUBE_API_KEY}`;
                         const plResponse = await fetch(playlistUrl);
                         const plData = await plResponse.json();
@@ -333,7 +366,6 @@
                         if (plData.items && plData.items.length > 0) {
                             const latestVideoId = plData.items[0].snippet.resourceId.videoId;
 
-                            // Cek detail status live video tersebut via videos endpoint
                             const videoDetailUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,liveStreamingDetails&id=${latestVideoId}&key=${YOUTUBE_API_KEY}`;
                             const vResponse = await fetch(videoDetailUrl);
                             const vData = await vResponse.json();
@@ -342,7 +374,6 @@
                                 const videoInfo = vData.items[0];
                                 const broadcastContent = videoInfo.snippet.liveBroadcastContent;
                                 
-                                // Jika statusnya 'live' atau sedang berlangsung siaran langsung
                                 if (broadcastContent === 'live') {
                                     s.isLive = true;
                                     s.videoId = latestVideoId;
@@ -393,12 +424,12 @@
                 const isActive = activeStreams.includes(s.id);
                 
                 const btn = document.createElement('button');
-                btn.className = `p-2.5 rounded-xl border text-left text-[11px] font-medium transition flex justify-between items-center group relative ${
+                btn.className = `p-2.5 rounded-xl border text-left text-[11px] font-medium transition flex justify-between items-center group relative cursor-pointer ${
                     isActive 
-                    ? 'bg-orange-950/40 border-orange-500 text-white shadow-lg' 
+                    ? 'bg-orange-950/50 border-orange-500 text-white shadow-lg' 
                     : s.isLive 
                         ? 'bg-cardBg border-orange-500/50 text-white hover:border-orange-500 animate-pulse' 
-                        : 'bg-darkBg/50 border-borderCol/60 text-gray-500 opacity-60'
+                        : 'bg-darkBg/60 border-slate-800 text-gray-500 opacity-60'
                 }`;
                 
                 btn.onclick = () => {
@@ -437,7 +468,7 @@
 
             if (activeStreams.length === 0) {
                 container.innerHTML = `
-                    <div class="col-span-full text-center py-20 text-gray-500 text-xs border border-dashed border-borderCol rounded-2xl">
+                    <div class="col-span-full text-center py-20 text-gray-500 text-xs border border-dashed border-slate-800 rounded-2xl glass-card">
                         <i class="fa-solid fa-tv text-3xl mb-2 text-gray-600"></i>
                         <p>Belum ada siaran yang dipilih. Klik salah satu nama anggota berstatus LIVE di atas.</p>
                     </div>
@@ -452,13 +483,14 @@
                 const embedSrc = `https://www.youtube.com/embed/${streamer.videoId}?autoplay=1`;
 
                 const playerBox = document.createElement('div');
-                playerBox.className = "bg-cardBg border border-borderCol rounded-2xl overflow-hidden flex flex-col shadow-xl h-[400px]";
+                // Tinggi kotak player live dikembalikan ke posisi awal (h-[400px])
+                playerBox.className = "glass-card rounded-2xl overflow-hidden flex flex-col shadow-xl h-[400px]";
                 playerBox.innerHTML = `
-                    <div class="bg-gray-900 px-4 py-2.5 border-b border-borderCol flex justify-between items-center text-xs">
-                        <span class="font-bold text-orange-400 flex items-center gap-2">
+                    <div class="bg-gray-950/90 px-4 py-2.5 border-b border-slate-800 flex justify-between items-center text-xs">
+                        <span class="font-bold text-orangeAccent flex items-center gap-2">
                             <i class="fa-brands fa-youtube"></i> ${streamer.name}
                         </span>
-                        <button onclick="toggleStream('${streamer.id}')" class="text-gray-400 hover:text-orange-400 transition">
+                        <button onclick="toggleStream('${streamer.id}')" class="text-gray-400 hover:text-orangeAccent transition cursor-pointer">
                             <i class="fa-solid fa-xmark text-sm"></i>
                         </button>
                     </div>
