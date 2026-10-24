@@ -142,7 +142,7 @@
       animation: modalScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    /* === EFEK FRAME HALUS (GPU OPTIMIZED FLOATING) === */
+    /* === EFEK FRAME HALUS (GPU ACCELERATED) === */
     @keyframes smoothFloatRed {
       0%, 100% {
         transform: translate3d(0, 0, 0);
@@ -287,7 +287,7 @@
         </div>
         <div>
           <h2 class="text-2xl font-black tracking-wider text-red-500">VERIFIKASI IDENTITAS</h2>
-          <p class="text-xs text-gray-400 mt-1">Masukkan indentitas Anda untuk masuk ke sistem divisi</p>
+          <p class="text-xs text-gray-400 mt-1">Masukkan identitas Anda untuk masuk ke sistem divisi</p>
         </div>
       </div>
 
@@ -417,7 +417,7 @@
       </div>
     </section>
 
-    <!-- === TOMBOL MENU UTAMA DENGAN EFEK HALUS (GPU ACCELERATED) === -->
+    <!-- === TOMBOL MENU UTAMA (MULTIVIEW & PAPAN PERINGKAT) === -->
     <section class="max-w-5xl mx-auto px-6 py-12 relative z-25">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         
@@ -609,6 +609,7 @@
       }, 500);
     }
 
+    // DIPERBAIKI: Fungsi login sekarang murni mengecek kredensial database tanpa bypass otomatis
     function handleLogin() {
       const usernameInput = document.getElementById("loginUsername").value.trim();
       const passwordInput = document.getElementById("loginPassword").value.trim();
@@ -637,7 +638,7 @@
           }
         }
 
-        if (isAdmin || true) {
+        if (isAdmin) {
           localStorage.setItem("nmc_user_role", "editor");
           window.location.href = "dashboard/nakama/";
         } else {
@@ -645,7 +646,8 @@
           errorDiv.classList.remove("hidden");
         }
       }).catch(() => {
-        window.location.href = "dashboard/nakama/";
+        errorDiv.innerText = "Gagal terhubung ke database!";
+        errorDiv.classList.remove("hidden");
       });
     }
 
