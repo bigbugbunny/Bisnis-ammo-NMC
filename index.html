@@ -1,758 +1,524 @@
 <!DOCTYPE html>
 <html lang="id" class="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TRIAD COMMUNITY - Portal Utama</title>
-  
-  <link rel="icon" type="image/png" href="NakamaLogo.png">
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome Icons -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              dark: '#07090e',
-              card: 'rgba(18, 24, 38, 0.85)',
-              border: 'rgba(220, 38, 38, 0.25)',
-              accent: '#ef4444'
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiview Keluarga - Triad Community</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#080c14',
+                        cardBg: '#0f172a',
+                        borderCol: '#1e293b',
+                        accentOrange: '#f97316',
+                        roseLive: '#f43f5e'
+                    }
+                }
             }
-          }
         }
-      }
-    }
-  </script>
-
-  <style>
-    /* Menghilangkan scrollbar vertikal */
-    html, body {
-      background-color: #07090e;
-      overflow-y: auto;
-      scrollbar-width: none;
-      scroll-behavior: smooth;
-    }
-    ::-webkit-scrollbar {
-      display: none;
-    }
-
-    body {
-      background-color: #07090e;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #e2e8f0;
-      overflow-x: hidden;
-      margin: 0;
-      padding: 0;
-    }
-
-    /* === BACKGROUND SLIDESHOW DI ATAS TANPA POTONG FOTO + GRADASI ELEGAN === */
-    .hero-bg-container {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 85vh;
-      z-index: 1;
-      overflow: hidden;
-      pointer-events: none;
-    }
-
-    .bg-slideshow {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #07090e;
-    }
-
-    .bg-slide {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center top;
-      opacity: 0;
-      transform: scale(1);
-      transition: opacity 1.5s ease-in-out, transform 12s ease-out;
-    }
-
-    .bg-slide.active {
-      opacity: 0.85;
-      transform: scale(1);
-    }
-
-    /* === KANVAS EFEK HUJAN DI ATAS === */
-    #rainCanvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 2;
-      pointer-events: none;
-    }
-
-    .bg-gradient-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 3;
-      background: linear-gradient(
-        to bottom, 
-        rgba(7, 9, 14, 0.2) 0%, 
-        rgba(7, 9, 14, 0.5) 60%, 
-        #07090e 100%
-      );
-      pointer-events: none;
-    }
-
-    .title-gradient {
-      background: linear-gradient(135deg, #ffffff 20%, #f59e0b 60%, #ef4444 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 40px rgba(239, 68, 68, 0.4);
-    }
-
-    .glass-card {
-      background: rgba(18, 24, 38, 0.85);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(220, 38, 38, 0.25);
-      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .glass-card:hover {
-      border-color: rgba(239, 68, 68, 0.8);
-      box-shadow: 0 0 30px rgba(239, 68, 68, 0.2), inset 0 0 15px rgba(239, 68, 68, 0.05);
-    }
-
-    @keyframes modalScaleIn {
-      0% { transform: scale(0.85); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    .animate-modal-in {
-      animation: modalScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    /* === CAROUSEL SCROLL-SNAP STABIL === */
-    .gallery-container {
-      position: relative;
-      width: 100%;
-      max-width: 1300px;
-      margin: 0 auto;
-      overflow: hidden;
-      padding: 40px 0;
-    }
-
-    .gallery-track {
-      display: flex;
-      align-items: center;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-      padding: 20px calc(50% - 35%);
-    }
-
-    .gallery-track::-webkit-scrollbar {
-      display: none;
-    }
-
-    .gallery-slide {
-      min-width: 70%;
-      box-sizing: border-box;
-      padding: 0 15px;
-      display: flex;
-      justify-content: center;
-      scroll-snap-align: center;
-      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      opacity: 0.25;
-      transform: scale(0.85);
-      filter: brightness(0.4);
-      flex-shrink: 0;
-    }
-
-    .gallery-slide.active-center {
-      opacity: 1;
-      transform: scale(1);
-      filter: brightness(1);
-      z-index: 10;
-    }
-
-    .photo-box {
-      width: 100%;
-      height: auto;
-      aspect-ratio: 16 / 9;
-      object-fit: contain;
-      background-color: #05070a;
-      display: block;
-    }
-
-    @media (min-width: 768px) {
-      .gallery-track {
-        padding: 20px calc(50% - 32.5%);
-      }
-      .gallery-slide {
-        min-width: 65%;
-      }
-    }
-
-    input[type=range] {
-      accent-color: #ef4444;
-    }
-
-    button, a {
-      transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-    }
-    button:active, a:active {
-      transform: scale(0.96);
-    }
-  </style>
+    </script>
 </head>
-<body class="bg-[#07090e] text-gray-200 font-sans antialiased min-h-screen flex flex-col justify-between relative pb-0">
+<body class="bg-darkBg text-gray-100 min-h-screen flex flex-col justify-between selection:bg-orange-500 selection:text-white">
 
-  <!-- === SPLASH SCREEN / TOMBOL MASUK PORTAL (AUTOPLAY AUDIO FIX) === -->
-  <div id="welcomeOverlay" class="fixed inset-0 bg-slate-950/95 z-[9999] flex flex-col items-center justify-center text-center p-4 backdrop-blur-md">
-    <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-sm space-y-6 border border-red-600/40 relative overflow-hidden animate-modal-in">
-      <div class="absolute -top-12 -left-12 w-32 h-32 bg-red-600/20 rounded-full blur-2xl pointer-events-none"></div>
-      
-      <div class="w-20 h-20 bg-red-950/50 rounded-2xl flex items-center justify-center mx-auto border border-red-600/40 shadow-inner overflow-hidden p-1 relative z-10">
-        <img src="NakamaLogo.png" alt="Logo" class="w-full h-full object-cover rounded-xl" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
-      </div>
-
-      <div class="relative z-10">
-        <h2 class="text-xl font-black tracking-wider text-white">TRIAD COMMUNITY</h2>
-        <p class="text-xs text-gray-400 mt-1">Selamat datang di website resmi kami</p>
-      </div>
-
-      <button onclick="enterPortal()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider text-xs cursor-pointer relative z-10">
-        <i class="fa-solid fa-power-off"></i> KLIK UNTUK MASUK
-      </button>
-    </div>
-  </div>
-
-  <!-- === MODAL VERIFIKASI IDENTITAS / LOGIN === -->
-  <div id="loginModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6 border border-red-600/40 relative overflow-hidden animate-modal-in">
-      <div class="absolute -top-12 -left-12 w-32 h-32 bg-red-600/20 rounded-full blur-2xl pointer-events-none"></div>
-
-      <div class="text-center space-y-3 relative z-10">
-        <div class="w-20 h-20 bg-red-950/50 rounded-2xl flex items-center justify-center mx-auto border border-red-600/40 shadow-inner overflow-hidden p-1">
-          <img src="NakamaLogo.png" alt="Logo" class="w-full h-full object-cover rounded-xl" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
-        </div>
-        <div>
-          <h2 class="text-2xl font-black tracking-wider text-red-500">VERIFIKASI IDENTITAS</h2>
-          <p class="text-xs text-gray-400 mt-1">Masukkan indentitas Anda untuk masuk ke sistem divisi</p>
-        </div>
-      </div>
-
-      <div class="space-y-4 relative z-10">
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Username</label>
-          <div class="relative">
-            <i class="fa-solid fa-user absolute left-3.5 top-3.5 text-gray-500 text-sm"></i>
-            <input type="text" id="loginUsername" placeholder="Masukkan username..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-10 pr-3 text-white focus:outline-none focus:border-red-500 text-sm">
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Sandi / Password</label>
-          <div class="relative">
-            <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-gray-500 text-sm"></i>
-            <input type="password" id="loginPassword" placeholder="Masukkan sandi..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-10 pr-3 text-white focus:outline-none focus:border-red-500 text-sm">
-          </div>
-        </div>
-
-        <div id="loginError" class="text-xs text-red-400 text-center hidden bg-red-950/40 border border-red-800/40 py-2 rounded-lg font-semibold">
-          Username atau sandi salah!
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 pt-2">
-          <button id="loginSubmitBtn" onclick="handleLogin()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider text-xs cursor-pointer">
-            <i class="fa-solid fa-right-to-bracket"></i> MASUK
-          </button>
-          <button onclick="closeLoginModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider shadow cursor-pointer">
-            KEMBALI
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- === WRAPPER BACKGROUND ATAS === -->
-  <div class="hero-bg-container">
-    <div class="bg-slideshow">
-      <div class="bg-slide active" style="background-image: url('bg1.png');"></div>
-      <div class="bg-slide" style="background-image: url('bg2.png');"></div>
-      <div class="bg-slide" style="background-image: url('bg3.png');"></div>
-    </div>
-    <canvas id="rainCanvas"></canvas>
-    <div class="bg-gradient-overlay"></div>
-  </div>
-
-  <!-- Header / Navbar -->
-  <header class="border-b border-red-900/30 bg-slate-950/70 backdrop-blur-md sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-black rounded-xl border border-red-600/50 p-1 flex items-center justify-center shadow-lg">
-          <img src="NakamaLogo.png" alt="Logo" class="h-full w-auto object-contain" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
-        </div>
-        <h1 class="text-xl font-black tracking-widest text-white">TRIAD<span class="text-red-500 font-light"> COMMUNITY</span></h1>
-      </div>
-      
-      <nav class="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest font-bold text-gray-300">
-        <button onclick="scrollToSection('home')" class="text-red-500 hover:text-white transition-colors bg-transparent border-none cursor-pointer">Home</button>
-        <button onclick="scrollToSection('gallery')" class="hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer">Dokumentasi</button>
-        <button onclick="scrollToSection('about')" class="hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer">Nilai & Visi</button>
-      </nav>
-
-      <div class="flex items-center gap-3">
-        <button onclick="openLoginModal()" class="px-5 py-2.5 text-xs font-black tracking-wider uppercase text-white bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 rounded-xl shadow-lg border border-red-500/30 flex items-center gap-2 cursor-pointer">
-          <i class="fa-solid fa-right-to-bracket"></i> Akses System
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Content -->
-  <main class="flex-1 relative z-10">
-    
-    <!-- Hero Section -->
-    <section id="home" class="max-w-5xl mx-auto px-6 pt-20 pb-24 text-center">
-      <span class="px-4 py-1.5 text-xs font-bold tracking-widest text-red-400 uppercase border border-red-800/40 rounded-full bg-slate-950/60 backdrop-blur inline-flex items-center gap-2 shadow-inner">
-        <i class="fa-solid fa-shield-halved"></i> KEADILAN • KEBERSAMAAN • PERSAUDARAAN
-      </span>
-      
-      <h2 class="text-4xl md:text-7xl font-black tracking-wider mt-6 mb-6 leading-tight title-gradient">
-        WELCOME TO <br> TRIAD COMMUNITY
-      </h2>
-    </section>
-
-    <!-- SECTION GALERI DOKUMENTASI -->
-    <section id="gallery" class="max-w-7xl mx-auto px-6 pt-16 pb-12">
-      <div class="text-center mb-8">
-        <span class="text-xs font-bold text-red-400 uppercase tracking-widest bg-red-950/50 px-3 py-1 rounded-full border border-red-600/30">Galeri Kegiatan</span>
-        <h3 class="text-2xl font-black text-white uppercase tracking-wider mt-2">GALLERY OF MEMORIES</h3>
-      </div>
-
-      <div class="gallery-container">
-        <div class="gallery-track" id="galleryTrack">
-          
-          <!-- Slide 1 -->
-          <div class="gallery-slide">
-            <div class="w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
-              <img src="bg1.png" alt="Dokumentasi 1" class="photo-box rounded-xl">
+    <!-- Header / Navbar -->
+    <header class="w-full border-b border-borderCol bg-darkBg/95 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex justify-between items-center shadow-lg">
+        <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-lg bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-orange-500 font-bold text-sm">
+                <i class="fa-solid fa-shield-halved"></i>
             </div>
-          </div>
-
-          <!-- Slide 2 -->
-          <div class="gallery-slide">
-            <div class="w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border border-red-500/30 glass-card p-2">
-              <img src="bg2.png" alt="Dokumentasi 2" class="photo-box rounded-xl">
-            </div>
-          </div>
-
-          <!-- Slide 3 -->
-          <div class="gallery-slide">
-            <div class="w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border-2 border-red-500/60 glass-card p-2">
-              <img src="bg3.png" alt="Dokumentasi 3" class="photo-box rounded-xl">
-            </div>
-          </div>
-
+            <span class="text-sm font-black tracking-wider text-white uppercase">TRIAD <span class="text-orange-500">COMMUNITY</span></span>
         </div>
 
-        <!-- Tombol Navigasi Kiri Kanan -->
-        <button onclick="prevGallerySlide()" class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/80 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/20 shadow-2xl z-20 cursor-pointer">
-          <i class="fa-solid fa-chevron-left text-base"></i>
-        </button>
-        <button onclick="nextGallerySlide()" class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/80 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/20 shadow-2xl z-20 cursor-pointer">
-          <i class="fa-solid fa-chevron-right text-base"></i>
-        </button>
-      </div>
-    </section>
+        <nav class="hidden md:flex items-center space-x-8 text-xs font-semibold text-gray-400">
+            <a href="../" class="hover:text-white transition">Home</a>
+            <a href="../dokumentasi" class="hover:text-white transition">Dokumentasi</a>
+            <a href="../nilai-visi" class="hover:text-white transition">Nilai & Visi</a>
+        </nav>
 
-    <!-- WRAPPER AREA BAWAH -->
-    <div class="w-full bg-[#030406] border-t border-red-950/80 shadow-[0_-15px_30px_rgba(0,0,0,0.8)] relative z-10 mt-16 pt-8 pb-12">
-      
-      <!-- SECTION VISI & PILAR ORGANISASI -->
-      <section id="about" class="max-w-6xl mx-auto px-6 py-8">
-        <h3 class="text-xl font-black text-white uppercase tracking-widest text-center mb-8">
-          NILAI & PILAR UTAMA ORGANISASI
-        </h3>
+        <div class="flex items-center space-x-3">
+            <span id="api-status" class="text-[11px] text-gray-400 hidden sm:flex items-center gap-1.5 bg-cardBg border border-borderCol px-3 py-1.5 rounded-xl">
+                <i class="fa-solid fa-satellite-dish text-orange-500 animate-pulse"></i> Memeriksa Live...
+            </span>
+            <button onclick="openAdminModal()" class="px-4 py-2 text-xs bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-xl transition flex items-center gap-2 shadow-lg shadow-orange-950">
+                <i class="fa-solid fa-lock" id="lock-icon"></i> <span id="admin-toggle-text">Mode Admin</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-4 md:p-6 max-w-7xl mx-auto w-full flex flex-col gap-6">
         
-        <div class="grid md:grid-cols-3 gap-6">
-          <div class="glass-card p-6 rounded-2xl text-center space-y-3">
-            <div class="w-12 h-12 bg-red-950/80 text-red-400 border border-red-600/40 rounded-xl flex items-center justify-center text-xl mx-auto">
-              <i class="fa-solid fa-scale-balanced"></i>
+        <div class="flex justify-between items-center bg-cardBg border border-borderCol px-5 py-4 rounded-2xl shadow-xl">
+            <div>
+                <h2 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-tv text-orange-500"></i> Multiview Siaran Langsung Keluarga
+                </h2>
+                <p class="text-[11px] text-gray-400 mt-0.5">Pantau siaran aktif anggota secara otomatis melalui integrasi database pusat.</p>
             </div>
-            <h4 class="text-lg font-bold text-white uppercase">Keadilan</h4>
-            <p class="text-xs text-gray-300 leading-relaxed">
-              Menjunjung tinggi prinsip kesetaraan, keterbukaan informasi, serta keputusan yang objektif demi kesejahteraan bersama.
-            </p>
-          </div>
-
-          <div class="glass-card p-6 rounded-2xl text-center space-y-3">
-            <div class="w-12 h-12 bg-amber-950/80 text-amber-400 border border-amber-600/40 rounded-xl flex items-center justify-center text-xl mx-auto">
-              <i class="fa-solid fa-users"></i>
+            <div class="flex items-center gap-2">
+                <button onclick="checkLiveStatusWithAPI()" class="px-3 py-1.5 text-xs bg-darkBg hover:bg-gray-800 border border-borderCol rounded-xl transition text-gray-300 font-medium flex items-center gap-1.5" title="Refresh Status Live">
+                    <i class="fa-solid fa-rotate text-orange-500"></i> Refresh Live
+                </button>
+                <button onclick="togglePanel()" class="px-3 py-1.5 text-xs bg-darkBg hover:bg-gray-800 border border-borderCol rounded-xl transition text-gray-300 font-medium flex items-center gap-1.5">
+                    <i class="fa-solid fa-sliders text-orange-500"></i> <span id="panel-toggle-text">Tutup Panel</span>
+                </button>
             </div>
-            <h4 class="text-lg font-bold text-white uppercase">Kebersamaan</h4>
-            <p class="text-xs text-gray-300 leading-relaxed">
-              Menyatukan langkah dan visi dalam setiap kegiatan, saling mendukung dalam suka maupun duka di dalam organisasi.
-            </p>
-          </div>
-
-          <div class="glass-card p-6 rounded-2xl text-center space-y-3">
-            <div class="w-12 h-12 bg-emerald-950/80 text-emerald-400 border border-emerald-600/40 rounded-xl flex items-center justify-center text-xl mx-auto">
-              <i class="fa-solid fa-handshake"></i>
-            </div>
-            <h4 class="text-lg font-bold text-white uppercase">Persaudaraan</h4>
-            <p class="text-xs text-gray-300 leading-relaxed">
-              Membentuk ikatan kekeluargaan yang erat, loyalitas tanpa batas, serta perlindungan timbal balik antar anggota.
-            </p>
-          </div>
         </div>
-      </section>
 
-      <!-- Stat Counter Section -->
-      <section class="max-w-3xl mx-auto px-6 py-6">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 text-center">
-          <div class="glass-card py-2 px-3 rounded-lg">
-            <div class="text-base font-black text-red-500">100%</div>
-            <div class="text-[9px] uppercase tracking-wider text-gray-400">Realtime Sync</div>
-          </div>
-          <div class="glass-card py-2 px-3 rounded-lg">
-            <div class="text-base font-black text-amber-500">24/7</div>
-            <div class="text-[9px] uppercase tracking-wider text-gray-400">System Active</div>
-          </div>
-          <div class="glass-card py-2 px-3 rounded-lg">
-            <div class="text-base font-black text-emerald-500">Integrated</div>
-            <div class="text-[9px] uppercase tracking-wider text-gray-400">Discord Webhook</div>
-          </div>
-          <div class="glass-card py-2 px-3 rounded-lg">
-            <div class="text-base font-black text-blue-500">Multi-Role</div>
-            <div class="text-[9px] uppercase tracking-wider text-gray-400">Security Access</div>
-          </div>
+        <!-- Control & Stream Selector Panel -->
+        <div id="control-panel" class="bg-cardBg border border-borderCol rounded-2xl p-4 md:p-5 shadow-2xl transition-all duration-300">
+            <div class="flex justify-between items-center mb-3 pb-2 border-b border-borderCol text-xs font-semibold text-gray-400">
+                <span id="active-summary">Siaran Aktif (0/0)</span>
+                <span class="text-orange-500 cursor-pointer hover:underline" onclick="resetSelection()">Reset Pilihan</span>
+            </div>
+
+            <!-- List Tombol Semua Anggota -->
+            <div id="streamer-buttons-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2 max-h-64 overflow-y-auto pr-1">
+                <div class="col-span-full text-center py-6 text-gray-500 text-xs">Memuat data dari database...</div>
+            </div>
+
+            <!-- Form Tambah Channel Baru / Override Manual -->
+            <div id="admin-form-section" class="mt-4 pt-3 border-t border-borderCol hidden space-y-3">
+                <div class="text-[11px] text-orange-400 font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-shield-halved"></i> Panel Kontrol Admin (Tambah Channel / Paksa Status Live)
+                </div>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <input type="text" id="input-name" placeholder="Nama Anggota (contoh: APINPALINGSERIUS)" class="bg-darkBg border border-borderCol px-3 py-2 rounded-xl text-xs flex-1 text-white focus:outline-none focus:border-orange-500">
+                    <input type="text" id="input-channel" placeholder="YouTube Channel ID (awalan UC...)" class="bg-darkBg border border-borderCol px-3 py-2 rounded-xl text-xs flex-1 text-white focus:outline-none focus:border-orange-500">
+                    <input type="text" id="input-videoid" placeholder="ID Video Live Opsional (opsional)" class="bg-darkBg border border-borderCol px-3 py-2 rounded-xl text-xs flex-1 text-white focus:outline-none focus:border-orange-500">
+                    <button onclick="addNewStreamer()" class="bg-orange-600 hover:bg-orange-500 text-white font-semibold px-4 py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow">
+                        <i class="fa-solid fa-plus"></i> Simpan
+                    </button>
+                    <button onclick="logoutAdmin()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-2 rounded-xl text-xs transition" title="Kunci Kembali">
+                        <i class="fa-solid fa-lock"></i>
+                    </button>
+                </div>
+                <p class="text-[10px] text-gray-500">*Tips: Jika sistem otomatis YouTube API sedang delay, masukkan ID video (kode setelah `watch?v=`) agar tombol langsung aktif menjadi LIVE.</p>
+            </div>
         </div>
-      </section>
 
-      <!-- Footer -->
-      <footer class="max-w-7xl mx-auto px-6 pt-10 mt-6 border-t border-red-950/50 flex flex-col md:flex-row justify-center items-center gap-4 text-xs text-gray-400">
-        <p>&copy; 2026 <span class="text-red-500 font-bold">TRIAD COMMUNITY</span>. System Management by Bigbug Bunny.</p>
-      </footer>
+        <!-- Dynamic Grid Video Players -->
+        <div id="active-players-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+            <div class="col-span-full text-center py-20 text-gray-500 text-xs border border-dashed border-borderCol rounded-2xl">
+                <i class="fa-solid fa-tv text-3xl mb-2 text-gray-600"></i>
+                <p>Belum ada siaran yang dipilih. Klik salah satu nama anggota berstatus LIVE di atas.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full border-t border-borderCol bg-darkBg/90 px-6 py-3 flex justify-between items-center text-xs text-gray-400">
+        <div>
+            <span>&copy; 2026 <strong class="text-white">Triad Community</strong>. All rights reserved.</span>
+        </div>
+        <div class="bg-cardBg border border-borderCol px-3 py-1.5 rounded-xl flex items-center space-x-3 shadow-lg">
+            <div class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></div>
+            <span class="text-[11px] font-medium text-gray-300 truncate max-w-[150px]">Background Music: Kota Ini Tak Sama</span>
+            <i class="fa-solid fa-music text-orange-500 text-xs"></i>
+        </div>
+    </footer>
+
+    <!-- CUSTOM MODAL POPUP -->
+    <div id="custom-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-cardBg border border-borderCol rounded-2xl p-6 max-w-sm w-full shadow-2xl flex flex-col gap-4 text-center transform transition-all scale-95 opacity-0 duration-200" id="modal-box">
+            <div id="modal-icon" class="w-12 h-12 rounded-full bg-orange-500/20 border border-orange-500/40 text-orange-500 flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <h3 id="modal-title" class="text-sm font-bold text-white uppercase tracking-wider mb-1">Pemberitahuan</h3>
+                <p id="modal-message" class="text-xs text-gray-400">Pesan keterangan muncul di sini.</p>
+            </div>
+            
+            <div id="modal-input-container" class="hidden">
+                <input type="password" id="modal-password-input" placeholder="Masukkan password admin..." class="w-full bg-darkBg border border-borderCol px-3 py-2 rounded-xl text-xs text-white text-center focus:outline-none focus:border-orange-500" onkeydown="if(event.key === 'Enter') document.getElementById('modal-btn-ok').click();">
+            </div>
+
+            <div class="flex gap-2 mt-2">
+                <button id="modal-btn-cancel" onclick="closeModal()" class="flex-1 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-semibold rounded-xl transition hidden">Batal</button>
+                <button id="modal-btn-ok" onclick="closeModal()" class="flex-1 py-2 bg-orange-600 hover:bg-orange-500 text-white text-xs font-semibold rounded-xl transition">OK</button>
+            </div>
+        </div>
     </div>
 
-  </main>
+    <!-- Firebase SDK Compat -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
-  <!-- WIDGET MUSIC PLAYER -->
-  <div class="fixed bottom-6 right-6 z-50">
-    <audio id="bgMusic" loop preload="auto" src="kota ini tak sama tanpamu.mp3"></audio>
+    <script>
+        const firebaseConfig = {
+            databaseURL: "https://nmc-management-default-rtdb.firebaseio.com/"
+        };
 
-    <div class="glass-card p-3 rounded-2xl shadow-2xl border border-red-500/40 flex items-center gap-3 backdrop-blur-md">
-      <button id="playBtn" onclick="togglePlay()" class="w-10 h-10 bg-gradient-to-br from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white rounded-xl flex items-center justify-center text-sm shadow-lg shrink-0 cursor-pointer">
-        <i class="fa-solid fa-play" id="playIcon"></i>
-      </button>
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.database();
 
-      <div>
-        <div class="text-[10px] font-bold text-red-400 uppercase tracking-wider flex items-center gap-1.5">
-          <i class="fa-solid fa-music animate-pulse"></i> Background Music
-        </div>
-        <div class="text-xs font-semibold text-white max-w-[120px] truncate">Kota Ini Tak Sama</div>
-      </div>
+        const YOUTUBE_API_KEY = "AIzaSyCBDW7TXZFi5UB3obnu3TEPd41zvWl8PBU";
 
-      <div class="flex items-center gap-2 pl-2 border-l border-slate-800">
-        <button onclick="toggleMute()" class="text-gray-400 hover:text-white text-sm p-1 cursor-pointer">
-          <i class="fa-solid fa-volume-high" id="muteIcon"></i>
-        </button>
-        <input type="range" id="volumeControl" min="0" max="1" step="0.05" value="1" oninput="changeVolume(this.value)" class="w-16 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer">
-      </div>
+        let streamers = [];
+        let activeStreams = [];
+        let isAdmin = sessionStorage.getItem('triad_is_admin') === 'true';
 
-      <a href="https://open.spotify.com/track/13CwOTXUgBugeBByE9oIWb?si=b05d989b3dbf4cb4" target="_blank" class="p-1.5 text-emerald-400 hover:text-emerald-300 transition" title="Buka di Spotify">
-        <i class="fa-brands fa-spotify text-lg"></i>
-      </a>
-    </div>
-  </div>
+        if (isAdmin) showAdminPanelUI();
 
-  <script>
-    // Firebase Config & Logic Modal Login
-    const firebaseConfig = {
-      apiKey: "AIzaSyBWZzjpvghve0zG9COIORa1i1SZJ4mLIoA",
-      authDomain: "nmc-management.firebaseapp.com",
-      databaseURL: "https://nmc-management-default-rtdb.firebaseio.com",
-      projectId: "nmc-management",
-      storageBucket: "nmc-management.firebasestorage.app",
-      messagingSenderId: "551684270539",
-      appId: "1:551684270539:web:0706d854b3ce6f731e6e4e"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    window.addEventListener("DOMContentLoaded", () => {
-      closeLoginModal();
-    });
-
-    function openLoginModal() {
-      document.getElementById("loginModal").classList.remove("hidden");
-    }
-
-    function closeLoginModal() {
-      document.getElementById("loginModal").classList.add("hidden");
-    }
-
-    // Fungsi Masuk Portal & Putar Musik Otomatis
-    function enterPortal() {
-      const music = document.getElementById('bgMusic');
-      const playIcon = document.getElementById('playIcon');
-      
-      music.play().then(() => {
-        playIcon.className = "fa-solid fa-pause";
-      }).catch(err => {
-        console.log("Audio gagal diputar:", err);
-      });
-
-      const overlay = document.getElementById('welcomeOverlay');
-      overlay.style.opacity = '0';
-      overlay.style.transition = 'opacity 0.5s ease';
-      setTimeout(() => {
-        overlay.style.display = 'none';
-      }, 500);
-    }
-
-    function handleLogin() {
-      const usernameInput = document.getElementById("loginUsername").value.trim();
-      const passwordInput = document.getElementById("loginPassword").value.trim();
-      const errorDiv = document.getElementById("loginError");
-
-      if (!usernameInput || !passwordInput) {
-        errorDiv.innerText = "Username dan sandi wajib diisi!";
-        errorDiv.classList.remove("hidden");
-        return;
-      }
-
-      db.ref('admin_users').once('value').then((snapshot) => {
-        const admins = snapshot.val();
-        let isAdmin = false;
-
-        if (admins) {
-          for (let userKey in admins) {
-            if (userKey.toLowerCase() === usernameInput.toLowerCase()) {
-              const userData = admins[userKey];
-              const storedPass = (typeof userData === 'object' && userData !== null) ? userData.password : userData;
-              if (String(storedPass) === String(passwordInput)) {
-                isAdmin = true;
-                break;
-              }
+        function showPopup(title, message, type = 'warning', showInput = false, onOkCallback = null) {
+            const modal = document.getElementById('custom-modal');
+            const box = document.getElementById('modal-box');
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = message;
+            
+            const iconDiv = document.getElementById('modal-icon');
+            if (type === 'success') {
+                iconDiv.className = "w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto text-xl";
+                iconDiv.innerHTML = `<i class="fa-solid fa-check"></i>`;
+            } else {
+                iconDiv.className = "w-12 h-12 rounded-full bg-orange-500/20 border border-orange-500/40 text-orange-500 flex items-center justify-center mx-auto text-xl";
+                iconDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i>`;
             }
-          }
+
+            const inputContainer = document.getElementById('modal-input-container');
+            const cancelBtn = document.getElementById('modal-btn-cancel');
+            const okBtn = document.getElementById('modal-btn-ok');
+
+            if (showInput) {
+                inputContainer.classList.remove('hidden');
+                cancelBtn.classList.remove('hidden');
+                document.getElementById('modal-password-input').value = '';
+                setTimeout(() => document.getElementById('modal-password-input').focus(), 100);
+            } else {
+                inputContainer.classList.add('hidden');
+                cancelBtn.classList.add('hidden');
+            }
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                box.classList.remove('scale-95', 'opacity-0');
+                box.classList.add('scale-100', 'opacity-100');
+            }, 10);
+
+            okBtn.onclick = () => {
+                if (onOkCallback) {
+                    onOkCallback();
+                } else {
+                    closeModal();
+                }
+            };
         }
 
-        if (isAdmin || true) {
-          localStorage.setItem("nmc_user_role", "editor");
-          window.location.href = "/dashboard";
-        } else {
-          errorDiv.innerText = "Username atau sandi salah!";
-          errorDiv.classList.remove("hidden");
+        function closeModal() {
+            const modal = document.getElementById('custom-modal');
+            const box = document.getElementById('modal-box');
+            box.classList.remove('scale-100', 'opacity-100');
+            box.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 150);
         }
-      }).catch(() => {
-        window.location.href = "/dashboard";
-      });
-    }
 
-    // Gallery Carousel Script
-    const galleryTrack = document.getElementById('galleryTrack');
-    const gallerySlides = galleryTrack.querySelectorAll('.gallery-slide');
-    let galleryIndex = 0;
+        // Ambil data streamer dari database
+        db.ref('nmc_data/streamers').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                streamers = Object.keys(data).map(key => ({
+                    id: key,
+                    name: data[key].name,
+                    channelId: data[key].channelId,
+                    manualVideoId: data[key].videoId || '',
+                    isLive: false,
+                    videoId: ''
+                }));
+                checkLiveStatusWithAPI();
+            } else {
+                streamers = [];
+                renderStreamerButtons();
+            }
+        });
 
-    function updateActiveSlide() {
-      const containerRect = galleryTrack.getBoundingClientRect();
-      const containerCenter = containerRect.left + containerRect.width / 2;
+        // Validasi Admin
+        function openAdminModal() {
+            if (isAdmin) {
+                logoutAdmin();
+                return;
+            }
 
-      let closestIndex = 0;
-      let minDistance = Infinity;
+            showPopup("Autentikasi Admin", "Masukkan password untuk membuka panel kontrol:", "warning", true, () => {
+                const pwd = document.getElementById('modal-password-input').value;
+                if (!pwd) return;
 
-      gallerySlides.forEach((slide, index) => {
-        const slideRect = slide.getBoundingClientRect();
-        const slideCenter = slideRect.left + slideRect.width / 2;
-        const distance = Math.abs(containerCenter - slideCenter);
+                db.ref('admin_users').once('value').then((snapshot) => {
+                    const data = snapshot.val();
+                    let isValid = false;
 
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestIndex = index;
+                    if (data) {
+                        Object.keys(data).forEach(key => {
+                            if (data[key].password === pwd || key === pwd || data[key] === pwd) {
+                                isValid = true;
+                            }
+                        });
+                    }
+
+                    if (isValid) {
+                        isAdmin = true;
+                        sessionStorage.setItem('triad_is_admin', 'true');
+                        showAdminPanelUI();
+                        closeModal();
+                        showPopup("Berhasil", "Akses admin diberikan!", "success");
+                    } else {
+                        showPopup("Gagal", "Password admin salah!", "warning");
+                    }
+                }).catch(err => {
+                    showPopup("Error", "Gagal terhubung ke database.", "warning");
+                });
+            });
         }
-      });
 
-      galleryIndex = closestIndex;
-      gallerySlides.forEach((slide, index) => {
-        if (index === galleryIndex) {
-          slide.classList.add('active-center');
-        } else {
-          slide.classList.remove('active-center');
+        function showAdminPanelUI() {
+            document.getElementById('admin-form-section').classList.remove('hidden');
+            document.getElementById('lock-icon').className = "fa-solid fa-unlock text-emerald-400";
+            document.getElementById('admin-toggle-text').innerText = "Admin Aktif";
         }
-      });
-    }
 
-    galleryTrack.addEventListener('scroll', () => {
-      window.requestAnimationFrame(updateActiveSlide);
-    });
-
-    function scrollToSlide(index) {
-      galleryIndex = (index + gallerySlides.length) % gallerySlides.length;
-      const targetSlide = gallerySlides[galleryIndex];
-      
-      const scrollLeftPos = targetSlide.offsetLeft - (galleryTrack.clientWidth - targetSlide.clientWidth) / 2;
-      galleryTrack.scrollTo({
-        left: scrollLeftPos,
-        behavior: 'smooth'
-      });
-    }
-
-    function nextGallerySlide() {
-      scrollToSlide(galleryIndex + 1);
-    }
-
-    function prevGallerySlide() {
-      scrollToSlide(galleryIndex - 1);
-    }
-
-    setInterval(() => {
-      nextGallerySlide();
-    }, 5000);
-
-    window.addEventListener('load', () => {
-      scrollToSlide(gallerySlides.length - 1);
-    });
-
-    // Rain Canvas Script
-    const canvas = document.getElementById('rainCanvas');
-    const ctx = canvas.getContext('2d');
-
-    function resizeCanvas() {
-      const container = document.querySelector('.hero-bg-container');
-      canvas.width = container.offsetWidth;
-      canvas.height = container.offsetHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    const raindrops = [];
-    const maxDrops = 100;
-
-    for (let i = 0; i < maxDrops; i++) {
-      raindrops.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        length: Math.random() * 30 + 15,
-        speed: Math.random() * 6 + 4,
-        opacity: Math.random() * 0.6 + 0.3
-      });
-    }
-
-    function animateRain() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.55)';
-      ctx.lineWidth = 2;
-      ctx.lineCap = 'round';
-
-      for (let drop of raindrops) {
-        ctx.beginPath();
-        ctx.globalAlpha = drop.opacity;
-        ctx.moveTo(drop.x, drop.y);
-        ctx.lineTo(drop.x - 1, drop.y + drop.length);
-        ctx.stroke();
-
-        drop.y += drop.speed;
-        drop.x -= 0.3;
-        if (drop.y > canvas.height) {
-          drop.y = -30;
-          drop.x = Math.random() * canvas.width;
+        function logoutAdmin() {
+            isAdmin = false;
+            sessionStorage.removeItem('triad_is_admin');
+            document.getElementById('admin-form-section').classList.add('hidden');
+            document.getElementById('lock-icon').className = "fa-solid fa-lock text-orange-500";
+            document.getElementById('admin-toggle-text').innerText = "Mode Admin";
+            showPopup("Informasi", "Anda telah keluar dari mode admin.", "success");
         }
-      }
-      requestAnimationFrame(animateRain);
-    }
-    animateRain();
 
-    function scrollToSection(sectionId) {
-      if (sectionId === 'home') {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        const el = document.getElementById(sectionId);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth' });
+        // Pengecekan Live Menggunakan Cek Video Terbaru Langsung dari Channel (Tanpa Delay Search API)
+        async function checkLiveStatusWithAPI() {
+            const statusIndicator = document.getElementById('api-status');
+            if (statusIndicator) {
+                statusIndicator.innerHTML = `<i class="fa-solid fa-satellite-dish text-orange-500 animate-pulse"></i> Memeriksa Live...`;
+            }
+
+            let liveCount = 0;
+
+            for (let s of streamers) {
+                // Prioritas 1: Jika admin mengisi video ID manual, langsung aktifkan
+                if (s.manualVideoId && s.manualVideoId.length > 5) {
+                    s.isLive = true;
+                    s.videoId = s.manualVideoId;
+                    liveCount++;
+                    continue;
+                }
+
+                if (!s.channelId || !s.channelId.startsWith('UC')) continue;
+
+                try {
+                    // Ambil video upload/live terbaru dari channel secara langsung menggunakan endpoint channels -> uploads playlist
+                    const channelUrl = `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${s.channelId}&key=${YOUTUBE_API_KEY}`;
+                    const chResponse = await fetch(channelUrl);
+                    const chData = await chResponse.json();
+
+                    if (chData.items && chData.items.length > 0) {
+                        const uploadsPlaylistId = chData.items[0].contentDetails.relatedPlaylists.uploads;
+                        
+                        // Ambil video paling atas dari playlist uploads
+                        const playlistUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=1&key=${YOUTUBE_API_KEY}`;
+                        const plResponse = await fetch(playlistUrl);
+                        const plData = await plResponse.json();
+
+                        if (plData.items && plData.items.length > 0) {
+                            const latestVideoId = plData.items[0].snippet.resourceId.videoId;
+
+                            // Cek detail status live video tersebut via videos endpoint
+                            const videoDetailUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,liveStreamingDetails&id=${latestVideoId}&key=${YOUTUBE_API_KEY}`;
+                            const vResponse = await fetch(videoDetailUrl);
+                            const vData = await vResponse.json();
+
+                            if (vData.items && vData.items.length > 0) {
+                                const videoInfo = vData.items[0];
+                                const broadcastContent = videoInfo.snippet.liveBroadcastContent;
+                                
+                                // Jika statusnya 'live' atau sedang berlangsung siaran langsung
+                                if (broadcastContent === 'live') {
+                                    s.isLive = true;
+                                    s.videoId = latestVideoId;
+                                    liveCount++;
+                                } else {
+                                    s.isLive = false;
+                                    s.videoId = '';
+                                }
+                            } else {
+                                s.isLive = false;
+                                s.videoId = '';
+                            }
+                        } else {
+                            s.isLive = false;
+                            s.videoId = '';
+                        }
+                    } else {
+                        s.isLive = false;
+                        s.videoId = '';
+                    }
+                } catch (e) {
+                    s.isLive = false;
+                    s.videoId = '';
+                }
+            }
+
+            if (statusIndicator) {
+                statusIndicator.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Live Check Selesai (${liveCount} Aktif)`;
+            }
+            renderStreamerButtons();
         }
-      }
-      history.replaceState(null, null, ' ');
-    }
 
-    const bgSlides = document.querySelectorAll('.bg-slide');
-    let currentBgSlide = 0;
+        function renderStreamerButtons() {
+            const grid = document.getElementById('streamer-buttons-grid');
+            grid.innerHTML = '';
+            
+            if (streamers.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center py-6 text-gray-500 text-xs">Belum ada channel di database. Gunakan mode admin untuk menambahkan.</div>';
+                document.getElementById('active-summary').innerText = `Siaran Aktif (0/0)`;
+                renderPlayers();
+                return;
+            }
 
-    function nextBgSlide() {
-      bgSlides[currentBgSlide].classList.remove('active');
-      currentBgSlide = (currentBgSlide + 1) % bgSlides.length;
-      bgSlides[currentBgSlide].classList.add('active');
-    }
-    setInterval(nextBgSlide, 6000);
+            let liveTotal = 0;
 
-    // Audio Player Script
-    const music = document.getElementById('bgMusic');
-    const playIcon = document.getElementById('playIcon');
-    const muteIcon = document.getElementById('muteIcon');
-    const volumeControl = document.getElementById('volumeControl');
+            streamers.forEach(s => {
+                if (s.isLive) liveTotal++;
+                const isActive = activeStreams.includes(s.id);
+                
+                const btn = document.createElement('button');
+                btn.className = `p-2.5 rounded-xl border text-left text-[11px] font-medium transition flex justify-between items-center group relative ${
+                    isActive 
+                    ? 'bg-orange-950/40 border-orange-500 text-white shadow-lg' 
+                    : s.isLive 
+                        ? 'bg-cardBg border-orange-500/50 text-white hover:border-orange-500 animate-pulse' 
+                        : 'bg-darkBg/50 border-borderCol/60 text-gray-500 opacity-60'
+                }`;
+                
+                btn.onclick = () => {
+                    if (!s.isLive) {
+                        showPopup("Status Siaran", `${s.name} sedang TIDAK LIVE!`, "warning");
+                        return;
+                    }
+                    toggleStream(s.id);
+                };
 
-    music.volume = 0.8;
+                btn.innerHTML = `
+                    <span class="truncate pr-1 font-semibold">${s.name}</span>
+                    <span class="text-[9px] px-1.5 py-0.5 rounded uppercase font-bold tracking-tighter ${s.isLive ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' : 'bg-gray-800 text-gray-600'}">
+                        ${s.isLive ? 'LIVE' : 'OFF'}
+                    </span>
+                `;
+                grid.appendChild(btn);
+            });
 
-    function togglePlay() {
-      if (music.paused) {
-        music.play();
-        playIcon.className = "fa-solid fa-pause";
-      } else {
-        music.pause();
-        playIcon.className = "fa-solid fa-play";
-      }
-    }
+            document.getElementById('active-summary').innerText = `Siaran Aktif (${liveTotal}/${streamers.length})`;
+            renderPlayers();
+        }
 
-    function toggleMute() {
-      music.muted = !music.muted;
-      if (music.muted) {
-        muteIcon.className = "fa-solid fa-volume-xmark text-red-400";
-      } else {
-        updateVolumeIcon(music.volume);
-      }
-    }
+        function toggleStream(id) {
+            if (activeStreams.includes(id)) {
+                activeStreams = activeStreams.filter(item => item !== id);
+            } else {
+                activeStreams.push(id);
+            }
+            renderStreamerButtons();
+        }
 
-    function changeVolume(val) {
-      music.volume = val;
-      if (val == 0) {
-        music.muted = true;
-        muteIcon.className = "fa-solid fa-volume-xmark text-red-400";
-      } else {
-        music.muted = false;
-        updateVolumeIcon(val);
-      }
-    }
+        function renderPlayers() {
+            const container = document.getElementById('active-players-grid');
+            container.innerHTML = '';
 
-    function updateVolumeIcon(val) {
-      if (val > 0.5) {
-        muteIcon.className = "fa-solid fa-volume-high text-gray-200";
-      } else if (val > 0) {
-        muteIcon.className = "fa-solid fa-volume-low text-gray-200";
-      } else {
-        muteIcon.className = "fa-solid fa-volume-xmark text-red-400";
-      }
-    }
-  </script>
+            if (activeStreams.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-20 text-gray-500 text-xs border border-dashed border-borderCol rounded-2xl">
+                        <i class="fa-solid fa-tv text-3xl mb-2 text-gray-600"></i>
+                        <p>Belum ada siaran yang dipilih. Klik salah satu nama anggota berstatus LIVE di atas.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            activeStreams.forEach(id => {
+                const streamer = streamers.find(s => s.id === id);
+                if (!streamer || !streamer.isLive) return;
+
+                const embedSrc = `https://www.youtube.com/embed/${streamer.videoId}?autoplay=1`;
+
+                const playerBox = document.createElement('div');
+                playerBox.className = "bg-cardBg border border-borderCol rounded-2xl overflow-hidden flex flex-col shadow-xl h-[400px]";
+                playerBox.innerHTML = `
+                    <div class="bg-gray-900 px-4 py-2.5 border-b border-borderCol flex justify-between items-center text-xs">
+                        <span class="font-bold text-orange-400 flex items-center gap-2">
+                            <i class="fa-brands fa-youtube"></i> ${streamer.name}
+                        </span>
+                        <button onclick="toggleStream('${streamer.id}')" class="text-gray-400 hover:text-orange-400 transition">
+                            <i class="fa-solid fa-xmark text-sm"></i>
+                        </button>
+                    </div>
+                    <div class="flex-1 w-full bg-black relative">
+                        <iframe class="w-full h-full absolute inset-0" src="${embedSrc}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                `;
+                container.appendChild(playerBox);
+            });
+        }
+
+        function addNewStreamer() {
+            if (!isAdmin) {
+                showPopup("Akses Ditolak", "Anda harus login sebagai admin terlebih dahulu.", "warning");
+                return;
+            }
+
+            const name = document.getElementById('input-name').value.trim().toUpperCase();
+            const channelId = document.getElementById('input-channel').value.trim();
+            const videoId = document.getElementById('input-videoid').value.trim();
+
+            if (!name || !channelId) {
+                showPopup("Form Kosong", "Nama dan Channel ID wajib diisi!", "warning");
+                return;
+            }
+
+            const newKey = name.replace(/[^a-zA-Z0-9]/g, '_');
+
+            db.ref('nmc_data/streamers/' + newKey).set({
+                name: name,
+                channelId: channelId,
+                videoId: videoId
+            }, (error) => {
+                if (error) {
+                    showPopup("Gagal", "Gagal menyimpan ke database.", "warning");
+                } else {
+                    document.getElementById('input-name').value = '';
+                    document.getElementById('input-channel').value = '';
+                    document.getElementById('input-videoid').value = '';
+                    showPopup("Berhasil", "Data channel berhasil disimpan!", "success");
+                }
+            });
+        }
+
+        function togglePanel() {
+            const panel = document.getElementById('control-panel');
+            const text = document.getElementById('panel-toggle-text');
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                text.innerText = 'Tutup Panel';
+            } else {
+                panel.style.display = 'none';
+                text.innerText = 'Buka Panel';
+            }
+        }
+
+        function resetSelection() {
+            activeStreams = [];
+            renderStreamerButtons();
+        }
+    </script>
 </body>
 </html>
