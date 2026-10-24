@@ -113,7 +113,7 @@
                 <button onclick="switchTab('NMC7G')" id="tab-NMC7G" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer">
                     NMC7G
                 </button>
-                <button onclick="switchTab('TriadCommunity')" id="tab-triad" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer">
+                <button onclick="switchTab('TriadCommunity')" id="tab-TriadCommunity" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer">
                     TRIAD
                 </button>
             </div>
@@ -185,18 +185,15 @@
             currentTab = tab;
             const btnNMC = document.getElementById('tab-NMC');
             const btnNMC7G = document.getElementById('tab-NMC7G');
-            const btnTriad = document.getElementById('tab-triad');
+            const btnTriad = document.getElementById('tab-TriadCommunity');
 
             [btnNMC, btnNMC7G, btnTriad].forEach(b => {
-                b.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer";
+                if (b) b.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer";
             });
 
-            if (tab === 'NMC') {
-                btnNMC.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer";
-            } else if (tab === 'NMC7G') {
-                btnNMC7G.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer";
-            } else if (tab === 'TriadCommunity') {
-                btnTriad.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer";
+            const activeBtn = document.getElementById('tab-' + tab);
+            if (activeBtn) {
+                activeBtn.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer";
             }
 
             document.getElementById('searchInput').value = '';
@@ -239,7 +236,7 @@
             tbody.innerHTML = '';
 
             if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-20 text-gray-500"><div class="max-w-xs mx-auto space-y-2"><i class="fa-solid fa-folder-open text-3xl text-red-500/50"></i><p class="text-xs">Tidak ada data konten atau kreator yang ditemukan.</p></div></td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-20 text-gray-500"><div class="max-w-xs mx-auto space-y-2"><i class="fa-solid fa-folder-open text-3xl text-red-500/50"></i><p class="text-xs">Belum ada data konten clipper yang tercatat di kategori ini.</p></div></td></tr>`;
                 return;
             }
 
