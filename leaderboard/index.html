@@ -32,7 +32,6 @@
         .title-glow {
             text-shadow: 0 0 30px rgba(239, 68, 68, 0.35);
         }
-        /* Custom scrollbar yang elegan */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -51,7 +50,7 @@
 </head>
 <body class="bg-[#07090e] text-gray-100 min-h-screen flex flex-col justify-between selection:bg-red-500 selection:text-white">
 
-    <!-- Header / Navbar Elegan -->
+    <!-- Header / Navbar (Dokumentasi & Visi Dihilangkan) -->
     <header class="border-b border-red-950/50 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -65,8 +64,6 @@
                 <a href="../" class="hover:text-red-400 transition-colors">Home</a>
                 <a href="../multiview/" class="hover:text-red-400 transition-colors">Multiview</a>
                 <a href="./" class="text-red-400 font-bold transition-colors">Papan Peringkat</a>
-                <a href="../#gallery" class="hover:text-red-400 transition-colors">Dokumentasi</a>
-                <a href="../#about" class="hover:text-red-400 transition-colors">Visi</a>
             </nav>
 
             <div class="flex items-center space-x-3">
@@ -102,13 +99,13 @@
 
         <!-- Tab Navigasi Divisi Clipper -->
         <div class="flex items-center gap-3 border-b border-red-950/60 pb-4 overflow-x-auto">
-            <button onclick="switchTab('Sonofsukri')" id="tab-sonofsukri" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40">
+            <button onclick="switchTab('Sonofsukri')" id="tab-sonofsukri" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer">
                 NMC
             </button>
-            <button onclick="switchTab('GiString')" id="tab-gistring" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800">
+            <button onclick="switchTab('GiString')" id="tab-gistring" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer">
                 NMC7G
             </button>
-            <button onclick="switchTab('TriadCommunity')" id="tab-triad" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800">
+            <button onclick="switchTab('TriadCommunity')" id="tab-triad" class="px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer">
                 TRIAD
             </button>
         </div>
@@ -179,18 +176,16 @@
             const btnGiString = document.getElementById('tab-gistring');
             const btnTriad = document.getElementById('tab-triad');
 
-            // Reset semua tombol tab ke gaya non-aktif
             [btnSonofsukri, btnGiString, btnTriad].forEach(b => {
-                b.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800";
+                b.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer";
             });
 
-            // Berikan gaya aktif pada tab yang dipilih
             if (tab === 'Sonofsukri') {
-                btnSonofsukri.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40";
+                btnSonofsukri.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer";
             } else if (tab === 'GiString') {
-                btnGiString.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40";
+                btnGiString.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer";
             } else if (tab === 'TriadCommunity') {
-                btnTriad.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40";
+                btnTriad.className = "px-6 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer";
             }
 
             loadLeaderboardData();
