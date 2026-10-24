@@ -14,82 +14,107 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
     body { 
-      background-color: #07090e; 
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-      color: #e2e8f0; 
-      overflow-x: hidden; 
-    }
-    .glass-card { 
-      background: rgba(18, 24, 38, 0.85); 
-      backdrop-filter: blur(12px); 
-      border: 1px solid rgba(220, 38, 38, 0.25); 
-    }
-    @keyframes pulseGlow {
-      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.15; }
-      50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.25; }
-    }
-    .bg-ambient-glow {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(239, 68, 68, 0.25) 0%, rgba(245, 158, 11, 0.08) 40%, transparent 70%);
-      z-index: -1;
-      pointer-events: none;
-      animation: pulseGlow 10s ease-in-out infinite;
+      font-family: 'Inter', sans-serif; 
     }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
-  <div class="bg-ambient-glow"></div>
+<body class="bg-zinc-950 text-zinc-100 h-screen flex overflow-hidden">
 
-  <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6 border border-red-600/40 relative overflow-hidden">
-    <div class="absolute -top-12 -left-12 w-32 h-32 bg-red-600/20 rounded-full blur-2xl pointer-events-none"></div>
-
-    <div class="text-center space-y-3 relative z-10">
-      <div class="w-20 h-20 bg-red-950/50 rounded-2xl flex items-center justify-center mx-auto border border-red-600/40 shadow-inner overflow-hidden p-1">
-        <img src="../Nakama.png" alt="Logo" class="w-full h-full object-cover rounded-xl" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+  <!-- SISI KIRI: Form Login (Tema Gelap & Merah Khas Nakama) -->
+  <div class="w-full lg:w-1/2 flex flex-col justify-between p-8 lg:p-16 z-10 bg-zinc-950/95 backdrop-blur-md overflow-y-auto">
+    <!-- Header Atas / Logo Kecil -->
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 bg-red-950/50 rounded-xl flex items-center justify-center border border-red-600/40 p-1">
+        <img src="../Nakama.png" alt="Logo" class="w-full h-full object-cover rounded-lg" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
       </div>
-      <div>
-        <h2 class="text-2xl font-black tracking-wider text-red-500">VERIFIKASI IDENTITAS</h2>
-        <p class="text-xs text-gray-400 mt-1">Masukkan kredensial Anda untuk masuk ke sistem divisi Nakama MC</p>
-      </div>
+      <span class="text-red-500 font-black tracking-wider text-sm">NAKAMA MC</span>
     </div>
 
-    <div class="space-y-4 relative z-10">
-      <div>
-        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Username</label>
-        <div class="relative">
-          <i class="fa-solid fa-user absolute left-3.5 top-3.5 text-gray-500 text-sm"></i>
-          <input type="text" id="loginUsername" placeholder="Masukkan username..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-10 pr-3 text-white focus:outline-none focus:border-red-500 text-sm">
+    <!-- Form Container -->
+    <div class="max-w-md w-full mx-auto my-auto py-8">
+      <div class="mb-8 space-y-2">
+        <h1 class="text-3xl font-extrabold tracking-tight text-white">Selamat Datang</h1>
+        <p class="text-zinc-400 text-sm">Masukkan kredensial Anda untuk masuk ke sistem divisi Nakama MC.</p>
+      </div>
+
+      <!-- Notifikasi Error -->
+      <div id="loginError" class="hidden mb-6 p-4 rounded-xl text-xs font-medium border bg-red-950/50 border-red-800/60 text-red-400 flex items-center gap-3">
+        <i class="fa-solid fa-triangle-exclamation text-base"></i>
+        <span id="errorText">Username atau sandi salah!</span>
+      </div>
+
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Username</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-zinc-500">
+              <i class="fa-solid fa-user"></i>
+            </span>
+            <input type="text" id="loginUsername" required 
+              class="w-full pl-11 pr-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-600 focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition text-sm"
+              placeholder="Masukkan username...">
+          </div>
         </div>
-      </div>
 
-      <div>
-        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Sandi / Password</label>
-        <div class="relative">
-          <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-gray-500 text-sm"></i>
-          <input type="password" id="loginPassword" placeholder="Masukkan sandi..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-10 pr-3 text-white focus:outline-none focus:border-red-500 text-sm">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Sandi / Password</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-zinc-500">
+              <i class="fa-solid fa-lock"></i>
+            </span>
+            <input type="password" id="loginPassword" required 
+              class="w-full pl-11 pr-12 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-600 focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition text-sm"
+              placeholder="••••••••">
+            <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 pr-4 flex items-center text-zinc-500 hover:text-white transition">
+              <i id="eyeIcon" class="fa-solid fa-eye text-sm"></i>
+            </button>
+          </div>
         </div>
-      </div>
 
-      <div id="loginError" class="text-xs text-red-400 text-center hidden bg-red-950/40 border border-red-800/40 py-2 rounded-lg font-semibold">
-        Username atau sandi salah!
-      </div>
+        <div class="flex items-center justify-between text-sm pt-1">
+          <label class="flex items-center gap-2 cursor-pointer text-zinc-400 hover:text-zinc-300 text-xs">
+            <input type="checkbox" id="remember" class="w-4 h-4 rounded bg-zinc-900 border-zinc-800 text-red-600 focus:ring-red-600 focus:ring-offset-zinc-950">
+            <span>Ingat saya</span>
+          </label>
+        </div>
 
-      <div class="grid grid-cols-2 gap-3 pt-2">
-        <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider text-xs">
-          <i class="fa-solid fa-check"></i> MASUK
-        </button>
-        <a href="/dashboard/" class="w-full bg-slate-800 hover:bg-slate-700 text-gray-300 font-bold py-3.5 px-4 rounded-xl transition border border-slate-700 text-xs tracking-wider flex items-center justify-center text-center">
-          KEMBALI
-        </a>
-      </div>
+        <div class="grid grid-cols-2 gap-3 pt-2">
+          <button type="submit" id="submitBtn" 
+            class="w-full py-3.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold rounded-xl shadow-lg shadow-red-600/20 transition-all flex items-center justify-center gap-2 tracking-wider text-xs">
+            <i class="fa-solid fa-check"></i> <span>MASUK</span>
+          </button>
+          <a href="/dashboard/nakama/" class="w-full bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-bold py-3.5 px-4 rounded-xl transition border border-zinc-800 text-xs tracking-wider flex items-center justify-center text-center">
+            KEMBALI
+          </a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Footer Bawah -->
+    <div class="text-xs text-zinc-600">
+      &copy; 2026 Triad Community / Nakama MC. All rights reserved.
     </div>
   </div>
 
+  <!-- SISI KANAN: Galeri Komunitas / Banner Estetik (Gaya Split-Screen) -->
+  <div class="hidden lg:flex lg:w-1/2 relative bg-zinc-900 items-center justify-center overflow-hidden">
+    <!-- Background / Gambar Komunitas dengan Overlay Gelap & Gradient Merah -->
+    <div class="absolute inset-0 bg-cover bg-center opacity-50 mix-blend-luminosity" style="background-image: url('../Nakama.png');"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent"></div>
+    
+    <!-- Konten di Sisi Kanan -->
+    <div class="relative z-10 p-12 max-w-lg text-center">
+      <div class="w-24 h-24 mx-auto mb-6 rounded-2xl bg-red-950/60 border border-red-500/30 flex items-center justify-center text-red-500 text-4xl shadow-2xl overflow-hidden p-2">
+        <img src="../NakamaLogo.png" alt="Logo Besar" class="w-full h-full object-contain" onerror="this.src='../Nakama.png'">
+      </div>
+      <h2 class="text-2xl font-black text-white tracking-wider mb-3">NAKAMA MC DIVISION</h2>
+      <p class="text-zinc-400 text-sm leading-relaxed">Sistem manajemen terpadu, absensi, dan kontrol operasional internal anggota komunitas.</p>
+    </div>
+  </div>
+
+  <!-- Script Firebase & Logika Login -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBWZzjpvghve0zG9COIORa1i1SZJ4mLIoA",
@@ -104,16 +129,36 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    function handleLogin() {
+    function togglePassword() {
+      const passInput = document.getElementById("loginPassword");
+      const eyeIcon = document.getElementById("eyeIcon");
+      if (passInput.type === "password") {
+        passInput.type = "text";
+        eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
+      } else {
+        passInput.type = "password";
+        eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
+      }
+    }
+
+    function handleLogin(event) {
+      event.preventDefault();
       const usernameInput = document.getElementById("loginUsername").value.trim();
       const passwordInput = document.getElementById("loginPassword").value.trim();
       const errorDiv = document.getElementById("loginError");
+      const errorText = document.getElementById("errorText");
+      const submitBtn = document.getElementById("submitBtn");
+
+      errorDiv.classList.add("hidden");
 
       if (!usernameInput || !passwordInput) {
-        errorDiv.innerText = "Username dan sandi wajib diisi!";
+        errorText.innerText = "Username dan sandi wajib diisi!";
         errorDiv.classList.remove("hidden");
         return;
       }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>MEMERIKSA...</span>`;
 
       db.ref('admin_users').once('value').then((snapshot) => {
         const admins = snapshot.val();
@@ -135,7 +180,7 @@
         if (isAdmin) {
           localStorage.setItem("nmc_user_role", "editor");
           localStorage.setItem("nmc_logged_user", usernameInput);
-          window.location.href = "/dashboard/nakama/";
+          window.location.href = "./";
         } else {
           db.ref('member_users').once('value').then((memSnapshot) => {
             const members = memSnapshot.val();
@@ -157,20 +202,28 @@
             if (isMember) {
               localStorage.setItem("nmc_user_role", "viewer");
               localStorage.setItem("nmc_logged_user", usernameInput);
-              window.location.href = "/dashboard/nakama/";
+              window.location.href = "./";
             } else {
-              errorDiv.innerText = "Username atau sandi salah!";
-              errorDiv.classList.remove("hidden");
+              showError("Username atau sandi salah!");
             }
           }).catch(() => {
-            errorDiv.innerText = "Gagal terhubung ke database!";
-            errorDiv.classList.remove("hidden");
+            showError("Gagal terhubung ke database!");
           });
         }
       }).catch(() => {
-        errorDiv.innerText = "Gagal terhubung ke database!";
-        errorDiv.classList.remove("hidden");
+        showError("Gagal terhubung ke database!");
       });
+    }
+
+    function showError(msg) {
+      const errorDiv = document.getElementById("loginError");
+      const errorText = document.getElementById("errorText");
+      const submitBtn = document.getElementById("submitBtn");
+      errorText.innerText = msg;
+      errorDiv.classList.remove("hidden");
+      
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span>MASUK</span>`;
     }
   </script>
 </body>
