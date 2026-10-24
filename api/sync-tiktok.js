@@ -2,7 +2,6 @@ import { initializeApp, getApps } from "firebase-admin/app";
 import { getDatabase } from "firebase-admin/database";
 import axios from "axios";
 
-// Inisialisasi Firebase Admin menggunakan Environment Variables Vercel
 if (!getApps().length) {
   initializeApp({
     credential: {
@@ -16,13 +15,12 @@ if (!getApps().length) {
 
 const db = getDatabase();
 
-export default async function handler(req, res) {
+async function fetchAndSave(hashtag, categoryName) {
   try {
-    // Panggilan API pencarian TikTok berdasarkan hashtag
     const options = {
       method: 'GET',
       url: 'https://tiktok-search-result.p.rapidapi.com/search/video',
-      params: { query: '#gstr', count: '20' },
+      params: { query: `#${hashtag}`, count: '20' },
       headers: {
         'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
         'X-RapidAPI-Host': 'tiktok-search-result.p.rapidapi.com'
@@ -49,10 +47,20 @@ export default async function handler(req, res) {
       };
     });
 
-    // Simpan otomatis ke Firebase Realtime Database
-    await db.ref('nmc_data/leaderboard/Sonofsukri').set(formattedData);
+    await db.ref(`nmc_data/leaderboard/${categoryName}`).set(formattedData);
+  } catch (err) {
+    console.error(`Gagal sync hashtag #${hashtag}:`, err.message);
+  }
+}
 
-    return res.status(200).json({ success: true, message: "TikTok leaderboard synced successfully!" });
+export default async function handler(req, res) {
+  try {
+    // Sinkronisasi otomatis berdasarkan hashtag baru Anda
+    await fetchAndSave('nmc', 'Sonofsukri');   // Tagar #nmc masuk ke tab Sonofsukri
+    await fetchAndSave('mnc7g', 'GiString');    // Tagar #mnc7g masuk ke tab GiString
+    await fetchAndSave('triad', 'TriadCommunity'); // Tagar #triad masuk ke kategori baru
+
+    return res.status(200).json({ success: true, message: "Semua hashtag #nmc, #mnc7g, dan #triad berhasil disinkronkan!" });
   } catch (error) {
     console.error("Sync error:", error);
     return res.status(500).json({ success: false, error: error.message });
