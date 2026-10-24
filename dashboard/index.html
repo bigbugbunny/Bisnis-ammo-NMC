@@ -714,12 +714,105 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    // --- NAVIGASI DINAMIS DENGAN URL PARAMETER ---
+    function selectCommunity(type) {
+      if (type === 'nakama') {
+        window.history.pushState({ section: 'mainMenu' }, '', '/dashboard/');
+        tampilkanBagianAktif('mainMenu');
+      }
+    }
+
+    function showSection(sectionId) {
+      if (sectionId === 'mainMenu') {
+        selectCommunity('nakama');
+        return;
+      }
+
+      let modulKey = sectionId.replace('section', '').toLowerCase();
+      if (sectionId === 'sectionBahan') modulKey = 'crafting';
+      else if (sectionId === 'sectionKalkulator') modulKey = 'partner';
+      else if (sectionId === 'sectionBrankas') modulKey = 'brankas';
+      else if (sectionId === 'sectionBeliWarga') modulKey = 'warga';
+      else if (sectionId === 'sectionBisnis') modulKey = 'bisnis';
+      else if (sectionId === 'sectionSetoran') modulKey = 'setoran';
+      else if (sectionId === 'sectionMember') modulKey = 'member';
+
+      const urlBaru = `/dashboard/?modul=${modulKey}`;
+      window.history.pushState({ section: sectionId }, '', urlBaru);
+
+      tampilkanBagianAktif(sectionId);
+    }
+
+    function tampilkanBagianAktif(sectionId) {
+      document.getElementById('sectionMainMenu').classList.add('hidden');
+      document.getElementById('sectionBahan').classList.add('hidden');
+      document.getElementById('sectionKalkulator').classList.add('hidden');
+      document.getElementById('sectionBrankas').classList.add('hidden');
+      document.getElementById('sectionBeliWarga').classList.add('hidden');
+      document.getElementById('sectionBisnis').classList.add('hidden');
+      document.getElementById('sectionSetoran').classList.add('hidden');
+      document.getElementById('sectionMember').classList.add('hidden');
+
+      const btnBack = document.getElementById('btnBackMenu');
+      const subtitle = document.getElementById('headerSubtitle');
+
+      if (sectionId === 'mainMenu') {
+        document.getElementById('sectionMainMenu').classList.remove('hidden');
+        btnBack.classList.add('hidden');
+        document.getElementById('headerTitleText').innerText = "NAKAMA MC BLAINE COUNTY";
+        subtitle.innerText = "SYSTEM MANAGEMENT & CLUB HOUSE";
+      } else {
+        document.getElementById(sectionId).classList.remove('hidden');
+        btnBack.classList.remove('hidden');
+
+        if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
+        else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner Kelompok";
+        else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris & Riwayat)";
+        else if(sectionId === 'sectionBeliWarga') subtitle.innerText = "Modul Transaksi Warga (Beli & Jual)";
+        else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Data Bisnis (Kas Uang Merah & Putih)";
+        else if(sectionId === 'sectionSetoran') {
+          subtitle.innerText = "Modul Data Setoran Bahan Harian & Mingguan Klub";
+          switchSetoranTab('harian');
+        }
+        else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Data Anggota, Hierarki Rank & Status Keaktifan";
+      }
+
+      applyRolePermissions();
+    }
+
+    window.addEventListener('popstate', (event) => {
+      const params = new URLSearchParams(window.location.search);
+      const modul = params.get('modul');
+
+      if (!modul) {
+        tampilkanBagianAktif('mainMenu');
+      } else {
+        let targetSection = 'sectionMainMenu';
+        if (modul === 'crafting') targetSection = 'sectionBahan';
+        else if (modul === 'partner') targetSection = 'sectionKalkulator';
+        else if (modul === 'brankas') targetSection = 'sectionBrankas';
+        else if (modul === 'warga') targetSection = 'sectionBeliWarga';
+        else if (modul === 'bisnis') targetSection = 'sectionBisnis';
+        else if (modul === 'setoran') targetSection = 'sectionSetoran';
+        else if (modul === 'member') targetSection = 'sectionMember';
+
+        tampilkanBagianAktif(targetSection);
+      }
+    });
+
     window.addEventListener("DOMContentLoaded", () => {
       const savedRole = localStorage.getItem("nmc_user_role");
       if (savedRole === "editor" || savedRole === "viewer") {
         currentUserRole = savedRole;
         document.getElementById("loginModal").classList.add("hidden");
-        selectCommunity('nakama');
+        
+        const params = new URLSearchParams(window.location.search);
+        const modul = params.get('modul');
+        if (modul) {
+          window.dispatchEvent(new PopStateEvent('popstate'));
+        } else {
+          selectCommunity('nakama');
+        }
       } else {
         document.getElementById("loginModal").classList.remove("hidden");
       }
@@ -834,64 +927,6 @@
         editorElements.forEach(el => el.classList.add("hidden"));
         if(memberWarning) memberWarning.classList.remove("hidden");
       }
-    }
-
-    // --- NAVIGASI BERSIH TANPA HASH (#) ---
-    function selectCommunity(type) {
-      if (type === 'nakama') {
-        window.history.replaceState({}, document.title, window.location.pathname);
-
-        document.getElementById('sectionMainMenu').classList.remove('hidden');
-        document.getElementById('sectionBahan').classList.add('hidden');
-        document.getElementById('sectionKalkulator').classList.add('hidden');
-        document.getElementById('sectionBrankas').classList.add('hidden');
-        document.getElementById('sectionBeliWarga').classList.add('hidden');
-        document.getElementById('sectionBisnis').classList.add('hidden');
-        document.getElementById('sectionSetoran').classList.add('hidden');
-        document.getElementById('sectionMember').classList.add('hidden');
-
-        document.getElementById('btnBackMenu').classList.add('hidden');
-        document.getElementById('headerTitleText').innerText = "NAKAMA MC BLAINE COUNTY";
-        document.getElementById('headerSubtitle').innerText = "SYSTEM MANAGEMENT & CLUB HOUSE";
-        applyRolePermissions();
-      }
-    }
-
-    function showSection(sectionId) {
-      if (sectionId === 'mainMenu') {
-        selectCommunity('nakama');
-        return;
-      }
-
-      window.history.replaceState({}, document.title, window.location.pathname);
-
-      document.getElementById('sectionMainMenu').classList.add('hidden');
-      document.getElementById('sectionBahan').classList.add('hidden');
-      document.getElementById('sectionKalkulator').classList.add('hidden');
-      document.getElementById('sectionBrankas').classList.add('hidden');
-      document.getElementById('sectionBeliWarga').classList.add('hidden');
-      document.getElementById('sectionBisnis').classList.add('hidden');
-      document.getElementById('sectionSetoran').classList.add('hidden');
-      document.getElementById('sectionMember').classList.add('hidden');
-
-      const btnBack = document.getElementById('btnBackMenu');
-      const subtitle = document.getElementById('headerSubtitle');
-
-      document.getElementById(sectionId).classList.remove('hidden');
-      btnBack.classList.remove('hidden');
-
-      if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
-      else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner Kelompok";
-      else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris & Riwayat)";
-      else if(sectionId === 'sectionBeliWarga') subtitle.innerText = "Modul Transaksi Warga (Beli & Jual)";
-      else if(sectionId === 'sectionBisnis') subtitle.innerText = "Modul Data Bisnis (Kas Uang Merah & Putih)";
-      else if(sectionId === 'sectionSetoran') {
-        subtitle.innerText = "Modul Data Setoran Bahan Harian & Mingguan Klub";
-        switchSetoranTab('harian');
-      }
-      else if(sectionId === 'sectionMember') subtitle.innerText = "Modul Data Anggota, Hierarki Rank & Status Keaktifan";
-
-      applyRolePermissions();
     }
 
     const defaultVaultStock = {
