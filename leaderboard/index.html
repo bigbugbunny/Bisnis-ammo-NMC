@@ -102,32 +102,45 @@
             </div>
         </div>
 
-        <!-- Tombol Filter Hashtag Seragam & Kolom Pencarian -->
-        <div class="flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4 border-b border-red-950/60 pb-4">
+        <!-- Menu Filter (Hashtag & Sorting Terbaru/Terpopuler) -->
+        <div class="flex flex-col xl:flex-row justify-between items-stretch xl:items-center gap-4 border-b border-red-950/60 pb-4">
             
-            <!-- Kelima Tombol Filter dengan Gaya Seragam -->
-            <div class="flex flex-wrap items-center gap-3">
-                <button onclick="filterByHashtag('nmc')" id="btn-nmc" class="px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer">
+            <!-- Tombol Filter Hashtag -->
+            <div class="flex flex-wrap items-center gap-2.5">
+                <button onclick="filterByHashtag('nmc')" id="btn-nmc" class="px-4 py-2.5 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer">
                     #NMC
                 </button>
-                <button onclick="filterByHashtag('nmc7g')" id="btn-nmc7g" class="px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-300 hover:text-white border border-slate-800 cursor-pointer">
+                <button onclick="filterByHashtag('nmc7g')" id="btn-nmc7g" class="px-4 py-2.5 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-300 hover:text-white border border-slate-800 cursor-pointer">
                     #NMC7G
                 </button>
-                <button onclick="filterByHashtag('triad')" id="btn-triad" class="px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-300 hover:text-white border border-slate-800 cursor-pointer">
+                <button onclick="filterByHashtag('triad')" id="btn-triad" class="px-4 py-2.5 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-300 hover:text-white border border-slate-800 cursor-pointer">
                     #TRIAD
                 </button>
-                <button onclick="filterByHashtag('nakama')" id="btn-nakama" class="px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-300 hover:text-white border border-slate-800 cursor-pointer">
+                <button onclick="filterByHashtag('nakama')" id="btn-nakama" class="px-4 py-2.5 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-300 hover:text-white border border-slate-800 cursor-pointer">
                     #NAKAMA
                 </button>
-                <button onclick="filterByHashtag('nffn')" id="btn-nffn" class="px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-300 hover:text-white border border-slate-800 cursor-pointer">
+                <button onclick="filterByHashtag('nffn')" id="btn-nffn" class="px-4 py-2.5 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-300 hover:text-white border border-slate-800 cursor-pointer">
                     #NFFN
                 </button>
             </div>
 
-            <!-- Kotak Pencarian (Search Bar) -->
-            <div class="relative w-full lg:w-72">
-                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-gray-400 text-xs"></i>
-                <input type="text" id="searchInput" oninput="filterLeaderboard()" placeholder="Cari kreator atau konten..." class="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-xs text-white focus:outline-none focus:border-red-500 shadow-inner">
+            <!-- Menu Sort (Terpopuler & Terbaru) & Kolom Pencarian -->
+            <div class="flex flex-col sm:flex-row items-center gap-3">
+                <!-- Tombol Menu Sortir -->
+                <div class="flex items-center bg-slate-900/90 border border-slate-800 rounded-xl p-1 w-full sm:w-auto">
+                    <button onclick="setSortMode('popular')" id="sort-popular" class="flex-1 sm:flex-none px-3.5 py-1.5 text-[11px] font-extrabold uppercase tracking-wider rounded-lg transition-all bg-red-700 text-white shadow-sm flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-fire text-amber-400"></i> Terpopuler
+                    </button>
+                    <button onclick="setSortMode('latest')" id="sort-latest" class="flex-1 sm:flex-none px-3.5 py-1.5 text-[11px] font-extrabold uppercase tracking-wider rounded-lg transition-all text-gray-400 hover:text-white flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-clock text-blue-400"></i> Terbaru
+                    </button>
+                </div>
+
+                <!-- Kotak Pencarian (Search Bar) -->
+                <div class="relative w-full sm:w-64">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-gray-400 text-xs"></i>
+                    <input type="text" id="searchInput" oninput="filterLeaderboard()" placeholder="Cari kreator atau konten..." class="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-xs text-white focus:outline-none focus:border-red-500 shadow-inner">
+                </div>
             </div>
         </div>
 
@@ -181,7 +194,8 @@
         const db = firebase.database();
 
         let allLeaderboardData = [];
-        let activeHashtag = 'nmc'; // Default awal
+        let activeHashtag = 'nmc';
+        let sortMode = 'popular'; // 'popular' (views tertinggi) atau 'latest' (waktu terbaru)
 
         window.addEventListener('load', () => {
             loadLeaderboardData();
@@ -190,18 +204,32 @@
         function filterByHashtag(tag) {
             activeHashtag = tag;
 
-            // Reset semua style tombol menjadi sama rata (gelap)
             ['nmc', 'nmc7g', 'triad', 'nakama', 'nffn'].forEach(t => {
                 const btn = document.getElementById('btn-' + t);
                 if (btn) {
-                    btn.className = "px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-300 hover:text-white border border-slate-800 cursor-pointer";
+                    btn.className = "px-4 py-2.5 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-300 hover:text-white border border-slate-800 cursor-pointer";
                 }
             });
 
-            // Berikan style aktif (merah elegan) pada tombol yang sedang diklik
             const activeBtn = document.getElementById('btn-' + tag);
             if (activeBtn) {
-                activeBtn.className = "px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer";
+                activeBtn.className = "px-4 py-2.5 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer";
+            }
+
+            filterLeaderboard();
+        }
+
+        function setSortMode(mode) {
+            sortMode = mode;
+            const btnPopular = document.getElementById('sort-popular');
+            const btnLatest = document.getElementById('sort-latest');
+
+            if (mode === 'popular') {
+                btnPopular.className = "flex-1 sm:flex-none px-3.5 py-1.5 text-[11px] font-extrabold uppercase tracking-wider rounded-lg transition-all bg-red-700 text-white shadow-sm flex items-center justify-center gap-1.5 cursor-pointer";
+                btnLatest.className = "flex-1 sm:flex-none px-3.5 py-1.5 text-[11px] font-extrabold uppercase tracking-wider rounded-lg transition-all text-gray-400 hover:text-white flex items-center justify-center gap-1.5 cursor-pointer";
+            } else {
+                btnLatest.className = "flex-1 sm:flex-none px-3.5 py-1.5 text-[11px] font-extrabold uppercase tracking-wider rounded-lg transition-all bg-red-700 text-white shadow-sm flex items-center justify-center gap-1.5 cursor-pointer";
+                btnPopular.className = "flex-1 sm:flex-none px-3.5 py-1.5 text-[11px] font-extrabold uppercase tracking-wider rounded-lg transition-all text-gray-400 hover:text-white flex items-center justify-center gap-1.5 cursor-pointer";
             }
 
             filterLeaderboard();
@@ -211,7 +239,6 @@
             const tbody = document.getElementById('leaderboard-body');
             tbody.innerHTML = `<tr><td colspan="6" class="text-center py-24 text-gray-500"><i class="fa-solid fa-circle-notch fa-spin text-3xl text-red-500 mb-3"></i><p class="font-medium tracking-wide">Menyelaraskan data clipper...</p></td></tr>`;
 
-            // Mengambil data secara fleksibel dari nmc_data/leaderboard (mendukung struktur folder sub-divisi maupun data langsung)
             db.ref('nmc_data/leaderboard').on('value', (snapshot) => {
                 const data = snapshot.val();
                 
@@ -225,19 +252,15 @@
                 Object.keys(data).forEach(key => {
                     const val = data[key];
                     if (val && typeof val === 'object' && !val.views && !val.link) {
-                        // Jika strukturnya berupa sub-folder (seperti NMC, NMC7G di dalam database)
                         Object.keys(val).forEach(subKey => {
                             list.push({ id: subKey, ...val[subKey] });
                         });
                     } else {
-                        // Jika strukturnya langsung data video
                         list.push({ id: key, ...val });
                     }
                 });
 
                 allLeaderboardData = list;
-                allLeaderboardData.sort((a, b) => b.views - a.views);
-
                 filterLeaderboard();
             });
         }
@@ -245,18 +268,23 @@
         function filterLeaderboard() {
             const keyword = document.getElementById('searchInput').value.toLowerCase();
             
-            const filtered = allLeaderboardData.filter(item => {
+            let filtered = allLeaderboardData.filter(item => {
                 const name = (item.name || '').toLowerCase();
                 const username = (item.username || '').toLowerCase();
                 const desc = (item.desc || '').toLowerCase();
 
                 const matchesKeyword = name.includes(keyword) || username.includes(keyword) || desc.includes(keyword);
-                
-                // Pencarian hashtag yang fleksibel (mencari teks seperti #nmc, nmc, #nakama, dll di deskripsi)
                 const matchesHashtag = activeHashtag === '' || desc.toLowerCase().includes(activeHashtag) || desc.toLowerCase().includes('#' + activeHashtag);
 
                 return matchesKeyword && matchesHashtag;
             });
+
+            // Proses Sorting (Terpopuler berdasarkan views, Terbaru berdasarkan waktu/timestamp atau id)
+            if (sortMode === 'popular') {
+                filtered.sort((a, b) => (b.views || 0) - (a.views || 0));
+            } else {
+                filtered.sort((a, b) => (b.timestamp || b.upload || '').localeCompare(a.timestamp || a.upload || ''));
+            }
 
             renderTable(filtered);
         }
@@ -266,17 +294,17 @@
             tbody.innerHTML = '';
 
             if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-20 text-gray-500"><div class="max-w-xs mx-auto space-y-2"><i class="fa-solid fa-folder-open text-3xl text-red-500/50"></i><p class="text-xs">Tidak ada data video yang ditemukan dengan hashtag tersebut.</p></div></td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-20 text-gray-500"><div class="max-w-xs mx-auto space-y-2"><i class="fa-solid fa-folder-open text-3xl text-red-500/50"></i><p class="text-xs">Tidak ada data video yang ditemukan.</p></div></td></tr>`;
                 return;
             }
 
             list.forEach((item, index) => {
                 let rankBadge = `<span class="font-bold text-gray-400 text-sm">${index + 1}</span>`;
-                if (index === 0) {
+                if (index === 0 && sortMode === 'popular') {
                     rankBadge = `<span class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/50 text-amber-400 flex items-center justify-center font-bold mx-auto text-xs shadow-[0_0_20px_rgba(245,158,11,0.25)]"><i class="fa-solid fa-crown"></i></span>`;
-                } else if (index === 1) {
+                } else if (index === 1 && sortMode === 'popular') {
                     rankBadge = `<span class="w-9 h-9 rounded-xl bg-slate-300/15 border border-slate-300/40 text-slate-200 flex items-center justify-center font-bold mx-auto text-xs">2</span>`;
-                } else if (index === 2) {
+                } else if (index === 2 && sortMode === 'popular') {
                     rankBadge = `<span class="w-9 h-9 rounded-xl bg-amber-700/20 border border-amber-700/40 text-amber-600 flex items-center justify-center font-bold mx-auto text-xs">3</span>`;
                 }
 
@@ -285,7 +313,7 @@
                 row.innerHTML = `
                     <td class="py-4 px-6 text-center">${rankBadge}</td>
                     <td class="py-4 px-6">
-                        <div class="flex items-center gap-3.5">
+                        <div class="div flex items-center gap-3.5">
                             <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-red-950 to-slate-900 border border-red-600/30 flex items-center justify-center text-red-400 font-black text-sm shrink-0 shadow-md">
                                 ${item.name ? item.name.charAt(0).toUpperCase() : 'C'}
                             </div>
@@ -297,9 +325,9 @@
                             </div>
                         </div>
                     </td>
-                    <td class="py-4 px-6 text-gray-400 whitespace-nowrap text-xs">${item.upload}</td>
-                    <td class="py-4 px-6 font-black text-white text-sm whitespace-nowrap tracking-wide">${item.viewsStr || item.views}</td>
-                    <td class="py-4 px-6 text-red-400 font-bold whitespace-nowrap text-xs">${item.likes}</td>
+                    <td class="py-4 px-6 text-gray-400 whitespace-nowrap text-xs">${item.upload || '-'}</td>
+                    <td class="py-4 px-6 font-black text-white text-sm whitespace-nowrap tracking-wide">${item.viewsStr || item.views || 0}</td>
+                    <td class="py-4 px-6 text-red-400 font-bold whitespace-nowrap text-xs">${item.likes || 0}</td>
                     <td class="py-4 px-6 text-center whitespace-nowrap">
                         <a href="${item.link}" target="_blank" class="px-4 py-2 bg-red-950/50 hover:bg-red-900/80 border border-red-600/30 text-red-300 hover:text-white rounded-xl text-xs font-bold transition-all inline-flex items-center gap-1.5 shadow-sm">
                             Tonton <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
