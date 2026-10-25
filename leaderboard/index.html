@@ -97,14 +97,14 @@
                 </p>
             </div>
             
-            <!-- Tombol Sync Langsung ke Apify -->
+            <!-- Tombol Sync via Google Apps Script -->
             <div class="z-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <button onclick="triggerManualSync()" id="btn-sync" class="px-5 py-3 text-xs font-black uppercase tracking-wider text-white bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 rounded-xl shadow-lg border border-red-500/40 flex items-center justify-center gap-2 transition-all cursor-pointer">
                     <i class="fa-solid fa-rotate" id="sync-icon"></i> Tarik Data (Sync)
                 </button>
                 <div class="flex items-center justify-center gap-2 bg-slate-900/80 border border-slate-800 px-4 py-3 rounded-xl text-xs text-gray-300 shadow-inner">
                     <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                    <span class="font-medium">Direct Sync Active</span>
+                    <span class="font-medium">Apps Script Active</span>
                 </div>
             </div>
         </div>
@@ -202,14 +202,11 @@
         let activeHashtag = 'nmc';
         let sortMode = 'popular';
 
-        // Masukkan API Token Apify Anda langsung di sini agar bisa sync tanpa backend Vercel
-       const APIFY_TOKEN = "apify_api_... ";
-
         window.addEventListener('load', () => {
             loadLeaderboardData();
         });
 
-        // Fungsi Sync Langsung dari Frontend ke Apify & Firebase
+        // Fungsi Sync menembak Google Apps Script Web App
         async function triggerManualSync() {
             const btn = document.getElementById('btn-sync');
             const icon = document.getElementById('sync-icon');
@@ -220,61 +217,19 @@
             btn.innerHTML = `<i class="fa-solid fa-rotate fa-spin" id="sync-icon"></i> Menghubungkan ke Apify...`;
 
             try {
-                // Ambil data lama dari Firebase terlebih dahulu
-                const fbRef = db.ref('nmc_data/leaderboard');
-                const snapshot = await fbRef.once('value');
-                let existingData = snapshot.val() || {};
+                const response = await fetch('https://script.google.com/macros/s/AKfycbxhc0I9uEnYQxS5_-2-JcO9UuKzkU4m-E-eejX4CMlJXUvhNtCftwWaOBRxpyzttAkNRA/exec');
+                const result = await response.json();
 
-                const searchQueries = ["#nmc", "#triad", "#nakama"];
-                const apifyUrl = `https://api.apify.com/v2/acts/clock~tiktok-scraper/run-sync-get-dataset-items?token=${APIFY_TOKEN}`;
+                if (result.success) {
+                    alert(`Sukses! Berhasil menyinkronkan ${result.syncedCount} video terbaru dari TikTok.`);
+                } else {
+                    alert('Gagal sync: ' + (result.error || 'Terjadi kesalahan pada server.'));
+                }
                 
-                const response = await fetch(apifyUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        searchQueries: searchQueries,
-                        resultsPerPage: 15
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Gagal terhubung ke server Apify.');
-                }
-
-                const items = await response.json();
-                let totalSynced = 0;
-
-                if (Array.isArray(items)) {
-                    items.forEach(video => {
-                        const videoId = video.id || video.videoId;
-                        const views = video.playCount || video.stats?.playCount || 0;
-                        const author = video.authorMeta || video.author || {};
-
-                        if (videoId) {
-                            existingData[videoId] = {
-                                id: videoId,
-                                username: `@${author.name || author.uniqueId || 'creator'}`,
-                                name: author.nickName || author.nickname || 'Clipper',
-                                desc: video.text || video.desc || '#nmc',
-                                upload: "Baru saja",
-                                views: views,
-                                viewsStr: views >= 1000000 ? (views / 1000000).toFixed(1) + 'M' : (views >= 1000 ? (views / 1000).toFixed(1) + 'K' : views),
-                                likes: video.diggCount || video.stats?.diggCount || 0,
-                                link: video.webVideoUrl || `https://www.tiktok.com/@${author.name || 'user'}/video/${videoId}`
-                            };
-                            totalSynced++;
-                        }
-                    });
-                }
-
-                // Simpan gabungan data terbaru langsung ke Firebase
-                await fbRef.set(existingData);
-
-                alert(`Sukses! Berhasil menyinkronkan ${totalSynced} video terbaru dari TikTok.`);
                 loadLeaderboardData();
             } catch (err) {
                 console.error("Sync Error:", err);
-                alert('Gagal melakukan sync: ' + err.message);
+                alert('Gagal terhubung ke Google Apps Script.');
             } finally {
                 btn.disabled = false;
                 btn.classList.remove('opacity-70');
