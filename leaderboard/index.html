@@ -23,7 +23,6 @@
         }
     </script>
     <style>
-        /* Latar Belakang Foto Komunitas (Digelapkan sama seperti Multiview) */
         body {
             background: linear-gradient(to bottom, rgba(7, 9, 14, 0.65), rgba(7, 9, 14, 0.85)), url('../bg1.png') no-repeat center center fixed;
             background-size: cover;
@@ -94,7 +93,7 @@
                     Papan Peringkat Clipper
                 </h2>
                 <p class="text-xs md:text-sm text-gray-400 max-w-xl leading-relaxed">
-                    Peringkat performa konten clipper terbaik komunitas yang diperbarui secara otomatis berdasarkan tingkat interaksi dan tayangan tertinggi.
+                    Peringkat performa konten clipper terbaik komunitas berdasarkan hashtag dan interaksi tertinggi.
                 </p>
             </div>
             <div class="z-10 flex items-center gap-2 bg-slate-900/80 border border-slate-800 px-4 py-3 rounded-2xl text-xs text-gray-300 shadow-inner">
@@ -103,24 +102,24 @@
             </div>
         </div>
 
-        <!-- Tombol Filter Hashtag (Semua Berfungsi Sama) -->
+        <!-- Tombol Filter Hashtag Seragam & Kolom Pencarian -->
         <div class="flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4 border-b border-red-950/60 pb-4">
             
-            <!-- Kelima Tombol Filter Hashtag -->
+            <!-- Kelima Tombol Filter dengan Gaya Seragam -->
             <div class="flex flex-wrap items-center gap-3">
                 <button onclick="filterByHashtag('nmc')" id="btn-nmc" class="px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer">
                     #NMC
                 </button>
-                <button onclick="filterByHashtag('nmc7g')" id="btn-nmc7g" class="px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer">
+                <button onclick="filterByHashtag('nmc7g')" id="btn-nmc7g" class="px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-300 hover:text-white border border-slate-800 cursor-pointer">
                     #NMC7G
                 </button>
-                <button onclick="filterByHashtag('triad')" id="btn-triad" class="px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer">
+                <button onclick="filterByHashtag('triad')" id="btn-triad" class="px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-300 hover:text-white border border-slate-800 cursor-pointer">
                     #TRIAD
                 </button>
-                <button onclick="filterByHashtag('nakama')" id="btn-nakama" class="px-5 py-3 text-xs font-black tracking-wider rounded-xl transition-all bg-slate-900 text-amber-400 hover:text-white border border-amber-500/40 cursor-pointer">
+                <button onclick="filterByHashtag('nakama')" id="btn-nakama" class="px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-300 hover:text-white border border-slate-800 cursor-pointer">
                     #NAKAMA
                 </button>
-                <button onclick="filterByHashtag('nffn')" id="btn-nffn" class="px-5 py-3 text-xs font-black tracking-wider rounded-xl transition-all bg-slate-900 text-blue-400 hover:text-white border border-blue-500/40 cursor-pointer">
+                <button onclick="filterByHashtag('nffn')" id="btn-nffn" class="px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-300 hover:text-white border border-slate-800 cursor-pointer">
                     #NFFN
                 </button>
             </div>
@@ -182,7 +181,7 @@
         const db = firebase.database();
 
         let allLeaderboardData = [];
-        let activeHashtag = 'nmc'; // Default awal menampilkan hashtag nmc
+        let activeHashtag = 'nmc'; // Default awal
 
         window.addEventListener('load', () => {
             loadLeaderboardData();
@@ -190,25 +189,19 @@
 
         function filterByHashtag(tag) {
             activeHashtag = tag;
-            
-            // Reset semua style tombol
+
+            // Reset semua style tombol menjadi sama rata (gelap)
             ['nmc', 'nmc7g', 'triad', 'nakama', 'nffn'].forEach(t => {
                 const btn = document.getElementById('btn-' + t);
                 if (btn) {
-                    btn.className = "px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer";
+                    btn.className = "px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-300 hover:text-white border border-slate-800 cursor-pointer";
                 }
             });
 
-            // Aktifkan style tombol yang dipilih
+            // Berikan style aktif (merah elegan) pada tombol yang sedang diklik
             const activeBtn = document.getElementById('btn-' + tag);
             if (activeBtn) {
-                if (tag === 'nakama') {
-                    activeBtn.className = "px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-amber-600 to-amber-800 text-white shadow-lg border border-amber-400/50 cursor-pointer";
-                } else if (tag === 'nffn') {
-                    activeBtn.className = "px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg border border-blue-400/50 cursor-pointer";
-                } else {
-                    activeBtn.className = "px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer";
-                }
+                activeBtn.className = "px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer";
             }
 
             filterLeaderboard();
@@ -218,7 +211,7 @@
             const tbody = document.getElementById('leaderboard-body');
             tbody.innerHTML = `<tr><td colspan="6" class="text-center py-24 text-gray-500"><i class="fa-solid fa-circle-notch fa-spin text-3xl text-red-500 mb-3"></i><p class="font-medium tracking-wide">Menyelaraskan data clipper...</p></td></tr>`;
 
-            // Mengambil seluruh data dari root leaderboard atau folder utama database Anda
+            // Mengambil data secara fleksibel dari nmc_data/leaderboard (mendukung struktur folder sub-divisi maupun data langsung)
             db.ref('nmc_data/leaderboard').on('value', (snapshot) => {
                 const data = snapshot.val();
                 
@@ -228,17 +221,16 @@
                     return;
                 }
 
-                // Menggabungkan semua data dari berbagai sub-folder jika ada, atau membaca langsung
                 let list = [];
                 Object.keys(data).forEach(key => {
                     const val = data[key];
-                    if (val && typeof val === 'object' && !val.views) {
-                        // Jika berupa sub-folder (divisi)
+                    if (val && typeof val === 'object' && !val.views && !val.link) {
+                        // Jika strukturnya berupa sub-folder (seperti NMC, NMC7G di dalam database)
                         Object.keys(val).forEach(subKey => {
                             list.push({ id: subKey, ...val[subKey] });
                         });
                     } else {
-                        // Jika langsung list data
+                        // Jika strukturnya langsung data video
                         list.push({ id: key, ...val });
                     }
                 });
@@ -260,8 +252,8 @@
 
                 const matchesKeyword = name.includes(keyword) || username.includes(keyword) || desc.includes(keyword);
                 
-                // Filter berdasarkan hashtag yang diklik (mencari teks hashtag di deskripsi video)
-                const matchesHashtag = activeHashtag === '' || desc.toLowerCase().includes('#' + activeHashtag) || desc.toLowerCase().includes(activeHashtag);
+                // Pencarian hashtag yang fleksibel (mencari teks seperti #nmc, nmc, #nakama, dll di deskripsi)
+                const matchesHashtag = activeHashtag === '' || desc.toLowerCase().includes(activeHashtag) || desc.toLowerCase().includes('#' + activeHashtag);
 
                 return matchesKeyword && matchesHashtag;
             });
