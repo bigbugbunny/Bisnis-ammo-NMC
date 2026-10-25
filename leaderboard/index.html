@@ -206,7 +206,7 @@
             loadLeaderboardData();
         });
 
-        // Fungsi Tombol Sync Manual Memanggil Backend Vercel API
+        // Fungsi Tombol Sync Manual Direct ke RapidAPI & Firebase
         async function triggerManualSync() {
             const btn = document.getElementById('btn-sync');
             const icon = document.getElementById('sync-icon');
@@ -216,19 +216,56 @@
             icon.classList.add('fa-spin');
             btn.innerHTML = `<i class="fa-solid fa-rotate fa-spin" id="sync-icon"></i> Sedang Menarik Data...`;
 
-            try {
-                const response = await fetch('/api/sync-tiktok', { method: 'GET' });
-                const result = await response.json();
+            const hashtags = ['nmc', 'nmc7g', 'triad', 'nakama', 'nffn'];
+            const RAPIDAPI_KEY = "MASUKKAN_RAPIDAPI_KEY_ANDA_DISINI"; // Ganti dengan RapidAPI Key Anda
 
-                if (response.ok && result.success) {
-                    alert('Sukses! Data video TikTok berhasil disinkronkan.');
-                    loadLeaderboardData();
-                } else {
-                    alert('Gagal sync: ' + (result.error || 'Periksa kembali konfigurasi RAPIDAPI_KEY di Vercel.'));
+            try {
+                let totalSynced = 0;
+
+                for (const tag of hashtags) {
+                    const url = `https://tiktok-search-result.p.rapidapi.com/search/video?query=%23${tag}&count=15`;
+                    
+                    const res = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-RapidAPI-Key': RAPIDAPI_KEY,
+                            'X-RapidAPI-Host': 'tiktok-search-result.p.rapidapi.com'
+                        }
+                    });
+
+                    if (res.ok) {
+                        const json = await res.json();
+                        const videos = json.videos || [];
+                        
+                        let formattedData = {};
+                        videos.forEach(video => {
+                            const videoId = video.video_id;
+                            const views = video.play_count || 0;
+                            formattedData[videoId] = {
+                                id: videoId,
+                                username: `@${video.author.unique_id}`,
+                                name: video.author.nickname,
+                                desc: video.title,
+                                upload: "Baru saja",
+                                views: views,
+                                viewsStr: views >= 1000000 ? (views / 1000000).toFixed(1) + 'M' : (views >= 1000 ? (views / 1000).toFixed(1) + 'K' : views),
+                                likes: video.digg_count || 0,
+                                link: `https://www.tiktok.com/@${video.author.unique_id}/video/${videoId}`
+                            };
+                        });
+
+                        if (Object.keys(formattedData).length > 0) {
+                            await db.ref('nmc_data/leaderboard').update(formattedData);
+                            totalSynced += Object.keys(formattedData).length;
+                        }
+                    }
                 }
+
+                alert(`Sukses! Berhasil menarik dan menyinkronkan ${totalSynced} video TikTok ke leaderboard.`);
+                loadLeaderboardData();
             } catch (err) {
                 console.error(err);
-                alert('Gagal menghubungi server backend sync.');
+                alert('Gagal menyinkronkan. Periksa koneksi atau RapidAPI Key Anda.');
             } finally {
                 btn.disabled = false;
                 btn.classList.remove('opacity-70');
