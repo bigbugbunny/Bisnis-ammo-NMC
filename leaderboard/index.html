@@ -97,7 +97,7 @@
                 </p>
             </div>
             
-            <!-- Tombol Sync Manual & Indikator Auto-Sync -->
+            <!-- Tombol Sync Otomatis ke Backend Vercel -->
             <div class="z-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <button onclick="triggerManualSync()" id="btn-sync" class="px-5 py-3 text-xs font-black uppercase tracking-wider text-white bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 rounded-xl shadow-lg border border-red-500/40 flex items-center justify-center gap-2 transition-all cursor-pointer">
                     <i class="fa-solid fa-rotate" id="sync-icon"></i> Tarik Data (Sync)
@@ -206,7 +206,7 @@
             loadLeaderboardData();
         });
 
-        // Fungsi Tombol Sync Manual (Mengisi Data Sampel Komunitas ke Firebase secara Instan)
+        // Fungsi Tombol Sync Menembak Backend Vercel & Apify
         async function triggerManualSync() {
             const btn = document.getElementById('btn-sync');
             const icon = document.getElementById('sync-icon');
@@ -214,76 +214,22 @@
             btn.disabled = true;
             btn.classList.add('opacity-70');
             icon.classList.add('fa-spin');
-            btn.innerHTML = `<i class="fa-solid fa-rotate fa-spin" id="sync-icon"></i> Sedang Menarik Data...`;
+            btn.innerHTML = `<i class="fa-solid fa-rotate fa-spin" id="sync-icon"></i> Menghubungkan ke Apify...`;
 
             try {
-                // Data sampel video clipper komunitas Triad & NMC untuk sinkronisasi instan
-                const sampleVideos = {
-                    "vid_001": {
-                        id: "vid_001",
-                        username: "@ryuuclipper",
-                        name: "Ryuu Clipper",
-                        desc: "Jarrot, the nightmare. #nmc #triad",
-                        upload: "15 jam lalu",
-                        views: 45200,
-                        viewsStr: "45.2K",
-                        likes: 146,
-                        link: "https://www.tiktok.com"
-                    },
-                    "vid_002": {
-                        id: "vid_002",
-                        username: "@lerrr",
-                        name: "Lerrr.",
-                        desc: "as your wish Mr Richard Wiseman #nmc #nmc7g",
-                        upload: "1 hari lalu",
-                        views: 89100,
-                        viewsStr: "89.1K",
-                        likes: 395,
-                        link: "https://www.tiktok.com"
-                    },
-                    "vid_003": {
-                        id: "vid_003",
-                        username: "@vr_clips",
-                        name: "V R",
-                        desc: "Look who's back. #triad #nakama",
-                        upload: "2 hari lalu",
-                        views: 34000,
-                        viewsStr: "34.0K",
-                        likes: 147,
-                        link: "https://www.tiktok.com"
-                    },
-                    "vid_004": {
-                        id: "vid_004",
-                        username: "@ooonly4closee",
-                        name: "Ooonly",
-                        desc: "jujur lu nyebelin kalo jadi musuh beh... #nffn #nmc",
-                        upload: "3 hari lalu",
-                        views: 125000,
-                        viewsStr: "125.0K",
-                        likes: 844,
-                        link: "https://www.tiktok.com"
-                    },
-                    "vid_005": {
-                        id: "vid_005",
-                        username: "@dandikrisna",
-                        name: "Dandi Krisna",
-                        desc: "Nakama belum sah kalau belum #nakama #nmc",
-                        upload: "Baru saja",
-                        views: 210000,
-                        viewsStr: "210.0K",
-                        likes: 1400,
-                        link: "https://www.tiktok.com"
-                    }
-                };
+                const response = await fetch('/api/sync-tiktok');
+                const result = await response.json();
 
-                // Kirim langsung ke Firebase Realtime Database
-                await db.ref('nmc_data/leaderboard').set(sampleVideos);
-
-                alert('Sukses! Data video clipper terbaru berhasil disinkronkan ke leaderboard.');
+                if (result.success) {
+                    alert(`Sukses! Berhasil menyinkronkan ${result.syncedCount} video terbaru dari TikTok.`);
+                } else {
+                    alert('Gagal sync: ' + (result.error || 'Terjadi kesalahan pada server.'));
+                }
+                
                 loadLeaderboardData();
             } catch (err) {
                 console.error(err);
-                alert('Gagal menyinkronkan data ke Firebase.');
+                alert('Gagal terhubung ke backend Vercel.');
             } finally {
                 btn.disabled = false;
                 btn.classList.remove('opacity-70');
