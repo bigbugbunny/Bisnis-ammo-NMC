@@ -206,7 +206,7 @@
             loadLeaderboardData();
         });
 
-        // Fungsi Tombol Sync Menembak Backend Vercel & Apify
+        // Fungsi Tombol Sync Menembak Backend Vercel dengan URL Absolut
         async function triggerManualSync() {
             const btn = document.getElementById('btn-sync');
             const icon = document.getElementById('sync-icon');
@@ -217,7 +217,7 @@
             btn.innerHTML = `<i class="fa-solid fa-rotate fa-spin" id="sync-icon"></i> Menghubungkan ke Apify...`;
 
             try {
-                const response = await fetch('/api/sync-tiktok');
+                const response = await fetch('https://triadcommunity.web.id/api/sync-tiktok');
                 const result = await response.json();
 
                 if (result.success) {
