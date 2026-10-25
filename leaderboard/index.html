@@ -96,9 +96,16 @@
                     Peringkat performa konten clipper terbaik komunitas berdasarkan hashtag dan interaksi tertinggi.
                 </p>
             </div>
-            <div class="z-10 flex items-center gap-2 bg-slate-900/80 border border-slate-800 px-4 py-3 rounded-2xl text-xs text-gray-300 shadow-inner">
-                <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                <span class="font-medium">Live Auto-Sync Active</span>
+            
+            <!-- Tombol Sync Manual & Indikator Auto-Sync -->
+            <div class="z-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <button onclick="triggerManualSync()" id="btn-sync" class="px-5 py-3 text-xs font-black uppercase tracking-wider text-white bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 rounded-xl shadow-lg border border-red-500/40 flex items-center justify-center gap-2 transition-all cursor-pointer">
+                    <i class="fa-solid fa-rotate" id="sync-icon"></i> Tarik Data (Sync)
+                </button>
+                <div class="flex items-center justify-center gap-2 bg-slate-900/80 border border-slate-800 px-4 py-3 rounded-xl text-xs text-gray-300 shadow-inner">
+                    <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                    <span class="font-medium">Auto-Sync Active</span>
+                </div>
             </div>
         </div>
 
@@ -126,7 +133,6 @@
 
             <!-- Menu Sort (Terpopuler & Terbaru) & Kolom Pencarian -->
             <div class="flex flex-col sm:flex-row items-center gap-3">
-                <!-- Tombol Menu Sortir -->
                 <div class="flex items-center bg-slate-900/90 border border-slate-800 rounded-xl p-1 w-full sm:w-auto">
                     <button onclick="setSortMode('popular')" id="sort-popular" class="flex-1 sm:flex-none px-3.5 py-1.5 text-[11px] font-extrabold uppercase tracking-wider rounded-lg transition-all bg-red-700 text-white shadow-sm flex items-center justify-center gap-1.5 cursor-pointer">
                         <i class="fa-solid fa-fire text-amber-400"></i> Terpopuler
@@ -136,7 +142,6 @@
                     </button>
                 </div>
 
-                <!-- Kotak Pencarian (Search Bar) -->
                 <div class="relative w-full sm:w-64">
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-gray-400 text-xs"></i>
                     <input type="text" id="searchInput" oninput="filterLeaderboard()" placeholder="Cari kreator atau konten..." class="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-xs text-white focus:outline-none focus:border-red-500 shadow-inner">
@@ -195,11 +200,42 @@
 
         let allLeaderboardData = [];
         let activeHashtag = 'nmc';
-        let sortMode = 'popular'; // 'popular' (views tertinggi) atau 'latest' (waktu terbaru)
+        let sortMode = 'popular';
 
         window.addEventListener('load', () => {
             loadLeaderboardData();
         });
+
+        // Fungsi Tombol Sync Manual
+        async function triggerManualSync() {
+            const btn = document.getElementById('btn-sync');
+            const icon = document.getElementById('sync-icon');
+            
+            btn.disabled = true;
+            btn.classList.add('opacity-70');
+            icon.classList.add('fa-spin');
+            btn.innerHTML = `<i class="fa-solid fa-rotate fa-spin" id="sync-icon"></i> Sedang Menarik Data...`;
+
+            try {
+                // Memanggil backend api sync tanpa mendirect halaman
+                const response = await fetch('/api/sync-tiktok');
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Sukses! Data video TikTok berhasil disinkronkan.');
+                } else {
+                    alert('Sinkronisasi selesai dengan catatan: ' + (result.error || 'Periksa kembali'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Gagal menghubungi server sync. Silakan coba beberapa saat lagi.');
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-70');
+                icon.classList.remove('fa-spin');
+                btn.innerHTML = `<i class="fa-solid fa-rotate" id="sync-icon"></i> Tarik Data (Sync)`;
+            }
+        }
 
         function filterByHashtag(tag) {
             activeHashtag = tag;
@@ -251,12 +287,14 @@
                 let list = [];
                 Object.keys(data).forEach(key => {
                     const val = data[key];
-                    if (val && typeof val === 'object' && !val.views && !val.link) {
-                        Object.keys(val).forEach(subKey => {
-                            list.push({ id: subKey, ...val[subKey] });
-                        });
-                    } else {
-                        list.push({ id: key, ...val });
+                    if (val && typeof val === 'object') {
+                        if (val.link || val.views !== undefined || val.username) {
+                            list.push({ id: key, ...val });
+                        } else {
+                            Object.keys(val).forEach(subKey => {
+                                list.push({ id: subKey, ...val[subKey] });
+                            });
+                        }
                     }
                 });
 
@@ -279,7 +317,6 @@
                 return matchesKeyword && matchesHashtag;
             });
 
-            // Proses Sorting (Terpopuler berdasarkan views, Terbaru berdasarkan waktu/timestamp atau id)
             if (sortMode === 'popular') {
                 filtered.sort((a, b) => (b.views || 0) - (a.views || 0));
             } else {
@@ -313,7 +350,7 @@
                 row.innerHTML = `
                     <td class="py-4 px-6 text-center">${rankBadge}</td>
                     <td class="py-4 px-6">
-                        <div class="div flex items-center gap-3.5">
+                        <div class="flex items-center gap-3.5">
                             <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-red-950 to-slate-900 border border-red-600/30 flex items-center justify-center text-red-400 font-black text-sm shrink-0 shadow-md">
                                 ${item.name ? item.name.charAt(0).toUpperCase() : 'C'}
                             </div>
