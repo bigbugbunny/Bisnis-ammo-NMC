@@ -206,7 +206,7 @@
             loadLeaderboardData();
         });
 
-        // Fungsi Tombol Sync Manual Langsung dari Halaman
+        // Fungsi Tombol Sync Manual Memanggil Backend Vercel API
         async function triggerManualSync() {
             const btn = document.getElementById('btn-sync');
             const icon = document.getElementById('sync-icon');
@@ -216,54 +216,19 @@
             icon.classList.add('fa-spin');
             btn.innerHTML = `<i class="fa-solid fa-rotate fa-spin" id="sync-icon"></i> Sedang Menarik Data...`;
 
-            const hashtags = ['nmc', 'nmc7g', 'triad', 'nakama', 'nffn'];
-            const RAPIDAPI_KEY = "MASUKKAN_RAPIDAPI_KEY_ANDA_DISINI"; 
-
             try {
-                let successCount = 0;
-                
-                for (const tag of hashtags) {
-                    const res = await fetch(`https://tiktok-search-result.p.rapidapi.com/search/video?query=%23${tag}&count=10`, {
-                        method: 'GET',
-                        headers: {
-                            'X-RapidAPI-Key': RAPIDAPI_KEY,
-                            'X-RapidAPI-Host': 'tiktok-search-result.p.rapidapi.com'
-                        }
-                    });
+                const response = await fetch('/api/sync-tiktok', { method: 'GET' });
+                const result = await response.json();
 
-                    if (res.ok) {
-                        const json = await res.json();
-                        const videos = json.videos || [];
-                        
-                        let formattedData = {};
-                        videos.forEach(video => {
-                            const videoId = video.video_id;
-                            const views = video.play_count || 0;
-                            formattedData[videoId] = {
-                                id: videoId,
-                                username: `@${video.author.unique_id}`,
-                                name: video.author.nickname,
-                                desc: video.title,
-                                upload: "Baru saja",
-                                views: views,
-                                viewsStr: views >= 1000000 ? (views / 1000000).toFixed(1) + 'M' : (views >= 1000 ? (views / 1000).toFixed(1) + 'K' : views),
-                                likes: video.digg_count || 0,
-                                link: `https://www.tiktok.com/@${video.author.unique_id}/video/${videoId}`
-                            };
-                        });
-
-                        if (Object.keys(formattedData).length > 0) {
-                            await db.ref('nmc_data/leaderboard').update(formattedData);
-                            successCount++;
-                        }
-                    }
+                if (response.ok && result.success) {
+                    alert('Sukses! Data video TikTok berhasil disinkronkan.');
+                    loadLeaderboardData();
+                } else {
+                    alert('Gagal sync: ' + (result.error || 'Periksa kembali konfigurasi RAPIDAPI_KEY di Vercel.'));
                 }
-
-                alert(`Sukses! ${successCount} hashtag berhasil disinkronkan ke leaderboard.`);
-                loadLeaderboardData();
             } catch (err) {
                 console.error(err);
-                alert('Gagal menyinkronkan. Pastikan RapidAPI Key sudah terpasang dengan benar di script.');
+                alert('Gagal menghubungi server backend sync.');
             } finally {
                 btn.disabled = false;
                 btn.classList.remove('opacity-70');
