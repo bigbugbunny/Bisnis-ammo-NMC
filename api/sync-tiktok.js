@@ -15,7 +15,7 @@ if (!getApps().length) {
 
 const db = getDatabase();
 
-async function fetchAndSave(hashtag, categoryName) {
+async function fetchAndSave(hashtag) {
   try {
     const options = {
       method: 'GET',
@@ -47,7 +47,10 @@ async function fetchAndSave(hashtag, categoryName) {
       };
     });
 
-    await db.ref(`nmc_data/leaderboard/${categoryName}`).set(formattedData);
+    // Menggabungkan semua data langsung ke dalam satu path utama leaderboard
+    if (Object.keys(formattedData).length > 0) {
+      await db.ref(`nmc_data/leaderboard`).update(formattedData);
+    }
   } catch (err) {
     console.error(`Gagal sync hashtag #${hashtag}:`, err.message);
   }
@@ -55,12 +58,14 @@ async function fetchAndSave(hashtag, categoryName) {
 
 export default async function handler(req, res) {
   try {
-    // Sinkronisasi otomatis berdasarkan hashtag baru Anda
-    await fetchAndSave('nmc', 'Sonofsukri');   // Tagar #nmc masuk ke tab Sonofsukri
-    await fetchAndSave('mnc7g', 'GiString');    // Tagar #mnc7g masuk ke tab GiString
-    await fetchAndSave('triad', 'TriadCommunity'); // Tagar #triad masuk ke kategori baru
+    // Sinkronisasi otomatis semua hashtag komunitas langsung ke satu tempat
+    await fetchAndSave('nmc');
+    await fetchAndSave('nmc7g');
+    await fetchAndSave('triad');
+    await fetchAndSave('nakama');
+    await fetchAndSave('nffn');
 
-    return res.status(200).json({ success: true, message: "Semua hashtag #nmc, #mnc7g, dan #triad berhasil disinkronkan!" });
+    return res.status(200).json({ success: true, message: "Semua hashtag berhasil disinkronkan ke leaderboard!" });
   } catch (error) {
     console.error("Sync error:", error);
     return res.status(500).json({ success: false, error: error.message });
