@@ -103,29 +103,24 @@
             </div>
         </div>
 
-        <!-- Tab Navigasi Divisi, Filter Hashtag, & Kotak Pencarian -->
+        <!-- Tombol Filter Hashtag (Semua Berfungsi Sama) -->
         <div class="flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4 border-b border-red-950/60 pb-4">
             
-            <!-- Tombol Divisi & Tombol Filter Hashtag -->
+            <!-- Kelima Tombol Filter Hashtag -->
             <div class="flex flex-wrap items-center gap-3">
-                <!-- Divisi Database -->
-                <button onclick="switchTab('NMC')" id="tab-NMC" class="px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer">
-                    NMC
+                <button onclick="filterByHashtag('nmc')" id="btn-nmc" class="px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer">
+                    #NMC
                 </button>
-                <button onclick="switchTab('NMC7G')" id="tab-NMC7G" class="px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer">
-                    NMC7G
+                <button onclick="filterByHashtag('nmc7g')" id="btn-nmc7g" class="px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer">
+                    #NMC7G
                 </button>
-                <button onclick="switchTab('TriadCommunity')" id="tab-TriadCommunity" class="px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer">
-                    TRIAD
+                <button onclick="filterByHashtag('triad')" id="btn-triad" class="px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer">
+                    #TRIAD
                 </button>
-
-                <div class="h-6 w-[1px] bg-slate-800 hidden sm:block mx-1"></div>
-
-                <!-- Filter Hashtag Cepat -->
-                <button onclick="filterByHashtag('#nakama')" id="btn-nakama" class="px-4 py-3 text-xs font-black tracking-wider rounded-xl transition-all bg-slate-900 text-amber-400 hover:bg-amber-950/40 border border-amber-500/40 cursor-pointer">
+                <button onclick="filterByHashtag('nakama')" id="btn-nakama" class="px-5 py-3 text-xs font-black tracking-wider rounded-xl transition-all bg-slate-900 text-amber-400 hover:text-white border border-amber-500/40 cursor-pointer">
                     #NAKAMA
                 </button>
-                <button onclick="filterByHashtag('#nffn')" id="btn-nffn" class="px-4 py-3 text-xs font-black tracking-wider rounded-xl transition-all bg-slate-900 text-blue-400 hover:bg-blue-950/40 border border-blue-500/40 cursor-pointer">
+                <button onclick="filterByHashtag('nffn')" id="btn-nffn" class="px-5 py-3 text-xs font-black tracking-wider rounded-xl transition-all bg-slate-900 text-blue-400 hover:text-white border border-blue-500/40 cursor-pointer">
                     #NFFN
                 </button>
             </div>
@@ -186,68 +181,45 @@
         }
         const db = firebase.database();
 
-        let currentTab = 'NMC';
         let allLeaderboardData = [];
-        let activeHashtag = '';
+        let activeHashtag = 'nmc'; // Default awal menampilkan hashtag nmc
 
         window.addEventListener('load', () => {
             loadLeaderboardData();
         });
 
-        function switchTab(tab) {
-            currentTab = tab;
-            activeHashtag = '';
+        function filterByHashtag(tag) {
+            activeHashtag = tag;
             
-            const btnNMC = document.getElementById('tab-NMC');
-            const btnNMC7G = document.getElementById('tab-NMC7G');
-            const btnTriad = document.getElementById('tab-TriadCommunity');
-
-            [btnNMC, btnNMC7G, btnTriad].forEach(b => {
-                if (b) b.className = "px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer";
+            // Reset semua style tombol
+            ['nmc', 'nmc7g', 'triad', 'nakama', 'nffn'].forEach(t => {
+                const btn = document.getElementById('btn-' + t);
+                if (btn) {
+                    btn.className = "px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-slate-900 text-gray-400 hover:text-white border border-slate-800 cursor-pointer";
+                }
             });
 
-            const activeBtn = document.getElementById('tab-' + tab);
+            // Aktifkan style tombol yang dipilih
+            const activeBtn = document.getElementById('btn-' + tag);
             if (activeBtn) {
-                activeBtn.className = "px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer";
-            }
-
-            resetHashtagStyles();
-            document.getElementById('searchInput').value = '';
-            loadLeaderboardData();
-        }
-
-        function filterByHashtag(tag) {
-            const btnNakama = document.getElementById('btn-nakama');
-            const btnNffn = document.getElementById('btn-nffn');
-
-            if (activeHashtag === tag) {
-                // Toggle off jika diklik dua kali
-                activeHashtag = '';
-                resetHashtagStyles();
-            } else {
-                activeHashtag = tag;
-                resetHashtagStyles();
-                if (tag === '#nakama') {
-                    btnNakama.classList.add('bg-amber-950/80', 'border-amber-500', 'shadow-[0_0_15px_rgba(245,158,11,0.3)]');
-                } else if (tag === '#nffn') {
-                    btnNffn.classList.add('bg-blue-950/80', 'border-blue-500', 'shadow-[0_0_15px_rgba(59,130,246,0.3)]');
+                if (tag === 'nakama') {
+                    activeBtn.className = "px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-amber-600 to-amber-800 text-white shadow-lg border border-amber-400/50 cursor-pointer";
+                } else if (tag === 'nffn') {
+                    activeBtn.className = "px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg border border-blue-400/50 cursor-pointer";
+                } else {
+                    activeBtn.className = "px-5 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all bg-gradient-to-r from-red-700 to-red-900 text-white shadow-lg border border-red-500/40 cursor-pointer";
                 }
             }
-            filterLeaderboard();
-        }
 
-        function resetHashtagStyles() {
-            const btnNakama = document.getElementById('btn-nakama');
-            const btnNffn = document.getElementById('btn-nffn');
-            if (btnNakama) btnNakama.className = "px-4 py-3 text-xs font-black tracking-wider rounded-xl transition-all bg-slate-900 text-amber-400 hover:bg-amber-950/40 border border-amber-500/40 cursor-pointer";
-            if (btnNffn) btnNffn.className = "px-4 py-3 text-xs font-black tracking-wider rounded-xl transition-all bg-slate-900 text-blue-400 hover:bg-blue-950/40 border border-blue-500/40 cursor-pointer";
+            filterLeaderboard();
         }
 
         function loadLeaderboardData() {
             const tbody = document.getElementById('leaderboard-body');
             tbody.innerHTML = `<tr><td colspan="6" class="text-center py-24 text-gray-500"><i class="fa-solid fa-circle-notch fa-spin text-3xl text-red-500 mb-3"></i><p class="font-medium tracking-wide">Menyelaraskan data clipper...</p></td></tr>`;
 
-            db.ref('nmc_data/leaderboard/' + currentTab).on('value', (snapshot) => {
+            // Mengambil seluruh data dari root leaderboard atau folder utama database Anda
+            db.ref('nmc_data/leaderboard').on('value', (snapshot) => {
                 const data = snapshot.val();
                 
                 if (!data) {
@@ -256,7 +228,22 @@
                     return;
                 }
 
-                allLeaderboardData = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                // Menggabungkan semua data dari berbagai sub-folder jika ada, atau membaca langsung
+                let list = [];
+                Object.keys(data).forEach(key => {
+                    const val = data[key];
+                    if (val && typeof val === 'object' && !val.views) {
+                        // Jika berupa sub-folder (divisi)
+                        Object.keys(val).forEach(subKey => {
+                            list.push({ id: subKey, ...val[subKey] });
+                        });
+                    } else {
+                        // Jika langsung list data
+                        list.push({ id: key, ...val });
+                    }
+                });
+
+                allLeaderboardData = list;
                 allLeaderboardData.sort((a, b) => b.views - a.views);
 
                 filterLeaderboard();
@@ -271,11 +258,10 @@
                 const username = (item.username || '').toLowerCase();
                 const desc = (item.desc || '').toLowerCase();
 
-                // Cek pencarian teks (nama/deskripsi)
                 const matchesKeyword = name.includes(keyword) || username.includes(keyword) || desc.includes(keyword);
-
-                // Cek filter hashtag jika aktif
-                const matchesHashtag = activeHashtag === '' || desc.includes(activeHashtag);
+                
+                // Filter berdasarkan hashtag yang diklik (mencari teks hashtag di deskripsi video)
+                const matchesHashtag = activeHashtag === '' || desc.toLowerCase().includes('#' + activeHashtag) || desc.toLowerCase().includes(activeHashtag);
 
                 return matchesKeyword && matchesHashtag;
             });
@@ -288,7 +274,7 @@
             tbody.innerHTML = '';
 
             if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-20 text-gray-500"><div class="max-w-xs mx-auto space-y-2"><i class="fa-solid fa-folder-open text-3xl text-red-500/50"></i><p class="text-xs">Tidak ada data video yang ditemukan dengan filter tersebut.</p></div></td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-20 text-gray-500"><div class="max-w-xs mx-auto space-y-2"><i class="fa-solid fa-folder-open text-3xl text-red-500/50"></i><p class="text-xs">Tidak ada data video yang ditemukan dengan hashtag tersebut.</p></div></td></tr>`;
                 return;
             }
 
