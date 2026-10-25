@@ -47,7 +47,6 @@ async function fetchAndSave(hashtag) {
       };
     });
 
-    // Menggabungkan semua data langsung ke dalam satu path utama leaderboard
     if (Object.keys(formattedData).length > 0) {
       await db.ref(`nmc_data/leaderboard`).update(formattedData);
     }
@@ -58,7 +57,6 @@ async function fetchAndSave(hashtag) {
 
 export default async function handler(req, res) {
   try {
-    // Sinkronisasi otomatis semua hashtag komunitas langsung ke satu tempat
     await fetchAndSave('nmc');
     await fetchAndSave('nmc7g');
     await fetchAndSave('triad');
