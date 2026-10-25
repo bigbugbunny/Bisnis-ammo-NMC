@@ -5,14 +5,17 @@ export default async function handler(req, res) {
         return res.status(500).json({ success: false, error: "APIFY_API_TOKEN belum diset di Vercel." });
     }
 
+    // Menggabungkan hashtag utama dalam satu kali pencarian agar cepat dan tidak timeout
     const searchQueries = ["#nmc", "#triad", "#nakama"]; 
     let totalSynced = 0;
 
     try {
+        // Ambil data lama dari Firebase
         const fbRes = await fetch("https://nmc-management-default-rtdb.firebaseio.com/nmc_data/leaderboard.json");
         let existingData = await fbRes.json() || {};
 
-        const apifyUrl = `https://api.apify.com/v2/acts/clock~tiktok-scraper/run-sync-get-dataset-items?token=${APIFY_TOKEN}`;
+        // Endpoint Apify TikTok Scraper dengan token yang aman
+        const apifyUrl = `https://api.apify.com/v2/acts/clock~tiktok-scraper/run-sync-get-dataset-items?token=${process.env.APIFY_API_TOKEN}`;
         
         const response = await fetch(apifyUrl, {
             method: 'POST',
@@ -50,6 +53,7 @@ export default async function handler(req, res) {
             }
         }
 
+        // Simpan hasil gabungan ke Firebase Realtime Database
         await fetch("https://nmc-management-default-rtdb.firebaseio.com/nmc_data/leaderboard.json", {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
