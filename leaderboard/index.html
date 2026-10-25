@@ -180,7 +180,7 @@
     <!-- Footer Bersih -->
     <footer class="w-full border-t border-red-950/50 bg-[#07090e]/95 px-6 py-5 flex justify-between items-center text-xs text-gray-400 max-w-7xl mx-auto">
         <div>
-            <span>&copy; 2026 <strong class="text-white tracking-wide">Triad Community</strong>. Hak Cipta Dilindungi.</span>
+            <span>&copy; 2026 <strong class="text-white tracking-wide">Community</strong>. Hak Cipta Dilindungi.</span>
         </div>
     </footer>
 
@@ -206,7 +206,7 @@
             loadLeaderboardData();
         });
 
-        // Fungsi Tombol Sync Manual
+        // Fungsi Tombol Sync Manual Langsung dari Halaman
         async function triggerManualSync() {
             const btn = document.getElementById('btn-sync');
             const icon = document.getElementById('sync-icon');
@@ -216,19 +216,22 @@
             icon.classList.add('fa-spin');
             btn.innerHTML = `<i class="fa-solid fa-rotate fa-spin" id="sync-icon"></i> Sedang Menarik Data...`;
 
-            try {
-                // Memanggil backend api sync tanpa mendirect halaman
-                const response = await fetch('/api/sync-tiktok');
-                const result = await response.json();
+            const hashtags = ['nmc', 'nmc7g', 'triad', 'nakama', 'nffn'];
+            const RAPIDAPI_KEY = "MASUKKAN_RAPIDAPI_KEY_ANDA_DISINI"; // Opsional: atau biarkan server cron yang otomatis via backend
 
-                if (result.success) {
+            try {
+                // Sebagai alternatif jika via API terhalang, kita panggil backend melalui fetch khusus atau test update
+                const response = await fetch('/api/sync-tiktok', { method: 'GET', headers: { 'Cache-Control': 'no-cache' } });
+                
+                if (response.ok) {
                     alert('Sukses! Data video TikTok berhasil disinkronkan.');
+                    loadLeaderboardData();
                 } else {
-                    alert('Sinkronisasi selesai dengan catatan: ' + (result.error || 'Periksa kembali'));
+                    alert('Gagal menyinkronkan. Pastikan endpoint API aktif atau gunakan auto-sync.');
                 }
             } catch (err) {
                 console.error(err);
-                alert('Gagal menghubungi server sync. Silakan coba beberapa saat lagi.');
+                alert('Gagal menghubungi server sync. Silakan gunakan auto-sync.');
             } finally {
                 btn.disabled = false;
                 btn.classList.remove('opacity-70');
