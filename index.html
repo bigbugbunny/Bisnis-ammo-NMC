@@ -11,8 +11,9 @@
   <!-- FontAwesome Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   
-  <!-- Supabase JS SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Firebase JS SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
   <script>
     tailwind.config = {
@@ -304,7 +305,7 @@
       </nav>
 
       <div class="flex items-center gap-3">
-        <!-- TOMBOL AKSES SYSTEM (URL BERSIH TANPA .HTML) -->
+        <!-- TOMBOL AKSES SYSTEM -->
         <a href="dashboard/login" class="px-5 py-2.5 text-xs font-black tracking-wider uppercase text-white bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 rounded-xl shadow-lg border border-red-500/30 flex items-center gap-2 no-underline cursor-pointer">
           <i class="fa-solid fa-right-to-bracket"></i> Akses System
         </a>
@@ -486,6 +487,142 @@
 
   </main>
 
+  <!-- ================================================= -->
+  <!-- WIDGET FLOATING REKRUTMEN & POP-UP FORM (SISI KIRI) -->
+  <!-- ================================================= -->
+  <div class="fixed left-6 bottom-6 z-50 flex flex-col gap-3">
+    <!-- Tombol Buka Pop-up Pendaftaran -->
+    <button onclick="toggleRegisterModal()" 
+      class="bg-red-700 hover:bg-red-600 text-white font-bold p-3.5 rounded-2xl shadow-2xl border border-red-500/40 flex items-center gap-3 transition-all transform hover:scale-105 cursor-pointer group">
+      <div class="w-8 h-8 rounded-xl bg-red-950/80 flex items-center justify-center text-red-400 group-hover:text-white transition">
+        <i class="fa-solid fa-user-plus text-sm"></i>
+      </div>
+      <div class="text-left hidden md:block pr-2">
+        <p class="text-[9px] text-zinc-400 uppercase tracking-wider font-semibold">Rekrutmen Terbuka</p>
+        <p class="text-xs font-black tracking-wide text-white">DAFTAR NAKAMA MC</p>
+      </div>
+    </button>
+
+    <!-- Tombol Cepat Akses Discord Triad & Nakama MC -->
+    <div class="flex gap-2">
+      <!-- Link Discord Triad -->
+      <a href="https://discord.gg/3WFgkkd9kA" target="_blank" title="Discord Triad Community"
+        class="w-11 h-11 bg-zinc-900/90 hover:bg-indigo-600 text-zinc-300 hover:text-white rounded-2xl border border-zinc-800 flex items-center justify-center shadow-xl transition-all transform hover:scale-105">
+        <i class="fa-brands fa-discord text-base"></i>
+      </a>
+      <!-- Link Discord Nakama MC -->
+      <a href="https://discord.gg/F4fXAqUwnt" target="_blank" title="Discord Nakama MC"
+        class="w-11 h-11 bg-zinc-900/90 hover:bg-red-600 text-zinc-300 hover:text-white rounded-2xl border border-zinc-800 flex items-center justify-center shadow-xl transition-all transform hover:scale-105">
+        <img src="NakamaLogo.png" alt="Nakama" class="w-5 h-5 object-contain" onerror="this.outerHTML='<i class=\'fa-solid fa-skull text-base\'></i>'">
+      </a>
+    </div>
+  </div>
+
+  <!-- Modal Pop-up Form Pendaftaran (Hidden by Default) -->
+  <div id="registerModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-zinc-950/85 backdrop-blur-md p-4 overflow-y-auto">
+    <div class="bg-zinc-900 border border-zinc-800 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden relative my-auto animate-modal-in">
+      
+      <!-- Header Modal -->
+      <div class="bg-zinc-950 px-6 py-4 border-b border-zinc-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-red-950/50 rounded-lg flex items-center justify-center border border-red-600/40 p-1">
+            <img src="Nakama.png" alt="Logo" class="w-full h-full object-cover rounded" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+          </div>
+          <span class="text-red-500 font-black tracking-wider text-xs">NAKAMA MC - PENDAFTARAN ANGGOTA</span>
+        </div>
+        <button onclick="toggleRegisterModal()" class="w-8 h-8 rounded-xl bg-zinc-800 hover:bg-red-600 text-zinc-400 hover:text-white flex items-center justify-center transition cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Isi Form Pendaftaran -->
+      <div class="p-6 max-h-[75vh] overflow-y-auto">
+        <!-- Notifikasi Alert -->
+        <div id="modalAlertBox" class="hidden mb-4 p-3 rounded-xl text-xs font-medium border flex items-center gap-3">
+          <i id="modalAlertIcon" class="fa-solid text-sm"></i>
+          <span id="modalAlertText">Pesan</span>
+        </div>
+
+        <form id="popupRegisterForm" onsubmit="handlePopupRegister(event)" class="space-y-3">
+          <div>
+            <label class="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-1">Nama In-Game / Karakter</label>
+            <input type="text" id="popName" required 
+              class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-800 rounded-xl text-white placeholder-zinc-600 focus:outline-none focus:border-red-600 text-xs"
+              placeholder="Contoh: Alex Blaine">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-1">Nama Discord / Tag</label>
+              <input type="text" id="popDiscord" required 
+                class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-800 rounded-xl text-white placeholder-zinc-600 focus:outline-none focus:border-red-600 text-xs"
+                placeholder="Contoh: alex#1234">
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-1">No. Telepon In-Game</label>
+              <input type="text" id="popPhone" required 
+                class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-800 rounded-xl text-white placeholder-zinc-600 focus:outline-none focus:border-red-600 text-xs"
+                placeholder="Contoh: 555-0192">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-1">Steam Hex / Hex ID</label>
+            <input type="text" id="popSteamHex" required 
+              class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-800 rounded-xl text-white placeholder-zinc-600 focus:outline-none focus:border-red-600 text-xs"
+              placeholder="Contoh: steam:11000010xxxxxxx">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-1">Jabatan Dilamar</label>
+              <select id="popPosition" required
+                class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-800 rounded-xl text-white focus:outline-none focus:border-red-600 text-xs cursor-pointer">
+                <option value="" disabled selected>Pilih posisi...</option>
+                <option value="Hangaround">Hangaround</option>
+                <option value="Prospect">Prospect</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-1">Jam Aktif Bermain</label>
+              <input type="text" id="popActiveHours" required 
+                class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-800 rounded-xl text-white placeholder-zinc-600 focus:outline-none focus:border-red-600 text-xs"
+                placeholder="Contoh: 19:00 - 23:00 WIB">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-1">Pengalaman RP / Klub Sebelumnya</label>
+            <textarea id="popExperience" rows="2" required
+              class="w-full p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-white placeholder-zinc-600 focus:outline-none focus:border-red-600 text-xs resize-none"
+              placeholder="Sebutkan pengalaman..."></textarea>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-1">Alasan Bergabung</label>
+            <textarea id="popReason" rows="2" required
+              class="w-full p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-white placeholder-zinc-600 focus:outline-none focus:border-red-600 text-xs resize-none"
+              placeholder="Tuliskan alasan..."></textarea>
+          </div>
+
+          <button type="submit" id="popSubmitBtn" 
+            class="w-full py-3 bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold rounded-xl shadow-lg shadow-red-600/20 transition-all flex items-center justify-center gap-2 tracking-wider text-xs cursor-pointer mt-4">
+            <i class="fa-solid fa-paper-plane"></i> <span>KIRIM PENGAJUAN PENDAFTARAN</span>
+          </button>
+        </form>
+
+        <!-- Tautan Cepat ke Discord di dalam Modal -->
+        <div class="mt-5 pt-3 border-t border-zinc-800 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>Kunjungi Discord Kami:</span>
+          <div class="flex gap-3">
+            <a href="https://discord.gg/link-discord-triad" target="_blank" class="text-indigo-400 hover:underline font-semibold"><i class="fa-brands fa-discord"></i> Triad</a>
+            <a href="https://discord.gg/link-discord-nakama" target="_blank" class="text-red-400 hover:underline font-semibold"><i class="fa-brands fa-discord"></i> Nakama</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- WIDGET MUSIC PLAYER -->
   <div class="fixed bottom-6 right-6 z-50">
     <audio id="bgMusic" loop preload="auto" src="kota ini tak sama tanpamu.mp3"></audio>
@@ -516,6 +653,121 @@
   </div>
 
   <script>
+    // Inisialisasi Firebase untuk mengambil Webhook dari database
+    const firebaseConfig = {
+      apiKey: "AIzaSyBWZzjpvghve0zG9COIORa1i1SZJ4mLIoA",
+      authDomain: "nmc-management.firebaseapp.com",
+      databaseURL: "https://nmc-management-default-rtdb.firebaseio.com",
+      projectId: "nmc-management",
+      storageBucket: "nmc-management.firebasestorage.app",
+      messagingSenderId: "551684270539",
+      appId: "1:551684270539:web:0706d854b3ce6f731e6e4e"
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const popDb = firebase.database();
+
+    // Fungsi Pop-up Modal Pendaftaran
+    function toggleRegisterModal() {
+      const modal = document.getElementById("registerModal");
+      if (modal.classList.contains("hidden")) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      } else {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
+    }
+
+    function showModalAlert(msg, type = 'success') {
+      const alertBox = document.getElementById("modalAlertBox");
+      const alertText = document.getElementById("modalAlertText");
+      const alertIcon = document.getElementById("modalAlertIcon");
+
+      alertBox.classList.remove("hidden", "bg-red-950/50", "border-red-800/60", "text-red-400", "bg-emerald-950/50", "border-emerald-800/60", "text-emerald-400");
+      if (type === 'success') {
+        alertBox.classList.add("bg-emerald-950/50", "border-emerald-800/60", "text-emerald-400");
+        alertIcon.className = "fa-solid fa-circle-check text-sm";
+      } else {
+        alertBox.classList.add("bg-red-950/50", "border-red-800/60", "text-red-400");
+        alertIcon.className = "fa-solid fa-triangle-exclamation text-sm";
+      }
+      alertText.innerText = msg;
+    }
+
+    async function handlePopupRegister(event) {
+      event.preventDefault();
+      const name = document.getElementById("popName").value.trim();
+      const discord = document.getElementById("popDiscord").value.trim();
+      const phone = document.getElementById("popPhone").value.trim();
+      const steamHex = document.getElementById("popSteamHex").value.trim();
+      const position = document.getElementById("popPosition").value;
+      const activeHours = document.getElementById("popActiveHours").value.trim();
+      const experience = document.getElementById("popExperience").value.trim();
+      const reason = document.getElementById("popReason").value.trim();
+      const submitBtn = document.getElementById("popSubmitBtn");
+
+      if (!name || !discord || !phone || !steamHex || !position || !activeHours || !experience || !reason) {
+        showModalAlert("Semua kolom wajib diisi!", "error");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>MENGIRIM...</span>`;
+
+      try {
+        const timestamp = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        
+        // Ambil URL Webhook dari Firebase (webhooks/absen)
+        const snapshot = await popDb.ref('webhooks/absen').once('value');
+        const webhookUrl = snapshot.val();
+
+        if (webhookUrl) {
+          // Tag role HighRank ditaruh di BARIS PALING BAWAH
+          const roleTags = "_<@&1560008496244850702> <@&1560008668764708915> <@&1560008581884026930>._";
+
+          const discordMessage = {
+            content: `📥 **PENGAJUAN ANGGOTA BARU NAKAMA MC**\n\n` +
+                     `• **Waktu**: \`${timestamp}\`\n` +
+                     `• **Nama In-Game**: \`${name}\`\n` +
+                     `• **Discord**: \`${discord}\`\n` +
+                     `• **No. Telepon**: \`${phone}\`\n` +
+                     `• **Steam Hex**: \`${steamHex}\`\n` +
+                     `• **Jabatan Dilamar**: **${position}**\n` +
+                     `• **Jam Aktif**: \`${activeHours}\`\n` +
+                     `• **Pengalaman RP**: ${experience}\n` +
+                     `• **Alasan Bergabung**: ${reason}\n\n` +
+                     `${roleTags}`,
+            
+            allowed_mentions: {
+              parse: ["roles", "users"]
+            }
+          };
+
+          await fetch(webhookUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(discordMessage)
+          });
+        }
+
+        showModalAlert("Pengajuan berhasil dikirim ke tim HighRank Nakama MC!", "success");
+        document.getElementById("popupRegisterForm").reset();
+        setTimeout(() => {
+          toggleRegisterModal();
+        }, 2000);
+
+      } catch (err) {
+        console.error("Error:", err);
+        showModalAlert("Gagal mengirim pengajuan. Coba beberapa saat lagi.", "error");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>KIRIM PENGAJUAN PENDAFTARAN</span>`;
+      }
+    }
+
     // Fungsi Masuk Portal & Putar Musik Otomatis
     function enterPortal() {
       const music = document.getElementById('bgMusic');
