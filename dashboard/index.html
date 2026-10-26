@@ -137,49 +137,6 @@
 <body class="min-h-screen p-4 md:p-8">
   <div class="bg-ambient-glow"></div>
 
-  <!-- MODAL LOGIN -->
-  <div id="loginModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6 border border-red-600/40 relative overflow-hidden">
-      <div class="absolute -top-12 -left-12 w-32 h-32 bg-red-600/20 rounded-full blur-2xl pointer-events-none"></div>
-
-      <div class="text-center space-y-3 relative z-10">
-        <div class="w-20 h-20 bg-red-950/50 rounded-2xl flex items-center justify-center mx-auto border border-red-600/40 shadow-inner overflow-hidden p-1">
-          <img src="../../NakamaLogo.png" alt="Logo" class="w-full h-full object-cover rounded-xl" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
-        </div>
-        <div>
-          <h2 class="text-2xl font-black tracking-wider text-red-500">TRIAD COMMUNITY ACCESS</h2>
-          <p class="text-xs text-gray-400 mt-1">Masukkan kredensial akun Anda untuk masuk</p>
-        </div>
-      </div>
-
-      <div class="space-y-4 relative z-10">
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Username</label>
-          <div class="relative">
-            <i class="fa-solid fa-user absolute left-3.5 top-3.5 text-gray-500 text-sm"></i>
-            <input type="text" id="loginUsername" placeholder="Masukkan username..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-10 pr-3 text-white focus:outline-none focus:border-red-500 text-sm">
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Sandi / Password</label>
-          <div class="relative">
-            <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-gray-500 text-sm"></i>
-            <input type="password" id="loginPassword" placeholder="Masukkan sandi..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-10 pr-3 text-white focus:outline-none focus:border-red-500 text-sm">
-          </div>
-        </div>
-
-        <div id="loginError" class="text-xs text-red-400 text-center hidden bg-red-950/40 border border-red-800/40 py-2 rounded-lg font-semibold">
-          Username atau sandi salah!
-        </div>
-
-        <button id="loginSubmitBtn" onclick="handleLogin()" class="w-full bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 tracking-wider mt-2 cursor-pointer">
-          <i class="fa-solid fa-right-to-bracket"></i> MASUK SISTEM
-        </button>
-      </div>
-    </div>
-  </div>
-
   <div class="max-w-7xl mx-auto space-y-6">
     
     <!-- HEADER -->
@@ -205,10 +162,6 @@
         <span id="userRoleBadge" class="bg-slate-800 text-gray-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2">
           <i class="fa-solid fa-eye"></i> Role: Viewer
         </span>
-
-        <button id="btnLoginAdminModal" onclick="openLoginModal()" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-500/30 transition flex items-center gap-1 cursor-pointer">
-          <i class="fa-solid fa-right-to-bracket"></i> Login Ulang
-        </button>
 
         <button id="btnLogoutBtn" onclick="handleLogout()" class="bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-500/30 transition flex items-center gap-1 cursor-pointer">
           <i class="fa-solid fa-right-from-bracket"></i> Keluar / Ganti Akun
@@ -801,12 +754,17 @@
       }
     });
 
+    // --- CEK SESI & UCAPAN SELAMAT DATANG ---
     window.addEventListener("DOMContentLoaded", () => {
       const savedRole = localStorage.getItem("nmc_user_role");
+      const loggedUser = localStorage.getItem("nmc_logged_user") || "Anggota";
+
       if (savedRole === "editor" || savedRole === "viewer") {
         currentUserRole = savedRole;
-        document.getElementById("loginModal").classList.add("hidden");
         
+        // Memunculkan ucapan selamat datang saat pertama kali masuk dashboard
+        showCustomAlert(`Selamat datang kembali, ${loggedUser} (${currentUserRole.toUpperCase()})! Senang bisa melihat Anda kembali di sistem.`, 'success');
+
         const params = new URLSearchParams(window.location.search);
         const modul = params.get('modul');
         if (modul) {
@@ -815,96 +773,21 @@
           selectCommunity('nakama');
         }
       } else {
-        document.getElementById("loginModal").classList.remove("hidden");
+        // Jika belum login, paksa pindah ke halaman login.html
+        window.location.href = "login.html";
+        return;
       }
       applyRolePermissions();
     });
 
-    function handleLogin() {
-      const usernameInput = document.getElementById("loginUsername").value.trim();
-      const passwordInput = document.getElementById("loginPassword").value.trim();
-      const errorDiv = document.getElementById("loginError");
-
-      if (!usernameInput || !passwordInput) {
-        errorDiv.innerText = "Username dan sandi wajib diisi!";
-        errorDiv.classList.remove("hidden");
-        return;
-      }
-
-      db.ref('admin_users').once('value').then((snapshot) => {
-        const admins = snapshot.val();
-        let isAdmin = false;
-
-        if (admins) {
-          for (let userKey in admins) {
-            if (userKey.toLowerCase() === usernameInput.toLowerCase()) {
-              const userData = admins[userKey];
-              const storedPass = (typeof userData === 'object' && userData !== null) ? userData.password : userData;
-              if (String(storedPass) === String(passwordInput)) {
-                isAdmin = true;
-                break;
-              }
-            }
-          }
-        }
-
-        if (isAdmin) {
-          currentUserRole = "editor";
-          localStorage.setItem("nmc_user_role", "editor");
-          localStorage.setItem("nmc_logged_user", usernameInput);
-          document.getElementById("loginModal").classList.add("hidden");
-          errorDiv.classList.add("hidden");
-          applyRolePermissions();
-          selectCommunity('nakama');
-          showCustomAlert(`Selamat datang HighRank, ${usernameInput}!`);
-        } else {
-          db.ref('member_users').once('value').then((memSnapshot) => {
-            const members = memSnapshot.val();
-            let isMember = false;
-
-            if (members) {
-              for (let userKey in members) {
-                if (userKey.toLowerCase() === usernameInput.toLowerCase()) {
-                  const userData = members[userKey];
-                  const storedPass = (typeof userData === 'object' && userData !== null) ? userData.password : userData;
-                  if (String(storedPass) === String(passwordInput)) {
-                    isMember = true;
-                    break;
-                  }
-                }
-              }
-            }
-
-            if (isMember) {
-              currentUserRole = "viewer";
-              localStorage.setItem("nmc_user_role", "viewer");
-              localStorage.setItem("nmc_logged_user", usernameInput);
-              document.getElementById("loginModal").classList.add("hidden");
-              errorDiv.classList.add("hidden");
-              applyRolePermissions();
-              selectCommunity('nakama');
-              showCustomAlert(`Selamat datang Member, ${usernameInput}!`);
-            } else {
-              errorDiv.innerText = "Username atau sandi salah!";
-              errorDiv.classList.remove("hidden");
-            }
-          }).catch((err) => {
-            errorDiv.innerText = "Gagal terhubung ke database!";
-            errorDiv.classList.add("hidden");
-          });
-        }
-      }).catch((err) => {
-        errorDiv.innerText = "Gagal terhubung ke database!";
-        errorDiv.classList.add("hidden");
-      });
+    function handleLogout() { 
+      localStorage.removeItem("nmc_user_role"); 
+      localStorage.removeItem("nmc_logged_user"); 
+      window.location.href = "login.html"; 
     }
-
-    function openLoginModal() { document.getElementById("loginModal").classList.remove("hidden"); }
-    function handleLogout() { localStorage.removeItem("nmc_user_role"); localStorage.removeItem("nmc_logged_user"); window.history.replaceState({}, document.title, window.location.pathname); location.reload(); }
 
     function applyRolePermissions() {
       const badge = document.getElementById("userRoleBadge");
-      const btnLogin = document.getElementById("btnLoginAdminModal");
       const btnLogout = document.getElementById("btnLogoutBtn");
       const editorElements = document.querySelectorAll(".editor-only");
       const memberWarning = document.getElementById("memberPriceWarning");
@@ -914,7 +797,6 @@
           badge.innerHTML = `<i class="fa-solid fa-user-shield"></i> Role: HighRank (Editor)`;
           badge.className = "bg-red-950/60 text-red-400 text-xs font-semibold px-3 py-1.5 rounded-full border border-red-800/50 flex items-center gap-2";
         }
-        if(btnLogin) btnLogin.classList.add("hidden");
         if(btnLogout) btnLogout.classList.remove("hidden");
         editorElements.forEach(el => el.classList.remove("hidden"));
         if(memberWarning) memberWarning.classList.add("hidden");
@@ -923,7 +805,6 @@
           badge.innerHTML = `<i class="fa-solid fa-eye"></i> Role: Member (Viewer)`;
           badge.className = "bg-slate-800 text-gray-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-2";
         }
-        if(btnLogin) btnLogin.classList.add("hidden");
         if(btnLogout) btnLogout.classList.remove("hidden");
         editorElements.forEach(el => el.classList.add("hidden"));
         if(memberWarning) memberWarning.classList.remove("hidden");
