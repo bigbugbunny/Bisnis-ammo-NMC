@@ -488,9 +488,22 @@
   </main>
 
   <!-- ================================================= -->
-  <!-- WIDGET FLOATING REKRUTMEN & POP-UP FORM (SISI KIRI) -->
+  <!-- WIDGET FLOATING REKRUTMEN, KOTAK SARAN & DISCORD -->
   <!-- ================================================= -->
   <div class="fixed left-6 bottom-6 z-50 flex flex-col gap-3">
+    
+    <!-- Tombol Buka Pop-up Kotak Saran (BARU) -->
+    <button onclick="toggleSuggestionModal()" 
+      class="bg-zinc-900/90 hover:bg-zinc-800 text-zinc-200 hover:text-white font-bold p-3.5 rounded-2xl shadow-2xl border border-zinc-700/60 flex items-center gap-3 transition-all transform hover:scale-105 cursor-pointer group">
+      <div class="w-8 h-8 rounded-xl bg-orange-950/60 flex items-center justify-center text-orange-400 group-hover:text-white transition border border-orange-500/30">
+        <i class="fa-solid fa-comment-dots text-sm"></i>
+      </div>
+      <div class="text-left hidden md:block pr-2">
+        <p class="text-[9px] text-zinc-400 uppercase tracking-wider font-semibold">Masukan & Ide</p>
+        <p class="text-xs font-black tracking-wide text-white">KOTAK SARAN</p>
+      </div>
+    </button>
+
     <!-- Tombol Buka Pop-up Pendaftaran -->
     <button onclick="toggleRegisterModal()" 
       class="bg-red-700 hover:bg-red-600 text-white font-bold p-3.5 rounded-2xl shadow-2xl border border-red-500/40 flex items-center gap-3 transition-all transform hover:scale-105 cursor-pointer group">
@@ -623,6 +636,84 @@
     </div>
   </div>
 
+  <!-- Modal Pop-up Kotak Saran & Masukan (Hidden by Default) -->
+  <div id="suggestionModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-zinc-950/85 backdrop-blur-md p-4 overflow-y-auto">
+    <div class="bg-zinc-900 border border-zinc-800 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden relative my-auto animate-modal-in">
+      
+      <!-- Header Modal -->
+      <div class="bg-zinc-950 px-6 py-4 border-b border-zinc-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-orange-950/50 rounded-lg flex items-center justify-center border border-orange-500/40 text-orange-400">
+            <i class="fa-solid fa-lightbulb text-sm"></i>
+          </div>
+          <span class="text-orange-400 font-black tracking-wider text-xs">KOTAK SARAN & MASUKAN Warga</span>
+        </div>
+        <button onclick="toggleSuggestionModal()" class="w-8 h-8 rounded-xl bg-zinc-800 hover:bg-orange-600 text-zinc-400 hover:text-white flex items-center justify-center transition cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Isi Form Saran -->
+      <div class="p-6 space-y-4">
+        <!-- Notifikasi Alert -->
+        <div id="suggestionAlertBox" class="hidden p-3 rounded-xl text-xs font-medium border flex items-center gap-3">
+          <i id="suggestionAlertIcon" class="fa-solid text-sm"></i>
+          <span id="suggestionAlertText">Pesan</span>
+        </div>
+
+        <form id="popupSuggestionForm" onsubmit="handlePopupSuggestion(event)" class="space-y-4">
+          <div>
+            <label class="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-1">Nama / Panggilan (Opsional)</label>
+            <input type="text" id="suggName" 
+              class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-800 rounded-xl text-white placeholder-zinc-600 focus:outline-none focus:border-orange-500 text-xs"
+              placeholder="Contoh: Warga Setia / Anonim">
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-1">Kategori Masukan</label>
+            <select id="suggCategory" required
+              class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-800 rounded-xl text-white focus:outline-none focus:border-orange-500 text-xs cursor-pointer">
+              <option value="" disabled selected>Pilih kategori...</option>
+              <option value="Saran Fitur Website">💡 Saran Fitur Website</option>
+              <option value="Kritik & Evaluasi">⚠️ Kritik & Evaluasi</option>
+              <option value="Laporan Bug / Error">🐞 Laporan Bug / Error</option>
+              <option value="Ide Kegiatan / RP">🎬 Ide Kegiatan / RP</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-1">Pesan / Saran Anda</label>
+            <textarea id="suggMessage" rows="3" required
+              class="w-full p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-white placeholder-zinc-600 focus:outline-none focus:border-orange-500 text-xs resize-none"
+              placeholder="Tuliskan saran, kritik, atau ide Anda secara detail di sini..."></textarea>
+          </div>
+
+          <button type="submit" id="suggSubmitBtn" 
+            class="w-full py-3 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold rounded-xl shadow-lg shadow-orange-600/20 transition-all flex items-center justify-center gap-2 tracking-wider text-xs cursor-pointer">
+            <i class="fa-solid fa-paper-plane"></i> <span>KIRIM SARAN KE PENGURUS</span>
+          </button>
+        </form>
+
+        <!-- BANNER / TOMBOL SUPPORT DONASI (BAGIBAGI.CO/BBUNNY) -->
+        <div class="pt-3 border-t border-zinc-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 bg-zinc-950/60 p-3.5 rounded-2xl border border-zinc-800">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-red-950/60 border border-red-500/40 flex items-center justify-center text-red-400 shrink-0">
+              <i class="fa-solid fa-mug-hot text-sm"></i>
+            </div>
+            <div>
+              <p class="text-[11px] font-bold text-white">Suka dengan Website Ini?</p>
+              <p class="text-[10px] text-zinc-400">Dukung pengembangan komunitas & server.</p>
+            </div>
+          </div>
+          <a href="https://bagibagi.co/BBunny" target="_blank" 
+            class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-black text-[10px] uppercase tracking-wider rounded-xl transition shadow-md flex items-center justify-center gap-1.5 shrink-0">
+            <i class="fa-solid fa-heart text-white"></i> Support Kopi
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- WIDGET MUSIC PLAYER -->
   <div class="fixed bottom-6 right-6 z-50">
     <audio id="bgMusic" loop preload="auto" src="kota ini tak sama tanpamu.mp3"></audio>
@@ -681,10 +772,38 @@
       }
     }
 
+    // Fungsi Pop-up Kotak Saran (BARU)
+    function toggleSuggestionModal() {
+      const modal = document.getElementById("suggestionModal");
+      if (modal.classList.contains("hidden")) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      } else {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
+    }
+
     function showModalAlert(msg, type = 'success') {
       const alertBox = document.getElementById("modalAlertBox");
       const alertText = document.getElementById("modalAlertText");
       const alertIcon = document.getElementById("modalAlertIcon");
+
+      alertBox.classList.remove("hidden", "bg-red-950/50", "border-red-800/60", "text-red-400", "bg-emerald-950/50", "border-emerald-800/60", "text-emerald-400");
+      if (type === 'success') {
+        alertBox.classList.add("bg-emerald-950/50", "border-emerald-800/60", "text-emerald-400");
+        alertIcon.className = "fa-solid fa-circle-check text-sm";
+      } else {
+        alertBox.classList.add("bg-red-950/50", "border-red-800/60", "text-red-400");
+        alertIcon.className = "fa-solid fa-triangle-exclamation text-sm";
+      }
+      alertText.innerText = msg;
+    }
+
+    function showSuggestionAlert(msg, type = 'success') {
+      const alertBox = document.getElementById("suggestionAlertBox");
+      const alertText = document.getElementById("suggestionAlertText");
+      const alertIcon = document.getElementById("suggestionAlertIcon");
 
       alertBox.classList.remove("hidden", "bg-red-950/50", "border-red-800/60", "text-red-400", "bg-emerald-950/50", "border-emerald-800/60", "text-emerald-400");
       if (type === 'success') {
@@ -720,12 +839,10 @@
       try {
         const timestamp = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
         
-        // Ambil URL Webhook dari Firebase (webhooks/absen)
         const snapshot = await popDb.ref('webhooks/absen').once('value');
         const webhookUrl = snapshot.val();
 
         if (webhookUrl) {
-          // Tag role HighRank ditaruh di BARIS PALING BAWAH
           const roleTags = "_<@&1560008496244850702> <@&1560008668764708915> <@&1560008581884026930>._";
 
           const discordMessage = {
@@ -765,6 +882,67 @@
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>KIRIM PENGAJUAN PENDAFTARAN</span>`;
+      }
+    }
+
+    // Fungsi Kirim Saran ke Webhook Database "webhooks/saran" (BARU)
+    async function handlePopupSuggestion(event) {
+      event.preventDefault();
+      let name = document.getElementById("suggName").value.trim();
+      if (!name) name = "Anonim / Warga";
+      
+      const category = document.getElementById("suggCategory").value;
+      const message = document.getElementById("suggMessage").value.trim();
+      const submitBtn = document.getElementById("suggSubmitBtn");
+
+      if (!category || !message) {
+        showSuggestionAlert("Kategori dan pesan wajib diisi!", "error");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>MENGIRIM...</span>`;
+
+      try {
+        const timestamp = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        
+        // Mengambil webhook dari path database "webhooks/saran" yang sudah Anda buat
+        const snapshot = await popDb.ref('webhooks/saran').once('value');
+        const webhookUrl = snapshot.val();
+
+        if (webhookUrl) {
+          const discordMessage = {
+            content: `💡 **PESAN KOTAK SARAN & MASUKAN BARU**\n\n` +
+                     `• **Waktu**: \`${timestamp}\`\n` +
+                     `• **Pengirim**: \`${name}\`\n` +
+                     `• **Kategori**: **[ ${category} ]**\n` +
+                     `• **Pesan**: \n> ${message}\n\n` +
+                     `<@&1560008496244850702>`, // Otomatis ngetag role
+            
+            allowed_mentions: {
+              parse: ["roles", "users"]
+            }
+          };
+
+          await fetch(webhookUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(discordMessage)
+          });
+        }
+
+        showSuggestionAlert("Terima kasih! Saran Anda berhasil dikirim ke pengurus.", "success");
+        document.getElementById("popupSuggestionForm").reset();
+        setTimeout(() => {
+          toggleSuggestionModal();
+        }, 2000);
+
+      } catch (err) {
+        console.error("Error:", err);
+        showSuggestionAlert("Gagal mengirim saran. Coba beberapa saat lagi.", "error");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>KIRIM SARAN KE PENGURUS</span>`;
       }
     }
 
