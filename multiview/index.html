@@ -149,7 +149,7 @@
         </div>
 
         <!-- Dynamic Grid Video Players -->
-        <div id="active-players-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+        <div id="active-players-grid" class="grid grid-cols-1 gap-4 flex-1">
             <div class="col-span-full text-center py-20 text-gray-500 text-xs border border-dashed border-slate-800 rounded-2xl glass-card">
                 <i class="fa-solid fa-tv text-3xl mb-2 text-gray-600"></i>
                 <p>Belum ada siaran yang dipilih. Klik salah satu nama anggota berstatus LIVE di atas.</p>
@@ -272,7 +272,8 @@
                     channelId: data[key].channelId,
                     manualVideoId: data[key].videoId || '',
                     isLive: false,
-                    videoId: ''
+                    videoId: '',
+                    viewers: 0
                 }));
                 checkLiveStatusWithAPI();
             } else {
@@ -345,6 +346,7 @@
                 if (s.manualVideoId && s.manualVideoId.length > 5) {
                     s.isLive = true;
                     s.videoId = s.manualVideoId;
+                    s.viewers = 0;
                     liveCount++;
                     continue;
                 }
@@ -377,26 +379,34 @@
                                 if (broadcastContent === 'live') {
                                     s.isLive = true;
                                     s.videoId = latestVideoId;
+                                    s.viewers = videoInfo.liveStreamingDetails && videoInfo.liveStreamingDetails.concurrentViewers 
+                                                ? videoInfo.liveStreamingDetails.concurrentViewers 
+                                                : 0;
                                     liveCount++;
                                 } else {
                                     s.isLive = false;
                                     s.videoId = '';
+                                    s.viewers = 0;
                                 }
                             } else {
                                 s.isLive = false;
                                 s.videoId = '';
+                                s.viewers = 0;
                             }
                         } else {
                             s.isLive = false;
                             s.videoId = '';
+                            s.viewers = 0;
                         }
                     } else {
                         s.isLive = false;
                         s.videoId = '';
+                        s.viewers = 0;
                     }
                 } catch (e) {
                     s.isLive = false;
                     s.videoId = '';
+                    s.viewers = 0;
                 }
             }
 
@@ -467,6 +477,7 @@
             container.innerHTML = '';
 
             if (activeStreams.length === 0) {
+                container.className = "grid grid-cols-1 gap-4 flex-1";
                 container.innerHTML = `
                     <div class="col-span-full text-center py-20 text-gray-500 text-xs border border-dashed border-slate-800 rounded-2xl glass-card">
                         <i class="fa-solid fa-tv text-3xl mb-2 text-gray-600"></i>
@@ -476,6 +487,13 @@
                 return;
             }
 
+            // Jika 1 video, posisikan di tengah dengan flex. Jika > 1, jadi grid 2 kolom.
+            if (activeStreams.length === 1) {
+                container.className = "flex justify-center w-full flex-1";
+            } else {
+                container.className = "grid grid-cols-1 md:grid-cols-2 gap-4 flex-1";
+            }
+
             activeStreams.forEach(id => {
                 const streamer = streamers.find(s => s.id === id);
                 if (!streamer || !streamer.isLive) return;
@@ -483,12 +501,23 @@
                 const embedSrc = `https://www.youtube.com/embed/${streamer.videoId}?autoplay=1`;
 
                 const playerBox = document.createElement('div');
-                playerBox.className = "glass-card rounded-2xl overflow-hidden flex flex-col shadow-xl h-[400px]";
+                // Jika 1 video, gunakan max-w-4xl w-full dengan tinggi h-[480px] agar pas di tengah dan proporsional
+                if (activeStreams.length === 1) {
+                    playerBox.className = "glass-card rounded-2xl overflow-hidden flex flex-col shadow-xl h-[480px] w-full max-w-4xl";
+                } else {
+                    playerBox.className = "glass-card rounded-2xl overflow-hidden flex flex-col shadow-xl h-[400px]";
+                }
+
                 playerBox.innerHTML = `
                     <div class="bg-gray-950/90 px-4 py-2.5 border-b border-slate-800 flex justify-between items-center text-xs">
-                        <span class="font-bold text-orangeAccent flex items-center gap-2">
-                            <i class="fa-brands fa-youtube"></i> ${streamer.name}
-                        </span>
+                        <div class="flex items-center gap-3">
+                            <span class="font-bold text-orangeAccent flex items-center gap-2">
+                                <i class="fa-brands fa-youtube text-red-500"></i> ${streamer.name}
+                            </span>
+                            <span class="px-2 py-0.5 bg-darkBg border border-slate-800 rounded-md text-[11px] text-gray-300 flex items-center gap-1.5 shadow-inner">
+                                <i class="fa-solid fa-user-group text-red-500 text-[10px]"></i> ${streamer.viewers || 0}
+                            </span>
+                        </div>
                         <button onclick="toggleStream('${streamer.id}')" class="text-gray-400 hover:text-orangeAccent transition cursor-pointer">
                             <i class="fa-solid fa-xmark text-sm"></i>
                         </button>
