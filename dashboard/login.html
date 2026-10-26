@@ -151,34 +151,43 @@
       submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>MEMERIKSA...</span>`;
 
       try {
-        // CONTOH AKUN MEMBER / VIEWER UMUM (Bisa disesuaikan atau dihapus jika ingin full dari DB)
-        if (usernameInput.toLowerCase() === "member" && passwordInput === "member123") {
-          localStorage.setItem("nmc_user_role", "viewer");
-          localStorage.setItem("nmc_logged_user", usernameInput);
-          window.location.href = "./";
-          return;
-        }
+        let loggedRole = null;
 
-        // Pengecekan ke Supabase untuk Admin / Editor / User terdaftar
-        const { data: admins, error } = await supabaseClient
+        // 1. Cek ke tabel admin_users (untuk Editor)
+        const { data: admins, error: adminError } = await supabaseClient
           .from('admin_users')
           .select('*');
 
-        if (error) throw error;
-
-        let loggedRole = null;
-        if (admins) {
+        if (!adminError && admins) {
           for (let admin of admins) {
             if (admin.username && admin.username.toLowerCase() === usernameInput.toLowerCase()) {
               if (String(admin.password) === String(passwordInput)) {
-                // Jika di database ada kolom role, gunakan itu (default 'editor')
-                loggedRole = admin.role ? admin.role : "editor"; 
+                loggedRole = admin.role ? admin.role : "editor";
                 break;
               }
             }
           }
         }
 
+        // 2. Jika tidak ditemukan di admin_users, cek ke tabel member_users (untuk Viewer)
+        if (!loggedRole) {
+          const { data: members, error: memberError } = await supabaseClient
+            .from('member_users')
+            .select('*');
+
+          if (!memberError && members) {
+            for (let member of members) {
+              if (member.username && member.username.toLowerCase() === usernameInput.toLowerCase()) {
+                if (String(member.password) === String(passwordInput)) {
+                  loggedRole = "viewer";
+                  break;
+                }
+              }
+            }
+          }
+        }
+
+        // 3. Eksekusi hasil login
         if (loggedRole) {
           localStorage.setItem("nmc_user_role", loggedRole); // 'editor' atau 'viewer'
           localStorage.setItem("nmc_logged_user", usernameInput);
