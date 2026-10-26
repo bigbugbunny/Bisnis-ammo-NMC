@@ -643,7 +643,7 @@
         <button onclick="toggleMute()" class="text-gray-400 hover:text-white text-sm p-1 cursor-pointer">
           <i class="fa-solid fa-volume-high" id="muteIcon"></i>
         </button>
-        <input type="range" id="volumeControl" min="0" max="1" step="0.05" value="1" oninput="changeVolume(this.value)" class="w-16 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer">
+        <input type="range" id="volumeControl" min="0" max="1" step="0.05" value="0.3" oninput="changeVolume(this.value)" class="w-16 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer">
       </div>
 
       <a href="https://open.spotify.com/track/13CwOTXUgBugeBByE9oIWb?si=b05d989b3dbf4cb4" target="_blank" class="p-1.5 text-emerald-400 hover:text-emerald-300 transition" title="Buka di Spotify">
@@ -928,7 +928,7 @@
     const muteIcon = document.getElementById('muteIcon');
     const volumeControl = document.getElementById('volumeControl');
 
-    music.volume = 0.5;
+    music.volume = 0.3;
 
     function togglePlay() {
       if (music.paused) {
@@ -961,7 +961,7 @@
     }
 
     function updateVolumeIcon(val) {
-      if (val > 0.5) {
+      if (val > 0.3) {
         muteIcon.className = "fa-solid fa-volume-high text-gray-200";
       } else if (val > 0) {
         muteIcon.className = "fa-solid fa-volume-low text-gray-200";
