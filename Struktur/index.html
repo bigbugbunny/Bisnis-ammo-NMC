@@ -361,7 +361,7 @@
                     let isValid = false;
                     if (admins) {
                         for (let admin of admins) {
-                            if (String(admin.password) === String(pwd)) {
+                            if (String(admin.password).trim() === String(pwd).trim()) {
                                 isValid = true;
                                 break;
                             }
@@ -385,18 +385,31 @@
         }
 
         function showAdminPanelUI() {
-            document.getElementById('admin-form-section').classList.remove('hidden');
-            document.getElementById('lock-icon').className = "fa-solid fa-unlock text-emerald-400";
-            document.getElementById('admin-toggle-text').innerText = "Admin Aktif";
+            const adminSec = document.getElementById('admin-form-section');
+            if (adminSec) adminSec.classList.remove('hidden');
+            
+            const lockIcon = document.getElementById('lock-icon');
+            if (lockIcon) lockIcon.className = "fa-solid fa-unlock text-emerald-400";
+            
+            const toggleText = document.getElementById('admin-toggle-text');
+            if (toggleText) toggleText.innerText = "Admin Aktif";
+            
             renderRoster();
         }
 
         function logoutAdmin() {
             isAdmin = false;
             sessionStorage.removeItem('triad_is_admin');
-            document.getElementById('admin-form-section').classList.add('hidden');
-            document.getElementById('lock-icon').className = "fa-solid fa-lock text-orangeAccent";
-            document.getElementById('admin-toggle-text').innerText = "Mode Admin";
+            
+            const adminSec = document.getElementById('admin-form-section');
+            if (adminSec) adminSec.classList.add('hidden');
+            
+            const lockIcon = document.getElementById('lock-icon');
+            if (lockIcon) lockIcon.className = "fa-solid fa-lock text-orangeAccent";
+            
+            const toggleText = document.getElementById('admin-toggle-text');
+            if (toggleText) toggleText.innerText = "Mode Admin";
+            
             showPopup("Informasi", "Sesi admin telah diakhiri.", "success");
             renderRoster();
         }
@@ -466,8 +479,10 @@
         function renderRoster() {
             const container = document.getElementById('roster-container');
             const totalCount = document.getElementById('total-count');
+            if (!container) return;
+            
             container.innerHTML = '';
-            totalCount.innerText = rosterMembers.length;
+            if (totalCount) totalCount.innerText = rosterMembers.length;
 
             if (rosterMembers.length === 0) {
                 container.innerHTML = `
@@ -481,7 +496,7 @@
 
             const groupedMembers = {};
             rosterMembers.forEach(member => {
-                const roleKey = member.role || "ANGGOTA";
+                const roleKey = member.role ? member.role.trim().toUpperCase() : "ANGGOTA";
                 if (!groupedMembers[roleKey]) {
                     groupedMembers[roleKey] = [];
                 }
@@ -499,6 +514,7 @@
 
             sortedRoles.forEach(role => {
                 const membersInRole = groupedMembers[role];
+                const safeRoleId = role.replace(/[^a-zA-Z0-9]/g, '_');
 
                 const sectionDiv = document.createElement('div');
                 sectionDiv.className = "flex flex-col gap-4";
@@ -509,11 +525,12 @@
                         <h3 class="text-lg font-black text-white uppercase tracking-wider">${role}</h3>
                         <span class="text-xs text-gray-400 bg-cardBg border border-borderCol px-2.5 py-0.5 rounded-full font-bold">(${membersInRole.length})</span>
                     </div>
-                    <div class="flex flex-wrap justify-center gap-6" id="grid-${role}"></div>
+                    <div class="flex flex-wrap justify-center gap-6" id="grid-${safeRoleId}"></div>
                 `;
 
                 container.appendChild(sectionDiv);
-                const grid = sectionDiv.querySelector(`#grid-${role}`);
+                const grid = document.getElementById(`grid-${safeRoleId}`);
+                if (!grid) return;
 
                 membersInRole.forEach(member => {
                     const card = document.createElement('div');
