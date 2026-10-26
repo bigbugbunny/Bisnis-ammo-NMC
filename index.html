@@ -11,9 +11,8 @@
   <!-- FontAwesome Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <!-- Supabase JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
     tailwind.config = {
@@ -564,19 +563,10 @@
   </div>
 
   <script>
-    // Firebase Config & Logic Modal Login
-    const firebaseConfig = {
-      apiKey: "AIzaSyBWZzjpvghve0zG9COIORa1i1SZJ4mLIoA",
-      authDomain: "nmc-management.firebaseapp.com",
-      databaseURL: "https://nmc-management-default-rtdb.firebaseio.com",
-      projectId: "nmc-management",
-      storageBucket: "nmc-management.firebasestorage.app",
-      messagingSenderId: "551684270539",
-      appId: "1:551684270539:web:0706d854b3ce6f731e6e4e"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    // Supabase Configuration & Initialization
+    const SUPABASE_URL = 'https://atibhgbpdxvjngqdiklg.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_PbD9KclxnhZGybuHJDkU3A_-Hz-MESZ'; 
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     window.addEventListener("DOMContentLoaded", () => {
       closeLoginModal();
@@ -609,8 +599,8 @@
       }, 500);
     }
 
-    // Fungsi Login Database
-    function handleLogin() {
+    // Fungsi Login Database menggunakan Supabase
+    async function handleLogin() {
       const usernameInput = document.getElementById("loginUsername").value.trim();
       const passwordInput = document.getElementById("loginPassword").value.trim();
       const errorDiv = document.getElementById("loginError");
@@ -621,16 +611,20 @@
         return;
       }
 
-      db.ref('admin_users').once('value').then((snapshot) => {
-        const admins = snapshot.val();
+      try {
+        // Mengambil data dari tabel admin_users di Supabase
+        const { data: admins, error } = await supabaseClient
+          .from('admin_users')
+          .select('*');
+
+        if (error) throw error;
+
         let isAdmin = false;
 
         if (admins) {
-          for (let userKey in admins) {
-            if (userKey.toLowerCase() === usernameInput.toLowerCase()) {
-              const userData = admins[userKey];
-              const storedPass = (typeof userData === 'object' && userData !== null) ? userData.password : userData;
-              if (String(storedPass) === String(passwordInput)) {
+          for (let admin of admins) {
+            if (admin.username && admin.username.toLowerCase() === usernameInput.toLowerCase()) {
+              if (String(admin.password) === String(passwordInput)) {
                 isAdmin = true;
                 break;
               }
@@ -645,10 +639,11 @@
           errorDiv.innerText = "Username atau sandi salah!";
           errorDiv.classList.remove("hidden");
         }
-      }).catch(() => {
-        errorDiv.innerText = "Gagal terhubung ke database!";
+      } catch (err) {
+        console.error("Login error:", err);
+        errorDiv.innerText = "Gagal terhubung ke database Supabase!";
         errorDiv.classList.remove("hidden");
-      });
+      }
     }
 
     // Gallery Carousel Script
