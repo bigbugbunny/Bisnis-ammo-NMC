@@ -9,7 +9,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   
-  <!-- Firebase SDK -->
+  <!-- Firebase SDK (Hanya digunakan untuk mengambil URL Webhook dari database) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
@@ -82,7 +82,6 @@
           </div>
         </div>
 
-        <!-- Kolom Tambahan: Pilihan Jabatan / Posisi yang Dilamar -->
         <div>
           <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Jabatan / Posisi yang Dilamar</label>
           <div class="relative">
@@ -93,6 +92,16 @@
               <option value="Hangaround">Hangaround</option>
               <option value="Prospect">Prospect</option>
             </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Jam Aktif Bermain</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-zinc-500"><i class="fa-solid fa-clock"></i></span>
+            <input type="text" id="regActiveHours" required 
+              class="w-full pl-11 pr-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-600 focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition text-sm"
+              placeholder="Contoh: Pukul 19.00 - 23.00 WIB">
           </div>
         </div>
 
@@ -176,11 +185,12 @@
       const phone = document.getElementById("regPhone").value.trim();
       const steamHex = document.getElementById("regSteamHex").value.trim();
       const position = document.getElementById("regPosition").value;
+      const activeHours = document.getElementById("regActiveHours").value.trim();
       const experience = document.getElementById("regExperience").value.trim();
       const reason = document.getElementById("regReason").value.trim();
       const submitBtn = document.getElementById("submitBtn");
 
-      if (!name || !discord || !phone || !steamHex || !position || !experience || !reason) {
+      if (!name || !discord || !phone || !steamHex || !position || !activeHours || !experience || !reason) {
         showAlert("Semua kolom wajib diisi!", "error");
         return;
       }
@@ -191,49 +201,39 @@
       try {
         const timestamp = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
         
-        // Simpan ke Firebase pada node 'pendaftaran_anggota'
-        const newRef = db.ref('pendaftaran_anggota').push();
-        await newRef.set({
-          date: timestamp,
-          name: name,
-          discord: discord,
-          phone: phone,
-          steamHex: steamHex,
-          position: position,
-          experience: experience,
-          reason: reason,
-          status: "Pending"
-        });
+        // CATATAN: Penyimpanan ke Firebase (.set()) telah dihapus total.
+        // Sistem hanya mengambil URL webhook dari Firebase untuk mengirim data langsung ke Discord.
 
-        // Ambil URL Webhook Discord dari webhooks/absen di Firebase
         const snapshot = await db.ref('webhooks/absen').once('value');
         const webhookUrl = snapshot.val();
 
         if (webhookUrl) {
           const discordMessage = {
             content: `📥 **PENGAJUAN ANGGOTA BARU NAKAMA MC**\n\n` +
+                     `• **Waktu**: \`${timestamp}\`\n` +
                      `• **Nama In-Game**: \`${name}\`\n` +
                      `• **Discord**: \`${discord}\`\n` +
                      `• **No. Telepon**: \`${phone}\`\n` +
                      `• **Steam Hex**: \`${steamHex}\`\n` +
                      `• **Jabatan Dilamar**: **${position}**\n` +
+                     `• **Jam Aktif**: \`${activeHours}\`\n` +
                      `• **Pengalaman RP**: ${experience}\n` +
                      `• **Alasan Bergabung**: ${reason}\n\n` +
-                     `_Data tersimpan di Firebase & menunggu review HighRank._`
+                     `_@📒 SECRETARY @⚖️ ENFORCER @🪎 TREASURY _`
           };
 
           await fetch(webhookUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(discordMessage)
-          }).catch(err => console.error("Webhook Discord Error:", err));
+          });
         }
 
-        showAlert("Pengajuan berhasil dikirim dan tersimpan di database! HighRank akan segera meninjau.", "success");
+        showAlert("Pengajuan berhasil dikirim ke tim HighRank Nakama MC!", "success");
         document.getElementById("registerForm").reset();
 
       } catch (err) {
-        console.error("Database error:", err);
+        console.error("Error:", err);
         showAlert("Gagal mengirim pengajuan. Coba beberapa saat lagi.", "error");
       } finally {
         submitBtn.disabled = false;
