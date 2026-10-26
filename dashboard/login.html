@@ -151,26 +151,36 @@
       submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>MEMERIKSA...</span>`;
 
       try {
+        // CONTOH AKUN MEMBER / VIEWER UMUM (Bisa disesuaikan atau dihapus jika ingin full dari DB)
+        if (usernameInput.toLowerCase() === "member" && passwordInput === "member123") {
+          localStorage.setItem("nmc_user_role", "viewer");
+          localStorage.setItem("nmc_logged_user", usernameInput);
+          window.location.href = "./";
+          return;
+        }
+
+        // Pengecekan ke Supabase untuk Admin / Editor / User terdaftar
         const { data: admins, error } = await supabaseClient
           .from('admin_users')
           .select('*');
 
         if (error) throw error;
 
-        let isAdmin = false;
+        let loggedRole = null;
         if (admins) {
           for (let admin of admins) {
             if (admin.username && admin.username.toLowerCase() === usernameInput.toLowerCase()) {
               if (String(admin.password) === String(passwordInput)) {
-                isAdmin = true;
+                // Jika di database ada kolom role, gunakan itu (default 'editor')
+                loggedRole = admin.role ? admin.role : "editor"; 
                 break;
               }
             }
           }
         }
 
-        if (isAdmin) {
-          localStorage.setItem("nmc_user_role", "editor");
+        if (loggedRole) {
+          localStorage.setItem("nmc_user_role", loggedRole); // 'editor' atau 'viewer'
           localStorage.setItem("nmc_logged_user", usernameInput);
           window.location.href = "./";
         } else {
