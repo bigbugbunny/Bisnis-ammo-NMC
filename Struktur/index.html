@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struktur Organisasi & Roster - Triad Community</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="../NakamaLogo.png">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#07090e',
+                        cardBg: '#0f172a',
+                        borderCol: 'rgba(220, 38, 38, 0.25)',
+                        accentRed: '#ef4444',
+                        orangeAccent: '#f97316'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(to bottom, rgba(7, 9, 14, 0.65), rgba(7, 9, 14, 0.85)), url('../bg2.png') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.6);
+        }
+        .title-glow {
+            text-shadow: 0 0 30px rgba(239, 68, 68, 0.35);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #07090e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(220, 38, 38, 0.3);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(220, 38, 38, 0.6);
+        }
+    </style>
+</head>
+<body class="text-gray-100 min-h-screen flex flex-col justify-between selection:bg-red-500 selection:text-white">
+
+    <!-- Header / Navbar Konsisten -->
+    <header class="border-b border-red-950/50 bg-slate-950/85 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-black rounded-xl border border-red-600/40 p-1 flex items-center justify-center shadow-lg">
+                    <img src="../NakamaLogo.png" alt="Logo" class="h-full w-auto object-contain" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+                </div>
+                <h1 class="text-xl font-black tracking-widest text-white">TRIAD<span class="text-red-500 font-light"> COMMUNITY</span></h1>
+            </div>
+            
+            <nav class="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest font-bold text-gray-400">
+                <a href="../" class="hover:text-red-400 transition-colors">Home</a>
+                <a href="../multiview/" class="hover:text-red-400 transition-colors">Multiview</a>
+                <a href="./" class="text-red-400 font-bold transition-colors">Struktur</a>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <button onclick="openAdminModal()" class="px-4 py-2 text-xs bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold rounded-xl transition flex items-center gap-2 shadow-lg cursor-pointer">
+                    <i class="fa-solid fa-lock" id="lock-icon"></i> <span id="admin-toggle-text">Mode Admin</span>
+                </button>
+                <a href="../" class="px-5 py-2.5 text-xs font-black tracking-wider uppercase text-white bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 rounded-xl shadow-lg border border-red-500/30 flex items-center gap-2 transition-all no-underline">
+                    <i class="fa-solid fa-house"></i> Portal Utama
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-4 md:p-10 max-w-7xl mx-auto w-full flex flex-col gap-8">
+        
+        <!-- Banner Header Roster -->
+        <div class="glass-card p-8 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="space-y-2 z-10">
+                <span class="px-3.5 py-1.5 text-[10px] font-extrabold tracking-widest text-orangeAccent uppercase border border-orange-500/40 rounded-full bg-orange-950/50 inline-flex items-center gap-2 shadow-inner">
+                    <i class="fa-solid fa-users-rectangle"></i> Roster & Organisasi
+                </span>
+                <h2 class="text-2xl md:text-3xl font-black text-white uppercase tracking-wider title-glow">
+                    Struktur Organisasi
+                </h2>
+                <p class="text-xs md:text-sm text-gray-400 max-w-xl leading-relaxed">
+                    Daftar resmi anggota aktif Triad Community dikelompokkan berdasarkan jabatan, beserta informasi siaran langsung.
+                </p>
+            </div>
+            <div class="z-10 flex items-center gap-3">
+                <button onclick="checkLiveStatusWithAPI()" class="px-4 py-2.5 bg-slate-900/90 hover:bg-slate-800 text-white rounded-xl text-xs font-bold border border-slate-700 flex items-center gap-2 cursor-pointer shadow">
+                    <i class="fa-solid fa-rotate text-orangeAccent"></i> Refresh Status
+                </button>
+                <div class="flex items-center gap-2 bg-cardBg border border-borderCol px-4 py-2.5 rounded-xl text-xs text-gray-300">
+                    <i class="fa-solid fa-database text-orangeAccent"></i>
+                    <span>Total: <strong id="total-count" class="text-white">0</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Panel Kontrol Admin -->
+        <div id="admin-form-section" class="glass-card rounded-2xl p-6 shadow-2xl border border-red-950/40 hidden space-y-4">
+            <div class="text-xs text-orange-400 font-bold flex items-center gap-2 pb-2 border-b border-slate-800">
+                <i class="fa-solid fa-shield-halved"></i> Panel Kontrol Admin (Manajemen Anggota)
+            </div>
+            <form onsubmit="addNewMember(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-[10px] text-gray-400 mb-1 uppercase font-semibold">Nama Anggota</label>
+                    <input type="text" id="input-name" placeholder="Contoh: SUKRI" required class="w-full bg-darkBg/90 border border-slate-700 px-3.5 py-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-orangeAccent">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-gray-400 mb-1 uppercase font-semibold">Jabatan / Kategori</label>
+                    <input type="text" id="input-role" placeholder="Contoh: LEADER / BABEH / ROG" required class="w-full bg-darkBg/90 border border-slate-700 px-3.5 py-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-orangeAccent">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-gray-400 mb-1 uppercase font-semibold">URL Foto / Poster</label>
+                    <input type="url" id="input-avatar" placeholder="https://i.imgur.com/..." required class="w-full bg-darkBg/90 border border-slate-700 px-3.5 py-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-orangeAccent">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-gray-400 mb-1 uppercase font-semibold">YouTube Channel ID</label>
+                    <input type="text" id="input-channel" placeholder="Awalan UC..." class="w-full bg-darkBg/90 border border-slate-700 px-3.5 py-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-orangeAccent">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-gray-400 mb-1 uppercase font-semibold">Link TikTok (Opsional)</label>
+                    <input type="url" id="input-tiktok" placeholder="https://tiktok.com/@akun" class="w-full bg-darkBg/90 border border-slate-700 px-3.5 py-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-orangeAccent">
+                </div>
+                <div class="flex items-end">
+                    <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold rounded-xl text-xs transition shadow flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-plus"></i> Simpan Data
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Container Utama Berdasarkan Kategori Jabatan -->
+        <div id="roster-container" class="flex flex-col gap-10">
+            <div class="text-center py-20 text-gray-500 text-xs border border-dashed border-slate-800 rounded-2xl glass-card w-full">
+                <i class="fa-solid fa-spinner fa-spin text-3xl mb-2 text-gray-600"></i>
+                <p>Memuat data dari database...</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer Full Ujung ke Ujung -->
+    <footer class="w-full border-t border-red-950/50 bg-[#07090e]/95 px-6 py-5 mt-12">
+        <div class="max-w-7xl mx-auto flex justify-between items-center text-xs text-gray-400">
+            <span>&copy; 2026 <strong class="text-white tracking-wide">Triad Community</strong>. Hak Cipta Dilindungi.</span>
+        </div>
+    </footer>
+
+    <!-- CUSTOM MODAL POPUP -->
+    <div id="custom-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass-card rounded-2xl p-6 max-w-sm w-full shadow-2xl flex flex-col gap-4 text-center transform transition-all scale-95 opacity-0 duration-200" id="modal-box">
+            <div id="modal-icon" class="w-12 h-12 rounded-full bg-orange-500/20 border border-orange-500/40 text-orangeAccent flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <h3 id="modal-title" class="text-sm font-bold text-white uppercase tracking-wider mb-1">Pemberitahuan</h3>
+                <p id="modal-message" class="text-xs text-gray-400">Pesan keterangan muncul di sini.</p>
+            </div>
+            
+            <div id="modal-input-container" class="hidden">
+                <input type="password" id="modal-password-input" placeholder="Masukkan password admin..." class="w-full bg-darkBg border border-slate-700 px-3 py-2 rounded-xl text-xs text-white text-center focus:outline-none focus:border-orangeAccent">
+            </div>
+
+            <div class="flex gap-2 mt-2">
+                <button id="modal-btn-cancel" onclick="closeModal()" class="flex-1 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-semibold rounded-xl transition hidden cursor-pointer">Batal</button>
+                <button id="modal-btn-ok" onclick="closeModal()" class="flex-1 py-2 bg-gradient-to-r from-red-700 to-amber-600 text-white text-xs font-semibold rounded-xl transition cursor-pointer">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK Compat -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            databaseURL: "https://nmc-management-default-rtdb.firebaseio.com/"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.database();
+
+        const YOUTUBE_API_KEY = "AIzaSyCBDW7TXZFi5UB3obnu3TEPd41zvWl8PBU";
+
+        let rosterMembers = [];
+        let isAdmin = sessionStorage.getItem('triad_is_admin') === 'true';
+
+        if (isAdmin) showAdminPanelUI();
+
+        function showPopup(title, message, type = 'warning', showInput = false, onOkCallback = null) {
+            const modal = document.getElementById('custom-modal');
+            const box = document.getElementById('modal-box');
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = message;
+            
+            const iconDiv = document.getElementById('modal-icon');
+            if (type === 'success') {
+                iconDiv.className = "w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto text-xl";
+                iconDiv.innerHTML = `<i class="fa-solid fa-check"></i>`;
+            } else {
+                iconDiv.className = "w-12 h-12 rounded-full bg-orange-500/20 border border-orange-500/40 text-orangeAccent flex items-center justify-center mx-auto text-xl";
+                iconDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i>`;
+            }
+
+            const inputContainer = document.getElementById('modal-input-container');
+            const cancelBtn = document.getElementById('modal-btn-cancel');
+            const okBtn = document.getElementById('modal-btn-ok');
+
+            if (showInput) {
+                inputContainer.classList.remove('hidden');
+                cancelBtn.classList.remove('hidden');
+                document.getElementById('modal-password-input').value = '';
+                setTimeout(() => document.getElementById('modal-password-input').focus(), 100);
+            } else {
+                inputContainer.classList.add('hidden');
+                cancelBtn.classList.add('hidden');
+            }
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                box.classList.remove('scale-95', 'opacity-0');
+                box.classList.add('scale-100', 'opacity-100');
+            }, 10);
+
+            okBtn.onclick = () => {
+                if (onOkCallback) {
+                    onOkCallback();
+                } else {
+                    closeModal();
+                }
+            };
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('custom-modal');
+            const box = document.getElementById('modal-box');
+            box.classList.remove('scale-100', 'opacity-100');
+            box.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 150);
+        }
+
+        db.ref('nmc_data/roster').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                rosterMembers = Object.keys(data).map(key => ({
+                    id: key,
+                    name: data[key].name,
+                    role: data[key].role,
+                    avatar: data[key].avatar,
+                    channelId: data[key].channelId || '',
+                    tiktok: data[key].tiktok || '',
+                    isLive: false,
+                    liveVideoId: ''
+                }));
+                checkLiveStatusWithAPI();
+            } else {
+                rosterMembers = [];
+                renderRoster();
+            }
+        });
+
+        async function checkLiveStatusWithAPI() {
+            for (let m of rosterMembers) {
+                if (!m.channelId || !m.channelId.startsWith('UC')) {
+                    m.isLive = false;
+                    continue;
+                }
+
+                try {
+                    const channelUrl = `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${m.channelId}&key=${YOUTUBE_API_KEY}`;
+                    const chResponse = await fetch(channelUrl);
+                    const chData = await chResponse.json();
+
+                    if (chData.items && chData.items.length > 0) {
+                        const uploadsPlaylistId = chData.items[0].contentDetails.relatedPlaylists.uploads;
+                        
+                        const playlistUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=1&key=${YOUTUBE_API_KEY}`;
+                        const plResponse = await fetch(playlistUrl);
+                        const plData = await plResponse.json();
+
+                        if (plData.items && plData.items.length > 0) {
+                            const latestVideoId = plData.items[0].snippet.resourceId.videoId;
+
+                            const videoDetailUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,liveStreamingDetails&id=${latestVideoId}&key=${YOUTUBE_API_KEY}`;
+                            const vResponse = await fetch(videoDetailUrl);
+                            const vData = await vResponse.json();
+
+                            if (vData.items && vData.items.length > 0) {
+                                const videoInfo = vData.items[0];
+                                const broadcastContent = videoInfo.snippet.liveBroadcastContent;
+                                
+                                if (broadcastContent === 'live') {
+                                    m.isLive = true;
+                                    m.liveVideoId = latestVideoId;
+                                } else {
+                                    m.isLive = false;
+                                }
+                            } else {
+                                m.isLive = false;
+                            }
+                        } else {
+                            m.isLive = false;
+                        }
+                    } else {
+                        m.isLive = false;
+                    }
+                } catch (e) {
+                    m.isLive = false;
+                }
+            }
+            renderRoster();
+        }
+
+        function openAdminModal() {
+            if (isAdmin) {
+                logoutAdmin();
+                return;
+            }
+
+            showPopup("Autentikasi Admin", "Masukkan password untuk membuka panel kontrol:", "warning", true, () => {
+                const pwd = document.getElementById('modal-password-input').value;
+                if (!pwd) return;
+
+                db.ref('admin_users').once('value').then((snapshot) => {
+                    const data = snapshot.val();
+                    let isValid = false;
+
+                    if (data) {
+                        Object.keys(data).forEach(key => {
+                            if (data[key].password === pwd || key === pwd || data[key] === pwd) {
+                                isValid = true;
+                            }
+                        });
+                    }
+
+                    if (isValid) {
+                        isAdmin = true;
+                        sessionStorage.setItem('triad_is_admin', 'true');
+                        showAdminPanelUI();
+                        closeModal();
+                        showPopup("Berhasil", "Akses admin diberikan.", "success");
+                    } else {
+                        showPopup("Gagal", "Password yang dimasukkan salah.", "warning");
+                    }
+                }).catch(err => {
+                    showPopup("Kesalahan", "Gagal terhubung ke database.", "warning");
+                });
+            });
+        }
+
+        function showAdminPanelUI() {
+            document.getElementById('admin-form-section').classList.remove('hidden');
+            document.getElementById('lock-icon').className = "fa-solid fa-unlock text-emerald-400";
+            document.getElementById('admin-toggle-text').innerText = "Admin Aktif";
+            renderRoster();
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            sessionStorage.removeItem('triad_is_admin');
+            document.getElementById('admin-form-section').classList.add('hidden');
+            document.getElementById('lock-icon').className = "fa-solid fa-lock text-orangeAccent";
+            document.getElementById('admin-toggle-text').innerText = "Mode Admin";
+            showPopup("Informasi", "Sesi admin telah diakhiri.", "success");
+            renderRoster();
+        }
+
+        function addNewMember(e) {
+            e.preventDefault();
+            if (!isAdmin) {
+                showPopup("Akses Ditolak", "Silakan login sebagai admin terlebih dahulu.", "warning");
+                return;
+            }
+
+            const name = document.getElementById('input-name').value.trim();
+            const role = document.getElementById('input-role').value.trim().toUpperCase();
+            const avatar = document.getElementById('input-avatar').value.trim();
+            const channelId = document.getElementById('input-channel').value.trim();
+            const tiktok = document.getElementById('input-tiktok').value.trim();
+
+            const newKey = name.replace(/[^a-zA-Z0-9]/g, '_');
+
+            db.ref('nmc_data/roster/' + newKey).set({
+                name: name,
+                role: role,
+                avatar: avatar,
+                channelId: channelId,
+                tiktok: tiktok
+            }, (error) => {
+                if (error) {
+                    showPopup("Gagal", "Gagal menyimpan data ke database.", "warning");
+                } else {
+                    document.getElementById('input-name').value = '';
+                    document.getElementById('input-role').value = '';
+                    document.getElementById('input-avatar').value = '';
+                    document.getElementById('input-channel').value = '';
+                    document.getElementById('input-tiktok').value = '';
+                    showPopup("Berhasil", "Data anggota berhasil disimpan.", "success");
+                }
+            });
+        }
+
+        function deleteMember(id) {
+            if (!isAdmin) {
+                showPopup("Akses Ditolak", "Fitur ini memerlukan akses admin.", "warning");
+                return;
+            }
+
+            showPopup("Konfirmasi Hapus", "Apakah Anda yakin ingin menghapus data anggota ini?", "warning", false, () => {
+                db.ref('nmc_data/roster/' + id).remove().then(() => {
+                    closeModal();
+                    showPopup("Berhasil", "Data anggota telah dihapus.", "success");
+                }).catch(() => {
+                    showPopup("Gagal", "Gagal menghapus data.", "warning");
+                });
+            });
+        }
+
+        function renderRoster() {
+            const container = document.getElementById('roster-container');
+            const totalCount = document.getElementById('total-count');
+            container.innerHTML = '';
+            totalCount.innerText = rosterMembers.length;
+
+            if (rosterMembers.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-20 text-gray-500 text-xs border border-dashed border-slate-800 rounded-2xl glass-card w-full">
+                        <i class="fa-solid fa-users-slash text-3xl mb-2 text-gray-600"></i>
+                        <p>Belum ada data anggota yang terdaftar.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const groupedMembers = {};
+            rosterMembers.forEach(member => {
+                const roleKey = member.role || "ANGGOTA";
+                if (!groupedMembers[roleKey]) {
+                    groupedMembers[roleKey] = [];
+                }
+                groupedMembers[roleKey].push(member);
+            });
+
+            const priorityRoles = ["LEADER", "CO-LEADER", "BABEH", "TRESURER", "ROG", "MEMBER", "ANGGOTA"];
+            const sortedRoles = Object.keys(groupedMembers).sort((a, b) => {
+                let indexA = priorityRoles.indexOf(a);
+                let indexB = priorityRoles.indexOf(b);
+                if (indexA === -1) indexA = 99;
+                if (indexB === -1) indexB = 99;
+                return indexA - indexB;
+            });
+
+            sortedRoles.forEach(role => {
+                const membersInRole = groupedMembers[role];
+
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = "flex flex-col gap-4";
+
+                sectionDiv.innerHTML = `
+                    <div class="flex items-center gap-3 border-b border-red-950/60 pb-3">
+                        <div class="w-3 h-3 bg-red-600 rounded-full shadow-lg shadow-red-600/50"></div>
+                        <h3 class="text-lg font-black text-white uppercase tracking-wider">${role}</h3>
+                        <span class="text-xs text-gray-400 bg-cardBg border border-borderCol px-2.5 py-0.5 rounded-full font-bold">(${membersInRole.length})</span>
+                    </div>
+                    <div class="flex flex-wrap justify-center gap-6" id="grid-${role}"></div>
+                `;
+
+                container.appendChild(sectionDiv);
+                const grid = sectionDiv.querySelector(`#grid-${role}`);
+
+                membersInRole.forEach(member => {
+                    const card = document.createElement('div');
+                    card.className = `glass-card rounded-2xl overflow-hidden flex flex-col relative transition shadow-2xl w-full max-w-xs ${member.isLive ? 'border-orange-500 ring-2 ring-orange-500/30' : 'hover:border-orange-500/50'}`;
+                    
+                    let liveBadgeHtml = '';
+                    if (member.isLive) {
+                        liveBadgeHtml = `
+                            <div class="absolute top-3 left-3 bg-red-600 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full animate-pulse flex items-center gap-1 shadow-lg z-20">
+                                <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> LIVE NOW
+                            </div>
+                        `;
+                    }
+
+                    let deleteBtnHtml = '';
+                    if (isAdmin) {
+                        deleteBtnHtml = `
+                            <button onclick="deleteMember('${member.id}')" class="absolute top-3 right-3 w-8 h-8 bg-red-600/80 hover:bg-red-600 text-white rounded-lg flex items-center justify-center text-xs transition cursor-pointer z-20 shadow-md" title="Hapus Anggota">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        `;
+                    }
+
+                    let tontonBtnHtml = '';
+                    if (member.isLive) {
+                        tontonBtnHtml = `
+                            <a href="../multiview/?watch=${member.channelId}" target="_blank" class="w-full py-2 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white animate-pulse shadow-lg border border-slate-700/60 cursor-pointer">
+                                <i class="fa-solid fa-tv"></i> <span>TONTON LANGSUNG</span>
+                            </a>
+                        `;
+                    } else {
+                        tontonBtnHtml = `
+                            <div class="w-full py-2 px-4 rounded-xl text-xs font-bold bg-slate-900/40 text-gray-500 border border-slate-800/80 flex items-center justify-center gap-2 cursor-not-allowed opacity-60">
+                                <i class="fa-solid fa-tv"></i> <span>TIDAK LIVE</span>
+                            </div>
+                        `;
+                    }
+
+                    let tiktokBtnHtml = member.tiktok ? `
+                        <a href="${member.tiktok}" target="_blank" class="flex-1 py-2 px-3 bg-slate-900/90 hover:bg-slate-800 text-gray-300 hover:text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 border border-slate-800">
+                            <i class="fa-brands fa-tiktok"></i> <span>TIKTOK</span>
+                        </a>
+                    ` : '';
+
+                    let ytSocialBtnHtml = member.channelId ? `
+                        <a href="https://www.youtube.com/channel/${member.channelId}" target="_blank" class="flex-1 py-2 px-3 bg-slate-900/90 hover:bg-slate-800 text-red-400 hover:text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 border border-slate-800">
+                            <i class="fa-brands fa-youtube"></i> <span>YOUTUBE</span>
+                        </a>
+                    ` : '';
+
+                    card.innerHTML = `
+                        ${liveBadgeHtml}
+                        ${deleteBtnHtml}
+                        
+                        <!-- UKURAN TINGGI DIPERBESAR LAGI MENJADI h-72 DENGAN OBJECT-TOP & GRADASI HALUS -->
+                        <div class="relative w-full h-72 bg-darkBg overflow-hidden border-b border-slate-800">
+                            <img src="${member.avatar}" alt="${member.name}" class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
+                            <!-- Gradasi Transparan Menuju Kotak Informasi -->
+                            <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0f172a] to-transparent pointer-events-none"></div>
+                        </div>
+
+                        <!-- KONTEN INFO DAN TOMBOL DI BAWAH -->
+                        <div class="p-4 flex flex-col gap-3 bg-cardBg flex-1 justify-between">
+                            <div>
+                                <h3 class="text-sm font-black text-white uppercase tracking-wider mb-1">${member.name}</h3>
+                                <span class="inline-block bg-orange-950/85 text-orangeAccent border border-orange-500/40 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full shadow-inner tracking-widest">${member.role}</span>
+                            </div>
+
+                            <div class="flex flex-col gap-2 pt-2 border-t border-slate-800/80">
+                                ${tontonBtnHtml}
+                                <div class="flex gap-2">
+                                    ${ytSocialBtnHtml}
+                                    ${tiktokBtnHtml}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
