@@ -503,7 +503,20 @@
                 groupedMembers[roleKey].push(member);
             });
 
-            const priorityRoles = ["LEADER", "CO-LEADER", "BABEH", "TRESURER", "ROG", "MEMBER", "ANGGOTA"];
+            const priorityRoles = [
+                "PRESIDENT", 
+                "VICE PRESIDENT", 
+                "SERGEANT AT ARMS", 
+                "ROAD CAPTAIN", 
+                "SECRETARY", 
+                "TRESURER", 
+                "ENFORCER", 
+                "MEMBER", 
+                "PATCHED MEMBER", 
+                "PROSPECT", 
+                "HANGAROUND", 
+                "ANGGOTA"
+            ];
             const sortedRoles = Object.keys(groupedMembers).sort((a, b) => {
                 let indexA = priorityRoles.indexOf(a);
                 let indexB = priorityRoles.indexOf(b);
