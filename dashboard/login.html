@@ -21,7 +21,7 @@
 </head>
 <body class="bg-zinc-950 text-zinc-100 h-screen flex overflow-hidden">
 
-  <!-- SISI KIRI: Form Login (Tema Gelap & Merah Khas Nakama) -->
+  <!-- SISI KIRI: Form Login (Tema Gelap & Gradasi Khas Triad/Nakama) -->
   <div class="w-full lg:w-1/2 flex flex-col justify-between p-8 lg:p-16 z-10 bg-zinc-950/95 backdrop-blur-md overflow-y-auto">
     <!-- Header Atas / Logo Kecil -->
     <div class="flex items-center gap-3">
@@ -80,11 +80,13 @@
         </div>
 
         <div class="grid grid-cols-2 gap-3 pt-2">
+          <!-- Tombol Masuk dengan gradasi merah ke amber senada portal utama -->
           <button type="submit" id="submitBtn" 
-            class="w-full py-3.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold rounded-xl shadow-lg shadow-red-600/20 transition-all flex items-center justify-center gap-2 tracking-wider text-xs cursor-pointer">
+            class="w-full py-3.5 bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold rounded-xl shadow-lg shadow-red-600/20 transition-all flex items-center justify-center gap-2 tracking-wider text-xs cursor-pointer">
             <i class="fa-solid fa-check"></i> <span>MASUK</span>
           </button>
-          <a href="/dashboard" class="w-full bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-bold py-3.5 px-4 rounded-xl transition border border-zinc-800 text-xs tracking-wider flex items-center justify-center text-center no-underline cursor-pointer">
+          <!-- Tombol Kembali mengarah ke portal utama (../) -->
+          <a href="../" class="w-full bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-bold py-3.5 px-4 rounded-xl transition border border-zinc-800 text-xs tracking-wider flex items-center justify-center text-center no-underline cursor-pointer">
             KEMBALI
           </a>
         </div>
@@ -97,7 +99,7 @@
     </div>
   </div>
 
-  <!-- SISI KANAN: Galeri Komunitas / Banner Estetik (Gaya Split-Screen) -->
+  <!-- SISI KANAN: Galeri Komunitas / Banner Estetik -->
   <div class="hidden lg:flex lg:w-1/2 relative bg-zinc-900 items-center justify-center overflow-hidden">
     <div class="absolute inset-0 bg-cover bg-center opacity-50 mix-blend-luminosity" style="background-image: url('../Nakama.png');"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent"></div>
@@ -113,7 +115,6 @@
 
   <!-- Script Supabase & Logika Login -->
   <script>
-    // Supabase Configuration & Initialization
     const SUPABASE_URL = 'https://atibhgbpdxvjngqdiklg.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_PbD9KclxnhZGybuHJDkU3A_-Hz-MESZ'; 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
