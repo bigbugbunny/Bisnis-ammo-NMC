@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="icon" type="image/png" href="../NakamaLogo.png">
     <script>
         tailwind.config = {
@@ -187,19 +189,11 @@
         </div>
     </div>
 
-    <!-- Firebase SDK Compat -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-
     <script>
-        const firebaseConfig = {
-            databaseURL: "https://nmc-management-default-rtdb.firebaseio.com/"
-        };
-
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const db = firebase.database();
+        // Supabase Configuration & Initialization
+        const SUPABASE_URL = 'https://atibhgbpdxvjngqdiklg.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_PbD9KclxnhZGybuHJDkU3A_-Hz-MESZ'; 
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const YOUTUBE_API_KEY = "AIzaSyCBDW7TXZFi5UB3obnu3TEPd41zvWl8PBU";
 
@@ -263,24 +257,38 @@
             }, 150);
         }
 
-        db.ref('nmc_data/streamers').on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                streamers = Object.keys(data).map(key => ({
-                    id: key,
-                    name: data[key].name,
-                    channelId: data[key].channelId,
-                    manualVideoId: data[key].videoId || '',
-                    isLive: false,
-                    videoId: '',
-                    viewers: 0
-                }));
-                checkLiveStatusWithAPI();
-            } else {
+        // Load streamers dari Supabase
+        async function loadStreamersFromSupabase() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('streamers')
+                    .select('*');
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    streamers = data.map(item => ({
+                        id: String(item.id),
+                        name: item.name,
+                        channelId: item.channel_id,
+                        manualVideoId: item.video_id || '',
+                        isLive: false,
+                        videoId: '',
+                        viewers: 0
+                    }));
+                    checkLiveStatusWithAPI();
+                } else {
+                    streamers = [];
+                    renderStreamerButtons();
+                }
+            } catch (err) {
+                console.error("Gagal memuat streamer:", err);
                 streamers = [];
                 renderStreamerButtons();
             }
-        });
+        }
+
+        loadStreamersFromSupabase();
 
         function openAdminModal() {
             if (isAdmin) {
@@ -288,20 +296,25 @@
                 return;
             }
 
-            showPopup("Autentikasi Admin", "Masukkan password untuk membuka panel kontrol:", "warning", true, () => {
+            showPopup("Autentikasi Admin", "Masukkan password untuk membuka panel kontrol:", "warning", true, async () => {
                 const pwd = document.getElementById('modal-password-input').value;
                 if (!pwd) return;
 
-                db.ref('admin_users').once('value').then((snapshot) => {
-                    const data = snapshot.val();
-                    let isValid = false;
+                try {
+                    const { data: admins, error } = await supabaseClient
+                        .from('admin_users')
+                        .select('*');
 
-                    if (data) {
-                        Object.keys(data).forEach(key => {
-                            if (data[key].password === pwd || key === pwd || data[key] === pwd) {
+                    if (error) throw error;
+
+                    let isValid = false;
+                    if (admins) {
+                        for (let admin of admins) {
+                            if (String(admin.password) === String(pwd)) {
                                 isValid = true;
+                                break;
                             }
-                        });
+                        }
                     }
 
                     if (isValid) {
@@ -313,9 +326,10 @@
                     } else {
                         showPopup("Gagal", "Password admin salah!", "warning");
                     }
-                }).catch(err => {
+                } catch (err) {
+                    console.error("Admin check error:", err);
                     showPopup("Error", "Gagal terhubung ke database.", "warning");
-                });
+                }
             });
         }
 
@@ -380,8 +394,8 @@
                                     s.isLive = true;
                                     s.videoId = latestVideoId;
                                     s.viewers = videoInfo.liveStreamingDetails && videoInfo.liveStreamingDetails.concurrentViewers 
-                                                ? videoInfo.liveStreamingDetails.concurrentViewers 
-                                                : 0;
+                                        ? videoInfo.liveStreamingDetails.concurrentViewers 
+                                        : 0;
                                     liveCount++;
                                 } else {
                                     s.isLive = false;
@@ -487,7 +501,6 @@
                 return;
             }
 
-            // Jika 1 video, posisikan di tengah dengan flex. Jika > 1, jadi grid 2 kolom.
             if (activeStreams.length === 1) {
                 container.className = "flex justify-center w-full flex-1";
             } else {
@@ -501,7 +514,6 @@
                 const embedSrc = `https://www.youtube.com/embed/${streamer.videoId}?autoplay=1`;
 
                 const playerBox = document.createElement('div');
-                // Jika 1 video, gunakan max-w-4xl w-full dengan tinggi h-[480px] agar pas di tengah dan proporsional
                 if (activeStreams.length === 1) {
                     playerBox.className = "glass-card rounded-2xl overflow-hidden flex flex-col shadow-xl h-[480px] w-full max-w-4xl";
                 } else {
@@ -530,7 +542,7 @@
             });
         }
 
-        function addNewStreamer() {
+        async function addNewStreamer() {
             if (!isAdmin) {
                 showPopup("Akses Ditolak", "Anda harus login sebagai admin terlebih dahulu.", "warning");
                 return;
@@ -545,22 +557,26 @@
                 return;
             }
 
-            const newKey = name.replace(/[^a-zA-Z0-9]/g, '_');
+            const newId = name.replace(/[^a-zA-Z0-9]/g, '_');
 
-            db.ref('nmc_data/streamers/' + newKey).set({
-                name: name,
-                channelId: channelId,
-                videoId: videoId
-            }, (error) => {
-                if (error) {
-                    showPopup("Gagal", "Gagal menyimpan ke database.", "warning");
-                } else {
-                    document.getElementById('input-name').value = '';
-                    document.getElementById('input-channel').value = '';
-                    document.getElementById('input-videoid').value = '';
-                    showPopup("Berhasil", "Data channel berhasil disimpan!", "success");
-                }
-            });
+            try {
+                const { error } = await supabaseClient
+                    .from('streamers')
+                    .upsert([
+                        { id: newId, name: name, channel_id: channelId, video_id: videoId }
+                    ]);
+
+                if (error) throw error;
+
+                document.getElementById('input-name').value = '';
+                document.getElementById('input-channel').value = '';
+                document.getElementById('input-videoid').value = '';
+                showPopup("Berhasil", "Data channel berhasil disimpan!", "success");
+                loadStreamersFromSupabase();
+            } catch (err) {
+                console.error("Insert error:", err);
+                showPopup("Gagal", "Gagal menyimpan ke database Supabase.", "warning");
+            }
         }
 
         function togglePanel() {
