@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="icon" type="image/png" href="../NakamaLogo.png">
     <script>
         tailwind.config = {
@@ -186,19 +188,11 @@
         </div>
     </div>
 
-    <!-- Firebase SDK Compat -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-
     <script>
-        const firebaseConfig = {
-            databaseURL: "https://nmc-management-default-rtdb.firebaseio.com/"
-        };
-
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const db = firebase.database();
+        // Supabase Configuration & Initialization
+        const SUPABASE_URL = 'https://atibhgbpdxvjngqdiklg.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_PbD9KclxnhZGybuHJDkU3A_-Hz-MESZ'; 
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const YOUTUBE_API_KEY = "AIzaSyCBDW7TXZFi5UB3obnu3TEPd41zvWl8PBU";
 
@@ -261,25 +255,39 @@
             }, 150);
         }
 
-        db.ref('nmc_data/roster').on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                rosterMembers = Object.keys(data).map(key => ({
-                    id: key,
-                    name: data[key].name,
-                    role: data[key].role,
-                    avatar: data[key].avatar,
-                    channelId: data[key].channelId || '',
-                    tiktok: data[key].tiktok || '',
-                    isLive: false,
-                    liveVideoId: ''
-                }));
-                checkLiveStatusWithAPI();
-            } else {
+        // Load Roster dari Supabase
+        async function loadRosterFromSupabase() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('roster')
+                    .select('*');
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    rosterMembers = data.map(item => ({
+                        id: String(item.id),
+                        name: item.name,
+                        role: item.role,
+                        avatar: item.avatar,
+                        channelId: item.channel_id || '',
+                        tiktok: item.tiktok || '',
+                        isLive: false,
+                        liveVideoId: ''
+                    }));
+                    checkLiveStatusWithAPI();
+                } else {
+                    rosterMembers = [];
+                    renderRoster();
+                }
+            } catch (err) {
+                console.error("Gagal memuat roster:", err);
                 rosterMembers = [];
                 renderRoster();
             }
-        });
+        }
+
+        loadRosterFromSupabase();
 
         async function checkLiveStatusWithAPI() {
             for (let m of rosterMembers) {
@@ -339,20 +347,25 @@
                 return;
             }
 
-            showPopup("Autentikasi Admin", "Masukkan password untuk membuka panel kontrol:", "warning", true, () => {
+            showPopup("Autentikasi Admin", "Masukkan password untuk membuka panel kontrol:", "warning", true, async () => {
                 const pwd = document.getElementById('modal-password-input').value;
                 if (!pwd) return;
 
-                db.ref('admin_users').once('value').then((snapshot) => {
-                    const data = snapshot.val();
-                    let isValid = false;
+                try {
+                    const { data: admins, error } = await supabaseClient
+                        .from('admin_users')
+                        .select('*');
 
-                    if (data) {
-                        Object.keys(data).forEach(key => {
-                            if (data[key].password === pwd || key === pwd || data[key] === pwd) {
+                    if (error) throw error;
+
+                    let isValid = false;
+                    if (admins) {
+                        for (let admin of admins) {
+                            if (String(admin.password) === String(pwd)) {
                                 isValid = true;
+                                break;
                             }
-                        });
+                        }
                     }
 
                     if (isValid) {
@@ -364,9 +377,10 @@
                     } else {
                         showPopup("Gagal", "Password yang dimasukkan salah.", "warning");
                     }
-                }).catch(err => {
+                } catch (err) {
+                    console.error("Admin check error:", err);
                     showPopup("Kesalahan", "Gagal terhubung ke database.", "warning");
-                });
+                }
             });
         }
 
@@ -387,7 +401,7 @@
             renderRoster();
         }
 
-        function addNewMember(e) {
+        async function addNewMember(e) {
             e.preventDefault();
             if (!isAdmin) {
                 showPopup("Akses Ditolak", "Silakan login sebagai admin terlebih dahulu.", "warning");
@@ -400,41 +414,52 @@
             const channelId = document.getElementById('input-channel').value.trim();
             const tiktok = document.getElementById('input-tiktok').value.trim();
 
-            const newKey = name.replace(/[^a-zA-Z0-9]/g, '_');
+            const newId = name.replace(/[^a-zA-Z0-9]/g, '_');
 
-            db.ref('nmc_data/roster/' + newKey).set({
-                name: name,
-                role: role,
-                avatar: avatar,
-                channelId: channelId,
-                tiktok: tiktok
-            }, (error) => {
-                if (error) {
-                    showPopup("Gagal", "Gagal menyimpan data ke database.", "warning");
-                } else {
-                    document.getElementById('input-name').value = '';
-                    document.getElementById('input-role').value = '';
-                    document.getElementById('input-avatar').value = '';
-                    document.getElementById('input-channel').value = '';
-                    document.getElementById('input-tiktok').value = '';
-                    showPopup("Berhasil", "Data anggota berhasil disimpan.", "success");
-                }
-            });
+            try {
+                const { error } = await supabaseClient
+                    .from('roster')
+                    .upsert([
+                        { id: newId, name: name, role: role, avatar: avatar, channel_id: channelId, tiktok: tiktok }
+                    ]);
+
+                if (error) throw error;
+
+                document.getElementById('input-name').value = '';
+                document.getElementById('input-role').value = '';
+                document.getElementById('input-avatar').value = '';
+                document.getElementById('input-channel').value = '';
+                document.getElementById('input-tiktok').value = '';
+                showPopup("Berhasil", "Data anggota berhasil disimpan.", "success");
+                loadRosterFromSupabase();
+            } catch (err) {
+                console.error("Insert roster error:", err);
+                showPopup("Gagal", "Gagal menyimpan data ke database Supabase.", "warning");
+            }
         }
 
-        function deleteMember(id) {
+        async function deleteMember(id) {
             if (!isAdmin) {
                 showPopup("Akses Ditolak", "Fitur ini memerlukan akses admin.", "warning");
                 return;
             }
 
-            showPopup("Konfirmasi Hapus", "Apakah Anda yakin ingin menghapus data anggota ini?", "warning", false, () => {
-                db.ref('nmc_data/roster/' + id).remove().then(() => {
+            showPopup("Konfirmasi Hapus", "Apakah Anda yakin ingin menghapus data anggota ini?", "warning", false, async () => {
+                try {
+                    const { error } = await supabaseClient
+                        .from('roster')
+                        .delete()
+                        .eq('id', id);
+
+                    if (error) throw error;
+
                     closeModal();
                     showPopup("Berhasil", "Data anggota telah dihapus.", "success");
-                }).catch(() => {
+                    loadRosterFromSupabase();
+                } catch (err) {
+                    console.error("Delete roster error:", err);
                     showPopup("Gagal", "Gagal menghapus data.", "warning");
-                });
+                }
             });
         }
 
@@ -543,14 +568,11 @@
                         ${liveBadgeHtml}
                         ${deleteBtnHtml}
                         
-                        <!-- UKURAN TINGGI DIPERBESAR LAGI MENJADI h-72 DENGAN OBJECT-TOP & GRADASI HALUS -->
                         <div class="relative w-full h-72 bg-darkBg overflow-hidden border-b border-slate-800">
                             <img src="${member.avatar}" alt="${member.name}" class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
-                            <!-- Gradasi Transparan Menuju Kotak Informasi -->
                             <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0f172a] to-transparent pointer-events-none"></div>
                         </div>
 
-                        <!-- KONTEN INFO DAN TOMBOL DI BAWAH -->
                         <div class="p-4 flex flex-col gap-3 bg-cardBg flex-1 justify-between">
                             <div>
                                 <h3 class="text-sm font-black text-white uppercase tracking-wider mb-1">${member.name}</h3>
