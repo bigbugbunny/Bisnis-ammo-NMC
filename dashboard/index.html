@@ -763,7 +763,7 @@
         currentUserRole = savedRole;
         
         // Memunculkan ucapan selamat datang saat pertama kali masuk dashboard
-        showCustomAlert(`Selamat datang kembali, <strong class="text-red-400 font-black">${loggedUser}</strong> (${currentUserRole.toUpperCase()})!<br><span class="text-xs text-slate-300">Senang bisa melihat Anda kembali di sistem.</span>`, 'success');
+        showCustomAlert(`Selamat datang kembali, <strong class="text-red-400 font-black text-lg">${loggedUser}</strong> (${currentUserRole.toUpperCase()})!<br><span class="text-xs text-slate-300">Senang bisa melihat Anda kembali di sistem.</span>`, 'success');
         const params = new URLSearchParams(window.location.search);
         const modul = params.get('modul');
         if (modul) {
