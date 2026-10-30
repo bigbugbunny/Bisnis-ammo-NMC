@@ -488,11 +488,11 @@
   </main>
 
   <!-- ================================================= -->
-  <!-- WIDGET FLOATING REKRUTMEN, KOTAK SARAN & DISCORD -->
+  <!-- WIDGET FLOATING KIRI (REKRUTMEN & KOTAK SARAN) -->
   <!-- ================================================= -->
   <div class="fixed left-6 bottom-6 z-50 flex flex-col gap-3">
     
-    <!-- Tombol Buka Pop-up Kotak Saran (BARU) -->
+    <!-- Tombol Buka Pop-up Kotak Saran -->
     <button onclick="toggleSuggestionModal()" 
       class="bg-zinc-900/90 hover:bg-zinc-800 text-zinc-200 hover:text-white font-bold p-3.5 rounded-2xl shadow-2xl border border-zinc-700/60 flex items-center gap-3 transition-all transform hover:scale-105 cursor-pointer group">
       <div class="w-8 h-8 rounded-xl bg-orange-950/60 flex items-center justify-center text-orange-400 group-hover:text-white transition border border-orange-500/30">
@@ -529,6 +529,49 @@
         <img src="NakamaLogo.png" alt="Nakama" class="w-5 h-5 object-contain" onerror="this.outerHTML='<i class=\'fa-solid fa-skull text-base\'></i>'">
       </a>
     </div>
+  </div>
+
+  <!-- ================================================= -->
+  <!-- WIDGET FLOATING KANAN (AKSES MENU UTAMA & ABSENSI) -->
+  <!-- ================================================= -->
+  <div class="fixed right-6 bottom-24 z-50 flex flex-col gap-3 items-end">
+    
+    <!-- Tombol Akses Sistem Absensi -->
+    <a href="absen/" 
+      class="bg-zinc-900/90 hover:bg-zinc-800 text-zinc-200 hover:text-white font-bold p-3.5 rounded-2xl shadow-2xl border border-red-500/40 flex items-center gap-3 transition-all transform hover:scale-105 cursor-pointer group no-underline">
+      <div class="text-right hidden md:block pl-2">
+        <p class="text-[9px] text-red-400 uppercase tracking-wider font-semibold">Absensi & Cuti</p>
+        <p class="text-xs font-black tracking-wide text-white">SISTEM ABSEN</p>
+      </div>
+      <div class="w-8 h-8 rounded-xl bg-red-950/80 flex items-center justify-center text-red-400 group-hover:text-white transition border border-red-600/30">
+        <i class="fa-solid fa-clipboard-user text-sm"></i>
+      </div>
+    </a>
+
+    <!-- Tombol Akses Multiview -->
+    <a href="/multiview" 
+      class="bg-zinc-900/90 hover:bg-zinc-800 text-zinc-200 hover:text-white font-bold p-3.5 rounded-2xl shadow-2xl border border-zinc-700/60 flex items-center gap-3 transition-all transform hover:scale-105 cursor-pointer group no-underline">
+      <div class="text-right hidden md:block pl-2">
+        <p class="text-[9px] text-zinc-400 uppercase tracking-wider font-semibold">Live Streaming</p>
+        <p class="text-xs font-black tracking-wide text-white">MULTIVIEW</p>
+      </div>
+      <div class="w-8 h-8 rounded-xl bg-amber-950/60 flex items-center justify-center text-amber-400 group-hover:text-white transition border border-amber-500/30">
+        <i class="fa-solid fa-tv text-sm"></i>
+      </div>
+    </a>
+
+    <!-- Tombol Akses Struktur Organisasi -->
+    <a href="/Struktur" 
+      class="bg-zinc-900/90 hover:bg-zinc-800 text-zinc-200 hover:text-white font-bold p-3.5 rounded-2xl shadow-2xl border border-zinc-700/60 flex items-center gap-3 transition-all transform hover:scale-105 cursor-pointer group no-underline">
+      <div class="text-right hidden md:block pl-2">
+        <p class="text-[9px] text-zinc-400 uppercase tracking-wider font-semibold">Roster Anggota</p>
+        <p class="text-xs font-black tracking-wide text-white">STRUKTUR</p>
+      </div>
+      <div class="w-8 h-8 rounded-xl bg-blue-950/60 flex items-center justify-center text-blue-400 group-hover:text-white transition border border-blue-500/30">
+        <i class="fa-solid fa-users text-sm"></i>
+      </div>
+    </a>
+
   </div>
 
   <!-- Modal Pop-up Form Pendaftaran (Hidden by Default) -->
@@ -772,7 +815,7 @@
       }
     }
 
-    // Fungsi Pop-up Kotak Saran (BARU)
+    // Fungsi Pop-up Kotak Saran
     function toggleSuggestionModal() {
       const modal = document.getElementById("suggestionModal");
       if (modal.classList.contains("hidden")) {
@@ -885,7 +928,6 @@
       }
     }
 
-    // Fungsi Kirim Saran ke Webhook Database "webhooks/saran" (BARU)
     async function handlePopupSuggestion(event) {
       event.preventDefault();
       let name = document.getElementById("suggName").value.trim();
@@ -906,7 +948,6 @@
       try {
         const timestamp = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
         
-        // Mengambil webhook dari path database "webhooks/saran" yang sudah Anda buat
         const snapshot = await popDb.ref('webhooks/saran').once('value');
         const webhookUrl = snapshot.val();
 
@@ -917,7 +958,7 @@
                      `• **Pengirim**: \`${name}\`\n` +
                      `• **Kategori**: **[ ${category} ]**\n` +
                      `• **Pesan**: \n> ${message}\n\n` +
-                     `<@&1560008496244850702>`, // Otomatis ngetag role
+                     `<@&1560008496244850702>`,
             
             allowed_mentions: {
               parse: ["roles", "users"]
@@ -946,7 +987,6 @@
       }
     }
 
-    // Fungsi Masuk Portal & Putar Musik Otomatis
     function enterPortal() {
       const music = document.getElementById('bgMusic');
       const playIcon = document.getElementById('playIcon');
