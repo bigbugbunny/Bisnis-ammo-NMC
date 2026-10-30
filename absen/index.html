@@ -80,11 +80,11 @@
             <div class="w-16 h-16 bg-red-950/50 rounded-2xl flex items-center justify-center mx-auto border border-red-600/40 shadow-inner mb-4 p-1">
                 <img src="NakamaLogo.png" alt="Logo" class="w-full h-full object-cover rounded-xl" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
             </div>
-            <h2 class="text-xl font-black tracking-wider text-white">VERIFIKASI STEAM HEX</h2>
-            <p class="text-xs text-gray-400 mt-1 mb-6">Masukkan Steam Hex Anda untuk mengakses sistem absensi kontrak.</p>
+            <h2 class="text-xl font-black tracking-wider text-white">VERIFIKASI LOGIN</h2>
+            <p class="text-xs text-gray-400 mt-1 mb-6">Masukkan Steam Hex Anda untuk mengakses sistem absensi.</p>
 
             <div id="loginErrorBox" class="hidden mb-4 p-3 rounded-xl text-xs font-medium bg-red-950/60 border border-red-800/60 text-red-400">
-                Steam Hex tidak terdaftar dalam daftar anggota kontrak!
+                Steam Hex tidak terdaftar dalam database anggota kontrak!
             </div>
 
             <form onsubmit="handleLogin(event)" class="space-y-4 text-left">
@@ -131,7 +131,7 @@
             </div>
             <div class="flex items-center gap-4">
                 <div id="userInfoDisplay" class="text-xs text-gray-300 hidden md:block">
-                    Login sebagai: <span id="userSessionName" class="text-red-400 font-bold"></span>
+                    Login sebagai: <span id="userSessionName" class="text-red-400 font-bold">Memuat...</span>
                 </div>
                 <button onclick="logout()" class="px-4 py-2 text-xs font-bold uppercase text-red-400 bg-red-950/40 hover:bg-red-900/60 border border-red-800/50 rounded-xl transition cursor-pointer">
                     <i class="fa-solid fa-right-from-bracket mr-1"></i> Keluar
@@ -172,7 +172,7 @@
             <div class="mb-4">
                 <label class="block text-xs font-semibold text-gray-400 mb-1">Identitas Anggota Aktif</label>
                 <input type="text" id="displayActiveMember" readonly 
-                    class="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-xl text-white text-xs font-bold cursor-not-allowed">
+                    class="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-xl text-white text-xs font-bold cursor-not-allowed" value="Memuat data anggota...">
             </div>
             
             <div class="grid grid-cols-2 gap-3">
@@ -266,37 +266,36 @@
         const WEBHOOK_CUTI  = "https://discordapp.com/api/webhooks/1565726714359709806/7o73v5XrMwWbSf4KleamLRiuWM1bIlIl_tw1uSlR5t1ZRy0SgdjIC8hS_VyG7tVQoc_Z"; 
         const WEBHOOK_INFO  = "https://discordapp.com/api/webhooks/1565756327114973195/NiHyUPNxfz6iSOiU4bM2DUIPvFMJ4bNIQwCa9i82ygng9hfvO_pBHmI-GtNQLIPYEYv0";
 
-        const daftarAnggota = [
-            { id: "757855200475086889", namaIC: "Joko Salosa (Admin)", namaDiscord: "bigbug.bunny", steamHex: "steam:1100001466e1253" },
-            { id: "1142876172439527425", namaIC: "Jaka Triad", namaDiscord: "jaka28", steamHex: "steam:11000015e5a9b46" },
-            { id: "411074019249618947", namaIC: "Axel Voss", namaDiscord: "sansanblack", steamHex: "steam:110000138e4f15d" },
-            { id: "1405601498699661352", namaIC: "Noveline S T V Ravenscroft", namaDiscord: "bayisemut", steamHex: "steam:11000012e8af4b1" },
-            { id: "1404355233475203075", namaIC: "Zoe Roxanne Voss", namaDiscord: "camellaodeliapalopie", steamHex: "steam:110000172d95936" },
-            { id: "1231623738194399422", namaIC: "Neora Octoria", namaDiscord: "neoorra", steamHex: "steam:11000016e37537d" },
-            { id: "390381584915890187", namaIC: "Hanma Zoldyck", namaDiscord: "rizkiqurrahman", steamHex: "steam:1100001435067f4" },
-            { id: "1083359483717238785", namaIC: "Yahmar Ousmane", namaDiscord: "parjoeeee", steamHex: "steam:11000010a48cb11" },
-            { id: "923567452762292254", namaIC: "Nathan Sylvester Kagami", namaDiscord: "nathnael1", steamHex: "steam:11000015e1abac0" },
-            { id: "596437206529474589", namaIC: "Reo Lucaryn", namaDiscord: ".kimikooo", steamHex: "steam:110000114e2caff" },
-            { id: "578012214708142080", namaIC: "Richie Roe", namaDiscord: "ajuu111", steamHex: "steam:1100001460d1028" },
-            { id: "574470435463233556", namaIC: "Nathan Sylvester Kagami", namaDiscord: "blck12", steamHex: "steam:110000114923df7" },
-            { id: "469176501003354112", namaIC: "Cia XO", namaDiscord: "chupachup66", steamHex: "steam:11000011914db7e" },
-            { id: "1442107017375514764", namaIC: "Supri Parnok", namaDiscord: "sandry23", steamHex: "steam:11000012ff74ca5" },
-            { id: "1040555499298488362", namaIC: "Mae Darlene Buana", namaDiscord: "narayours", steamHex: "steam:110000170f5678a" },
-            { id: "710466773945942127", namaIC: "Evanor Buana", namaDiscord: "gevathie.", steamHex: "steam:1100001193e7ab9" },
-            { id: "897782122000044072", namaIC: "Kinara Nyala Padma", namaDiscord: "grk01019.", steamHex: "steam:110000130390f78" },
-            { id: "333176224560185344", namaIC: "Ronnie Radke", namaDiscord: "cosalvian.", steamHex: "steam:76561198428902609" },
-            { id: "827938926723072061", namaIC: "Bei Cukai", namaDiscord: "sipaks.", steamHex: "steam:76561199639263336" },
-            { id: "123456789012345678", namaIC: "Fajar Triad", namaDiscord: "fajartriad", steamHex: "steam:11000015e5a9b47" }
-        ];
-
+        let daftarAnggota = [];
         let loggedInUser = null;
+
+        // Ambil daftar anggota langsung dari Firebase Database saat halaman dimuat
+        function loadDaftarAnggotaFromDB() {
+            db.ref('daftar_anggota').once('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    // Konversi objek database ke dalam bentuk array JavaScript
+                    daftarAnggota = Object.values(data);
+                    console.log("Daftar anggota berhasil dimuat dari Firebase:", daftarAnggota.length);
+
+                    // Cek sesi login yang tersimpan di localStorage setelah data dari DB siap
+                    checkExistingSession();
+                } else {
+                    console.warn("Node 'daftar_anggota' kosong di Firebase.");
+                    document.getElementById("loginErrorBox").innerText = "Database anggota kosong! Hubungi Administrator.";
+                    document.getElementById("loginErrorBox").classList.remove("hidden");
+                }
+            }, (error) => {
+                console.error("Gagal mengambil data anggota dari Firebase:", error);
+            });
+        }
 
         function handleLogin(event) {
             event.preventDefault();
             const inputHex = document.getElementById("loginSteamHex").value.trim();
             const errorBox = document.getElementById("loginErrorBox");
 
-            const foundUser = daftarAnggota.find(m => m.steamHex.toLowerCase() === inputHex.toLowerCase());
+            const foundUser = daftarAnggota.find(m => m.steamHex && m.steamHex.toLowerCase() === inputHex.toLowerCase());
 
             if (foundUser) {
                 loggedInUser = foundUser;
@@ -310,16 +309,20 @@
             }
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
+        function checkExistingSession() {
             const savedHex = localStorage.getItem("triad_session_hex");
             if (savedHex) {
-                const foundUser = daftarAnggota.find(m => m.steamHex.toLowerCase() === savedHex.toLowerCase());
+                const foundUser = daftarAnggota.find(m => m.steamHex && m.steamHex.toLowerCase() === savedHex.toLowerCase());
                 if (foundUser) {
                     loggedInUser = foundUser;
                     applyUserSession(foundUser);
                     document.getElementById("loginModal").classList.add("hidden");
                 }
             }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadDaftarAnggotaFromDB();
         });
 
         function applyUserSession(user) {
@@ -327,7 +330,8 @@
             document.getElementById("displayActiveMember").value = `${user.namaIC} - [${user.steamHex}]`;
 
             const adminPanel = document.getElementById("adminTriggerPanel");
-            if (user.steamHex.toLowerCase() === "steam:1100001466e1253".toLowerCase()) {
+            // Steam Hex Admin Utama
+            if (user.steamHex && user.steamHex.toLowerCase() === "steam:1100001466e1253".toLowerCase()) {
                 adminPanel.classList.remove("hidden");
             } else {
                 adminPanel.classList.add("hidden");
