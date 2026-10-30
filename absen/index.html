@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Absensi & Cuti - Triad Community</title>
+    
+    <link rel="icon" type="image/png" href="NakamaLogo.png">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Firebase JS SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#07090e',
+                            card: 'rgba(18, 24, 38, 0.85)',
+                            border: 'rgba(220, 38, 38, 0.25)',
+                            accent: '#ef4444'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html, body {
+            background-color: #07090e;
+            overflow-y: auto;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e2e8f0;
+        }
+        .glass-card {
+            background: rgba(18, 24, 38, 0.85);
+            backdrop-blur: blur(12px);
+            border: 1px solid rgba(220, 38, 38, 0.25);
+        }
+        @keyframes modalScaleIn {
+            0% { transform: scale(0.85); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-modal-in {
+            animation: modalScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .table-scroll-container::-webkit-scrollbar {
+            display: block;
+            width: 6px;
+        }
+        .table-scroll-container::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        .table-scroll-container::-webkit-scrollbar-thumb {
+            background: #dc2626;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="bg-[#07090e] text-gray-200 min-h-screen flex flex-col justify-between">
+
+    <!-- MODAL LOGIN / VERIFIKASI STEAM HEX -->
+    <div id="loginModal" class="fixed inset-0 z-[999] flex items-center justify-center bg-zinc-950/90 backdrop-blur-md p-4">
+        <div class="glass-card border border-red-600/40 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden p-6 text-center animate-modal-in relative">
+            <div class="w-16 h-16 bg-red-950/50 rounded-2xl flex items-center justify-center mx-auto border border-red-600/40 shadow-inner mb-4 p-1">
+                <img src="NakamaLogo.png" alt="Logo" class="w-full h-full object-cover rounded-xl" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+            </div>
+            <h2 class="text-xl font-black tracking-wider text-white">VERIFIKASI STEAM HEX</h2>
+            <p class="text-xs text-gray-400 mt-1 mb-6">Masukkan Steam Hex Anda untuk mengakses sistem absensi kontrak.</p>
+
+            <div id="loginErrorBox" class="hidden mb-4 p-3 rounded-xl text-xs font-medium bg-red-950/60 border border-red-800/60 text-red-400">
+                Steam Hex tidak terdaftar dalam daftar anggota kontrak!
+            </div>
+
+            <form onsubmit="handleLogin(event)" class="space-y-4 text-left">
+                <div>
+                    <label class="block text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-1">Steam Hex ID</label>
+                    <input type="text" id="loginSteamHex" required 
+                        class="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-xl text-white placeholder-zinc-600 focus:outline-none focus:border-red-600 text-xs font-mono"
+                        placeholder="steam:11000010xxxxxxx">
+                </div>
+                <button type="submit" 
+                    class="w-full py-3 bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold rounded-xl shadow-lg transition tracking-wider text-xs cursor-pointer">
+                    <i class="fa-solid fa-right-to-bracket mr-2"></i> MASUK SISTEM
+                </button>
+            </form>
+            <div class="mt-6">
+                <a href="../" class="text-xs text-gray-400 hover:text-white transition"><i class="fa-solid fa-arrow-left mr-1"></i> Kembali ke Portal Utama</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- POPUP NOTIFIKASI MELAYANG -->
+    <div id="popupAlertModal" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-zinc-950/80 backdrop-blur-sm p-4">
+        <div class="glass-card border border-red-500/50 w-full max-w-sm rounded-3xl shadow-2xl p-6 text-center animate-modal-in">
+            <div id="popupAlertIconWrapper" class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl shadow-lg">
+                <i id="popupAlertIcon" class="fa-solid"></i>
+            </div>
+            <h3 id="popupAlertTitle" class="text-lg font-black text-white tracking-wide uppercase mb-1">Pemberitahuan</h3>
+            <p id="popupAlertMessage" class="text-xs text-gray-300 leading-relaxed mb-6">Pesan notifikasi sistem...</p>
+            <button onclick="closePopupAlert()" 
+                class="w-full py-2.5 bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-xs rounded-xl transition cursor-pointer uppercase tracking-wider">
+                Mengerti / Tutup
+            </button>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="border-b border-red-900/30 bg-slate-950/70 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-black rounded-xl border border-red-600/50 p-1 flex items-center justify-center shadow-lg">
+                    <img src="NakamaLogo.png" alt="Logo" class="h-full w-auto object-contain" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+                </div>
+                <h1 class="text-xl font-black tracking-widest text-white">TRIAD<span class="text-red-500 font-light"> COMMUNITY</span></h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <div id="userInfoDisplay" class="text-xs text-gray-300 hidden md:block">
+                    Login sebagai: <span id="userSessionName" class="text-red-400 font-bold"></span>
+                </div>
+                <button onclick="logout()" class="px-4 py-2 text-xs font-bold uppercase text-red-400 bg-red-950/40 hover:bg-red-900/60 border border-red-800/50 rounded-xl transition cursor-pointer">
+                    <i class="fa-solid fa-right-from-bracket mr-1"></i> Keluar
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- KONTEN UTAMA -->
+    <div class="container mx-auto px-4 py-8 pb-16" style="max-width: 800px;">
+
+        <!-- Jam & Informasi Shift -->
+        <div class="glass-card rounded-2xl p-6 text-center shadow-2xl mb-6 border border-red-500/30">
+            <span class="text-uppercase text-gray-400 text-[10px] font-bold tracking-widest">Waktu Server Saat Ini (WIB)</span>
+            <div id="clock" class="text-5xl font-black text-red-500 my-2 font-mono drop-shadow-[0_0_15px_rgba(239,68,68,0.4)]">00:00:00</div>
+            <span class="px-3 py-1 bg-red-950/60 border border-red-800/50 text-amber-400 text-xs font-bold rounded-full inline-block">Shift Wajib: 21.00 - 01.00 WIB</span>
+            <div class="text-[11px] text-gray-400 mt-2">🤖 Auto-Alert Aktif (20:30, 20:50, 21:10, 00:50, 01:00)</div>
+        </div>
+
+        <!-- PANEL TRIGGER UJI COBA ALERT (HANYA MUNCUL UNTUK ADMIN) -->
+        <div id="adminTriggerPanel" class="glass-card rounded-2xl p-4 mb-6 border border-amber-500/30 hidden">
+            <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2"><i class="fa-solid fa-gear mr-1"></i> Panel Trigger Uji Coba Alert (Khusus Admin)</h4>
+            <div class="flex flex-wrap gap-2">
+                <button onclick="triggerAlert('2030')" class="px-3 py-1.5 bg-zinc-900 hover:bg-amber-600 hover:text-white border border-amber-500/40 text-amber-400 text-[11px] font-bold rounded-xl transition cursor-pointer">Test -30m (20:30)</button>
+                <button onclick="triggerAlert('2050')" class="px-3 py-1.5 bg-zinc-900 hover:bg-amber-600 hover:text-white border border-amber-500/40 text-amber-400 text-[11px] font-bold rounded-xl transition cursor-pointer">Test -10m (20:50)</button>
+                <button onclick="triggerAlert('2110')" class="px-3 py-1.5 bg-zinc-900 hover:bg-blue-600 hover:text-white border border-blue-500/40 text-blue-400 text-[11px] font-bold rounded-xl transition cursor-pointer">Test +10m Masuk (21:10)</button>
+                <button onclick="triggerAlert('0050')" class="px-3 py-1.5 bg-zinc-900 hover:bg-amber-600 hover:text-white border border-amber-500/40 text-amber-400 text-[11px] font-bold rounded-xl transition cursor-pointer">Test -10m Istirahat (00:50)</button>
+                <button onclick="triggerAlert('0100')" class="px-3 py-1.5 bg-zinc-900 hover:bg-emerald-600 hover:text-white border border-emerald-500/40 text-emerald-400 text-[11px] font-bold rounded-xl transition cursor-pointer">Test Selesai Shift (01:00)</button>
+            </div>
+        </div>
+
+        <!-- Bagian 1: Absensi Harian -->
+        <div class="glass-card rounded-2xl p-6 mb-6">
+            <h3 class="text-sm font-black uppercase tracking-wider text-red-500 mb-4 border-b border-zinc-800 pb-2">
+                <i class="fa-solid fa-clipboard-user mr-2"></i> Absensi Harian (Clock-In / Out)
+            </h3>
+            
+            <div class="mb-4">
+                <label class="block text-xs font-semibold text-gray-400 mb-1">Identitas Anggota Aktif</label>
+                <input type="text" id="displayActiveMember" readonly 
+                    class="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-xl text-white text-xs font-bold cursor-not-allowed">
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <button id="btnClockIn" onclick="doClockIn()" class="py-3.5 bg-emerald-700 hover:bg-emerald-600 text-white font-bold rounded-xl transition shadow-lg text-xs uppercase tracking-wider cursor-pointer">
+                    <i class="fa-solid fa-right-to-bracket mr-1"></i> CLOCK-IN (Masuk)
+                </button>
+                <button id="btnClockOut" onclick="doClockOut()" class="py-3.5 bg-red-700 hover:bg-red-600 text-white font-bold rounded-xl transition shadow-lg text-xs uppercase tracking-wider cursor-pointer">
+                    <i class="fa-solid fa-right-from-bracket mr-1"></i> CLOCK-OUT (Pulang)
+                </button>
+            </div>
+        </div>
+
+        <!-- Bagian 2: Ambil Jatah Libur Instan (One-Click Cuti) -->
+        <div class="glass-card rounded-2xl p-6 mb-6">
+            <h3 class="text-sm font-black uppercase tracking-wider text-red-500 mb-2 border-b border-zinc-800 pb-2">
+                <i class="fa-solid fa-calendar-days mr-2"></i> Pengambilan Jatah Libur Kontrak
+            </h3>
+            <p class="text-[11px] text-gray-400 mb-4">Cukup klik tombol di bawah untuk langsung mengambil jatah libur tanpa ribet.</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button onclick="ambilLiburInstan()" class="py-3.5 bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white font-bold rounded-xl transition shadow-lg text-xs uppercase tracking-wider cursor-pointer">
+                    <i class="fa-solid fa-umbrella-beach mr-1"></i> Ambil Libur Hari Ini
+                </button>
+                <button onclick="ambilLiburBesok()" class="py-3.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-amber-400 font-bold rounded-xl transition shadow-lg text-xs uppercase tracking-wider cursor-pointer">
+                    <i class="fa-solid fa-calendar-plus mr-1"></i> Ambil Libur Besok
+                </button>
+            </div>
+        </div>
+
+        <!-- Bagian 3: Tabel Rekap -->
+        <div class="glass-card rounded-2xl overflow-hidden">
+            <div class="p-4 border-b border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <h3 class="text-sm font-black uppercase tracking-wider text-red-500">
+                    <i class="fa-solid fa-list-check mr-2"></i> Rekapitulasi Aktivitas Hari Ini
+                </h3>
+                <!-- Kolom Pencarian -->
+                <div class="relative w-full sm:w-64">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    </span>
+                    <input type="text" id="searchRekap" oninput="filterRekap()" placeholder="Cari nama, steam hex..." 
+                        class="w-full pl-9 pr-4 py-1.5 bg-zinc-950 border border-zinc-800 rounded-xl text-white text-xs focus:outline-none focus:border-red-600 placeholder-zinc-600">
+                </div>
+            </div>
+
+            <!-- Kontainer Tabel dengan Scroll Internal -->
+            <div class="table-scroll-container max-h-[280px] overflow-y-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead class="sticky top-0 bg-zinc-950 z-10 border-b border-zinc-800 text-gray-400">
+                        <tr>
+                            <th class="p-3">Waktu</th>
+                            <th class="p-3">Nama IC / Discord</th>
+                            <th class="p-3">Steam Hex</th>
+                            <th class="p-3">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelRekap">
+                        <tr>
+                            <td colspan="4" class="text-center text-gray-500 py-6">Belum ada aktivitas tercatat hari ini.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="text-center py-6 text-xs text-gray-500 border-t border-zinc-900">
+        &copy; 2026 TRIAD COMMUNITY. System Management by Bigbug Bunny.
+    </footer>
+
+    <!-- SCRIPT UTAMA -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWZzjpvghve0zG9COIORa1i1SZJ4mLIoA",
+            authDomain: "nmc-management.firebaseapp.com",
+            databaseURL: "https://nmc-management-default-rtdb.firebaseio.com",
+            projectId: "nmc-management",
+            storageBucket: "nmc-management.firebasestorage.app",
+            messagingSenderId: "551684270539",
+            appId: "1:551684270539:web:0706d854b3ce6f731e6e4e"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.database();
+
+        // 3 Webhook terpisah sesuai pengaturan Anda
+        const WEBHOOK_ABSEN = "https://discordapp.com/api/webhooks/1565705764830453821/T3x3YFptOIvnKqgR1ROLIdzpjpDmpzrT1gjMtzfeCHbixQdu5z090xa7WF8tm1AMX6wG"; 
+        const WEBHOOK_CUTI  = "https://discordapp.com/api/webhooks/1565726714359709806/7o73v5XrMwWbSf4KleamLRiuWM1bIlIl_tw1uSlR5t1ZRy0SgdjIC8hS_VyG7tVQoc_Z"; 
+        const WEBHOOK_INFO  = "https://discordapp.com/api/webhooks/1565756327114973195/NiHyUPNxfz6iSOiU4bM2DUIPvFMJ4bNIQwCa9i82ygng9hfvO_pBHmI-GtNQLIPYEYv0";
+
+        const daftarAnggota = [
+            { id: "757855200475086889", namaIC: "Joko Salosa (Admin)", namaDiscord: "bigbug.bunny", steamHex: "steam:1100001466e1253" },
+            { id: "1142876172439527425", namaIC: "Jaka Triad", namaDiscord: "jaka28", steamHex: "steam:11000015e5a9b46" },
+            { id: "411074019249618947", namaIC: "Axel Voss", namaDiscord: "sansanblack", steamHex: "steam:110000138e4f15d" },
+            { id: "1405601498699661352", namaIC: "Noveline S T V Ravenscroft", namaDiscord: "bayisemut", steamHex: "steam:11000012e8af4b1" },
+            { id: "1404355233475203075", namaIC: "Zoe Roxanne Voss", namaDiscord: "camellaodeliapalopie", steamHex: "steam:110000172d95936" },
+            { id: "1231623738194399422", namaIC: "Neora Octoria", namaDiscord: "neoorra", steamHex: "steam:11000016e37537d" },
+            { id: "390381584915890187", namaIC: "Hanma Zoldyck", namaDiscord: "rizkiqurrahman", steamHex: "steam:1100001435067f4" },
+            { id: "1083359483717238785", namaIC: "Yahmar Ousmane", namaDiscord: "parjoeeee", steamHex: "steam:11000010a48cb11" },
+            { id: "923567452762292254", namaIC: "Nathan Sylvester Kagami", namaDiscord: "nathnael1", steamHex: "steam:11000015e1abac0" },
+            { id: "596437206529474589", namaIC: "Reo Lucaryn", namaDiscord: ".kimikooo", steamHex: "steam:110000114e2caff" },
+            { id: "578012214708142080", namaIC: "Richie Roe", namaDiscord: "ajuu111", steamHex: "steam:1100001460d1028" },
+            { id: "574470435463233556", namaIC: "Nathan Sylvester Kagami", namaDiscord: "blck12", steamHex: "steam:110000114923df7" },
+            { id: "469176501003354112", namaIC: "Cia XO", namaDiscord: "chupachup66", steamHex: "steam:11000011914db7e" },
+            { id: "1442107017375514764", namaIC: "Supri Parnok", namaDiscord: "sandry23", steamHex: "steam:11000012ff74ca5" },
+            { id: "1040555499298488362", namaIC: "Mae Darlene Buana", namaDiscord: "narayours", steamHex: "steam:110000170f5678a" },
+            { id: "710466773945942127", namaIC: "Evanor Buana", namaDiscord: "gevathie.", steamHex: "steam:1100001193e7ab9" },
+            { id: "897782122000044072", namaIC: "Kinara Nyala Padma", namaDiscord: "grk01019.", steamHex: "steam:110000130390f78" },
+            { id: "333176224560185344", namaIC: "Ronnie Radke", namaDiscord: "cosalvian.", steamHex: "steam:76561198428902609" },
+            { id: "827938926723072061", namaIC: "Bei Cukai", namaDiscord: "sipaks.", steamHex: "steam:76561199639263336" },
+            { id: "123456789012345678", namaIC: "Fajar Triad", namaDiscord: "fajartriad", steamHex: "steam:11000015e5a9b47" }
+        ];
+
+        let loggedInUser = null;
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const inputHex = document.getElementById("loginSteamHex").value.trim();
+            const errorBox = document.getElementById("loginErrorBox");
+
+            const foundUser = daftarAnggota.find(m => m.steamHex.toLowerCase() === inputHex.toLowerCase());
+
+            if (foundUser) {
+                loggedInUser = foundUser;
+                localStorage.setItem("triad_session_hex", foundUser.steamHex);
+                
+                applyUserSession(foundUser);
+                document.getElementById("loginModal").classList.add("hidden");
+                showPopupAlert("Berhasil Login", `Selamat datang kembali, ${foundUser.namaIC}!`, "success");
+            } else {
+                errorBox.classList.remove("hidden");
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedHex = localStorage.getItem("triad_session_hex");
+            if (savedHex) {
+                const foundUser = daftarAnggota.find(m => m.steamHex.toLowerCase() === savedHex.toLowerCase());
+                if (foundUser) {
+                    loggedInUser = foundUser;
+                    applyUserSession(foundUser);
+                    document.getElementById("loginModal").classList.add("hidden");
+                }
+            }
+        });
+
+        function applyUserSession(user) {
+            document.getElementById("userSessionName").innerText = `${user.namaIC} (${user.namaDiscord})`;
+            document.getElementById("displayActiveMember").value = `${user.namaIC} - [${user.steamHex}]`;
+
+            const adminPanel = document.getElementById("adminTriggerPanel");
+            if (user.steamHex.toLowerCase() === "steam:1100001466e1253".toLowerCase()) {
+                adminPanel.classList.remove("hidden");
+            } else {
+                adminPanel.classList.add("hidden");
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("triad_session_hex");
+            location.reload();
+        }
+
+        function showPopupAlert(title, message, type = 'success') {
+            const modal = document.getElementById("popupAlertModal");
+            const titleEl = document.getElementById("popupAlertTitle");
+            const msgEl = document.getElementById("popupAlertMessage");
+            const iconEl = document.getElementById("popupAlertIcon");
+            const iconWrapper = document.getElementById("popupAlertIconWrapper");
+
+            titleEl.innerText = title;
+            msgEl.innerText = message;
+
+            iconWrapper.className = "w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl shadow-lg " + 
+                (type === 'success' ? "bg-emerald-950/80 text-emerald-400 border border-emerald-600/50" : "bg-red-950/80 text-red-400 border border-red-600/50");
+            
+            iconEl.className = type === 'success' ? "fa-solid fa-circle-check" : "fa-solid fa-triangle-exclamation";
+
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+        }
+
+        function closePopupAlert() {
+            const modal = document.getElementById("popupAlertModal");
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        }
+
+        setInterval(() => {
+            const now = new Date();
+            const jam = now.getHours();
+            const menit = now.getMinutes();
+            const detik = now.getSeconds();
+            document.getElementById('clock').textContent = `${String(jam).padStart(2,'0')}:${String(menit).padStart(2,'0')}:${String(detik).padStart(2,'0')}`;
+        }, 1000);
+
+        async function kirimDiscord(url, payload) {
+            if (!url) return;
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    console.error("Gagal mengirim webhook, status:", response.status);
+                }
+            } catch (err) {
+                console.error("Kesalahan jaringan saat mengirim webhook:", err);
+            }
+        }
+
+        let daftarSudahAbsen = [];
+        let riwayatAktivitasHariIni = [];
+
+        async function doClockIn() {
+            if (!loggedInUser) return;
+            const waktu = new Date().toLocaleTimeString('id-ID');
+
+            if (!daftarSudahAbsen.includes(loggedInUser.id)) {
+                daftarSudahAbsen.push(loggedInUser.id);
+            }
+
+            riwayatAktivitasHariIni.unshift({
+                waktu: waktu,
+                nama: `${loggedInUser.namaIC} (${loggedInUser.namaDiscord})`,
+                steamHex: loggedInUser.steamHex,
+                status: "Clock-In (Masuk)"
+            });
+            updateTabelRekap();
+
+            showPopupAlert("Clock-In Berhasil", `Anda berhasil absen masuk pada pukul ${waktu} WIB.`, "success");
+
+            await kirimDiscord(WEBHOOK_ABSEN, {
+                username: "Triad Handler Bot",
+                embeds: [{
+                    title: "🟢 CLOCK-IN MASUK",
+                    description: `• **Nama IC:** ${loggedInUser.namaIC}\n• **Discord:** <@${loggedInUser.id}> (${loggedInUser.namaDiscord})\n• **Steam Hex:** \`${loggedInUser.steamHex}\`\n• **Waktu:** ${waktu} WIB`,
+                    color: 3447003,
+                    timestamp: new Date().toISOString()
+                }]
+            });
+        }
+
+        async function doClockOut() {
+            if (!loggedInUser) return;
+            const waktu = new Date().toLocaleTimeString('id-ID');
+
+            riwayatAktivitasHariIni.unshift({
+                waktu: waktu,
+                nama: `${loggedInUser.namaIC} (${loggedInUser.namaDiscord})`,
+                steamHex: loggedInUser.steamHex,
+                status: "Clock-Out (Pulang)"
+            });
+            updateTabelRekap();
+
+            showPopupAlert("Clock-Out Berhasil", `Anda berhasil absen pulang pada pukul ${waktu} WIB.`, "success");
+
+            await kirimDiscord(WEBHOOK_ABSEN, {
+                username: "Triad Handler Bot",
+                embeds: [{
+                    title: "🔴 CLOCK-OUT PULANG",
+                    description: `• **Nama IC:** ${loggedInUser.namaIC}\n• **Discord:** <@${loggedInUser.id}> (${loggedInUser.namaDiscord})\n• **Steam Hex:** \`${loggedInUser.steamHex}\`\n• **Waktu:** ${waktu} WIB`,
+                    color: 15158332,
+                    timestamp: new Date().toISOString()
+                }]
+            });
+        }
+
+        function updateTabelRekap() {
+            filterRekap();
+        }
+
+        function filterRekap() {
+            const keyword = document.getElementById("searchRekap").value.toLowerCase();
+            const tbody = document.getElementById('tabelRekap');
+
+            const filteredData = riwayatAktivitasHariIni.filter(item => 
+                item.nama.toLowerCase().includes(keyword) || 
+                item.steamHex.toLowerCase().includes(keyword) || 
+                item.waktu.toLowerCase().includes(keyword) ||
+                item.status.toLowerCase().includes(keyword)
+            );
+
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-6">Tidak ada data aktivitas yang cocok.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filteredData.map(item => `
+                <tr class="border-b border-zinc-800/60 hover:bg-zinc-900/40">
+                    <td class="p-3 font-mono">${item.waktu}</td>
+                    <td class="p-3 font-bold text-white">${item.nama}</td>
+                    <td class="p-3 font-mono text-gray-400">${item.steamHex}</td>
+                    <td class="p-3"><span class="px-2 py-1 bg-emerald-950/80 border border-emerald-600/40 text-emerald-400 rounded text-[10px] font-bold">${item.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        async function ambilLiburInstan() {
+            if (!loggedInUser) return;
+            const tglHariIni = new Date().toISOString().split('T')[0];
+            const waktuSkrg = new Date().toLocaleTimeString('id-ID');
+
+            showPopupAlert("Berhasil Mengambil Libur", `Jatah libur Anda untuk hari ini (${tglHariIni}) berhasil dicatat dan dikirim ke Discord!`, "success");
+
+            await kirimDiscord(WEBHOOK_CUTI, {
+                username: "Triad Handler Bot",
+                embeds: [{
+                    title: "🏖️ PENGAJUAN CUTI / LIBUR INSTAN",
+                    description: `• **Nama IC:** ${loggedInUser.namaIC}\n• **Discord:** <@${loggedInUser.id}> (${loggedInUser.namaDiscord})\n• **Steam Hex:** \`${loggedInUser.steamHex}\`\n• **Tanggal Libur:** \`${tglHariIni} (Hari Ini)\`\n• **Waktu Pengajuan:** ${waktuSkrg} WIB`,
+                    color: 16776960,
+                    timestamp: new Date().toISOString()
+                }]
+            });
+        }
+
+        async function ambilLiburBesok() {
+            if (!loggedInUser) return;
+            const besok = new Date();
+            besok.setDate(besok.getDate() + 1);
+            const tglBesok = besok.toISOString().split('T')[0];
+            const waktuSkrg = new Date().toLocaleTimeString('id-ID');
+
+            showPopupAlert("Berhasil Mengambil Libur", `Jatah libur Anda untuk besok (${tglBesok}) berhasil dicatat dan dikirim ke Discord!`, "success");
+
+            await kirimDiscord(WEBHOOK_CUTI, {
+                username: "Triad Handler Bot",
+                embeds: [{
+                    title: "🏖️ PENGAJUAN CUTI / LIBUR BESOK",
+                    description: `• **Nama IC:** ${loggedInUser.namaIC}\n• **Discord:** <@${loggedInUser.id}> (${loggedInUser.namaDiscord})\n• **Steam Hex:** \`${loggedInUser.steamHex}\`\n• **Tanggal Libur:** \`${tglBesok} (Besok)\`\n• **Waktu Pengajuan:** ${waktuSkrg} WIB`,
+                    color: 16776960,
+                    timestamp: new Date().toISOString()
+                }]
+            });
+        }
+
+        function triggerAlert(jenis) {
+            const tagSemua = daftarAnggota.map(m => `<@${m.id}>`).join(' ');
+            
+            if (jenis === '2030') {
+                kirimDiscord(WEBHOOK_INFO, { username: "Bapak Pemarah", content: `# Woi bro-bro sekalian! 📢 @everyone\n30 menit lagi aktivitas kota malam ini kita mulai (Pukul 21.00). Yang belum siap-siap, yuk bersiap merapat ya! 🔥` });
+                showPopupAlert("Auto-Alert", "Test Alert 20:30 terkirim ke Discord!", "success");
+            } else if (jenis === '2050') {
+                let belumAbsen = daftarAnggota.filter(m => !daftarSudahAbsen.includes(m.id));
+                let textBelum = belumAbsen.length > 0 
+                    ? belumAbsen.map(m => `• **${m.namaIC}** (<@${m.id}>)`).join('\n') 
+                    : "Semua anggota sudah absen! 🎉";
+
+                kirimDiscord(WEBHOOK_INFO, { 
+                    username: "Bapak Tukang Data", 
+                    embeds: [{
+                        title: "⚠️ 10 MENIT LAGI KITA MASUK KOTA (20:50)",
+                        description: `Yuk persiapkan diri kalian, sebentar lagi jam 21.00 WIB kita mulai berRP malam ini.\n\n**Daftar Anggota yang Belum Absen:**\n${textBelum}`,
+                        color: 16776960,
+                        timestamp: new Date().toISOString()
+                    }]
+                });
+                showPopupAlert("Auto-Alert", "Test Alert 20:50 terkirim lengkap dengan mention daftar yang belum absen!", "success");
+            } else if (jenis === '2110') {
+                let belumAbsen = daftarAnggota.filter(m => !daftarSudahAbsen.includes(m.id));
+                let textBelum = belumAbsen.length > 0 
+                    ? belumAbsen.map(m => `• **${m.namaIC}** (<@${m.id}>)`).join('\n') 
+                    : "Semua anggota sudah absen tepat waktu! 👍";
+                
+                kirimDiscord(WEBHOOK_ABSEN, {
+                    username: "Triad Handler Bot",
+                    embeds: [{ title: "📊 LAPORAN RAZIA TELAT (21:10)", description: `**Belum Absen:**\n${textBelum}`, color: 15158332 }]
+                });
+                showPopupAlert("Auto-Alert", "Test Razia Telat (21:10) terkirim ke Log Handler!", "success");
+            } else if (jenis === '0050') {
+                kirimDiscord(WEBHOOK_INFO, { username: "Bapak Dante", content: `# ⏰ **10 MENIT LAGI MENUJU FREE TIME / ISTIRAHAT (01.00)** @everyone\nBersiap-siap sebentar lagi masuk jam Freetime ya kawan-kawan!\n${tagSemua}` });
+                showPopupAlert("Auto-Alert", "Test Alert 00:50 terkirim ke Discord!", "success");
+            } else if (jenis === '0100') {
+                kirimDiscord(WEBHOOK_INFO, { username: "Ibuk Comel", content: `# 🎉 **JADWAL RP KITA BERAKHIR** @everyone\nTerima kasih banyak kepada seluruh Teman teman atas kerja keras dan dedikasinya malam ini!\n#jangan lupa istirahat ya!` });
+                showPopupAlert("Auto-Alert", "Test Penutupan Shift (01:00) terkirim ke Discord!", "success");
+            }
+        }
+
+        // ==========================================
+        // AUTO-TRIGGER OTOMATIS BERDASARKAN JAM WIB
+        // ==========================================
+        let lastTriggeredDate = "";
+        setInterval(() => {
+            const now = new Date();
+            const options = { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hour12: false };
+            const timeString = new Intl.DateTimeFormat('en-GB', options).format(now);
+            
+            const currentDate = now.toISOString().split('T')[0];
+            const uniqueKey = `${currentDate}_${timeString}`;
+
+            if (lastTriggeredDate !== uniqueKey) {
+                if (timeString === "20:30") {
+                    triggerAlert('2030');
+                    lastTriggeredDate = uniqueKey;
+                } else if (timeString === "20:50") {
+                    triggerAlert('2050');
+                    lastTriggeredDate = uniqueKey;
+                } else if (timeString === "21:10") {
+                    triggerAlert('2110');
+                    lastTriggeredDate = uniqueKey;
+                } else if (timeString === "00:50") {
+                    triggerAlert('0050');
+                    lastTriggeredDate = uniqueKey;
+                } else if (timeString === "01:00") {
+                    triggerAlert('0100');
+                    lastTriggeredDate = uniqueKey;
+                }
+            }
+        }, 10000); // Cek setiap 10 detik
+    </script>
+</body>
+</html>
