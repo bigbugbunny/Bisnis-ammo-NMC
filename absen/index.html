@@ -416,7 +416,7 @@
             await kirimDiscord(WEBHOOK_ABSEN, {
                 username: "Triad Handler Bot",
                 embeds: [{
-                    title: "🟢 CLOCK-IN MASUK",
+                    title: "🟢 CLOCK-IN",
                     description: `• **Nama IC:** ${loggedInUser.namaIC}\n• **Discord:** <@${loggedInUser.id}> (${loggedInUser.namaDiscord})\n• **Steam Hex:** \`${loggedInUser.steamHex}\`\n• **Waktu:** ${waktu} WIB`,
                     color: 3447003,
                     timestamp: new Date().toISOString()
@@ -441,7 +441,7 @@
             await kirimDiscord(WEBHOOK_ABSEN, {
                 username: "Triad Handler Bot",
                 embeds: [{
-                    title: "🔴 CLOCK-OUT PULANG",
+                    title: "🔴 CLOCK-OUT",
                     description: `• **Nama IC:** ${loggedInUser.namaIC}\n• **Discord:** <@${loggedInUser.id}> (${loggedInUser.namaDiscord})\n• **Steam Hex:** \`${loggedInUser.steamHex}\`\n• **Waktu:** ${waktu} WIB`,
                     color: 15158332,
                     timestamp: new Date().toISOString()
