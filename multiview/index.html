@@ -148,7 +148,7 @@
                     </button>
                 </div>
                 <div class="flex justify-between items-center">
-                    <p class="text-[10px] text-gray-500">*TikTok cukup isi Username (contoh: bigbug_bunny) dan atur status video id menjadi "LIVE" agar aktif.</p>
+                    <p class="text-[10px] text-gray-500">*TikTok cukup isi Username (contoh: kiboyeahfps) tanpa tanda @. Sistem otomatis melacak via GitHub Actions.</p>
                     <button onclick="logoutAdmin()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-2 rounded-xl text-xs transition cursor-pointer" title="Kunci Kembali">
                         <i class="fa-solid fa-lock"></i> Kunci Admin
                     </button>
@@ -276,7 +276,7 @@
                     streamers = data.map(item => ({
                         id: String(item.id),
                         name: item.name,
-                        platform: item.platform || 'youtube', // Mendukung 'youtube' atau 'tiktok'
+                        platform: item.platform || 'youtube',
                         channelId: item.channel_id,
                         manualVideoId: item.video_id || '',
                         isLive: false,
@@ -364,7 +364,7 @@
             let liveCount = 0;
 
             for (let s of streamers) {
-                // Jika Platform TikTok, cek status berdasarkan manualVideoId (misal diisi "LIVE" oleh admin)
+                // Perbaikan: Pengecekan Platform TikTok membaca langsung dari manualVideoId yang menampung kolom video_id Supabase
                 if (s.platform === 'tiktok') {
                     if (s.manualVideoId && s.manualVideoId.toUpperCase() === 'LIVE') {
                         s.isLive = true;
@@ -542,7 +542,7 @@
                 }
 
                 if (streamer.platform === 'tiktok') {
-                    // Tampilan khusus card TikTok Live (karena batasan Iframe CORS TikTok)
+                    // Card Tautan Khusus TikTok Live
                     playerBox.innerHTML = `
                         <div class="bg-gray-950/90 px-4 py-2.5 border-b border-slate-800 flex justify-between items-center text-xs">
                             <div class="flex items-center gap-3">
