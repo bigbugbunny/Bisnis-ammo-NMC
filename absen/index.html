@@ -424,7 +424,7 @@
                 tanggal: tglHariIni,
                 nama: `${loggedInUser.namaIC} (${loggedInUser.namaDiscord})`,
                 steamHex: loggedInUser.steamHex,
-                status: "Clock-In (Masuk)"
+                status: "Clock-In"
             };
 
             // Simpan ke Firebase Realtime Database
@@ -434,7 +434,7 @@
                 console.error("Gagal menyimpan ke Firebase:", err);
             }
 
-            showPopupAlert("Clock-In Berhasil", `Anda berhasil absen masuk pada pukul ${waktu} WIB.`, "success");
+            showPopupAlert("Clock-In Berhasil", `Anda berhasil absen Clock-In pada pukul ${waktu} WIB.`, "success");
 
             await kirimDiscord(WEBHOOK_ABSEN, {
                 username: "Triad Handler Bot",
@@ -457,7 +457,7 @@
                 tanggal: tglHariIni,
                 nama: `${loggedInUser.namaIC} (${loggedInUser.namaDiscord})`,
                 steamHex: loggedInUser.steamHex,
-                status: "Clock-Out (Pulang)"
+                status: "Clock-Out"
             };
 
             // Simpan ke Firebase Realtime Database
@@ -467,7 +467,7 @@
                 console.error("Gagal menyimpan ke Firebase:", err);
             }
 
-            showPopupAlert("Clock-Out Berhasil", `Anda berhasil absen pulang pada pukul ${waktu} WIB.`, "success");
+            showPopupAlert("Clock-Out Berhasil", `Anda berhasil absen Clock-Out pada pukul ${waktu} WIB.`, "success");
 
             await kirimDiscord(WEBHOOK_ABSEN, {
                 username: "Triad Handler Bot",
@@ -500,14 +500,22 @@
                 return;
             }
 
-            tbody.innerHTML = filteredData.map(item => `
-                <tr class="border-b border-zinc-800/60 hover:bg-zinc-900/40">
-                    <td class="p-3 font-mono">${item.waktu}</td>
-                    <td class="p-3 font-bold text-white">${item.nama}</td>
-                    <td class="p-3 font-mono text-gray-400">${item.steamHex}</td>
-                    <td class="p-3"><span class="px-2 py-1 bg-emerald-950/80 border border-emerald-600/40 text-emerald-400 rounded text-[10px] font-bold">${item.status}</span></td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = filteredData.map(item => {
+                // Pembeda warna badge: Clock-In hijau, Clock-Out merah
+                const isClockIn = item.status && item.status.includes("Clock-In");
+                const badgeColor = isClockIn 
+                    ? "bg-emerald-950/80 border-emerald-600/40 text-emerald-400" 
+                    : "bg-red-950/80 border-red-600/40 text-red-400";
+
+                return `
+                    <tr class="border-b border-zinc-800/60 hover:bg-zinc-900/40">
+                        <td class="p-3 font-mono">${item.waktu}</td>
+                        <td class="p-3 font-bold text-white">${item.nama}</td>
+                        <td class="p-3 font-mono text-gray-400">${item.steamHex}</td>
+                        <td class="p-3"><span class="px-2 py-1 border rounded text-[10px] font-bold ${badgeColor}">${item.status}</span></td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         async function ambilLiburInstan() {
