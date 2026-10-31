@@ -23,7 +23,10 @@ function extractTikTokUsername(input) {
 
 // Fungsi mengirim Notifikasi ke Discord dengan tag @everyone
 async function sendDiscordAlert(streamerName, platform, liveUrl) {
-    if (!DISCORD_WEBHOOK_URL) return;
+    if (!DISCORD_WEBHOOK_URL) {
+        console.log("❌ DISCORD_WEBHOOK_URL tidak ditemukan di Environment/Secrets!");
+        return;
+    }
 
     const platformName = platform === 'tiktok' ? 'TikTok' : 'YouTube';
     const message = {
@@ -31,12 +34,16 @@ async function sendDiscordAlert(streamerName, platform, liveUrl) {
     };
 
     try {
-        await fetch(DISCORD_WEBHOOK_URL, {
+        const res = await fetch(DISCORD_WEBHOOK_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(message)
         });
-        console.log(`✅ Alert Discord terkirim untuk ${streamerName}`);
+        if (res.ok) {
+            console.log(`✅ Alert Discord berhasil dikirim untuk ${streamerName}`);
+        } else {
+            console.error(`❌ Gagal kirim Discord, status: ${res.status}`);
+        }
     } catch (err) {
         console.error("Gagal mengirim alert Discord:", err);
     }
@@ -75,17 +82,31 @@ async function run() {
 
     for (let s of streamers) {
         let isLive = false;
-        let activeVideoId = '';
+        let activeVideoId = s.video_id || '';
         const platform = s.platform ? s.platform.toLowerCase() : 'youtube';
+
+        // Tanda apakah sebelumnya sudah berstatus live / terisi manual
+        const wasLive = s.video_id && s.video_id.trim() !== '' && s.video_id.toUpperCase() !== 'EMPTY';
 
         // 1. Pengecekan Platform TikTok
         if (platform === 'tiktok') {
-            const username = extractTikTokUsername(s.channel_id);
-            isLive = await checkTikTokLive(s.channel_id);
-            activeVideoId = isLive ? 'LIVE' : '';
+            const isTikTokLive = await checkTikTokLive(s.channel_id);
+            if (isTikTokLive) {
+                isLive = true;
+                activeVideoId = 'LIVE';
+            } else {
+                // Jika sedang diisi manual (misal simulasi), pertahankan
+                if (wasLive) {
+                    isLive = true;
+                    activeVideoId = s.video_id;
+                } else {
+                    activeVideoId = '';
+                }
+            }
         } 
         // 2. Pengecekan Platform YouTube
         else {
+            // Cek apakah ada video_id manual / tersimpan sebelumnya
             if (s.video_id && s.video_id.length > 5 && s.video_id.toUpperCase() !== 'LIVE') {
                 isLive = true;
                 activeVideoId = s.video_id;
@@ -120,21 +141,25 @@ async function run() {
                     console.error(`Error cek YouTube ${s.name}:`, e.message);
                 }
             }
+
+            // Jika masih kosong tapi sebelumnya ada isi manual (simulasi), pertahankan
+            if (!isLive && wasLive) {
+                isLive = true;
+                activeVideoId = s.video_id;
+            }
         }
 
-        const wasLive = s.video_id === 'LIVE' || (s.video_id && s.video_id.length > 5);
-
-        // Jika status berubah dari OFF menjadi LIVE, kirim alert Discord!
+        // Jika sebelumnya TIDAK live, tapi sekarang terdeteksi LIVE (atau baru diisi manual), kirim alert Discord!
         if (isLive && !wasLive) {
             let liveUrl = platform === 'tiktok' 
                 ? `https://www.tiktok.com/@${extractTikTokUsername(s.channel_id)}/live`
-                : `https://www.youtube.com/watch?v=${activeVideoId}`;
+                : (activeVideoId === 'LIVE' || activeVideoId.length < 6 ? `https://www.youtube.com/@${s.name}` : `https://www.youtube.com/watch?v=${activeVideoId}`);
             
             await sendDiscordAlert(s.name, platform, liveUrl);
         }
 
-        // Update status ke Supabase jika ada perubahan
-        if ((s.video_id === 'LIVE' || s.video_id?.length > 5) !== isLive || (platform === 'youtube' && s.video_id !== activeVideoId)) {
+        // Update status ke Supabase
+        if (s.video_id !== activeVideoId) {
             await supabase
                 .from('streamers')
                 .update({ video_id: activeVideoId })
