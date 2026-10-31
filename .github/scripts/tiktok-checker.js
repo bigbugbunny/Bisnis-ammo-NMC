@@ -81,12 +81,13 @@ async function run() {
     }
 
     for (let s of streamers) {
-        let isLive = false;
-        let activeVideoId = s.video_id || '';
-        const platform = s.platform ? s.platform.toLowerCase() : 'youtube';
+        // Simpan status lama dari database SEBELUM dicek
+        const oldVideoId = s.video_id || '';
+        const wasPreviouslyLive = oldVideoId.trim() !== '' && oldVideoId.toUpperCase() !== 'EMPTY';
 
-        // Tanda apakah sebelumnya sudah berstatus live / terisi manual
-        const wasLive = s.video_id && s.video_id.trim() !== '' && s.video_id.toUpperCase() !== 'EMPTY';
+        let isLive = false;
+        let activeVideoId = '';
+        const platform = s.platform ? s.platform.toLowerCase() : 'youtube';
 
         // 1. Pengecekan Platform TikTok
         if (platform === 'tiktok') {
@@ -94,23 +95,11 @@ async function run() {
             if (isTikTokLive) {
                 isLive = true;
                 activeVideoId = 'LIVE';
-            } else {
-                // Jika sedang diisi manual (misal simulasi), pertahankan
-                if (wasLive) {
-                    isLive = true;
-                    activeVideoId = s.video_id;
-                } else {
-                    activeVideoId = '';
-                }
             }
         } 
         // 2. Pengecekan Platform YouTube
         else {
-            // Cek apakah ada video_id manual / tersimpan sebelumnya
-            if (s.video_id && s.video_id.length > 5 && s.video_id.toUpperCase() !== 'LIVE') {
-                isLive = true;
-                activeVideoId = s.video_id;
-            } else if (s.channel_id && s.channel_id.startsWith('UC')) {
+            if (s.channel_id && s.channel_id.startsWith('UC')) {
                 try {
                     const channelUrl = `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${s.channel_id}&key=${YOUTUBE_API_KEY}`;
                     const chResponse = await fetch(channelUrl);
@@ -141,16 +130,16 @@ async function run() {
                     console.error(`Error cek YouTube ${s.name}:`, e.message);
                 }
             }
-
-            // Jika masih kosong tapi sebelumnya ada isi manual (simulasi), pertahankan
-            if (!isLive && wasLive) {
-                isLive = true;
-                activeVideoId = s.video_id;
-            }
         }
 
-        // Jika sebelumnya TIDAK live, tapi sekarang terdeteksi LIVE (atau baru diisi manual), kirim alert Discord!
-        if (isLive && !wasLive) {
+        // FITUR SIMULASI MANUAL: Jika di database sedang diisi manual (misal teks bebas), anggap tetap LIVE agar bisa dites
+        if (!isLive && wasPreviouslyLive) {
+            isLive = true;
+            activeVideoId = oldVideoId;
+        }
+
+        // KUNCI UTAMA: Jika SEBELUMNYA kosong/off (!wasPreviouslyLive), tapi SEKARANG terdeteksi LIVE -> KIRIM ALERT DISCORD!
+        if (isLive && !wasPreviouslyLive) {
             let liveUrl = platform === 'tiktok' 
                 ? `https://www.tiktok.com/@${extractTikTokUsername(s.channel_id)}/live`
                 : (activeVideoId === 'LIVE' || activeVideoId.length < 6 ? `https://www.youtube.com/@${s.name}` : `https://www.youtube.com/watch?v=${activeVideoId}`);
@@ -159,7 +148,7 @@ async function run() {
         }
 
         // Update status ke Supabase
-        if (s.video_id !== activeVideoId) {
+        if (oldVideoId !== activeVideoId) {
             await supabase
                 .from('streamers')
                 .update({ video_id: activeVideoId })
