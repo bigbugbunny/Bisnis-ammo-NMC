@@ -4,7 +4,26 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-async function checkTikTokLive(username) {
+// Fungsi untuk mengambil username murni dari berbagai format URL TikTok
+function extractTikTokUsername(input) {
+    if (!input) return '';
+    let clean = input.trim();
+    // Jika user memasukkan link lengkap seperti https://tiktok.com/@username/...
+    if (clean.includes('tiktok.com/@')) {
+        let parts = clean.split('@')[1];
+        return parts ? parts.split('/')[0].split('?')[0] : clean;
+    }
+    // Jika diawali dengan @
+    if (clean.startsWith('@')) {
+        return clean.substring(1);
+    }
+    return clean;
+}
+
+async function checkTikTokLive(channelInput) {
+    const username = extractTikTokUsername(channelInput);
+    if (!username) return false;
+
     try {
         const response = await fetch(`https://www.tiktok.com/@${username}/live`, {
             headers: {
@@ -33,10 +52,10 @@ async function run() {
     }
 
     for (let s of streamers) {
-        const username = s.channel_id;
+        const username = extractTikTokUsername(s.channel_id);
         if (!username) continue;
 
-        const isLive = await checkTikTokLive(username);
+        const isLive = await checkTikTokLive(s.channel_id);
         const newStatus = isLive ? 'LIVE' : '';
 
         if ((s.video_id === 'LIVE') !== isLive) {
