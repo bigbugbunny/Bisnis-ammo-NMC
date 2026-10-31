@@ -2,9 +2,9 @@ name: TikTok Live Auto Checker
 
 on:
   schedule:
-    # Menjalankan skrip otomatis setiap 5 menit sekali
+    # Berjalan otomatis setiap 5 menit sekali
     - cron: '*/5 * * * *'
-  workflow_dispatch: # Agar bisa dijalankan manual juga dari tab Actions
+  workflow_dispatch:
 
 jobs:
   check-live:
@@ -19,10 +19,11 @@ jobs:
           node-version: '18'
 
       - name: Install Dependencies
-        run: npm install @supabase/supabase-js node-fetch
+        run: npm install @supabase/supabase-js
 
-      - name: Run TikTok Checker Script
+      - name: Run Checker Script
         env:
-          SUPABASE_URL: 'https://atibhgbpdxvjngqdiklg.supabase.co'
-          SUPABASE_ANON_KEY: 'sb_publishable_PbD9KclxnhZGybuHJDkU3A_-Hz-MESZ'
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: node .github/scripts/tiktok-checker.js
