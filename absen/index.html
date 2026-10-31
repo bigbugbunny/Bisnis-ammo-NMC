@@ -590,34 +590,31 @@
             }
         }
 
-        let lastTriggeredDate = "";
+        // Auto-Trigger Otomatis dengan Pengaman Database Lock (Anti-Double saat buka banyak tab)
         setInterval(() => {
             const now = new Date();
             const options = { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hour12: false };
             const timeString = new Intl.DateTimeFormat('en-GB', options).format(now);
             
             const currentDate = now.toISOString().split('T')[0];
-            const uniqueKey = `${currentDate}_${timeString}`;
+            const targetTimes = ["20:30", "20:50", "21:10", "00:50", "01:00"];
 
-            if (lastTriggeredDate !== uniqueKey) {
-                if (timeString === "20:30") {
-                    triggerAlert('2030');
-                    lastTriggeredDate = uniqueKey;
-                } else if (timeString === "20:50") {
-                    triggerAlert('2050');
-                    lastTriggeredDate = uniqueKey;
-                } else if (timeString === "21:10") {
-                    triggerAlert('2110');
-                    lastTriggeredDate = uniqueKey;
-                } else if (timeString === "00:50") {
-                    triggerAlert('0050');
-                    lastTriggeredDate = uniqueKey;
-                } else if (timeString === "01:00") {
-                    triggerAlert('0100');
-                    lastTriggeredDate = uniqueKey;
-                }
+            if (targetTimes.includes(timeString)) {
+                const lockKey = `system_locks/${currentDate}_${timeString.replace(':', '')}`;
+                
+                db.ref(lockKey).once('value', (snapshot) => {
+                    if (!snapshot.val()) {
+                        db.ref(lockKey).set(true);
+
+                        if (timeString === "20:30") triggerAlert('2030');
+                        else if (timeString === "20:50") triggerAlert('2050');
+                        else if (timeString === "21:10") triggerAlert('2110');
+                        else if (timeString === "00:50") triggerAlert('0050');
+                        else if (timeString === "01:00") triggerAlert('0100');
+                    }
+                });
             }
-        }, 10000);
+        }, 10000); // Cek setiap 10 detik
     </script>
 </body>
 </html>
