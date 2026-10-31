@@ -231,7 +231,7 @@
                     </thead>
                     <tbody id="tabelRekap">
                         <tr>
-                            <td colspan="4" class="text-center text-gray-500 py-6">Belum ada aktivitas tercatat hari ini.</td>
+                            <td colspan="4" class="text-center text-gray-500 py-6">Memuat data aktivitas...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -268,25 +268,47 @@
 
         let daftarAnggota = [];
         let loggedInUser = null;
+        let riwayatAktivitasHariIni = [];
+        let daftarSudahAbsen = [];
 
         // Ambil daftar anggota langsung dari Firebase Database saat halaman dimuat
         function loadDaftarAnggotaFromDB() {
             db.ref('daftar_anggota').once('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    // Konversi objek database ke dalam bentuk array JavaScript
                     daftarAnggota = Object.values(data);
-                    console.log("Daftar anggota berhasil dimuat dari Firebase:", daftarAnggota.length);
-
-                    // Cek sesi login yang tersimpan di localStorage setelah data dari DB siap
                     checkExistingSession();
                 } else {
-                    console.warn("Node 'daftar_anggota' kosong di Firebase.");
                     document.getElementById("loginErrorBox").innerText = "Database anggota kosong! Hubungi Administrator.";
                     document.getElementById("loginErrorBox").classList.remove("hidden");
                 }
             }, (error) => {
-                console.error("Gagal mengambil data anggota dari Firebase:", error);
+                console.error("Gagal mengambil data anggota:", error);
+            });
+        }
+
+        // Ambil riwayat absen hari ini dari Firebase secara real-time
+        function loadRiwayatAbsenFromDB() {
+            const tglHariIni = new Date().toISOString().split('T')[0];
+            db.ref('riwayat_absen').orderByChild('tanggal').equalTo(tglHariIni).on('value', (snapshot) => {
+                const data = snapshot.val();
+                riwayatAktivitasHariIni = [];
+                daftarSudahAbsen = [];
+
+                if (data) {
+                    Object.values(data).forEach(item => {
+                        riwayatAktivitasHariIni.unshift(item);
+                        // Cek siapa saja yang sudah absen masuk hari ini
+                        if (item.status && item.status.includes("Clock-In")) {
+                            // Cari ID Discord berdasarkan Steam Hex jika cocok
+                            const matchedMember = daftarAnggota.find(m => m.steamHex && m.steamHex.toLowerCase() === item.steamHex.toLowerCase());
+                            if (matchedMember && !daftarSudahAbsen.includes(matchedMember.id)) {
+                                daftarSudahAbsen.push(matchedMember.id);
+                            }
+                        }
+                    });
+                }
+                updateTabelRekap();
             });
         }
 
@@ -323,6 +345,7 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             loadDaftarAnggotaFromDB();
+            loadRiwayatAbsenFromDB();
         });
 
         function applyUserSession(user) {
@@ -330,7 +353,6 @@
             document.getElementById("displayActiveMember").value = `${user.namaIC} - [${user.steamHex}]`;
 
             const adminPanel = document.getElementById("adminTriggerPanel");
-            // Steam Hex Admin Utama
             if (user.steamHex && user.steamHex.toLowerCase() === "steam:1100001466e1253".toLowerCase()) {
                 adminPanel.classList.remove("hidden");
             } else {
@@ -392,24 +414,25 @@
             }
         }
 
-        let daftarSudahAbsen = [];
-        let riwayatAktivitasHariIni = [];
-
         async function doClockIn() {
             if (!loggedInUser) return;
             const waktu = new Date().toLocaleTimeString('id-ID');
+            const tglHariIni = new Date().toISOString().split('T')[0];
 
-            if (!daftarSudahAbsen.includes(loggedInUser.id)) {
-                daftarSudahAbsen.push(loggedInUser.id);
-            }
-
-            riwayatAktivitasHariIni.unshift({
+            const dataAktivitas = {
                 waktu: waktu,
+                tanggal: tglHariIni,
                 nama: `${loggedInUser.namaIC} (${loggedInUser.namaDiscord})`,
                 steamHex: loggedInUser.steamHex,
                 status: "Clock-In (Masuk)"
-            });
-            updateTabelRekap();
+            };
+
+            // Simpan ke Firebase Realtime Database
+            try {
+                await db.ref('riwayat_absen').push(dataAktivitas);
+            } catch (err) {
+                console.error("Gagal menyimpan ke Firebase:", err);
+            }
 
             showPopupAlert("Clock-In Berhasil", `Anda berhasil absen masuk pada pukul ${waktu} WIB.`, "success");
 
@@ -427,14 +450,22 @@
         async function doClockOut() {
             if (!loggedInUser) return;
             const waktu = new Date().toLocaleTimeString('id-ID');
+            const tglHariIni = new Date().toISOString().split('T')[0];
 
-            riwayatAktivitasHariIni.unshift({
+            const dataAktivitas = {
                 waktu: waktu,
+                tanggal: tglHariIni,
                 nama: `${loggedInUser.namaIC} (${loggedInUser.namaDiscord})`,
                 steamHex: loggedInUser.steamHex,
                 status: "Clock-Out (Pulang)"
-            });
-            updateTabelRekap();
+            };
+
+            // Simpan ke Firebase Realtime Database
+            try {
+                await db.ref('riwayat_absen').push(dataAktivitas);
+            } catch (err) {
+                console.error("Gagal menyimpan ke Firebase:", err);
+            }
 
             showPopupAlert("Clock-Out Berhasil", `Anda berhasil absen pulang pada pukul ${waktu} WIB.`, "success");
 
@@ -465,7 +496,7 @@
             );
 
             if (filteredData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-6">Tidak ada data aktivitas yang cocok.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-6">Belum ada aktivitas tercatat hari ini.</td></tr>`;
                 return;
             }
 
@@ -544,7 +575,7 @@
                 let textBelum = belumAbsen.length > 0 
                     ? belumAbsen.map(m => `• **${m.namaIC}** (<@${m.id}>)`).join('\n') 
                     : "Semua anggota sudah absen tepat waktu! 👍";
-                
+               
                 kirimDiscord(WEBHOOK_ABSEN, {
                     username: "Triad Handler Bot",
                     embeds: [{ title: "📊 LAPORAN RAZIA TELAT (21:10)", description: `**Belum Absen:**\n${textBelum}`, color: 15158332 }]
@@ -559,9 +590,6 @@
             }
         }
 
-        // ==========================================
-        // AUTO-TRIGGER OTOMATIS BERDASARKAN JAM WIB
-        // ==========================================
         let lastTriggeredDate = "";
         setInterval(() => {
             const now = new Date();
@@ -589,7 +617,7 @@
                     lastTriggeredDate = uniqueKey;
                 }
             }
-        }, 10000); // Cek setiap 10 detik
+        }, 10000);
     </script>
 </body>
 </html>
