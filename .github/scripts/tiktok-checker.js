@@ -19,38 +19,33 @@ function extractTikTokUsername(input) {
     return clean;
 }
 
-// Cek status live TikTok menggunakan URL lengkap /live dan analisis HTML halaman
+// Cek status live TikTok menggunakan API Publik JSON TikTok secara langsung
 async function checkTikTokLive(channelInput) {
-    if (!channelInput) return false;
-    
-    let targetUrl = channelInput.trim();
-    if (!targetUrl.includes('tiktok.com')) {
-        let username = extractTikTokUsername(targetUrl);
-        if (!username) return false;
-        targetUrl = `https://www.tiktok.com/@${username}/live`;
-    } else if (!targetUrl.endsWith('/live')) {
-        targetUrl = targetUrl.endsWith('/') ? `${targetUrl}live` : `${targetUrl}/live`;
-    }
+    const username = extractTikTokUsername(channelInput);
+    if (!username) return false;
 
     try {
-        const response = await fetch(targetUrl, {
+        // Menggunakan endpoint API publik resmi/alternatif TikTok untuk data JSON live
+        const apiUrl = `https://www.tiktok.com/node/share/user/@${username}`;
+        const response = await fetch(apiUrl, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-                'Accept-Language': 'en-US,en;q=0.5'
+                'Accept': 'application/json, text/plain, */*'
             }
         });
 
         if (response.ok) {
-            const htmlText = await response.text();
-            // Deteksi status live aktif di dalam kode HTML profil/live TikTok
-            if (htmlText.includes('"is-live":true') || htmlText.includes('room_id') || htmlText.includes('StreamPlayer')) {
+            const data = await response.json();
+            const userInfo = data?.seoUserInfo?.userInfo;
+            
+            // Jika roomStruct status bernilai 1, artinya akun sedang benar-benar LIVE
+            if (userInfo && userInfo.roomStruct && userInfo.roomStruct.status === 1) {
                 return true;
             }
         }
         return false;
     } catch (err) {
-        console.error(`Gagal cek link live ${targetUrl}:`, err.message);
+        console.error(`Gagal cek TikTok @${username}:`, err.message);
         return false;
     }
 }
@@ -71,7 +66,12 @@ async function run() {
         const oldVideoId = s.video_id || '';
         let isLive = false;
         let activeVideoId = '';
-        const platform = s.platform ? s.platform.toLowerCase() : 'youtube';
+        
+        // Deteksi platform otomatis berdasarkan kolom platform ATAU isi channel_id
+        let platform = s.platform ? s.platform.toLowerCase() : '';
+        if (!platform && (s.channel_id.includes('tiktok.com') || s.channel_id.startsWith('@'))) {
+            platform = 'tiktok';
+        }
 
         // 1. Pengecekan Platform TikTok
         if (platform === 'tiktok') {
