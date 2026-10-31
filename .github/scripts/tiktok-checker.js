@@ -19,39 +19,38 @@ function extractTikTokUsername(input) {
     return clean;
 }
 
-// Cek status live TikTok menggunakan oEmbed & Webcast API Publik
+// Cek status live TikTok menggunakan URL lengkap /live dan analisis HTML halaman
 async function checkTikTokLive(channelInput) {
-    const username = extractTikTokUsername(channelInput);
-    if (!username) return false;
+    if (!channelInput) return false;
+    
+    let targetUrl = channelInput.trim();
+    if (!targetUrl.includes('tiktok.com')) {
+        let username = extractTikTokUsername(targetUrl);
+        if (!username) return false;
+        targetUrl = `https://www.tiktok.com/@${username}/live`;
+    } else if (!targetUrl.endsWith('/live')) {
+        targetUrl = targetUrl.endsWith('/') ? `${targetUrl}live` : `${targetUrl}/live`;
+    }
 
     try {
-        // Menggunakan endpoint oEmbed resmi TikTok untuk memastikan akun valid
-        const oembedUrl = `https://www.tiktok.com/oembed?url=https://www.tiktok.com/@${username}`;
-        const response = await fetch(oembedUrl, {
+        const response = await fetch(targetUrl, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.5'
             }
         });
-        
+
         if (response.ok) {
-            // Cek status siaran langsung melalui endpoint publik alternatif TikTok
-            const liveApiUrl = `https://www.tiktok.com/node/share/user/@${username}`;
-            const liveRes = await fetch(liveApiUrl, {
-                headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
-            });
-            
-            if (liveRes.ok) {
-                const data = await liveRes.json();
-                const userInfo = data?.seoUserInfo?.userInfo;
-                // Deteksi status live dari data JSON publik TikTok
-                if (userInfo && userInfo.roomStruct && userInfo.roomStruct.status === 1) {
-                    return true;
-                }
+            const htmlText = await response.text();
+            // Deteksi status live aktif di dalam kode HTML profil/live TikTok
+            if (htmlText.includes('"is-live":true') || htmlText.includes('room_id') || htmlText.includes('StreamPlayer')) {
+                return true;
             }
         }
         return false;
     } catch (err) {
-        console.error(`Gagal cek TikTok @${username}:`, err.message);
+        console.error(`Gagal cek link live ${targetUrl}:`, err.message);
         return false;
     }
 }
