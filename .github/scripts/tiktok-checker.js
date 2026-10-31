@@ -24,25 +24,39 @@ function extractTikTokUsername(input) {
     return clean;
 }
 
-// Cek Status Live TikTok
+// Cek Status Live TikTok menggunakan TikTok oEmbed & API Publik Alternatif
 async function checkTikTokLive(channelInput) {
     const username = extractTikTokUsername(channelInput);
     if (!username) return false;
 
     try {
-        const targetUrl = `https://www.tiktok.com/@${username}/live`;
-        const response = await fetch(targetUrl, {
+        // Menggunakan oEmbed TikTok publik untuk memvalidasi keberadaan akun dan statusnya secara aman
+        const oembedUrl = `https://www.tiktok.com/oembed?url=https://www.tiktok.com/@${username}`;
+        const response = await fetch(oembedUrl, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7'
-            },
-            redirect: 'follow'
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            }
         });
         
-        const html = await response.text();
-        return html.includes('"is-live":true') || (html.includes('room_id') && !html.includes('This account is private'));
+        if (response.ok) {
+            const data = await response.json();
+            // Jika akun ditemukan lewat oembed, kita cek juga apakah ada indikator live dari endpoint publik
+            // Sebagai alternatif yang stabil, kita validasi koneksi profil berhasil
+            if (data && data.author_name) {
+                // Untuk memastikan apakah sedang live tanpa terblokir proteksi HTML, 
+                // kita bisa cek request tambahan ke endpoint web live mereka atau fallback ke status aktif
+                const liveCheckResponse = await fetch(`https://www.tiktok.com/@${username}/live`, {
+                    headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' },
+                    redirect: 'follow'
+                });
+                const html = await liveCheckResponse.text();
+                // Deteksi berbagai pola yang menunjukkan siaran live aktif di TikTok
+                return html.includes('"is-live":true') || html.includes('room_id') || html.includes('LivePlayer') || html.includes('isLive');
+            }
+        }
+        return false;
     } catch (err) {
-        console.error(`Gagal cek @${username}:`, err.message);
+        console.error(`Gagal cek TikTok @${username}:`, err.message);
         return false;
     }
 }
@@ -110,13 +124,13 @@ async function run() {
             }
         }
 
-        // Pertahankan status manual jika sebelumnya diisi teks lain
+        // Pertahankan status manual jika sebelumnya diisi teks aktif
         if (!isLive && wasPreviouslyLive) {
             isLive = true;
             activeVideoId = oldVideoId;
         }
 
-        // Update status ke Supabase (tanpa kirim alert Discord)
+        // Update status ke Supabase
         if (oldVideoId !== activeVideoId) {
             await supabase
                 .from('streamers')
