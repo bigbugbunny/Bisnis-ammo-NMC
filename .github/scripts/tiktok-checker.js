@@ -7,17 +7,26 @@ const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Fungsi untuk mengekstrak username murni dari URL TikTok atau format @
+// Fungsi diperkuat untuk mengekstrak username murni dari berbagai format URL TikTok
 function extractTikTokUsername(input) {
     if (!input) return '';
     let clean = String(input).trim();
-    if (clean.includes('tiktok.com/@')) {
-        let parts = clean.split('@')[1];
-        return parts ? parts.split('/')[0].split('?')[0] : clean;
+    
+    // Tangani format URL lengkap seperti https://www.tiktok.com/@username atau tiktok.com/@username
+    if (clean.includes('tiktok.com/')) {
+        let parts = clean.split('tiktok.com/');
+        let path = parts[1] || '';
+        if (path.startsWith('@')) {
+            path = path.substring(1);
+        }
+        return path.split('/')[0].split('?')[0];
     }
+    
+    // Tangani format yang langsung berawalan @
     if (clean.startsWith('@')) {
         return clean.substring(1);
     }
+    
     return clean;
 }
 
@@ -49,19 +58,30 @@ async function sendDiscordAlert(streamerName, platform, liveUrl) {
     }
 }
 
-// Cek Status Live TikTok
+// Cek Status Live TikTok dengan Header & Penanganan Redirect
 async function checkTikTokLive(channelInput) {
     const username = extractTikTokUsername(channelInput);
     if (!username) return false;
 
     try {
-        const response = await fetch(`https://www.tiktok.com/@${username}/live`, {
+        const targetUrl = `https://www.tiktok.com/@${username}/live`;
+        console.log(`🔍 Mengecek TikTok: ${targetUrl} (Username: ${username})`);
+
+        const response = await fetch(targetUrl, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-            }
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7'
+            },
+            redirect: 'follow'
         });
+        
         const html = await response.text();
-        return html.includes('"is-live":true') || (html.includes('room_id') && !html.includes('This account is private'));
+        
+        // Periksa indikator live di dalam HTML TikTok
+        const isLive = html.includes('"is-live":true') || (html.includes('room_id') && !html.includes('This account is private'));
+        console.log(`📡 Status live @${username}: ${isLive ? 'AKTIF (LIVE)' : 'OFFLINE'}`);
+        
+        return isLive;
     } catch (err) {
         console.error(`Gagal cek @${username}:`, err.message);
         return false;
@@ -81,7 +101,6 @@ async function run() {
     }
 
     for (let s of streamers) {
-        // Simpan status lama dari database SEBELUM dicek
         const oldVideoId = s.video_id || '';
         const wasPreviouslyLive = oldVideoId.trim() !== '' && oldVideoId.toUpperCase() !== 'EMPTY';
 
@@ -132,13 +151,13 @@ async function run() {
             }
         }
 
-        // FITUR SIMULASI MANUAL: Jika di database sedang diisi manual (misal teks bebas), anggap tetap LIVE agar bisa dites
+        // Fitur fallback manual jika diisi teks lain
         if (!isLive && wasPreviouslyLive) {
             isLive = true;
             activeVideoId = oldVideoId;
         }
 
-        // KUNCI UTAMA: Jika SEBELUMNYA kosong/off (!wasPreviouslyLive), tapi SEKARANG terdeteksi LIVE -> KIRIM ALERT DISCORD!
+        // Kirim alert ke Discord jika status berubah dari OFF ke LIVE
         if (isLive && !wasPreviouslyLive) {
             let liveUrl = platform === 'tiktok' 
                 ? `https://www.tiktok.com/@${extractTikTokUsername(s.channel_id)}/live`
