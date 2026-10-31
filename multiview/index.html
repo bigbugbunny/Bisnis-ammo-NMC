@@ -557,7 +557,7 @@
 
                 if (streamer.platform === 'tiktok') {
                     const tiktokUsername = extractTikTokUsername(streamer.channelId);
-                    // Card Tautan Khusus TikTok Live dengan URL bersih
+                    // Opsi Pemutar Alternatif & Tombol Pintasan TikTok Live
                     playerBox.innerHTML = `
                         <div class="bg-gray-950/90 px-4 py-2.5 border-b border-slate-800 flex justify-between items-center text-xs">
                             <div class="flex items-center gap-3">
@@ -570,14 +570,16 @@
                             </button>
                         </div>
                         <div class="flex-1 w-full bg-black relative flex flex-col items-center justify-center p-6 text-center">
-                            <div class="w-16 h-16 rounded-2xl bg-tiktokColor/20 border border-tiktokColor/40 text-tiktokColor flex items-center justify-center text-2xl mb-4 shadow-lg animate-pulse">
+                            <div class="w-14 h-14 rounded-2xl bg-tiktokColor/20 border border-tiktokColor/40 text-tiktokColor flex items-center justify-center text-xl mb-3 shadow-lg animate-pulse">
                                 <i class="fa-brands fa-tiktok"></i>
                             </div>
                             <h4 class="text-white font-bold text-sm mb-1">${streamer.name} sedang LIVE di TikTok!</h4>
-                            <p class="text-xs text-gray-400 mb-6 max-w-sm">TikTok melarang pemutaran langsung (iframe embed) di dalam website luar demi keamanan. Klik tombol di bawah untuk membuka siaran live-nya.</p>
-                            <a href="https://www.tiktok.com/@${tiktokUsername}/live" target="_blank" class="px-6 py-3 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center gap-2">
-                                <i class="fa-solid fa-external-link-alt"></i> Buka Live TikTok @${tiktokUsername}
-                            </a>
+                            <p class="text-[11px] text-gray-400 mb-4 max-w-sm">Karena kebijakan enkripsi TikTok yang memblokir pemutar langsung, silakan gunakan tombol di bawah untuk membuka siaran live-nya.</p>
+                            <div class="flex flex-wrap justify-center gap-2">
+                                <a href="https://www.tiktok.com/@${tiktokUsername}/live" target="_blank" class="px-5 py-2.5 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center gap-2">
+                                    <i class="fa-solid fa-external-link-alt"></i> Buka Live TikTok @${tiktokUsername}
+                                </a>
+                            </div>
                         </div>
                     `;
                 } else {
