@@ -3,16 +3,13 @@ const { createClient } = require('@supabase/supabase-js');
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
-const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Fungsi diperkuat untuk mengekstrak username murni dari berbagai format URL TikTok
+// Fungsi untuk mengekstrak username murni dari URL TikTok atau format @
 function extractTikTokUsername(input) {
     if (!input) return '';
     let clean = String(input).trim();
-    
-    // Tangani format URL lengkap seperti https://www.tiktok.com/@username atau tiktok.com/@username
     if (clean.includes('tiktok.com/')) {
         let parts = clean.split('tiktok.com/');
         let path = parts[1] || '';
@@ -21,52 +18,19 @@ function extractTikTokUsername(input) {
         }
         return path.split('/')[0].split('?')[0];
     }
-    
-    // Tangani format yang langsung berawalan @
     if (clean.startsWith('@')) {
         return clean.substring(1);
     }
-    
     return clean;
 }
 
-// Fungsi mengirim Notifikasi ke Discord dengan tag @everyone
-async function sendDiscordAlert(streamerName, platform, liveUrl) {
-    if (!DISCORD_WEBHOOK_URL) {
-        console.log("❌ DISCORD_WEBHOOK_URL tidak ditemukan di Environment/Secrets!");
-        return;
-    }
-
-    const platformName = platform === 'tiktok' ? 'TikTok' : 'YouTube';
-    const message = {
-        content: `@everyone 🚨 **${streamerName}** sedang **LIVE** di **${platformName}**! 🎮🔥\nYuk langsung tonton dan ramaikan di Multiview Triad Community:\n🔗 ${liveUrl}`
-    };
-
-    try {
-        const res = await fetch(DISCORD_WEBHOOK_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(message)
-        });
-        if (res.ok) {
-            console.log(`✅ Alert Discord berhasil dikirim untuk ${streamerName}`);
-        } else {
-            console.error(`❌ Gagal kirim Discord, status: ${res.status}`);
-        }
-    } catch (err) {
-        console.error("Gagal mengirim alert Discord:", err);
-    }
-}
-
-// Cek Status Live TikTok dengan Header & Penanganan Redirect
+// Cek Status Live TikTok
 async function checkTikTokLive(channelInput) {
     const username = extractTikTokUsername(channelInput);
     if (!username) return false;
 
     try {
         const targetUrl = `https://www.tiktok.com/@${username}/live`;
-        console.log(`🔍 Mengecek TikTok: ${targetUrl} (Username: ${username})`);
-
         const response = await fetch(targetUrl, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -76,12 +40,7 @@ async function checkTikTokLive(channelInput) {
         });
         
         const html = await response.text();
-        
-        // Periksa indikator live di dalam HTML TikTok
-        const isLive = html.includes('"is-live":true') || (html.includes('room_id') && !html.includes('This account is private'));
-        console.log(`📡 Status live @${username}: ${isLive ? 'AKTIF (LIVE)' : 'OFFLINE'}`);
-        
-        return isLive;
+        return html.includes('"is-live":true') || (html.includes('room_id') && !html.includes('This account is private'));
     } catch (err) {
         console.error(`Gagal cek @${username}:`, err.message);
         return false;
@@ -89,7 +48,7 @@ async function checkTikTokLive(channelInput) {
 }
 
 async function run() {
-    console.log("🔍 Memeriksa status live YouTube & TikTok otomatis...");
+    console.log("🔍 Memeriksa status live YouTube & TikTok ke database...");
     
     const { data: streamers, error } = await supabase
         .from('streamers')
@@ -151,22 +110,13 @@ async function run() {
             }
         }
 
-        // Fitur fallback manual jika diisi teks lain
+        // Pertahankan status manual jika sebelumnya diisi teks lain
         if (!isLive && wasPreviouslyLive) {
             isLive = true;
             activeVideoId = oldVideoId;
         }
 
-        // Kirim alert ke Discord jika status berubah dari OFF ke LIVE
-        if (isLive && !wasPreviouslyLive) {
-            let liveUrl = platform === 'tiktok' 
-                ? `https://www.tiktok.com/@${extractTikTokUsername(s.channel_id)}/live`
-                : (activeVideoId === 'LIVE' || activeVideoId.length < 6 ? `https://www.youtube.com/@${s.name}` : `https://www.youtube.com/watch?v=${activeVideoId}`);
-            
-            await sendDiscordAlert(s.name, platform, liveUrl);
-        }
-
-        // Update status ke Supabase
+        // Update status ke Supabase (tanpa kirim alert Discord)
         if (oldVideoId !== activeVideoId) {
             await supabase
                 .from('streamers')
