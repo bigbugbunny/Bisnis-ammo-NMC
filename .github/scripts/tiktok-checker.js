@@ -6,50 +6,58 @@ const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Fungsi untuk mengekstrak username murni dari URL TikTok atau format @
 function extractTikTokUsername(input) {
     if (!input) return '';
     let clean = String(input).trim();
     if (clean.includes('tiktok.com/')) {
         let parts = clean.split('tiktok.com/');
         let path = parts[1] || '';
-        if (path.startsWith('@')) {
-            path = path.substring(1);
-        }
+        if (path.startsWith('@')) path = path.substring(1);
         return path.split('/')[0].split('?')[0];
     }
-    if (clean.startsWith('@')) {
-        return clean.substring(1);
-    }
+    if (clean.startsWith('@')) return clean.substring(1);
     return clean;
 }
 
-// Cek Status Live TikTok secara otomatis
+// Cek status live TikTok menggunakan oEmbed & Webcast API Publik
 async function checkTikTokLive(channelInput) {
     const username = extractTikTokUsername(channelInput);
     if (!username) return false;
 
     try {
-        const targetUrl = `https://www.tiktok.com/@${username}/live`;
-        const response = await fetch(targetUrl, {
+        // Menggunakan endpoint oEmbed resmi TikTok untuk memastikan akun valid
+        const oembedUrl = `https://www.tiktok.com/oembed?url=https://www.tiktok.com/@${username}`;
+        const response = await fetch(oembedUrl, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7'
-            },
-            redirect: 'follow'
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            }
         });
         
-        const html = await response.text();
-        // Deteksi akurat apakah akun benar-benar sedang live
-        return html.includes('"is-live":true') || html.includes('room_id') || html.includes('LivePlayer');
+        if (response.ok) {
+            // Cek status siaran langsung melalui endpoint publik alternatif TikTok
+            const liveApiUrl = `https://www.tiktok.com/node/share/user/@${username}`;
+            const liveRes = await fetch(liveApiUrl, {
+                headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
+            });
+            
+            if (liveRes.ok) {
+                const data = await liveRes.json();
+                const userInfo = data?.seoUserInfo?.userInfo;
+                // Deteksi status live dari data JSON publik TikTok
+                if (userInfo && userInfo.roomStruct && userInfo.roomStruct.status === 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
     } catch (err) {
-        console.error(`Gagal cek @${username}:`, err.message);
+        console.error(`Gagal cek TikTok @${username}:`, err.message);
         return false;
     }
 }
 
 async function run() {
-    console.log("🔍 Memeriksa status live YouTube & TikTok secara otomatis...");
+    console.log("🔍 Memeriksa status live YouTube & TikTok otomatis...");
     
     const { data: streamers, error } = await supabase
         .from('streamers')
@@ -66,7 +74,7 @@ async function run() {
         let activeVideoId = '';
         const platform = s.platform ? s.platform.toLowerCase() : 'youtube';
 
-        // 1. Pengecekan Otomatis Platform TikTok
+        // 1. Pengecekan Platform TikTok
         if (platform === 'tiktok') {
             const isTikTokLive = await checkTikTokLive(s.channel_id);
             if (isTikTokLive) {
@@ -74,7 +82,7 @@ async function run() {
                 activeVideoId = 'LIVE';
             }
         } 
-        // 2. Pengecekan Otomatis Platform YouTube
+        // 2. Pengecekan Platform YouTube
         else {
             if (s.channel_id && s.channel_id.startsWith('UC')) {
                 try {
@@ -109,12 +117,12 @@ async function run() {
             }
         }
 
-        // Jika tidak live, pastikan activeVideoId dikosongkan (EMPTY) secara otomatis
+        // Jika tidak live, kosongkan video_id secara otomatis
         if (!isLive) {
             activeVideoId = '';
         }
 
-        // Update status ke Supabase secara sinkron dengan kondisi nyata
+        // Update status ke Supabase
         if (oldVideoId !== activeVideoId) {
             await supabase
                 .from('streamers')
