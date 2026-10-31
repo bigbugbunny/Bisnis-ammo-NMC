@@ -19,13 +19,12 @@ function extractTikTokUsername(input) {
     return clean;
 }
 
-// Cek status live TikTok menggunakan API Publik JSON TikTok secara langsung
+// Cek status live TikTok menggunakan API Publik JSON TikTok
 async function checkTikTokLive(channelInput) {
     const username = extractTikTokUsername(channelInput);
     if (!username) return false;
 
     try {
-        // Menggunakan endpoint API publik resmi/alternatif TikTok untuk data JSON live
         const apiUrl = `https://www.tiktok.com/node/share/user/@${username}`;
         const response = await fetch(apiUrl, {
             headers: {
@@ -38,7 +37,7 @@ async function checkTikTokLive(channelInput) {
             const data = await response.json();
             const userInfo = data?.seoUserInfo?.userInfo;
             
-            // Jika roomStruct status bernilai 1, artinya akun sedang benar-benar LIVE
+            // Jika roomStruct status bernilai 1, akun sedang LIVE
             if (userInfo && userInfo.roomStruct && userInfo.roomStruct.status === 1) {
                 return true;
             }
@@ -67,7 +66,6 @@ async function run() {
         let isLive = false;
         let activeVideoId = '';
         
-        // Deteksi platform otomatis berdasarkan kolom platform ATAU isi channel_id
         let platform = s.platform ? s.platform.toLowerCase() : '';
         if (!platform && (s.channel_id.includes('tiktok.com') || s.channel_id.startsWith('@'))) {
             platform = 'tiktok';
@@ -78,7 +76,7 @@ async function run() {
             const isTikTokLive = await checkTikTokLive(s.channel_id);
             if (isTikTokLive) {
                 isLive = true;
-                activeVideoId = 'LIVE';
+                activeVideoId = 'LIVE'; // Harus 'LIVE' agar dibaca oleh frontend website Anda
             }
         } 
         // 2. Pengecekan Platform YouTube
@@ -116,7 +114,7 @@ async function run() {
             }
         }
 
-        // Jika tidak live, kosongkan video_id secara otomatis
+        // Jika tidak live, kosongkan video_id
         if (!isLive) {
             activeVideoId = '';
         }
