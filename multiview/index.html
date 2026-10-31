@@ -377,16 +377,37 @@
             let liveCount = 0;
 
             for (let s of streamers) {
+                // 1. Pengecekan Khusus Platform TikTok
                 if (s.platform === 'tiktok') {
+                    const username = extractTikTokUsername(s.channelId);
+                    let isTikTokActive = false;
+
                     if (s.manualVideoId && s.manualVideoId.trim().toUpperCase() === 'LIVE') {
-                        s.isLive = true;
-                        liveCount++;
-                    } else {
-                        s.isLive = false;
+                        isTikTokActive = true;
+                    } else if (username) {
+                        try {
+                            const res = await fetch(`https://www.tiktok.com/oembed?url=https://www.tiktok.com/@${username}`);
+                            if (res.ok) {
+                                const liveRes = await fetch(`https://www.tiktok.com/node/share/user/@${username}`);
+                                if (liveRes.ok) {
+                                    const data = await liveRes.json();
+                                    const room = data?.seoUserInfo?.userInfo?.roomStruct;
+                                    if (room && room.status === 1) {
+                                        isTikTokActive = true;
+                                    }
+                                }
+                            }
+                        } catch (e) {
+                            console.error("Gagal cek live TikTok:", e);
+                        }
                     }
+
+                    s.isLive = isTikTokActive;
+                    if (isTikTokActive) liveCount++;
                     continue;
                 }
 
+                // 2. Pengecekan Manual Video ID (YouTube)
                 if (s.manualVideoId && s.manualVideoId.length > 5) {
                     s.isLive = true;
                     s.videoId = s.manualVideoId;
@@ -395,6 +416,7 @@
                     continue;
                 }
 
+                // 3. Pengecekan Platform YouTube via API v3
                 if (!s.channelId || !s.channelId.startsWith('UC')) continue;
 
                 try {
@@ -554,7 +576,6 @@
 
                 if (streamer.platform === 'tiktok') {
                     const tiktokUsername = extractTikTokUsername(streamer.channelId);
-                    // Tampilan Kartu Informasi Interaktif untuk TikTok Live
                     playerBox.innerHTML = `
                         <div class="bg-gray-950/90 px-4 py-2.5 border-b border-slate-800 flex justify-between items-center text-xs">
                             <div class="flex items-center gap-3">
@@ -578,7 +599,6 @@
                         </div>
                     `;
                 } else {
-                    // Tampilan Iframe Player YouTube
                     const embedSrc = `https://www.youtube.com/embed/${streamer.videoId}?autoplay=1`;
                     playerBox.innerHTML = `
                         <div class="bg-gray-950/90 px-4 py-2.5 border-b border-slate-800 flex justify-between items-center text-xs">
