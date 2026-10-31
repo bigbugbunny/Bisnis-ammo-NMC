@@ -173,6 +173,26 @@
         </div>
     </footer>
 
+    <!-- TIKTOK POPUP PLAYER MODAL -->
+    <div id="tiktok-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-card rounded-2xl w-full max-w-3xl h-[80vh] shadow-2xl flex flex-col overflow-hidden border border-tiktokColor/40 transform transition-all scale-95 opacity-0 duration-200" id="tiktok-modal-box">
+            <div class="bg-gray-950 px-5 py-3 border-b border-slate-800 flex justify-between items-center">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-tiktokColor/20 text-tiktokColor flex items-center justify-center text-sm">
+                        <i class="fa-brands fa-tiktok"></i>
+                    </div>
+                    <span id="tiktok-modal-title" class="font-bold text-white text-xs uppercase tracking-wider">TikTok Live Player</span>
+                </div>
+                <button onclick="closeTikTokModal()" class="w-8 h-8 rounded-xl bg-slate-900 hover:bg-red-600/20 text-gray-400 hover:text-red-400 transition flex items-center justify-center cursor-pointer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="flex-1 w-full bg-black relative">
+                <iframe id="tiktok-iframe" class="w-full h-full absolute inset-0" src="" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
     <!-- CUSTOM MODAL POPUP -->
     <div id="custom-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="glass-card rounded-2xl p-6 max-w-sm w-full shadow-2xl flex flex-col gap-4 text-center transform transition-all scale-95 opacity-0 duration-200" id="modal-box">
@@ -209,7 +229,6 @@
 
         if (isAdmin) showAdminPanelUI();
 
-        // Fungsi pembantu mengekstrak username TikTok dari berbagai format input (URL / @ / murni)
         function extractTikTokUsername(input) {
             if (!input) return '';
             let clean = String(input).trim();
@@ -272,6 +291,30 @@
             const box = document.getElementById('modal-box');
             box.classList.remove('scale-100', 'opacity-100');
             box.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 150);
+        }
+
+        function openTikTokModal(name, username) {
+            const modal = document.getElementById('tiktok-modal');
+            const box = document.getElementById('tiktok-modal-box');
+            document.getElementById('tiktok-modal-title').innerText = `${name} (TikTok Live)`;
+            document.getElementById('tiktok-iframe').src = `https://www.tiktok.com/@${username}/live`;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                box.classList.remove('scale-95', 'opacity-0');
+                box.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeTikTokModal() {
+            const modal = document.getElementById('tiktok-modal');
+            const box = document.getElementById('tiktok-modal-box');
+            box.classList.remove('scale-100', 'opacity-100');
+            box.classList.add('scale-95', 'opacity-0');
+            document.getElementById('tiktok-iframe').src = ''; // Hentikan muatan video saat ditutup
             setTimeout(() => {
                 modal.classList.add('hidden');
             }, 150);
@@ -378,7 +421,6 @@
             let liveCount = 0;
 
             for (let s of streamers) {
-                // Pengecekan platform TikTok (mendukung deteksi dari database video_id == 'LIVE')
                 if (s.platform === 'tiktok') {
                     if (s.manualVideoId && s.manualVideoId.trim().toUpperCase() === 'LIVE') {
                         s.isLive = true;
@@ -389,7 +431,6 @@
                     continue;
                 }
 
-                // Proses pengecekan YouTube seperti biasa
                 if (s.manualVideoId && s.manualVideoId.length > 5) {
                     s.isLive = true;
                     s.videoId = s.manualVideoId;
@@ -494,7 +535,12 @@
                         showPopup("Status Siaran", `${s.name} sedang TIDAK LIVE!`, "warning");
                         return;
                     }
-                    toggleStream(s.id);
+                    if (s.platform === 'tiktok') {
+                        const tiktokUsername = extractTikTokUsername(s.channelId);
+                        openTikTokModal(s.name, tiktokUsername);
+                    } else {
+                        toggleStream(s.id);
+                    }
                 };
 
                 const platformIcon = s.platform === 'tiktok' 
@@ -555,55 +601,25 @@
                     playerBox.className = "glass-card rounded-2xl overflow-hidden flex flex-col shadow-xl h-[400px]";
                 }
 
-                if (streamer.platform === 'tiktok') {
-                    const tiktokUsername = extractTikTokUsername(streamer.channelId);
-                    // Opsi Pemutar Alternatif & Tombol Pintasan TikTok Live
-                    playerBox.innerHTML = `
-                        <div class="bg-gray-950/90 px-4 py-2.5 border-b border-slate-800 flex justify-between items-center text-xs">
-                            <div class="flex items-center gap-3">
-                                <span class="font-bold text-white flex items-center gap-2">
-                                    <i class="fa-brands fa-tiktok text-tiktokColor"></i> ${streamer.name} (TikTok Live)
-                                </span>
-                            </div>
-                            <button onclick="toggleStream('${streamer.id}')" class="text-gray-400 hover:text-orangeAccent transition cursor-pointer">
-                                <i class="fa-solid fa-xmark text-sm"></i>
-                            </button>
+                const embedSrc = `https://www.youtube.com/embed/${streamer.videoId}?autoplay=1`;
+                playerBox.innerHTML = `
+                    <div class="bg-gray-950/90 px-4 py-2.5 border-b border-slate-800 flex justify-between items-center text-xs">
+                        <div class="flex items-center gap-3">
+                            <span class="font-bold text-orangeAccent flex items-center gap-2">
+                                <i class="fa-brands fa-youtube text-red-500"></i> ${streamer.name}
+                            </span>
+                            <span class="px-2 py-0.5 bg-darkBg border border-slate-800 rounded-md text-[11px] text-gray-300 flex items-center gap-1.5 shadow-inner">
+                                <i class="fa-solid fa-user-group text-red-500 text-[10px]"></i> ${streamer.viewers || 0}
+                            </span>
                         </div>
-                        <div class="flex-1 w-full bg-black relative flex flex-col items-center justify-center p-6 text-center">
-                            <div class="w-14 h-14 rounded-2xl bg-tiktokColor/20 border border-tiktokColor/40 text-tiktokColor flex items-center justify-center text-xl mb-3 shadow-lg animate-pulse">
-                                <i class="fa-brands fa-tiktok"></i>
-                            </div>
-                            <h4 class="text-white font-bold text-sm mb-1">${streamer.name} sedang LIVE di TikTok!</h4>
-                            <p class="text-[11px] text-gray-400 mb-4 max-w-sm">Karena kebijakan enkripsi TikTok yang memblokir pemutar langsung, silakan gunakan tombol di bawah untuk membuka siaran live-nya.</p>
-                            <div class="flex flex-wrap justify-center gap-2">
-                                <a href="https://www.tiktok.com/@${tiktokUsername}/live" target="_blank" class="px-5 py-2.5 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center gap-2">
-                                    <i class="fa-solid fa-external-link-alt"></i> Buka Live TikTok @${tiktokUsername}
-                                </a>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    // Tampilan Iframe Player YouTube
-                    const embedSrc = `https://www.youtube.com/embed/${streamer.videoId}?autoplay=1`;
-                    playerBox.innerHTML = `
-                        <div class="bg-gray-950/90 px-4 py-2.5 border-b border-slate-800 flex justify-between items-center text-xs">
-                            <div class="flex items-center gap-3">
-                                <span class="font-bold text-orangeAccent flex items-center gap-2">
-                                    <i class="fa-brands fa-youtube text-red-500"></i> ${streamer.name}
-                                </span>
-                                <span class="px-2 py-0.5 bg-darkBg border border-slate-800 rounded-md text-[11px] text-gray-300 flex items-center gap-1.5 shadow-inner">
-                                    <i class="fa-solid fa-user-group text-red-500 text-[10px]"></i> ${streamer.viewers || 0}
-                                </span>
-                            </div>
-                            <button onclick="toggleStream('${streamer.id}')" class="text-gray-400 hover:text-orangeAccent transition cursor-pointer">
-                                <i class="fa-solid fa-xmark text-sm"></i>
-                            </button>
-                        </div>
-                        <div class="flex-1 w-full bg-black relative">
-                            <iframe class="w-full h-full absolute inset-0" src="${embedSrc}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    `;
-                }
+                        <button onclick="toggleStream('${streamer.id}')" class="text-gray-400 hover:text-orangeAccent transition cursor-pointer">
+                            <i class="fa-solid fa-xmark text-sm"></i>
+                        </button>
+                    </div>
+                    <div class="flex-1 w-full bg-black relative">
+                        <iframe class="w-full h-full absolute inset-0" src="${embedSrc}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                `;
                 container.appendChild(playerBox);
             });
         }
