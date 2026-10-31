@@ -21,14 +21,14 @@
                         cardBg: '#0f172a',
                         borderCol: 'rgba(220, 38, 38, 0.25)',
                         accentRed: '#ef4444',
-                        orangeAccent: '#f97316'
+                        orangeAccent: '#f97316',
+                        tiktokColor: '#fe2c55'
                     }
                 }
             }
         }
     </script>
     <style>
-        /* Latar Belakang Foto Komunitas (Digelapkan) */
         body {
             background: linear-gradient(to bottom, rgba(7, 9, 14, 0.65), rgba(7, 9, 14, 0.85)), url('../bg2.png') no-repeat center center fixed;
             background-size: cover;
@@ -99,13 +99,13 @@
             <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
             <div class="space-y-2 z-10">
                 <span class="px-3.5 py-1.5 text-[10px] font-extrabold tracking-widest text-orangeAccent uppercase border border-orange-500/40 rounded-full bg-orange-950/50 inline-flex items-center gap-2 shadow-inner">
-                    <i class="fa-solid fa-tv"></i> Live Stream System
+                    <i class="fa-solid fa-tv"></i> Live Stream System (YouTube & TikTok)
                 </span>
                 <h2 class="text-2xl md:text-3xl font-black text-white uppercase tracking-wider title-glow">
                     Multiview Siaran Langsung Keluarga
                 </h2>
                 <p class="text-xs md:text-sm text-gray-400 max-w-xl leading-relaxed">
-                    Pantau siaran aktif anggota secara otomatis melalui integrasi database pusat. Pilih atau aktifkan panel siaran di bawah.
+                    Pantau siaran aktif anggota (YouTube & TikTok) secara otomatis melalui database pusat. Pilih panel siaran di bawah.
                 </p>
             </div>
             <div class="z-10 flex items-center gap-2">
@@ -133,20 +133,26 @@
             <!-- Form Tambah Channel Baru / Override Manual -->
             <div id="admin-form-section" class="mt-4 pt-3 border-t border-slate-800 hidden space-y-3">
                 <div class="text-[11px] text-orange-400 font-semibold flex items-center gap-1">
-                    <i class="fa-solid fa-shield-halved"></i> Panel Kontrol Admin (Tambah Channel / Paksa Status Live)
+                    <i class="fa-solid fa-shield-halved"></i> Panel Kontrol Admin (Tambah Channel / TikTok / YouTube)
                 </div>
-                <div class="flex flex-col sm:flex-row gap-2">
-                    <input type="text" id="input-name" placeholder="Nama Anggota (contoh: APINPALINGSERIUS)" class="bg-darkBg/90 border border-slate-700 px-3 py-2 rounded-xl text-xs flex-1 text-white focus:outline-none focus:border-orangeAccent">
-                    <input type="text" id="input-channel" placeholder="YouTube Channel ID (awalan UC...)" class="bg-darkBg/90 border border-slate-700 px-3 py-2 rounded-xl text-xs flex-1 text-white focus:outline-none focus:border-orangeAccent">
-                    <input type="text" id="input-videoid" placeholder="ID Video Live Opsional (opsional)" class="bg-darkBg/90 border border-slate-700 px-3 py-2 rounded-xl text-xs flex-1 text-white focus:outline-none focus:border-orangeAccent">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2">
+                    <input type="text" id="input-name" placeholder="Nama Anggota (contoh: BIGBUG)" class="bg-darkBg/90 border border-slate-700 px-3 py-2 rounded-xl text-xs text-white focus:outline-none focus:border-orangeAccent">
+                    <select id="input-platform" class="bg-darkBg/90 border border-slate-700 px-3 py-2 rounded-xl text-xs text-white focus:outline-none focus:border-orangeAccent">
+                        <option value="youtube">YouTube</option>
+                        <option value="tiktok">TikTok</option>
+                    </select>
+                    <input type="text" id="input-channel" placeholder="Channel ID (UC...) / Username TikTok" class="bg-darkBg/90 border border-slate-700 px-3 py-2 rounded-xl text-xs text-white focus:outline-none focus:border-orangeAccent">
+                    <input type="text" id="input-videoid" placeholder="Video ID / Status (Opsional)" class="bg-darkBg/90 border border-slate-700 px-3 py-2 rounded-xl text-xs text-white focus:outline-none focus:border-orangeAccent">
                     <button onclick="addNewStreamer()" class="bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-semibold px-4 py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow cursor-pointer">
                         <i class="fa-solid fa-plus"></i> Simpan
                     </button>
+                </div>
+                <div class="flex justify-between items-center">
+                    <p class="text-[10px] text-gray-500">*TikTok cukup isi Username (contoh: bigbug_bunny) dan atur status video id menjadi "LIVE" agar aktif.</p>
                     <button onclick="logoutAdmin()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-2 rounded-xl text-xs transition cursor-pointer" title="Kunci Kembali">
-                        <i class="fa-solid fa-lock"></i>
+                        <i class="fa-solid fa-lock"></i> Kunci Admin
                     </button>
                 </div>
-                <p class="text-[10px] text-gray-500">*Tips: Jika sistem otomatis YouTube API sedang delay, masukkan ID video (kode setelah `watch?v=`) agar tombol langsung aktif menjadi LIVE.</p>
             </div>
         </div>
 
@@ -160,7 +166,7 @@
 
     </main>
 
-    <!-- Footer Bersih -->
+    <!-- Footer -->
     <footer class="w-full border-t border-red-950/50 bg-[#07090e]/95 px-6 py-5 mt-12">
         <div class="max-w-7xl mx-auto flex justify-between items-center text-xs text-gray-400">
             <span>&copy; 2026 <strong class="text-white tracking-wide">Triad Community</strong>. Hak Cipta Dilindungi.</span>
@@ -270,6 +276,7 @@
                     streamers = data.map(item => ({
                         id: String(item.id),
                         name: item.name,
+                        platform: item.platform || 'youtube', // Mendukung 'youtube' atau 'tiktok'
                         channelId: item.channel_id,
                         manualVideoId: item.video_id || '',
                         isLive: false,
@@ -357,6 +364,18 @@
             let liveCount = 0;
 
             for (let s of streamers) {
+                // Jika Platform TikTok, cek status berdasarkan manualVideoId (misal diisi "LIVE" oleh admin)
+                if (s.platform === 'tiktok') {
+                    if (s.manualVideoId && s.manualVideoId.toUpperCase() === 'LIVE') {
+                        s.isLive = true;
+                        liveCount++;
+                    } else {
+                        s.isLive = false;
+                    }
+                    continue;
+                }
+
+                // Proses pengecekan YouTube seperti biasa
                 if (s.manualVideoId && s.manualVideoId.length > 5) {
                     s.isLive = true;
                     s.videoId = s.manualVideoId;
@@ -464,8 +483,12 @@
                     toggleStream(s.id);
                 };
 
+                const platformIcon = s.platform === 'tiktok' 
+                    ? '<i class="fa-brands fa-tiktok text-tiktokColor mr-1"></i>' 
+                    : '<i class="fa-brands fa-youtube text-red-500 mr-1"></i>';
+
                 btn.innerHTML = `
-                    <span class="truncate pr-1 font-semibold">${s.name}</span>
+                    <span class="truncate pr-1 font-semibold flex items-center">${platformIcon} ${s.name}</span>
                     <span class="text-[9px] px-1.5 py-0.5 rounded uppercase font-bold tracking-tighter ${s.isLive ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' : 'bg-gray-800 text-gray-600'}">
                         ${s.isLive ? 'LIVE' : 'OFF'}
                     </span>
@@ -511,8 +534,6 @@
                 const streamer = streamers.find(s => s.id === id);
                 if (!streamer || !streamer.isLive) return;
 
-                const embedSrc = `https://www.youtube.com/embed/${streamer.videoId}?autoplay=1`;
-
                 const playerBox = document.createElement('div');
                 if (activeStreams.length === 1) {
                     playerBox.className = "glass-card rounded-2xl overflow-hidden flex flex-col shadow-xl h-[480px] w-full max-w-4xl";
@@ -520,24 +541,52 @@
                     playerBox.className = "glass-card rounded-2xl overflow-hidden flex flex-col shadow-xl h-[400px]";
                 }
 
-                playerBox.innerHTML = `
-                    <div class="bg-gray-950/90 px-4 py-2.5 border-b border-slate-800 flex justify-between items-center text-xs">
-                        <div class="flex items-center gap-3">
-                            <span class="font-bold text-orangeAccent flex items-center gap-2">
-                                <i class="fa-brands fa-youtube text-red-500"></i> ${streamer.name}
-                            </span>
-                            <span class="px-2 py-0.5 bg-darkBg border border-slate-800 rounded-md text-[11px] text-gray-300 flex items-center gap-1.5 shadow-inner">
-                                <i class="fa-solid fa-user-group text-red-500 text-[10px]"></i> ${streamer.viewers || 0}
-                            </span>
+                if (streamer.platform === 'tiktok') {
+                    // Tampilan khusus card TikTok Live (karena batasan Iframe CORS TikTok)
+                    playerBox.innerHTML = `
+                        <div class="bg-gray-950/90 px-4 py-2.5 border-b border-slate-800 flex justify-between items-center text-xs">
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold text-white flex items-center gap-2">
+                                    <i class="fa-brands fa-tiktok text-tiktokColor"></i> ${streamer.name} (TikTok Live)
+                                </span>
+                            </div>
+                            <button onclick="toggleStream('${streamer.id}')" class="text-gray-400 hover:text-orangeAccent transition cursor-pointer">
+                                <i class="fa-solid fa-xmark text-sm"></i>
+                            </button>
                         </div>
-                        <button onclick="toggleStream('${streamer.id}')" class="text-gray-400 hover:text-orangeAccent transition cursor-pointer">
-                            <i class="fa-solid fa-xmark text-sm"></i>
-                        </button>
-                    </div>
-                    <div class="flex-1 w-full bg-black relative">
-                        <iframe class="w-full h-full absolute inset-0" src="${embedSrc}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                `;
+                        <div class="flex-1 w-full bg-black relative flex flex-col items-center justify-center p-6 text-center">
+                            <div class="w-16 h-16 rounded-2xl bg-tiktokColor/20 border border-tiktokColor/40 text-tiktokColor flex items-center justify-center text-2xl mb-4 shadow-lg animate-pulse">
+                                <i class="fa-brands fa-tiktok"></i>
+                            </div>
+                            <h4 class="text-white font-bold text-sm mb-1">${streamer.name} sedang LIVE di TikTok!</h4>
+                            <p class="text-xs text-gray-400 mb-6 max-w-sm">TikTok melarang pemutaran langsung (iframe embed) di dalam website luar demi keamanan. Klik tombol di bawah untuk membuka siaran live-nya.</p>
+                            <a href="https://www.tiktok.com/@${streamer.channelId}/live" target="_blank" class="px-6 py-3 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center gap-2">
+                                <i class="fa-solid fa-external-link-alt"></i> Buka Live TikTok @${streamer.channelId}
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    // Tampilan Iframe Player YouTube
+                    const embedSrc = `https://www.youtube.com/embed/${streamer.videoId}?autoplay=1`;
+                    playerBox.innerHTML = `
+                        <div class="bg-gray-950/90 px-4 py-2.5 border-b border-slate-800 flex justify-between items-center text-xs">
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold text-orangeAccent flex items-center gap-2">
+                                    <i class="fa-brands fa-youtube text-red-500"></i> ${streamer.name}
+                                </span>
+                                <span class="px-2 py-0.5 bg-darkBg border border-slate-800 rounded-md text-[11px] text-gray-300 flex items-center gap-1.5 shadow-inner">
+                                    <i class="fa-solid fa-user-group text-red-500 text-[10px]"></i> ${streamer.viewers || 0}
+                                </span>
+                            </div>
+                            <button onclick="toggleStream('${streamer.id}')" class="text-gray-400 hover:text-orangeAccent transition cursor-pointer">
+                                <i class="fa-solid fa-xmark text-sm"></i>
+                            </button>
+                        </div>
+                        <div class="flex-1 w-full bg-black relative">
+                            <iframe class="w-full h-full absolute inset-0" src="${embedSrc}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    `;
+                }
                 container.appendChild(playerBox);
             });
         }
@@ -549,11 +598,12 @@
             }
 
             const name = document.getElementById('input-name').value.trim().toUpperCase();
+            const platform = document.getElementById('input-platform').value;
             const channelId = document.getElementById('input-channel').value.trim();
             const videoId = document.getElementById('input-videoid').value.trim();
 
             if (!name || !channelId) {
-                showPopup("Form Kosong", "Nama dan Channel ID wajib diisi!", "warning");
+                showPopup("Form Kosong", "Nama dan Channel ID/Username wajib diisi!", "warning");
                 return;
             }
 
@@ -563,7 +613,7 @@
                 const { error } = await supabaseClient
                     .from('streamers')
                     .upsert([
-                        { id: newId, name: name, channel_id: channelId, video_id: videoId }
+                        { id: newId, name: name, platform: platform, channel_id: channelId, video_id: videoId }
                     ]);
 
                 if (error) throw error;
@@ -571,7 +621,7 @@
                 document.getElementById('input-name').value = '';
                 document.getElementById('input-channel').value = '';
                 document.getElementById('input-videoid').value = '';
-                showPopup("Berhasil", "Data channel berhasil disimpan!", "success");
+                showPopup("Berhasil", "Data channel/platform berhasil disimpan!", "success");
                 loadStreamersFromSupabase();
             } catch (err) {
                 console.error("Insert error:", err);
