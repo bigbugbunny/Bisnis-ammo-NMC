@@ -389,7 +389,7 @@
             <select id="craftAmmoType" onchange="calcBahan()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-amber-400">
               <option value="50AE">50AE (50 Iron, 50 Carbon, 20K Umer)</option>
               <option value="9MM" selected>9MM (50 Iron, 50 Carbon, 60K Umer)</option>
-              <option value="38LC">38MM (50 Iron, 50 Carbon, 70K Umer)</option>
+              <option value="38MM">38MM (50 Iron, 50 Carbon, 70K Umer)</option>
               <option value="44MM">44MM (50 Iron, 50 Carbon, 80K Umer)</option>
             </select>
           </div>
@@ -813,10 +813,10 @@
 
     const defaultVaultStock = {
       "Iron": 0, "Carbon": 0, "Glass": 0, "Rubber": 0, "Plastik": 0, "Box Recycle": 0,
-      "Pack Ammo 38LC": 0, "Pack Ammo 9MM": 0, "Pack Ammo 50AE": 0,
-      "Ammo 38LC": 0, "Ammo 9MM": 0, "Ammo 50AE": 0,
+      "Pack Ammo 38MM": 0,"Pack Ammo 44MM": 0, "Pack Ammo 9MM": 0, "Pack Ammo 50AE": 0,
+      "Ammo 38MM": 0, "Ammo 44MM": 0, "Ammo 9MM": 0, "Ammo 50AE": 0,
       "Kecubung": 0, "Jamur": 0, "Weed": 0, "Joint": 0,
-      "Lockpick": 0, "Vest": 0, "Senjata DA": 0, "Senjata P50": 0, "Senjata TAC9": 0, "Senjata Ceramic": 0
+      "Lockpick": 0, "Vest": 0, "Senjata DA": 0, "Senjata P50": 0, "Senjata TAC9": 0, "Senjata Ceramic": 0, "Senjata Micro SMG": 0, "Senjata Mini SMG": 0, "Senjata Revolver Mk2": 0
     };
 
     let vaultStock = { ...defaultVaultStock };
@@ -1115,9 +1115,9 @@
           <div class="md:col-span-4">
             <select class="row-item w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none">
               <optgroup label="Bahan Dasar"><option value="Iron">Iron</option><option value="Carbon">Carbon</option><option value="Glass">Glass</option><option value="Rubber">Rubber</option><option value="Plastik">Plastik</option><option value="Box Recycle">Box Recycle</option></optgroup>
-              <optgroup label="Pack Ammo"><option value="Pack Ammo 50AE">Pack Ammo 50AE</option><option value="Pack Ammo 9MM">Pack Ammo 9MM</option><option value="Pack Ammo 38LC">Pack Ammo 38LC</option></optgroup>
+              <optgroup label="Pack Ammo"><option value="Pack Ammo 50AE">Pack Ammo 50AE</option><option value="Pack Ammo 9MM">Pack Ammo 9MM</option><option value="Pack Ammo 38MM">Pack Ammo 38MM</option><option value="Pack Ammo 44MM">Pack Ammo 44MM</option></optgroup>
               <optgroup label="Barham"><option value="Kecubung">Kecubung</option><option value="Jamur">Jamur</option><option value="Weed">Weed</option><option value="Joint">Joint</option></optgroup>
-              <optgroup label="Senjata & Item Lain"><option value="Vest">Vest</option><option value="Senjata DA">Senjata DA</option><option value="Senjata P50">Senjata P50</option><option value="Senjata TAC9">Senjata TAC9</option><option value="Senjata Ceramic">Senjata Ceramic</option></optgroup>
+              <optgroup label="Senjata & Item Lain"><option value="Vest">Vest</option><option value="Senjata DA">Senjata DA</option><option value="Senjata P50">Senjata P50</option><option value="Senjata TAC9">Senjata TAC9</option><option value="Senjata Ceramic">Senjata Ceramic</option><option value="Senjata Micro SMG">Senjata Micro SMG</option><option value="Senjata Mini SMG">Senjata Mini SMG</option><option value="Senjata Revolver Mk2">Senjata Revolver Mk2</option></optgroup>
             </select>
           </div>
           <div class="md:col-span-2"><input type="number" min="1" value="1" placeholder="Qty" class="row-qty w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none" oninput="hitungTotalBeliWarga()"></div>
@@ -1456,7 +1456,7 @@
       });
     }
 
-    const craftRecipes = { "50AE": { iron: 50, carbon: 50, umer: 20000 }, "9MM": { iron: 50, carbon: 50, umer: 60000 }, "38LC": { iron: 50, carbon: 50, umer: 70000 } };
+    const craftRecipes = { "50AE": { iron: 50, carbon: 50, umer: 20000 }, "9MM": { iron: 50, carbon: 50, umer: 60000 }, "38MM": { iron: 50, carbon: 50, umer: 70000 }, "44MM": { iron: 50, carbon: 50, umer: 80000 } };
     function calcBahan() {
       const type = document.getElementById("craftAmmoType").value;
       const qty = parseInt(document.getElementById("craftPackQty").value) || 0;
