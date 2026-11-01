@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistem Absensi & Cuti - Triad Community</title>
     
-    <link rel="icon" type="image/png" href="NakamaLogo.png">
+    <link rel="icon" type="image/png" href="../NakamaLogo.png">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -58,6 +58,14 @@
         }
         .animate-modal-in {
             animation: modalScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
+            50% { transform: scale(1.02); opacity: 0.9; box-shadow: 0 0 25px rgba(239, 68, 68, 0.5); }
+        }
+        .animate-status-box {
+            animation: pulseGlow 3s infinite ease-in-out;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .table-scroll-container::-webkit-scrollbar {
             display: block;
@@ -147,8 +155,24 @@
         <div class="glass-card rounded-2xl p-6 text-center shadow-2xl mb-6 border border-red-500/30">
             <span class="text-uppercase text-gray-400 text-[10px] font-bold tracking-widest">Waktu Server Saat Ini (WIB)</span>
             <div id="clock" class="text-5xl font-black text-red-500 my-2 font-mono drop-shadow-[0_0_15px_rgba(239,68,68,0.4)]">00:00:00</div>
-            <span class="px-3 py-1 bg-red-950/60 border border-red-800/50 text-amber-400 text-xs font-bold rounded-full inline-block">Jadwal Wajib: 21.00 - 01.00 WIB (Libur Malam Minggu)</span>
-            <div class="text-[11px] text-gray-400 mt-2">🤖 Auto-Alert Aktif (Kecuali Malam Minggu)</div>
+            <span class="px-3 py-1 bg-red-950/60 border border-red-800/50 text-amber-400 text-xs font-bold rounded-full inline-block">Jadwal Wajib: 21.00 - 01.00 WIB</span>
+            <div class="text-[11px] text-gray-400 mt-2">🤖 Auto-Alert Aktif Setiap Hari</div>
+        </div>
+
+        <!-- STATUS REAL-TIME KEHADIRAN ANGGOTA (DENGAN ANIMASI) -->
+        <div class="glass-card rounded-2xl p-5 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4 border border-zinc-800 animate-status-box">
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+                <div id="statusIconBox" class="w-12 h-12 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-xl text-gray-400 shrink-0 transition-all duration-500 transform hover:scale-110">
+                    <i class="fa-solid fa-user-clock"></i>
+                </div>
+                <div>
+                    <div class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Status Kehadiran Anda Hari Ini</div>
+                    <div id="userRealtimeStatus" class="text-sm font-black text-white mt-0.5 transition-all duration-300">Memeriksa status...</div>
+                </div>
+            </div>
+            <div id="statusMetaInfo" class="text-xs text-gray-400 text-right sm:text-right text-center">
+                -
+            </div>
         </div>
 
         <!-- PANEL TRIGGER UJI COBA ALERT (HANYA MUNCUL UNTUK ADMIN) -->
@@ -202,19 +226,44 @@
             </div>
         </div>
 
-        <!-- Bagian 3: Tabel Rekap -->
+        <!-- Bagian 3: Tabel Rekap dengan Filter Harian, Mingguan, Bulanan -->
         <div class="glass-card rounded-2xl overflow-hidden">
-            <div class="p-4 border-b border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="p-4 border-b border-zinc-800 flex flex-col md:flex-row items-center justify-between gap-3">
                 <h3 class="text-sm font-black uppercase tracking-wider text-red-500">
-                    <i class="fa-solid fa-list-check mr-2"></i> Rekapitulasi Aktivitas Hari Ini
+                    <i class="fa-solid fa-list-check mr-2"></i> Rekapitulasi Aktivitas
                 </h3>
-                <!-- Kolom Pencarian -->
-                <div class="relative w-full sm:w-64">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
-                    </span>
-                    <input type="text" id="searchRekap" oninput="filterRekap()" placeholder="Cari nama, steam hex..." 
-                        class="w-full pl-9 pr-4 py-1.5 bg-zinc-950 border border-zinc-800 rounded-xl text-white text-xs focus:outline-none focus:border-red-600 placeholder-zinc-600">
+                
+                <!-- Filter Pilihan Rekap & Dropdown Bulan -->
+                <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                    <select id="filterType" onchange="loadRekapDataByFilter()" class="bg-zinc-950 border border-zinc-800 px-3 py-1.5 rounded-xl text-xs text-white focus:outline-none focus:border-red-600">
+                        <option value="daily">Harian (Hari Ini)</option>
+                        <option value="weekly">Mingguan (7 Hari)</option>
+                        <option value="monthly">Bulanan</option>
+                    </select>
+
+                    <select id="filterMonth" onchange="loadRekapDataByFilter()" class="bg-zinc-950 border border-zinc-800 px-3 py-1.5 rounded-xl text-xs text-white focus:outline-none focus:border-red-600 hidden">
+                        <option value="1">Januari</option>
+                        <option value="2">Februari</option>
+                        <option value="3">Maret</option>
+                        <option value="4">April</option>
+                        <option value="5">Mei</option>
+                        <option value="6">Juni</option>
+                        <option value="7">Juli</option>
+                        <option value="8">Agustus</option>
+                        <option value="9">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11" selected>November</option>
+                        <option value="12">Desember</option>
+                    </select>
+
+                    <!-- Kolom Pencarian -->
+                    <div class="relative flex-1 sm:w-48">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                        </span>
+                        <input type="text" id="searchRekap" oninput="filterRekap()" placeholder="Cari..." 
+                            class="w-full pl-9 pr-4 py-1.5 bg-zinc-950 border border-zinc-800 rounded-xl text-white text-xs focus:outline-none focus:border-red-600 placeholder-zinc-600">
+                    </div>
                 </div>
             </div>
 
@@ -223,7 +272,7 @@
                 <table class="w-full text-left border-collapse text-xs">
                     <thead class="sticky top-0 bg-zinc-950 z-10 border-b border-zinc-800 text-gray-400">
                         <tr>
-                            <th class="p-3">Waktu</th>
+                            <th class="p-3">Waktu / Tanggal</th>
                             <th class="p-3">Nama IC / Discord</th>
                             <th class="p-3">Steam Hex</th>
                             <th class="p-3">Status</th>
@@ -268,7 +317,7 @@
 
         let daftarAnggota = [];
         let loggedInUser = null;
-        let riwayatAktivitasHariIni = [];
+        let riwayatAktivitasLoaded = [];
         let daftarSudahAbsen = [];
 
         // Ambil daftar anggota langsung dari Firebase Database saat halaman dimuat
@@ -287,28 +336,67 @@
             });
         }
 
-        // Ambil riwayat absen hari ini dari Firebase secara real-time
+        // Listener rekapitulasi absen (mengambil data sesuai pilihan filter)
         function loadRiwayatAbsenFromDB() {
-            const tglHariIni = new Date().toISOString().split('T')[0];
-            db.ref('riwayat_absen').orderByChild('tanggal').equalTo(tglHariIni).on('value', (snapshot) => {
+            loadRekapDataByFilter();
+        }
+
+        function loadRekapDataByFilter() {
+            const filterType = document.getElementById('filterType').value;
+            const monthSelect = document.getElementById('filterMonth');
+            
+            if (filterType === 'monthly') {
+                monthSelect.classList.remove('hidden');
+            } else {
+                monthSelect.classList.add('hidden');
+            }
+
+            db.ref('riwayat_absen').once('value', (snapshot) => {
                 const data = snapshot.val();
-                riwayatAktivitasHariIni = [];
+                riwayatAktivitasLoaded = [];
                 daftarSudahAbsen = [];
 
                 if (data) {
-                    Object.values(data).forEach(item => {
-                        riwayatAktivitasHariIni.unshift(item);
-                        // Cek siapa saja yang sudah absen masuk hari ini
-                        if (item.status && item.status.includes("Clock-In")) {
-                            // Cari ID Discord berdasarkan Steam Hex jika cocok
+                    const allItems = Object.values(data);
+                    const now = new Date();
+                    const tglHariIni = now.toISOString().split('T')[0];
+
+                    allItems.forEach(item => {
+                        // Cek siapa saja yang sudah absen masuk hari ini untuk kebutuhan auto-alert
+                        if (item.tanggal === tglHariIni && item.status && item.status.includes("Clock-In")) {
                             const matchedMember = daftarAnggota.find(m => m.steamHex && m.steamHex.toLowerCase() === item.steamHex.toLowerCase());
                             if (matchedMember && !daftarSudahAbsen.includes(matchedMember.id)) {
                                 daftarSudahAbsen.push(matchedMember.id);
                             }
                         }
+
+                        // Filter berdasarkan pilihan dropdown
+                        let includeItem = false;
+                        if (item.tanggal) {
+                            const itemDate = new Date(item.tanggal);
+                            if (filterType === 'daily') {
+                                if (item.tanggal === tglHariIni) includeItem = true;
+                            } else if (filterType === 'weekly') {
+                                const pastWeek = new Date();
+                                pastWeek.setDate(now.getDate() - 7);
+                                if (itemDate >= pastWeek && itemDate <= now) includeItem = true;
+                            } else if (filterType === 'monthly') {
+                                const selectedMonth = parseInt(monthSelect.value);
+                                if (itemDate.getMonth() + 1 === selectedMonth && itemDate.getFullYear() === now.getFullYear()) {
+                                    includeItem = true;
+                                }
+                            }
+                        } else {
+                            if (filterType === 'daily') includeItem = true; // Fallback jika format lama
+                        }
+
+                        if (includeItem) {
+                            riwayatAktivitasLoaded.unshift(item);
+                        }
                     });
                 }
                 updateTabelRekap();
+                loadUserRealtimeStatus();
             });
         }
 
@@ -358,11 +446,54 @@
             } else {
                 adminPanel.classList.add("hidden");
             }
+            loadUserRealtimeStatus();
         }
 
         function logout() {
             localStorage.removeItem("triad_session_hex");
             location.reload();
+        }
+
+        // Memuat status kehadiran real-time user hari ini dengan animasi
+        function loadUserRealtimeStatus() {
+            if (!loggedInUser) return;
+            const identifier = loggedInUser.steamHex;
+            const tglHariIni = new Date().toISOString().split('T')[0];
+
+            db.ref('riwayat_absen').orderByChild('steamHex').equalTo(identifier).once('value', (snapshot) => {
+                const data = snapshot.val();
+                const iconBox = document.getElementById("statusIconBox");
+                const statusText = document.getElementById("userRealtimeStatus");
+                const metaInfo = document.getElementById("statusMetaInfo");
+
+                let latestRecord = null;
+                if (data) {
+                    const records = Object.values(data).filter(r => r.tanggal === tglHariIni);
+                    if (records.length > 0) {
+                        latestRecord = records[records.length - 1];
+                    }
+                }
+
+                if (latestRecord) {
+                    const st = String(latestRecord.status).toUpperCase();
+                    if (st.includes("IN") || st.includes("HADIR")) {
+                        iconBox.className = "w-12 h-12 rounded-xl bg-emerald-950/90 border border-emerald-500/60 flex items-center justify-center text-xl text-emerald-400 shrink-0 shadow-[0_0_15px_rgba(16,185,129,0.4)] transition-all duration-500 transform hover:scale-110";
+                        iconBox.innerHTML = `<i class="fa-solid fa-circle-check animate-bounce"></i>`;
+                        statusText.innerText = "SUDAH CLOCK-IN (AKTIF)";
+                        metaInfo.innerText = `Terakhir: ${latestRecord.waktu} WIB`;
+                    } else {
+                        iconBox.className = "w-12 h-12 rounded-xl bg-red-950/90 border border-red-500/60 flex items-center justify-center text-xl text-red-400 shrink-0 shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all duration-500 transform hover:scale-110";
+                        iconBox.innerHTML = `<i class="fa-solid fa-circle-xmark"></i>`;
+                        statusText.innerText = "SUDAH CLOCK-OUT";
+                        metaInfo.innerText = `Terakhir: ${latestRecord.waktu} WIB`;
+                    }
+                } else {
+                    iconBox.className = "w-12 h-12 rounded-xl bg-amber-950/90 border border-amber-500/60 flex items-center justify-center text-xl text-amber-400 shrink-0 shadow-[0_0_15px_rgba(245,158,11,0.4)] transition-all duration-500 transform hover:scale-110";
+                    iconBox.innerHTML = `<i class="fa-solid fa-clock animate-spin" style="animation-duration: 6s;"></i>`;
+                    statusText.innerText = "BELUM CLOCK-IN HARI INI";
+                    metaInfo.innerText = "Silakan lakukan Clock-In sebelum shift dimulai.";
+                }
+            });
         }
 
         function showPopupAlert(title, message, type = 'success') {
@@ -427,7 +558,6 @@
                 status: "Clock-In"
             };
 
-            // Simpan ke Firebase Realtime Database
             try {
                 await db.ref('riwayat_absen').push(dataAktivitas);
             } catch (err) {
@@ -435,6 +565,7 @@
             }
 
             showPopupAlert("Clock-In Berhasil", `Anda berhasil absen Clock-In pada pukul ${waktu} WIB.`, "success");
+            loadRiwayatAbsenFromDB();
 
             await kirimDiscord(WEBHOOK_ABSEN, {
                 username: "Triad Handler Bot",
@@ -460,7 +591,6 @@
                 status: "Clock-Out"
             };
 
-            // Simpan ke Firebase Realtime Database
             try {
                 await db.ref('riwayat_absen').push(dataAktivitas);
             } catch (err) {
@@ -468,6 +598,7 @@
             }
 
             showPopupAlert("Clock-Out Berhasil", `Anda berhasil absen Clock-Out pada pukul ${waktu} WIB.`, "success");
+            loadRiwayatAbsenFromDB();
 
             await kirimDiscord(WEBHOOK_ABSEN, {
                 username: "Triad Handler Bot",
@@ -488,28 +619,30 @@
             const keyword = document.getElementById("searchRekap").value.toLowerCase();
             const tbody = document.getElementById('tabelRekap');
 
-            const filteredData = riwayatAktivitasHariIni.filter(item => 
+            const filteredData = riwayatAktivitasLoaded.filter(item => 
                 item.nama.toLowerCase().includes(keyword) || 
                 item.steamHex.toLowerCase().includes(keyword) || 
                 item.waktu.toLowerCase().includes(keyword) ||
+                (item.tanggal && item.tanggal.toLowerCase().includes(keyword)) ||
                 item.status.toLowerCase().includes(keyword)
             );
 
             if (filteredData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-6">Belum ada aktivitas tercatat hari ini.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-6">Tidak ada aktivitas tercatat pada rentang ini.</td></tr>`;
                 return;
             }
 
             tbody.innerHTML = filteredData.map(item => {
-                // Pembeda warna badge: Clock-In hijau, Clock-Out merah
                 const isClockIn = item.status && item.status.includes("Clock-In");
                 const badgeColor = isClockIn 
                     ? "bg-emerald-950/80 border-emerald-600/40 text-emerald-400" 
                     : "bg-red-950/80 border-red-600/40 text-red-400";
 
+                const displayWaktu = item.tanggal ? `${item.tanggal} ${item.waktu}` : item.waktu;
+
                 return `
                     <tr class="border-b border-zinc-800/60 hover:bg-zinc-900/40">
-                        <td class="p-3 font-mono">${item.waktu}</td>
+                        <td class="p-3 font-mono text-[11px] text-gray-300">${displayWaktu}</td>
                         <td class="p-3 font-bold text-white">${item.nama}</td>
                         <td class="p-3 font-mono text-gray-400">${item.steamHex}</td>
                         <td class="p-3"><span class="px-2 py-1 border rounded text-[10px] font-bold ${badgeColor}">${item.status}</span></td>
@@ -600,18 +733,10 @@
             }
         }
 
-        // Auto-Trigger Otomatis (Libur pada Hari Sabtu / Malam Minggu)
+        // Auto-Trigger Otomatis (Aktif Setiap Hari)
         setInterval(() => {
             const now = new Date();
             
-            // Cek hari dalam zona waktu Indonesia (Asia/Jakarta) -> 'Sat' adalah Sabtu (Malam Minggu)
-            const optionsDay = { timeZone: 'Asia/Jakarta', weekday: 'short' };
-            const currentDay = new Intl.DateTimeFormat('en-US', optionsDay).format(now);
-            
-            if (currentDay === 'Sat') {
-                return; // Auto-alert libur / tidak berjalan di malam Minggu
-            }
-
             const optionsTime = { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hour12: false };
             const timeString = new Intl.DateTimeFormat('en-GB', optionsTime).format(now);
             
@@ -633,7 +758,7 @@
                     }
                 });
             }
-        }, 10000); // Cek setiap 10 detik
+        }, 10000); 
     </script>
 </body>
 </html>
