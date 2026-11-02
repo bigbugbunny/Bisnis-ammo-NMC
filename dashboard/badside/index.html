@@ -142,7 +142,7 @@
     <!-- HEADER -->
     <div class="flex flex-col md:flex-row justify-between items-center bg-slate-900/90 p-6 rounded-2xl border border-red-900/40 shadow-2xl">
       <div class="flex items-center gap-4">
-        <a href="/badside" class="bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700 flex items-center justify-center" title="Kembali ke Portal Utama">
+        <a href="/" class="bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700 flex items-center justify-center" title="Kembali ke Portal Utama">
           <i class="fa-solid fa-house"></i>
         </a>
         <button id="btnBackMenu" onclick="showSection('mainMenu')" class="hidden bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl transition border border-slate-700 cursor-pointer" title="Kembali ke Menu">
@@ -672,7 +672,7 @@
     // --- NAVIGASI DINAMIS DENGAN URL PARAMETER ---
     function selectCommunity(type) {
       if (type === 'nakama') {
-        window.history.pushState({ section: 'mainMenu' }, '', '/dashboard/');
+        window.history.pushState({ section: 'mainMenu' }, '', '/dashboard/badside');
         tampilkanBagianAktif('mainMenu');
       }
     }
@@ -692,7 +692,7 @@
       else if (sectionId === 'sectionSetoran') modulKey = 'setoran';
       else if (sectionId === 'sectionMember') modulKey = 'member';
 
-      const urlBaru = `/dashboard/?modul=${modulKey}`;
+      const urlBaru = `/dashboard/${modulKey}`;
       window.history.pushState({ section: sectionId }, '', urlBaru);
 
       tampilkanBagianAktif(sectionId);
