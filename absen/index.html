@@ -724,9 +724,9 @@
                     embeds: [{ title: "📊 LAPORAN RAZIA TELAT (21:10)", description: `**Belum Absen:**\n${textBelum}`, color: 15158332 }]
                 });
                 showPopupAlert("Auto-Alert", "Test Razia Telat (21:10) terkirim ke Log Handler!", "success");
-            } else if (jenis === '0025') {
+            } else if (jenis === '0050') {
                 kirimDiscord(WEBHOOK_INFO, { username: "Bapak Dante", content: `# ⏰ **10 MENIT LAGI MENUJU FREE TIME / ISTIRAHAT (01.00)** @everyone\nBersiap-siap sebentar lagi masuk jam Freetime ya kawan-kawan!\n${tagSemua}` });
-                showPopupAlert("Auto-Alert", "Test Alert 00:25 terkirim ke Discord!", "success");
+                showPopupAlert("Auto-Alert", "Test Alert 00:50 terkirim ke Discord!", "success");
             } else if (jenis === '0100') {
                 kirimDiscord(WEBHOOK_INFO, { username: "Ibuk Comel", content: `# 🎉 **JADWAL RP KITA BERAKHIR** @everyone\nTerima kasih banyak kepada seluruh Teman teman atas kerja keras dan dedikasinya malam ini!\n#jangan lupa istirahat ya!` });
                 showPopupAlert("Auto-Alert", "Test Penutupan Shift (01:00) terkirim ke Discord!", "success");
@@ -741,7 +741,7 @@
             const timeString = new Intl.DateTimeFormat('en-GB', optionsTime).format(now);
             
             const currentDate = now.toISOString().split('T')[0];
-            const targetTimes = ["20:30", "20:50", "21:10", "00:25", "01:00"];
+            const targetTimes = ["20:30", "20:50", "21:10", "00:50", "01:00"];
 
             if (targetTimes.includes(timeString)) {
                 const lockKey = `system_locks/${currentDate}_${timeString.replace(':', '')}`;
@@ -753,7 +753,7 @@
                         if (timeString === "20:30") triggerAlert('2030');
                         else if (timeString === "20:50") triggerAlert('2050');
                         else if (timeString === "21:10") triggerAlert('2110');
-                        else if (timeString === "00:25") triggerAlert('0025');
+                        else if (timeString === "00:50") triggerAlert('0050');
                         else if (timeString === "01:00") triggerAlert('0100');
                     }
                 });
