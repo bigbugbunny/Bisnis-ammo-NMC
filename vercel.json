@@ -1,6 +1,6 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false,
+  "trailingSlash": true,
   "rewrites": [
     { "source": "/dashboard/instansi", "destination": "/dashboard/instansi/index.html" },
     { "source": "/dashboard/badside", "destination": "/dashboard/badside/index.html" }
