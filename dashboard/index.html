@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRIAD COMMUNITY - Dashboard Utama</title>
+    
+    <link rel="icon" type="image/png" href="NakamaLogo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#07090e',
+                            card: 'rgba(18, 24, 38, 0.85)',
+                            border: 'rgba(220, 38, 38, 0.25)',
+                            accent: '#ef4444'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html, body {
+            background-color: #07090e;
+            overflow-y: auto;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        body {
+            background-color: #07090e;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e2e8f0;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+        .glass-card {
+            background: rgba(18, 24, 38, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(220, 38, 38, 0.25);
+            will-change: transform, box-shadow;
+        }
+        .title-gradient {
+            background: linear-gradient(135deg, #ffffff 20%, #f59e0b 60%, #ef4444 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .menu-card {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .menu-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(239, 68, 68, 0.6);
+            box-shadow: 0 20px 40px -15px rgba(239, 68, 68, 0.2);
+        }
+        button, a {
+            transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        button:active, a:active {
+            transform: scale(0.96);
+        }
+    </style>
+</head>
+<body class="bg-[#07090e] text-gray-200 font-sans antialiased min-h-screen flex flex-col justify-between items-center">
+
+    <!-- Header / Navbar -->
+    <header class="w-full border-b border-red-900/30 bg-slate-950/70 backdrop-blur-md sticky top-0 z-50 flex justify-center">
+        <div class="w-full max-w-[92%] px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-black rounded-xl border border-red-600/50 p-1 flex items-center justify-center shadow-lg">
+                    <img src="NakamaLogo.png" alt="Logo" class="h-full w-auto object-contain" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+                </div>
+                <h1 class="text-xl font-black tracking-widest text-white">TRIAD<span class="text-red-500 font-light"> COMMUNITY</span></h1>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <a href="login.html" class="px-4 py-2 text-xs font-black tracking-wider uppercase text-red-400 bg-red-500/10 hover:bg-red-500/20 rounded-xl border border-red-500/30 flex items-center gap-2 no-underline">
+                    <i class="fa-solid fa-right-from-bracket"></i> Keluar
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content (Pilihan Menu Akses) -->
+    <main class="flex-1 w-full max-w-[92%] px-4 py-12 flex flex-col items-center justify-center space-y-10 relative z-10">
+        
+        <!-- Welcome Banner -->
+        <div class="text-center space-y-3 max-w-2xl">
+            <span class="px-4 py-1.5 text-[10px] font-bold tracking-widest text-red-400 uppercase border border-red-800/40 rounded-full bg-slate-950/60 inline-flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved"></i> PANEL KONTROL UTAMA
+            </span>
+            <h2 class="text-3xl md:text-4xl font-black tracking-wider text-white uppercase title-gradient">
+                PILIH MENU AKSES SISTEM
+            </h2>
+            <p class="text-xs md:text-sm text-gray-400">
+                Silakan pilih modul operasional atau sektor yang ingin Anda kelola di bawah ini.
+            </p>
+        </div>
+
+        <!-- Grid 2 Menu Pilihan -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
+            
+            <!-- Menu 1: Akses Instansi -->
+            <a href="instansi/index.html" class="glass-card menu-card p-8 rounded-3xl flex flex-col justify-between space-y-6 no-underline group relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-red-600/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="space-y-4 relative z-10">
+                    <div class="w-14 h-14 bg-red-500/10 text-red-400 border border-red-500/30 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition duration-300">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold text-red-400 tracking-widest uppercase">Modul Korporasi</span>
+                        <h3 class="text-xl font-black text-white uppercase tracking-wide mt-1">Akses Instansi</h3>
+                        <p class="text-xs text-gray-400 mt-2 leading-relaxed">
+                            Kelola pasar bebas, kalkulator harga bahan, brankas stok real-time, pencatatan PO instansi, dan pembukuan kas.
+                        </p>
+                    </div>
+                </div>
+                <div class="pt-4 border-t border-slate-800/85 flex items-center justify-between text-xs font-bold text-red-400 group-hover:text-red-300">
+                    <span>BUKA MODUL</span>
+                    <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition"></i>
+                </div>
+            </a>
+
+            <!-- Menu 2: Akses Badside -->
+            <a href="badside/index.html" class="glass-card menu-card p-8 rounded-3xl flex flex-col justify-between space-y-6 no-underline group relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-purple-600/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="space-y-4 relative z-10">
+                    <div class="w-14 h-14 bg-purple-500/10 text-purple-400 border border-purple-500/30 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition duration-300">
+                        <i class="fa-solid fa-skull"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold text-purple-400 tracking-widest uppercase">Modul Operasional</span>
+                        <h3 class="text-xl font-black text-white uppercase tracking-wide mt-1">Akses Badside</h3>
+                        <p class="text-xs text-gray-400 mt-2 leading-relaxed">
+                            Pusat kendali aktivitas, mananagemt logistik khusus, pemantauan wilayah, dan kontrol operasional sisi gelap komunitas.
+                        </p>
+                    </div>
+                </div>
+                <div class="pt-4 border-t border-slate-800/85 flex items-center justify-between text-xs font-bold text-purple-400 group-hover:text-purple-300">
+                    <span>BUKA MODUL</span>
+                    <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition"></i>
+                </div>
+            </a>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full bg-[#030406] border-t border-red-950/80 mt-12 py-6 text-center text-xs text-gray-400">
+        <p>&copy; 2026 <span class="text-red-500 font-bold">TRIAD COMMUNITY</span>. System Management by Bigbug Bunny.</p>
+    </footer>
+
+</body>
+</html>
