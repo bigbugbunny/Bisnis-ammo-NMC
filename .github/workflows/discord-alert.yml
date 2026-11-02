@@ -1,0 +1,21 @@
+name: Triad Auto Discord Alert
+
+on:
+  schedule:
+    - cron: '*/5 * * * *' # Berjalan otomatis setiap 5 menit
+  workflow_dispatch:      # Tombol manual tes dari tab Actions GitHub
+
+jobs:
+  send-alert:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Jalankan Script Alert
+        run: node absen/alert-bot.js
