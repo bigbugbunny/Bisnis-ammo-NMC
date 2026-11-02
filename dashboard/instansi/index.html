@@ -427,6 +427,14 @@
         let poCart = [];
         let calcList = [];
 
+        // --- NAVIGASI DINAMIS DENGAN URL PARAMETER ---
+    function selectCommunity(type) {
+      if (type === 'nakama') {
+        window.history.pushState({ section: 'mainMenu' }, '', '/dashboard/instansi');
+        tampilkanBagianAktif('mainMenu');
+      }
+    }
+
         async function loadAppData() {
             try {
                 const { data, error } = await _supabase.from('commodities').select('*').order('id', { ascending: true });
