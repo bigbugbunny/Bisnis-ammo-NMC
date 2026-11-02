@@ -741,7 +741,7 @@
             const timeString = new Intl.DateTimeFormat('en-GB', optionsTime).format(now);
             
             const currentDate = now.toISOString().split('T')[0];
-            const targetTimes = ["20:30", "20:50", "21:10", "00:13", "01:00"];
+            const targetTimes = ["20:30", "20:50", "21:10", "00:19", "01:00"];
 
             if (targetTimes.includes(timeString)) {
                 const lockKey = `system_locks/${currentDate}_${timeString.replace(':', '')}`;
