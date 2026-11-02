@@ -8,8 +8,6 @@
     <link rel="icon" type="image/png" href="../NakamaLogo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
-    <!-- Supabase JS Client Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
@@ -31,47 +29,15 @@
     </script>
 
     <style>
-        html, body {
-            background-color: #07090e;
-            overflow-y: auto;
-            scrollbar-width: none;
-            scroll-behavior: smooth;
-        }
-        ::-webkit-scrollbar {
-            display: none;
-        }
-        body {
-            background-color: #07090e;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #e2e8f0;
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
-        }
-        .glass-card {
-            background: rgba(18, 24, 38, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(220, 38, 38, 0.25);
-            will-change: transform, box-shadow;
-        }
-        .title-gradient {
-            background: linear-gradient(135deg, #ffffff 20%, #f59e0b 60%, #ef4444 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        @keyframes modalScaleIn {
-            0% { transform: scale(0.85); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .animate-modal-in {
-            animation: modalScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        button, a {
-            transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-        }
-        button:active, a:active {
-            transform: scale(0.96);
-        }
+        html, body { background-color: #07090e; overflow-y: auto; scrollbar-width: none; scroll-behavior: smooth; }
+        ::-webkit-scrollbar { display: none; }
+        body { background-color: #07090e; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #e2e8f0; overflow-x: hidden; margin: 0; padding: 0; }
+        .glass-card { background: rgba(18, 24, 38, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(220, 38, 38, 0.25); will-change: transform, box-shadow; }
+        .title-gradient { background: linear-gradient(135deg, #ffffff 20%, #f59e0b 60%, #ef4444 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        @keyframes modalScaleIn { 0% { transform: scale(0.85); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .animate-modal-in { animation: modalScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        button, a { transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease; }
+        button:active, a:active { transform: scale(0.96); }
     </style>
 </head>
 <body class="bg-[#07090e] text-gray-200 font-sans antialiased min-h-screen flex flex-col justify-between items-center">
@@ -85,48 +51,39 @@
                 </div>
                 <h1 class="text-xl font-black tracking-widest text-white">TRIAD<span class="text-red-500 font-light"> COMMUNITY</span></h1>
             </div>
-            
             <div class="flex items-center gap-3">
-                <a href="../dashboard/" class="px-4 py-2 text-xs font-black tracking-wider uppercase text-white bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-700 flex items-center gap-2 no-underline">
+                <a href="../" class="px-4 py-2 text-xs font-black tracking-wider uppercase text-white bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-700 flex items-center gap-2 no-underline">
                     <i class="fa-solid fa-arrow-left"></i> Kembali
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- Main Content (Grid 3 Kolom) -->
+    <!-- Main Content -->
     <main class="flex-1 w-full max-w-[92%] px-4 py-8 space-y-6 relative z-10">
-        
-        <!-- Hero Section Modul -->
         <div class="glass-card p-6 rounded-3xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-2xl relative overflow-hidden">
             <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-red-600/10 rounded-full blur-2xl pointer-events-none"></div>
             <div>
                 <span class="px-3.5 py-1 text-[10px] font-bold tracking-widest text-red-400 uppercase border border-red-800/40 rounded-full bg-slate-950/60 inline-flex items-center gap-2 mb-3">
                     <i class="fa-solid fa-building-columns"></i> KORPORASI & LOGISTIK B2B
                 </span>
-                <h2 class="text-2xl md:text-3xl font-black tracking-wider text-white uppercase title-gradient">
-                    MANAGEMENT BISNIS INSTANSI
-                </h2>
-                <p class="text-xs text-gray-400 mt-1 max-w-3xl">
-                    Pusat kendali pasar bebas, kalkulator harga bahan, brankas stok real-time, pencatatan PO instansi, dan pembukuan kas.
-                </p>
+                <h2 class="text-2xl md:text-3xl font-black tracking-wider text-white uppercase title-gradient">MANAGEMENT BISNIS INSTANSI</h2>
+                <p class="text-xs text-gray-400 mt-1 max-w-3xl">Pusat kendali pasar bebas, kalkulator harga bahan, brankas stok real-time, pencatatan PO instansi, dan pembukuan kas.</p>
             </div>
             <div class="glass-card px-4 py-2.5 rounded-2xl border border-red-600/30 text-xs font-bold text-red-400 flex items-center gap-2 shrink-0">
                 <i class="fa-solid fa-database text-amber-400"></i> SUPABASE CLOUD: <span id="dbStatus" class="text-amber-400 ml-1">CONNECTING...</span>
             </div>
         </div>
 
-        <!-- ==================== GRID 3 KOLOM UTAMA ==================== -->
+        <!-- Grid 6 Modul Utama -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
-
-            <!-- 1. KALKULATOR HARGA BAHAN (Multi-Item Add) -->
+            <!-- 1. Kalkulator -->
             <div class="glass-card p-5 rounded-3xl shadow-xl space-y-3.5">
                 <div>
                     <h3 class="text-xs font-black text-white uppercase tracking-wider border-b border-slate-800 pb-2.5 flex items-center justify-between">
-                        <span><i class="fa-solid fa-calculator text-red-500 mr-2"></i> Kalkulator harga bahan </span>
+                        <span><i class="fa-solid fa-calculator text-red-500 mr-2"></i> Kalkulator harga bahan</span>
                         <span id="calcItemCount" class="text-[9px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20">0 Item</span>
                     </h3>
-                    
                     <div class="space-y-2.5 text-xs mt-3">
                         <div>
                             <label class="block text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-1">Pilih Bahan</label>
@@ -134,15 +91,14 @@
                                 <option value="" disabled selected>-- Pilih Bahan --</option>
                             </select>
                         </div>
-
                         <div class="grid grid-cols-12 gap-2 items-end">
                             <div class="col-span-4">
                                 <label class="block text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-1">Jumlah</label>
-                                <input type="number" id="qtyInput" placeholder="100" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white text-xs" value="100">
+                                <input type="number" id="qtyInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white text-xs" value="100">
                             </div>
                             <div class="col-span-4">
                                 <label class="block text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-1">Diskon (%)</label>
-                                <input type="number" id="discountInput" placeholder="0" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white text-xs" value="0">
+                                <input type="number" id="discountInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white text-xs" value="0">
                             </div>
                             <div class="col-span-4">
                                 <button onclick="addCalcItem()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-red-400 font-bold rounded-xl border border-red-500/30 text-xs cursor-pointer">
@@ -150,8 +106,6 @@
                                 </button>
                             </div>
                         </div>
-
-                        <!-- List Tabel Item Kalkulator -->
                         <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-2.5 h-[220px] overflow-y-auto">
                             <table class="w-full text-left border-collapse text-[11px]">
                                 <tbody id="calcCartTable">
@@ -161,7 +115,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="space-y-2 mt-3 pt-2 border-t border-slate-800">
                     <div class="bg-slate-950/90 border border-slate-800 p-3 rounded-2xl space-y-1.5 text-xs">
                         <div class="flex justify-between text-gray-400"><span>Total Modal Keluar:</span><span id="resModal" class="text-white font-bold">$0</span></div>
@@ -172,8 +125,6 @@
                             <span class="text-emerald-400">Cuan Bersih Akhir:</span><span id="resCuan" class="text-emerald-400 text-sm">$0</span>
                         </div>
                     </div>
-
-                    <!-- Tombol Aksi Langsung Masuk Keranjang Beli / Jual -->
                     <div class="grid grid-cols-2 gap-2 pt-1">
                         <button onclick="sendCalcToBuyCart()" class="py-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 font-bold rounded-xl text-[10px] cursor-pointer transition">
                             <i class="fa-solid fa-cart-plus"></i> Masuk Keranjang Beli (+)
@@ -185,14 +136,13 @@
                 </div>
             </div>
 
-            <!-- 2. PRE-ORDER (PO) INSTANSI -->
+            <!-- 2. Pre-Order (PO) -->
             <div class="glass-card p-5 rounded-3xl shadow-xl space-y-3.5 border border-purple-500/30">
                 <div>
                     <h3 class="text-xs font-black text-white uppercase tracking-wider border-b border-slate-800 pb-2.5 flex items-center justify-between">
                         <span><i class="fa-solid fa-clipboard-list text-purple-500 mr-2"></i> Pre-Order (PO) Instansi</span>
                         <span class="text-[9px] bg-purple-500/10 text-purple-400 px-2 py-0.5 rounded border border-purple-500/20">Multi-Item PO (+)</span>
                     </h3>
-                    
                     <div class="space-y-2.5 text-xs mt-3">
                         <div>
                             <label class="block text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-1">Nama Instansi Pemesan</label>
@@ -215,8 +165,6 @@
                                 </button>
                             </div>
                         </div>
-
-                        <!-- List Barang PO -->
                         <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-2.5 space-y-1">
                             <p class="text-[9px] font-bold text-gray-400 uppercase flex justify-between border-b border-slate-800 pb-1">
                                 <span>List Barang PO</span><span id="poCartCount" class="text-purple-400">0 Item</span>
@@ -225,13 +173,11 @@
                                 <p class="text-gray-500 italic text-center py-6">Belum ada item PO dimasukkan.</p>
                             </div>
                         </div>
-
                         <button onclick="checkoutPoCart()" class="w-full py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl text-xs cursor-pointer">
                             <i class="fa-solid fa-check-double mr-1"></i> SIMPAN PO INSTANSI
                         </button>
                     </div>
                 </div>
-
                 <div class="overflow-x-auto h-[100px] overflow-y-auto pt-2 border-t border-slate-800 mt-2">
                     <table class="w-full text-left border-collapse text-[11px]">
                         <thead>
@@ -245,7 +191,7 @@
                 </div>
             </div>
 
-            <!-- 3. BRANKAS STOK & MASTER HARGA AKTIF -->
+            <!-- 3. Brankas Stok -->
             <div class="glass-card p-5 rounded-3xl shadow-xl space-y-3.5">
                 <div>
                     <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
@@ -254,7 +200,6 @@
                         </h3>
                         <span class="text-[9px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20">Supabase Sync</span>
                     </div>
-                    
                     <div class="overflow-x-auto h-[550px] overflow-y-auto pr-1 mt-2">
                         <table class="w-full text-left border-collapse text-xs">
                             <thead>
@@ -273,14 +218,13 @@
                 </div>
             </div>
 
-            <!-- 4. BELANJA STOK DARI WARGA -->
+            <!-- 4. Belanja Stok dari Warga -->
             <div class="glass-card p-5 rounded-3xl shadow-xl space-y-3.5 border border-emerald-500/30">
                 <div>
                     <h3 class="text-xs font-black text-white uppercase tracking-wider border-b border-slate-800 pb-2.5 flex items-center justify-between">
                         <span><i class="fa-solid fa-cart-shopping text-emerald-400 mr-2"></i> Belanja Stok dari Warga</span>
                         <span class="text-[9px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20">Tambah Stok & Kas (-)</span>
                     </h3>
-                    
                     <div class="space-y-2.5 text-xs mt-3">
                         <div>
                             <label class="block text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-1">Pilih Bahan</label>
@@ -299,8 +243,6 @@
                                 </button>
                             </div>
                         </div>
-
-                        <!-- List Beli dari Warga -->
                         <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-2.5 space-y-1">
                             <p class="text-[9px] font-bold text-gray-400 uppercase flex justify-between border-b border-slate-800 pb-1">
                                 <span>List Beli dari Warga</span><span id="buyCartCount" class="text-emerald-400">0 Item</span>
@@ -311,20 +253,18 @@
                         </div>
                     </div>
                 </div>
-
                 <button onclick="checkoutBuyCart()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs cursor-pointer mt-3">
                     <i class="fa-solid fa-check-double mr-1"></i> SELESAI & MASUK BRANKAS (-)
                 </button>
             </div>
 
-            <!-- 5. PENJUALAN BARANG -->
+            <!-- 5. Penjualan Barang -->
             <div class="glass-card p-5 rounded-3xl shadow-xl space-y-3.5 border border-purple-500/30">
                 <div>
                     <h3 class="text-xs font-black text-white uppercase tracking-wider border-b border-slate-800 pb-2.5 flex items-center justify-between">
                         <span><i class="fa-solid fa-cash-register text-purple-400 mr-2"></i> Penjualan Barang</span>
                         <span class="text-[9px] bg-purple-500/10 text-purple-400 px-2 py-0.5 rounded border border-purple-500/20">Kurangi Stok & Kas (+)</span>
                     </h3>
-                    
                     <div class="space-y-2.5 text-xs mt-3">
                         <div>
                             <label class="block text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-1">Pilih Bahan (Dari Brankas)</label>
@@ -343,8 +283,6 @@
                                 </button>
                             </div>
                         </div>
-
-                        <!-- List Penjualan -->
                         <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-2.5 space-y-1">
                             <p class="text-[9px] font-bold text-gray-400 uppercase flex justify-between border-b border-slate-800 pb-1">
                                 <span>List Penjualan</span><span id="sellCartCount" class="text-purple-400">0 Item</span>
@@ -355,13 +293,12 @@
                         </div>
                     </div>
                 </div>
-
                 <button onclick="checkoutSellCart()" class="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl text-xs cursor-pointer mt-3">
                     <i class="fa-solid fa-file-invoice-dollar mr-1"></i> SELESAI & MASUKKAN KAS (+)
                 </button>
             </div>
 
-            <!-- 6. DIREKTORI MITRA B2B -->
+            <!-- 6. Direktori Mitra B2B -->
             <div class="glass-card p-5 rounded-3xl shadow-xl space-y-3.5">
                 <div>
                     <h3 class="text-xs font-black text-white uppercase tracking-wider border-b border-slate-800 pb-2.5">
@@ -374,8 +311,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Direktori Mitra -->
                 <div class="overflow-x-auto h-[310px] overflow-y-auto mt-3">
                     <table class="w-full text-left border-collapse text-[11px]">
                         <thead>
@@ -388,19 +323,15 @@
                     </table>
                 </div>
             </div>
-
         </div>
 
-        <!-- ==================== BARIS BAWAH: KEUANGAN & HISTORY KAS ==================== -->
+        <!-- Baris Bawah: Buku Kas & History -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
-            <!-- 7. BUKU KAS & ANALISIS KEUANGAN KORPORASI -->
             <div class="glass-card p-5 rounded-3xl shadow-xl space-y-4 lg:col-span-4 flex flex-col justify-between">
                 <div>
                     <h3 class="text-xs font-black text-white uppercase tracking-wider border-b border-slate-800 pb-2.5">
                         <i class="fa-solid fa-wallet text-emerald-500 mr-2"></i> Buku Kas & Analisis Keuangan
                     </h3>
-
                     <div class="space-y-2.5 text-xs mt-3">
                         <input type="text" id="txDesc" placeholder="Keterangan..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-white text-xs">
                         <div class="grid grid-cols-2 gap-2">
@@ -410,12 +341,9 @@
                             </select>
                             <input type="number" id="txAmount" placeholder="Nominal ($)" class="bg-slate-950 border border-slate-800 rounded-xl p-2 text-white text-xs">
                         </div>
-                        <button onclick="addTransaction()" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs cursor-pointer">
-                            + Catat Kas
-                        </button>
+                        <button onclick="addTransaction()" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs cursor-pointer">+ Catat Kas</button>
                     </div>
                 </div>
-
                 <div class="grid grid-cols-3 gap-2 text-center pt-3">
                     <div class="bg-slate-950/80 p-2 rounded-xl border border-slate-800">
                         <p class="text-[8px] text-gray-400 uppercase font-bold">Pemasukan</p>
@@ -432,7 +360,6 @@
                 </div>
             </div>
 
-            <!-- 8. HISTORY TRANSAKSI & MUTASI KAS -->
             <div class="glass-card p-5 rounded-3xl shadow-xl space-y-3 lg:col-span-8 flex flex-col justify-between">
                 <div>
                     <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
@@ -441,7 +368,6 @@
                         </h3>
                         <span class="text-[9px] text-gray-400">Live Log</span>
                     </div>
-                    
                     <div class="overflow-x-auto h-[180px] overflow-y-auto mt-2">
                         <table class="w-full text-left border-collapse text-xs">
                             <thead>
@@ -458,17 +384,13 @@
                     </div>
                 </div>
             </div>
-
         </div>
-
     </main>
 
-    <!-- MODAL POPUP -->
+    <!-- Modal Popups -->
     <div id="successModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-zinc-950/85 backdrop-blur-md p-4">
         <div class="glass-card border border-emerald-500/50 w-full max-w-sm rounded-3xl shadow-2xl p-6 text-center space-y-4 animate-modal-in">
-            <div class="w-12 h-12 bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 rounded-2xl flex items-center justify-center mx-auto text-xl">
-                <i class="fa-solid fa-circle-check"></i>
-            </div>
+            <div class="w-12 h-12 bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 rounded-2xl flex items-center justify-center mx-auto text-xl"><i class="fa-solid fa-circle-check"></i></div>
             <h4 class="text-sm font-black text-white uppercase">BERHASIL DISIMPAN</h4>
             <p id="successModalText" class="text-xs text-gray-300">Pembaruan berhasil diproses.</p>
             <button onclick="closeModal('successModal')" class="w-full py-2.5 bg-emerald-600 text-white font-bold rounded-xl text-xs cursor-pointer">MENGERTI</button>
@@ -477,9 +399,7 @@
 
     <div id="errorModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-zinc-950/85 backdrop-blur-md p-4">
         <div class="glass-card border border-red-600/60 w-full max-w-sm rounded-3xl shadow-2xl p-6 text-center space-y-4 animate-modal-in">
-            <div class="w-12 h-12 bg-red-950/80 text-red-500 border border-red-600/50 rounded-2xl flex items-center justify-center mx-auto text-xl">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-            </div>
+            <div class="w-12 h-12 bg-red-950/80 text-red-500 border border-red-600/50 rounded-2xl flex items-center justify-center mx-auto text-xl"><i class="fa-solid fa-triangle-exclamation"></i></div>
             <h4 class="text-sm font-black text-white uppercase">PERINGATAN SISTEM</h4>
             <p id="errorModalText" class="text-xs text-gray-300">Periksa kembali data Anda.</p>
             <button onclick="closeModal('errorModal')" class="w-full py-2.5 bg-red-600 text-white font-bold rounded-xl text-xs cursor-pointer">KEMBALI</button>
@@ -491,7 +411,6 @@
         <p>&copy; 2026 <span class="text-red-500 font-bold">TRIAD COMMUNITY</span>. System Management by Bigbug Bunny.</p>
     </footer>
 
-    <!-- SCRIPT KONEKSI SUPABASE -->
     <script>
         const SUPABASE_URL = 'https://atibhgbpdxvjngqdiklg.supabase.co'; 
         const SUPABASE_ANON_KEY = 'sb_publishable_PbD9KclxnhZGybuHJDkU3A_-Hz-MESZ';
@@ -510,7 +429,6 @@
 
         async function loadAppData() {
             try {
-                // Mengambil data komoditas dan diurutkan berdasarkan ID terkecil ke terbesar
                 const { data, error } = await _supabase.from('commodities').select('*').order('id', { ascending: true });
                 if (!error && data && data.length > 0) {
                     commodities = data;
@@ -520,15 +438,12 @@
                     loadLocalFallback();
                 }
 
-                // Load Partners
                 const { data: partnerData } = await _supabase.from('partners').select('*').order('id', { ascending: true });
                 if (partnerData && partnerData.length > 0) partners = partnerData;
 
-                // Load Finance
                 const { data: financeData } = await _supabase.from('finances').select('*').order('id', { ascending: false });
                 if (financeData && financeData.length > 0) financialTransactions = financeData;
 
-                // Load PO
                 const { data: poData } = await _supabase.from('purchase_orders').select('*').order('id', { ascending: false });
                 if (poData && poData.length > 0) purchaseOrders = poData;
 
@@ -572,7 +487,8 @@
 
             commodities.forEach((item, index) => {
                 let margin = item.jual - item.modal;
-                let marginText = margin === 0 ? '$0 (Relasi)' : (margin > 0 ? `+$${margin}` : `-$${Math.abs(margin)}`);
+                let marginColor = margin > 0 ? 'text-emerald-400 font-bold' : (margin < 0 ? 'text-red-400 font-bold' : 'text-gray-400');
+                let marginText = margin === 0 ? '$0' : (margin > 0 ? `+$${margin}` : `-$${Math.abs(margin)}`);
                 let sektorColor = item.sektor === 'Pertanian' ? 'text-emerald-400' : (item.sektor === 'Recycle' ? 'text-teal-400' : (item.sektor === 'Karnaval' ? 'text-amber-400' : (item.sektor === 'Berburu' ? 'text-purple-400' : 'text-orange-400')));
 
                 tbody.innerHTML += `
@@ -581,7 +497,7 @@
                         <td class="py-2.5 px-2 text-white font-medium">${item.nama}</td>
                         <td class="py-2.5 px-2 text-gray-300">$${item.modal.toLocaleString()}</td>
                         <td class="py-2.5 px-2 text-gray-300">$${item.jual.toLocaleString()}</td>
-                        <td class="py-2.5 px-2 text-emerald-400 font-bold">${marginText}</td>
+                        <td class="py-2.5 px-2 ${marginColor}">${marginText}</td>
                         <td class="py-2.5 px-2 text-blue-400 font-bold">${item.stok.toLocaleString()} Pcs</td>
                     </tr>
                 `;
@@ -616,14 +532,7 @@
                 existing.qty += qty;
                 existing.disc = disc;
             } else {
-                calcList.push({
-                    index: idx,
-                    nama: item.nama,
-                    modal: item.modal,
-                    jual: item.jual,
-                    qty: qty,
-                    disc: disc
-                });
+                calcList.push({ index: idx, nama: item.nama, modal: item.modal, jual: item.jual, qty: qty, disc: disc });
             }
 
             document.getElementById('qtyInput').value = '100';
@@ -631,10 +540,7 @@
             renderCalcList();
         }
 
-        function removeCalcItem(i) {
-            calcList.splice(i, 1);
-            renderCalcList();
-        }
+        function removeCalcItem(i) { calcList.splice(i, 1); renderCalcList(); }
 
         function renderCalcList() {
             const tableBody = document.getElementById('calcCartTable');
