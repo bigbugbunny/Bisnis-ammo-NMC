@@ -741,7 +741,7 @@
             const timeString = new Intl.DateTimeFormat('en-GB', optionsTime).format(now);
             
             const currentDate = now.toISOString().split('T')[0];
-            const targetTimes = ["20:30", "20:50", "21:10", "00:07", "01:00"];
+            const targetTimes = ["20:30", "20:50", "21:10", "00:09", "01:00"];
 
             if (targetTimes.includes(timeString)) {
                 const lockKey = `system_locks/${currentDate}_${timeString.replace(':', '')}`;
@@ -753,7 +753,7 @@
                         if (timeString === "20:30") triggerAlert('2030');
                         else if (timeString === "20:50") triggerAlert('2050');
                         else if (timeString === "21:10") triggerAlert('2110');
-                        else if (timeString === "00:07") triggerAlert('0050');
+                        else if (timeString === "00:09") triggerAlert('0009');
                         else if (timeString === "01:00") triggerAlert('0100');
                     }
                 });
