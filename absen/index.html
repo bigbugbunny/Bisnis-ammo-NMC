@@ -315,11 +315,11 @@
         let riwayatAktivitasLoaded = [];
         let daftarSudahAbsen = [];
 
-        // Fungsi helper untuk mengambil URL webhook secara dinamis dari Firebase berdasarkan key ('info', 'cuti', 'alert')
+        // Fungsi helper untuk mengambil URL webhook secara dinamis dari Firebase dengan prefiks 'webhooks/'
         async function getWebhookUrl(keyName) {
             try {
-                const snapshot = await db.ref(keyName).once('value');
-                return snapshot.val(); // Mengembalikan string URL webhook yang tersimpan di Firebase
+                const snapshot = await db.ref('webhooks/' + keyName).once('value');
+                return snapshot.val(); // Mengembalikan string URL webhook yang tersimpan di dalam folder webhooks
             } catch (err) {
                 console.error("Gagal mengambil webhook " + keyName + " dari Firebase:", err);
                 return null;
@@ -573,7 +573,6 @@
             showPopupAlert("Clock-In Berhasil", `Anda berhasil absen Clock-In pada pukul ${waktu} WIB.`, "success");
             loadRiwayatAbsenFromDB();
 
-            // Mengambil webhook 'info' dari Firebase untuk absen
             const webhookUrl = await getWebhookUrl('info');
             await kirimDiscord(webhookUrl, {
                 username: "Triad Handler Bot",
@@ -608,7 +607,6 @@
             showPopupAlert("Clock-Out Berhasil", `Anda berhasil absen Clock-Out pada pukul ${waktu} WIB.`, "success");
             loadRiwayatAbsenFromDB();
 
-            // Mengambil webhook 'info' dari Firebase untuk absen
             const webhookUrl = await getWebhookUrl('info');
             await kirimDiscord(webhookUrl, {
                 username: "Triad Handler Bot",
@@ -668,7 +666,6 @@
 
             showPopupAlert("Berhasil Mengambil Libur", `Jatah libur Anda untuk hari ini (${tglHariIni}) berhasil dicatat dan dikirim ke Discord!`, "success");
 
-            // Mengambil webhook 'cuti' dari Firebase untuk pengajuan libur
             const webhookUrl = await getWebhookUrl('cuti');
             await kirimDiscord(webhookUrl, {
                 username: "Triad Handler Bot",
@@ -691,7 +688,6 @@
 
             showPopupAlert("Berhasil Mengambil Libur", `Jatah libur Anda untuk besok (${tglBesok}) berhasil dicatat dan dikirim ke Discord!`, "success");
 
-            // Mengambil webhook 'cuti' dari Firebase untuk pengajuan libur
             const webhookUrl = await getWebhookUrl('cuti');
             await kirimDiscord(webhookUrl, {
                 username: "Triad Handler Bot",
