@@ -1,10 +1,37 @@
 const https = require('https');
 
-const WEBHOOK_ABSEN = "https://discordapp.com/api/webhooks/1565705764830453821/T3x3YFptOIvnKqgR1ROLIdzpjpDmpzrT1gjMtzfeCHbixQdu5z090xa7WF8tm1AMX6wG";
-const WEBHOOK_INFO  = "https://discordapp.com/api/webhooks/1565756327114973195/NiHyUPNxfz6iSOiU4bM2DUIPvFMJ4bNIQwCa9i82ygng9hfvO_pBHmI-GtNQLIPYEYv0";
+// URL Database Firebase Anda
+const FIREBASE_DB_URL = "https://nmc-management-default-rtdb.firebaseio.com";
+
+// Fungsi helper untuk mengambil data webhook dari Firebase Realtime Database via REST API
+function getWebhookFromFirebase(keyName) {
+    return new Promise((resolve, reject) => {
+        const url = `${FIREBASE_DB_URL}/webhooks/${keyName}.json`;
+        
+        https.get(url, (res) => {
+            let data = '';
+            res.on('data', (chunk) => { data += chunk; });
+            res.on('end', () => {
+                try {
+                    const parsed = JSON.parse(data);
+                    resolve(parsed); // Mengembalikan URL webhook string
+                } catch (err) {
+                    reject(err);
+                }
+            });
+        }).on('error', (err) => {
+            reject(err);
+        });
+    });
+}
 
 function kirimDiscord(url, payload) {
     return new Promise((resolve, reject) => {
+        if (!url) {
+            console.error("Gagal mengirim ke Discord: URL Webhook kosong!");
+            return resolve(null);
+        }
+
         const data = JSON.stringify(payload);
         const urlObj = new URL(url);
         const options = {
@@ -36,19 +63,31 @@ async function runAlert() {
 
     console.log(`Waktu server GitHub (WIB): ${timeString}`);
 
-    if (timeString === "20:30") {
-        await kirimDiscord(WEBHOOK_INFO, { username: "Bapak Pemarah", content: `# Woi bro-bro sekalian! 📢 @everyone\n30 menit lagi aktivitas kota malam ini kita mulai (Pukul 21.00). Yang belum siap-siap, yuk bersiap merapat ya! 🔥` });
-    } 
-    else if (timeString === "20:50") {
-        await kirimDiscord(WEBHOOK_INFO, { username: "Bapak Tukang Data", embeds: [{ title: "⚠️ 10 MENIT LAGI KITA MASUK KOTA (20:50)", description: `Yuk persiapkan diri kalian, sebentar lagi jam 21.00 WIB kita mulai berRP malam ini.`, color: 16776960 }] });
-    }
-    else if (timeString === "00:25") {
-        await kirimDiscord(WEBHOOK_INFO, { username: "Bapak Dante", content: `# ⏰ **10 MENIT LAGI MENUJU FREE TIME / ISTIRAHAT** @everyone\nBersiap-siap sebentar lagi masuk jam Freetime ya kawan-kawan!` });
-    }
-    else if (timeString === "01:00") {
-        await kirimDiscord(WEBHOOK_INFO, { username: "Ibuk Comel", content: `# 🎉 **JADWAL RP KITA BERAKHIR** @everyone\nTerima kasih banyak atas kerja keras dan dedikasinya malam ini!\n# Jangan lupa istirahat ya!` });
-    } else {
-        console.log(`Tidak ada jadwal alert pada pukul ${timeString}.`);
+    try {
+        if (timeString === "20:30") {
+            const webhookUrl = await getWebhookFromFirebase('alert'); // Mengambil node webhooks/alert dari Firebase
+            await kirimDiscord(webhookUrl, { username: "Bapak Pemarah", content: `# Woi bro-bro sekalian! 📢 @everyone\n30 menit lagi aktivitas kota malam ini kita mulai (Pukul 21.00). Yang belum siap-siap, yuk bersiap merapat ya! 🔥` });
+            console.log("Alert 20:30 berhasil dikirim.");
+        } 
+        else if (timeString === "20:50") {
+            const webhookUrl = await getWebhookFromFirebase('alert');
+            await kirimDiscord(webhookUrl, { username: "Bapak Tukang Data", embeds: [{ title: "⚠️ 10 MENIT LAGI KITA MASUK KOTA (20:50)", description: `Yuk persiapkan diri kalian, sebentar lagi jam 21.00 WIB kita mulai berRP malam ini.`, color: 16776960 }] });
+            console.log("Alert 20:50 berhasil dikirim.");
+        }
+        else if (timeString === "00:25") {
+            const webhookUrl = await getWebhookFromFirebase('alert');
+            await kirimDiscord(webhookUrl, { username: "Bapak Dante", content: `# ⏰ **10 MENIT LAGI MENUJU FREE TIME / ISTIRAHAT** @everyone\nBersiap-siap sebentar lagi masuk jam Freetime ya kawan-kawan!` });
+            console.log("Alert 00:25 berhasil dikirim.");
+        }
+        else if (timeString === "01:00") {
+            const webhookUrl = await getWebhookFromFirebase('alert');
+            await kirimDiscord(webhookUrl, { username: "Ibuk Comel", content: `# 🎉 **JADWAL RP KITA BERAKHIR** @everyone\nTerima kasih banyak atas kerja keras dan dedikasinya malam ini!\n# Jangan lupa istirahat ya!` });
+            console.log("Alert 01:00 berhasil dikirim.");
+        } else {
+            console.log(`Tidak ada jadwal alert pada pukul ${timeString}.`);
+        }
+    } catch (err) {
+        console.error("Terjadi kesalahan saat mengambil webhook dari Firebase:", err);
     }
 }
 
