@@ -310,15 +310,21 @@
         }
         const db = firebase.database();
 
-        // 3 Webhook terpisah sesuai pengaturan Anda
-        const WEBHOOK_ABSEN = "https://discordapp.com/api/webhooks/1565705764830453821/T3x3YFptOIvnKqgR1ROLIdzpjpDmpzrT1gjMtzfeCHbixQdu5z090xa7WF8tm1AMX6wG"; 
-        const WEBHOOK_CUTI  = "https://discordapp.com/api/webhooks/1565726714359709806/7o73v5XrMwWbSf4KleamLRiuWM1bIlIl_tw1uSlR5t1ZRy0SgdjIC8hS_VyG7tVQoc_Z"; 
-        const WEBHOOK_INFO  = "https://discordapp.com/api/webhooks/1565756327114973195/NiHyUPNxfz6iSOiU4bM2DUIPvFMJ4bNIQwCa9i82ygng9hfvO_pBHmI-GtNQLIPYEYv0";
-
         let daftarAnggota = [];
         let loggedInUser = null;
         let riwayatAktivitasLoaded = [];
         let daftarSudahAbsen = [];
+
+        // Fungsi helper untuk mengambil URL webhook secara dinamis dari Firebase berdasarkan key ('info', 'cuti', 'alert')
+        async function getWebhookUrl(keyName) {
+            try {
+                const snapshot = await db.ref(keyName).once('value');
+                return snapshot.val(); // Mengembalikan string URL webhook yang tersimpan di Firebase
+            } catch (err) {
+                console.error("Gagal mengambil webhook " + keyName + " dari Firebase:", err);
+                return null;
+            }
+        }
 
         // Ambil daftar anggota langsung dari Firebase Database saat halaman dimuat
         function loadDaftarAnggotaFromDB() {
@@ -567,7 +573,9 @@
             showPopupAlert("Clock-In Berhasil", `Anda berhasil absen Clock-In pada pukul ${waktu} WIB.`, "success");
             loadRiwayatAbsenFromDB();
 
-            await kirimDiscord(WEBHOOK_ABSEN, {
+            // Mengambil webhook 'info' dari Firebase untuk absen
+            const webhookUrl = await getWebhookUrl('info');
+            await kirimDiscord(webhookUrl, {
                 username: "Triad Handler Bot",
                 embeds: [{
                     title: "🟢 CLOCK-IN",
@@ -600,7 +608,9 @@
             showPopupAlert("Clock-Out Berhasil", `Anda berhasil absen Clock-Out pada pukul ${waktu} WIB.`, "success");
             loadRiwayatAbsenFromDB();
 
-            await kirimDiscord(WEBHOOK_ABSEN, {
+            // Mengambil webhook 'info' dari Firebase untuk absen
+            const webhookUrl = await getWebhookUrl('info');
+            await kirimDiscord(webhookUrl, {
                 username: "Triad Handler Bot",
                 embeds: [{
                     title: "🔴 CLOCK-OUT",
@@ -658,7 +668,9 @@
 
             showPopupAlert("Berhasil Mengambil Libur", `Jatah libur Anda untuk hari ini (${tglHariIni}) berhasil dicatat dan dikirim ke Discord!`, "success");
 
-            await kirimDiscord(WEBHOOK_CUTI, {
+            // Mengambil webhook 'cuti' dari Firebase untuk pengajuan libur
+            const webhookUrl = await getWebhookUrl('cuti');
+            await kirimDiscord(webhookUrl, {
                 username: "Triad Handler Bot",
                 content: "<@411074019249618947> <@757855200475086889> <@1142876172439527425> CEK DULU INI ANGGOTAMU",
                 embeds: [{
@@ -679,7 +691,9 @@
 
             showPopupAlert("Berhasil Mengambil Libur", `Jatah libur Anda untuk besok (${tglBesok}) berhasil dicatat dan dikirim ke Discord!`, "success");
 
-            await kirimDiscord(WEBHOOK_CUTI, {
+            // Mengambil webhook 'cuti' dari Firebase untuk pengajuan libur
+            const webhookUrl = await getWebhookUrl('cuti');
+            await kirimDiscord(webhookUrl, {
                 username: "Triad Handler Bot",
                 content: "<@411074019249618947> <@757855200475086889> <@1142876172439527425> CEK DULU INI ANGGOTAMU",
                 embeds: [{
@@ -691,11 +705,12 @@
             });
         }
 
-        function triggerAlert(jenis) {
+        async function triggerAlert(jenis) {
             const tagSemua = daftarAnggota.map(m => `<@${m.id}>`).join(' ');
             
             if (jenis === '2030') {
-                kirimDiscord(WEBHOOK_INFO, { username: "Bapak Pemarah", content: `# Woi bro-bro sekalian! 📢 @everyone\n30 menit lagi aktivitas kota malam ini kita mulai (Pukul 21.00). Yang belum siap-siap, yuk bersiap merapat ya! 🔥` });
+                const webhookUrl = await getWebhookUrl('alert');
+                await kirimDiscord(webhookUrl, { username: "Bapak Pemarah", content: `# Woi bro-bro sekalian! 📢 @everyone\n30 menit lagi aktivitas kota malam ini kita mulai (Pukul 21.00). Yang belum siap-siap, yuk bersiap merapat ya! 🔥` });
                 showPopupAlert("Auto-Alert", "Test Alert 20:30 terkirim ke Discord!", "success");
             } else if (jenis === '2050') {
                 let belumAbsen = daftarAnggota.filter(m => !daftarSudahAbsen.includes(m.id));
@@ -703,7 +718,8 @@
                     ? belumAbsen.map(m => `• **${m.namaIC}** (<@${m.id}>)`).join('\n') 
                     : "Semua anggota sudah absen! 🎉";
 
-                kirimDiscord(WEBHOOK_INFO, { 
+                const webhookUrl = await getWebhookUrl('alert');
+                await kirimDiscord(webhookUrl, { 
                     username: "Bapak Tukang Data", 
                     embeds: [{
                         title: "⚠️ 10 MENIT LAGI KITA MASUK KOTA (20:50)",
@@ -719,16 +735,19 @@
                     ? belumAbsen.map(m => `• **${m.namaIC}** (<@${m.id}>)`).join('\n') 
                     : "Semua anggota sudah absen tepat waktu! 👍";
                
-                kirimDiscord(WEBHOOK_ABSEN, {
+                const webhookUrl = await getWebhookUrl('info');
+                await kirimDiscord(webhookUrl, {
                     username: "Triad Handler Bot",
                     embeds: [{ title: "📊 LAPORAN RAZIA TELAT (21:10)", description: `**Belum Absen:**\n${textBelum}`, color: 15158332 }]
                 });
                 showPopupAlert("Auto-Alert", "Test Razia Telat (21:10) terkirim ke Log Handler!", "success");
             } else if (jenis === '0050') {
-                kirimDiscord(WEBHOOK_INFO, { username: "Bapak Dante", content: `# ⏰ **10 MENIT LAGI MENUJU FREE TIME / ISTIRAHAT (01.00)** @everyone\nBersiap-siap sebentar lagi masuk jam Freetime ya kawan-kawan!\n${tagSemua}` });
+                const webhookUrl = await getWebhookUrl('alert');
+                await kirimDiscord(webhookUrl, { username: "Bapak Dante", content: `# ⏰ **10 MENIT LAGI MENUJU FREE TIME / ISTIRAHAT (01.00)** @everyone\nBersiap-siap sebentar lagi masuk jam Freetime ya kawan-kawan!\n${tagSemua}` });
                 showPopupAlert("Auto-Alert", "Test Alert 00:50 terkirim ke Discord!", "success");
             } else if (jenis === '0100') {
-                kirimDiscord(WEBHOOK_INFO, { username: "Ibuk Comel", content: `# 🎉 **JADWAL RP KITA BERAKHIR** @everyone\nTerima kasih banyak kepada seluruh Teman teman atas kerja keras dan dedikasinya malam ini!\n#jangan lupa istirahat ya!` });
+                const webhookUrl = await getWebhookUrl('alert');
+                await kirimDiscord(webhookUrl, { username: "Ibuk Comel", content: `# 🎉 **JADWAL RP KITA BERAKHIR** @everyone\nTerima kasih banyak kepada seluruh Teman teman atas kerja keras dan dedikasinya malam ini!\n#jangan lupa istirahat ya!` });
                 showPopupAlert("Auto-Alert", "Test Penutupan Shift (01:00) terkirim ke Discord!", "success");
             }
         }
