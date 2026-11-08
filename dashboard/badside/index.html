@@ -78,11 +78,29 @@
       box-shadow: 0 12px 30px -5px rgba(220, 38, 38, 0.35); 
     }
 
+    /* KELAS FLEX WRAP AGAR MENU MERAPAT PAS DI TENGAH SECARA SIMETRIS */
     .menu-grid-layout {
-      display: grid;
-      grid-template-columns: repeat(1, minmax(0, 1fr));
-      gap: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+      max-width: 1150px;
+      margin: 0 auto;
     }
+    .menu-grid-layout > div {
+      width: 100%;
+    }
+    @media (min-width: 640px) {
+      .menu-grid-layout > div {
+        width: calc(50% - 0.75rem);
+      }
+    }
+    @media (min-width: 1024px) {
+      .menu-grid-layout > div {
+        width: calc(33.333% - 1rem);
+      }
+    }
+
     .vault-grid-layout {
       display: grid;
       grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -96,18 +114,8 @@
     }
 
     @media (min-width: 1024px) {
-      .menu-grid-layout {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-      .menu-grid-layout > div:last-child:nth-child(3n-2) {
-        grid-column: 2 / 3;
-      }
-
       .vault-grid-layout {
         grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-      .vault-grid-layout > div:last-child:nth-child(3n-2) {
-        grid-column: 2 / 3;
       }
     }
 
@@ -169,13 +177,13 @@
       </div>
     </div>
 
-    <!-- MENU UTAMA NAKAMA MC -->
+    <!-- MENU UTAMA NAKAMA MC (MERAPAT KE TENGAH SECARA SIMETRIS) -->
     <div id="sectionMainMenu" class="space-y-6">
-      <h2 class="text-sm font-bold text-red-400 tracking-widest uppercase flex items-center gap-2">
+      <h2 class="text-sm font-bold text-red-400 tracking-widest uppercase flex items-center gap-2 max-w-[1150px] mx-auto">
         <i class="fa-solid fa-bars"></i> PILIH MODUL MANAGEMENT
       </h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 menu-grid-layout">
+      <div class="menu-grid-layout">
         <div onclick="showSection('sectionBahan')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between">
           <div>
             <div class="w-12 h-12 bg-amber-500/20 text-amber-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-amber-500/30"><i class="fa-solid fa-boxes-stacked"></i></div>
@@ -183,6 +191,15 @@
             <p class="text-sm text-gray-400">Hitung total kebutuhan bahan dasar Iron, Carbon, Umer, serta modal & profit.</p>
           </div>
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-amber-400"><span>Hitung Bahan</span><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+
+        <div onclick="showSection('sectionKalkulatorSenjata')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between border border-red-500/30">
+          <div>
+            <div class="w-12 h-12 bg-rose-500/20 text-rose-400 rounded-xl flex items-center justify-center text-xl mb-4 border border-rose-500/30"><i class="fa-solid fa-gun"></i></div>
+            <h3 class="text-xl font-bold text-white mb-2">Kalkulator Bisnis Senjata</h3>
+            <p class="text-sm text-gray-400">Hitung detail batu, waktu penambangan, komponen, dan profit Mini SMG, Micro SMG, & Revolver MK2.</p>
+          </div>
+          <div class="mt-6 flex justify-between items-center text-xs font-semibold text-rose-400"><span>Buka Kalkulator Senjata</span><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
         <div onclick="showSection('sectionKalkulator')" class="menu-card glass-card p-6 rounded-2xl cursor-pointer flex flex-col justify-between">
@@ -237,6 +254,87 @@
             <p class="text-sm text-gray-400">Daftar anggota aktif klub, hierarki rank, dan status keaktifan.</p>
           </div>
           <div class="mt-6 flex justify-between items-center text-xs font-semibold text-emerald-400"><span>Kelola Member</span><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KALKULATOR BISNIS SENJATA TERPISAH (DETAIL LENGKAP DENGAN HARGA KOMPONEN) -->
+    <div id="sectionKalkulatorSenjata" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Kolom Input & Harga Komponen Detail -->
+        <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
+          <h2 class="text-lg font-bold text-rose-400 flex items-center gap-2"><i class="fa-solid fa-gun"></i> Kalkulator Bisnis Senjata</h2>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Pilih Jenis Senjata</label>
+            <select id="weapType" onchange="calcWeapon()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-rose-400 font-bold">
+              <option value="MiniSMG">Mini SMG (235 Batu | Rp 62rb Umer)</option>
+              <option value="MicroSMG">Micro SMG (265 Batu | Rp 38rb Umer)</option>
+              <option value="RevolverMk2">Revolver MK2 (135 Batu | Rp 42rb Umer)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Jumlah Produksi (Unit)</label>
+            <input type="number" id="weapQty" value="1" min="1" oninput="calcWeapon()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-rose-400 font-bold text-lg" placeholder="1">
+          </div>
+          <hr class="border-slate-700 my-3">
+          <h3 class="text-xs font-bold text-rose-400 uppercase tracking-wider">⚙️ Kustomisasi Nilai Batu & Komponen</h3>
+          <div class="space-y-3">
+            <div><label class="block text-xs text-gray-400 mb-1">Harga 1 Batu Mentah (Default = 8000)</label><input type="number" id="weapStonePrice" value="8000" oninput="calcWeapon()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-rose-400"></div>
+            <div><label class="block text-xs text-gray-400 mb-1">Harga 1 Titanium (Default = 16000)</label><input type="number" id="weapTitaniumPrice" value="16000" oninput="calcWeapon()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-rose-400"></div>
+            <div><label class="block text-xs text-gray-400 mb-1">Harga 1 Aluminium Alloy (Default = 12000)</label><input type="number" id="weapAlumPrice" value="12000" oninput="calcWeapon()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-rose-400"></div>
+            <div><label class="block text-xs text-gray-400 mb-1">Harga 1 Steel Fragment (Default = 8000)</label><input type="number" id="weapSteelPrice" value="8000" oninput="calcWeapon()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-rose-400"></div>
+            <div><label class="block text-xs text-gray-400 mb-1">Target Harga Jual Senjata per Unit</label><input type="number" id="weapSellPrice" value="0" oninput="calcWeapon()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-rose-400 font-bold text-emerald-400" placeholder="0"></div>
+          </div>
+        </div>
+
+        <!-- Kolom Hasil Analisis & Detail Lengkap -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Kartu Rincian Bahan & Waktu -->
+          <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
+            <h2 class="text-lg font-bold text-rose-400 flex items-center justify-between">
+              <span><i class="fa-solid fa-boxes-stacked"></i> Rincian Material & Waktu Tambang</span>
+              <span id="badgeWeapName" class="text-xs bg-rose-500/20 text-rose-300 px-3 py-1 rounded-full border border-rose-500/30">Mini SMG x1 Unit</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800">
+                <span class="text-gray-400 text-sm">🪨 Total Batu Dibutuhkan</span>
+                <div id="weapTotalBatu" class="text-2xl font-black text-rose-400">0</div>
+                <div id="weapEstWaktu" class="text-xs text-gray-500 mt-1">Waktu Kerja: ~0 Menit</div>
+              </div>
+              <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800">
+                <span class="text-gray-400 text-sm">🔩 Komponen Olahan & Harga</span>
+                <div id="weapKomponenList" class="text-xs font-bold text-amber-300 mt-2 space-y-1">
+                  <div>Titanium: 0 (Rp 0)</div>
+                  <div>Aluminium Alloy: 0 (Rp 0)</div>
+                  <div>Steel Fragment: 0 (Rp 0)</div>
+                </div>
+              </div>
+              <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800">
+                <span class="text-gray-400 text-sm">💵 Biaya Umer / Dirty Money</span>
+                <div id="weapUmerCost" class="text-2xl font-black text-emerald-400">Rp 0</div>
+                <div class="text-xs text-gray-500 mt-1">Fee Pembuatan</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kartu Proyeksi Keuangan Detail -->
+          <div class="glass-card p-6 rounded-2xl shadow-lg space-y-4">
+            <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2"><i class="fa-solid fa-calculator"></i> Proyeksi Modal, Omset & Keuntungan</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                <div class="text-xs text-gray-400 mb-1">Total Modal Bahan + Umer</div>
+                <div id="weapTotalModal" class="text-xl font-bold text-red-400">Rp 0</div>
+              </div>
+              <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                <div class="text-xs text-gray-400 mb-1">Total Omset Penjualan</div>
+                <div id="weapTotalOmset" class="text-xl font-bold text-blue-400">Rp 0</div>
+              </div>
+              <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                <div class="text-xs text-gray-400 mb-1">Untung Bersih (Net Profit)</div>
+                <div id="weapNetProfit" class="text-xl font-bold text-green-400">Rp 0</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -669,7 +767,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // --- NAVIGASI DINAMIS DENGAN URL PARAMETER ---
     function selectCommunity(type) {
       if (type === 'nakama') {
         window.history.pushState({ section: 'mainMenu' }, '', '/dashboard/badside');
@@ -685,6 +782,7 @@
 
       let modulKey = sectionId.replace('section', '').toLowerCase();
       if (sectionId === 'sectionBahan') modulKey = 'crafting';
+      else if (sectionId === 'sectionKalkulatorSenjata') modulKey = 'senjata';
       else if (sectionId === 'sectionKalkulator') modulKey = 'partner';
       else if (sectionId === 'sectionBrankas') modulKey = 'brankas';
       else if (sectionId === 'sectionBeliWarga') modulKey = 'warga';
@@ -701,6 +799,7 @@
     function tampilkanBagianAktif(sectionId) {
       document.getElementById('sectionMainMenu').classList.add('hidden');
       document.getElementById('sectionBahan').classList.add('hidden');
+      document.getElementById('sectionKalkulatorSenjata').classList.add('hidden');
       document.getElementById('sectionKalkulator').classList.add('hidden');
       document.getElementById('sectionBrankas').classList.add('hidden');
       document.getElementById('sectionBeliWarga').classList.add('hidden');
@@ -721,6 +820,7 @@
         btnBack.classList.remove('hidden');
 
         if(sectionId === 'sectionBahan') subtitle.innerText = "Modul Kalkulasi Bahan Crafting";
+        else if(sectionId === 'sectionKalkulatorSenjata') subtitle.innerText = "Modul Kalkulator Bisnis Senjata";
         else if(sectionId === 'sectionKalkulator') subtitle.innerText = "Modul Transaksi Partner Kelompok";
         else if(sectionId === 'sectionBrankas') subtitle.innerText = "Modul Data Brankas (Inventaris & Riwayat)";
         else if(sectionId === 'sectionBeliWarga') subtitle.innerText = "Modul Transaksi Warga (Beli & Jual)";
@@ -744,6 +844,7 @@
       } else {
         let targetSection = 'sectionMainMenu';
         if (modul === 'crafting') targetSection = 'sectionBahan';
+        else if (modul === 'senjata') targetSection = 'sectionKalkulatorSenjata';
         else if (modul === 'partner') targetSection = 'sectionKalkulator';
         else if (modul === 'brankas') targetSection = 'sectionBrankas';
         else if (modul === 'warga') targetSection = 'sectionBeliWarga';
@@ -755,7 +856,6 @@
       }
     });
 
-    // --- CEK SESI & UCAPAN SELAMAT DATANG ---
     window.addEventListener("DOMContentLoaded", () => {
       const savedRole = localStorage.getItem("nmc_user_role");
       const loggedUser = localStorage.getItem("nmc_logged_user") || "Anggota";
@@ -763,8 +863,7 @@
       if (savedRole === "editor" || savedRole === "viewer") {
         currentUserRole = savedRole;
         
-        // Memunculkan ucapan selamat datang saat pertama kali masuk dashboard
-        showCustomAlert(`Selamat datang kembali, <strong class="text-red-400 font-black">${loggedUser.toUpperCase()}</strong><br><span class="text-xs text-slate-300">Senang bisa melihat Anda kembali di sistem.</span>`, 'success');
+        showCustomAlert(`Selamat datang kembali, <strong class="text-rose-400 font-black">${loggedUser.toUpperCase()}</strong><br><span class="text-xs text-slate-300">Senang bisa melihat Anda kembali di sistem.</span>`, 'success');
         const params = new URLSearchParams(window.location.search);
         const modul = params.get('modul');
         if (modul) {
@@ -773,11 +872,11 @@
           selectCommunity('nakama');
         }
       } else {
-        // Jika belum login, paksa pindah ke halaman login.html
         window.location.href = "login.html";
         return;
       }
       applyRolePermissions();
+      calcWeapon();
     });
 
     function handleLogout() { 
@@ -832,7 +931,6 @@
     let groupsData = {};
     let currentGroupKey = "";
 
-    // --- REALTIME SYNC FIREBASE ---
     db.ref('nmc_data').on('value', (snapshot) => {
       const data = snapshot.val();
       if (data) {
@@ -902,7 +1000,6 @@
       loadGroupData();
     }
 
-    // --- FITUR SETORAN HARIAN & MINGGUAN ---
     function switchSetoranTab(type) {
       currentSetoranTab = type;
       const btnH = document.getElementById("tabBtnHarian");
@@ -1454,6 +1551,61 @@
         .then(() => showCustomAlert("Daftar anggota berhasil dikirim & disalin!"))
         .catch(() => showCustomAlert("Gagal mengirim ke Discord, teks disalin ke clipboard!", "error"));
       });
+    }
+
+    // --- KALKULATOR KHUSUS BISNIS SENJATA TERPISAH ---
+    const weaponData = {
+      "MiniSMG": { name: "Mini SMG", totalBatu: 235, umer: 62000, titanium: 3, alum: 5, steel: 10 },
+      "MicroSMG": { name: "Micro SMG", totalBatu: 265, umer: 38000, titanium: 4, alum: 7, steel: 8 },
+      "RevolverMk2": { name: "Revolver MK2", totalBatu: 135, umer: 42000, titanium: 2, alum: 3, steel: 5 }
+    };
+
+    function calcWeapon() {
+      const type = document.getElementById("weapType").value;
+      const qty = parseInt(document.getElementById("weapQty").value) || 1;
+      const stonePrice = parseFloat(document.getElementById("weapStonePrice").value) || 8000;
+      const titaniumPrice = parseFloat(document.getElementById("weapTitaniumPrice").value) || 16000;
+      const alumPrice = parseFloat(document.getElementById("weapAlumPrice").value) || 12000;
+      const steelPrice = parseFloat(document.getElementById("weapSteelPrice").value) || 8000;
+      const sellPrice = parseFloat(document.getElementById("weapSellPrice").value) || 0;
+
+      const weap = weaponData[type];
+      if (!weap) return;
+
+      const totalBatu = weap.totalBatu * qty;
+      const totalUmer = weap.umer * qty;
+      const estWaktuMenit = (totalBatu / 125) * 15;
+
+      const tTitanium = weap.titanium * qty;
+      const tAlum = weap.alum * qty;
+      const tSteel = weap.steel * qty;
+
+      const modalTitanium = tTitanium * titaniumPrice;
+      const modalAlum = tAlum * alumPrice;
+      const modalSteel = tSteel * steelPrice;
+
+      const totalModalKomponen = modalTitanium + modalAlum + modalSteel;
+      const totalModalKeseluruhan = totalModalKomponen + totalUmer;
+      const totalOmset = sellPrice * qty;
+      const netProfit = totalOmset - totalModalKeseluruhan;
+
+      document.getElementById("badgeWeapName").innerText = `${weap.name} x${qty} Unit`;
+      document.getElementById("weapTotalBatu").innerText = totalBatu.toLocaleString('id-ID');
+      document.getElementById("weapEstWaktu").innerText = `Waktu Kerja: ~${Math.round(estWaktuMenit)} Menit`;
+      
+      document.getElementById("weapKomponenList").innerHTML = `
+        <div>Titanium: ${tTitanium} (Rp ${modalTitanium.toLocaleString('id-ID')})</div>
+        <div>Aluminium Alloy: ${tAlum} (Rp ${modalAlum.toLocaleString('id-ID')})</div>
+        <div>Steel Fragment: ${tSteel} (Rp ${modalSteel.toLocaleString('id-ID')})</div>
+      `;
+
+      document.getElementById("weapUmerCost").innerText = `Rp ${totalUmer.toLocaleString('id-ID')}`;
+      document.getElementById("weapTotalModal").innerText = `Rp ${totalModalKeseluruhan.toLocaleString('id-ID')}`;
+      document.getElementById("weapTotalOmset").innerText = `Rp ${totalOmset.toLocaleString('id-ID')}`;
+      
+      const profitEl = document.getElementById("weapNetProfit");
+      profitEl.innerText = (netProfit >= 0 ? '+ Rp ' : '- Rp ') + Math.abs(netProfit).toLocaleString('id-ID');
+      profitEl.className = `text-xl font-bold ${netProfit >= 0 ? 'text-green-400' : 'text-red-400'}`;
     }
 
     const craftRecipes = { "50AE": { iron: 50, carbon: 50, umer: 20000 }, "9MM": { iron: 50, carbon: 50, umer: 60000 }, "38MM": { iron: 50, carbon: 50, umer: 70000 }, "44MM": { iron: 50, carbon: 50, umer: 80000 } };
