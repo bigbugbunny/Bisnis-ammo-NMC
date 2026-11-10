@@ -279,11 +279,11 @@
           <hr class="border-slate-700 my-3">
           <h3 class="text-xs font-bold text-rose-400 uppercase tracking-wider">⚙️ Kustomisasi Nilai Batu & Komponen</h3>
           <div class="space-y-3">
-            <div><label class="block text-xs text-gray-400 mb-1">Harga 1 Batu Mentah (Default = 8000)</label><input type="number" id="weapStonePrice" value="8000" oninput="calcWeapon()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-rose-400"></div>
+            <div><label class="block text-xs text-gray-400 mb-1">Harga 1 Batu Mentah (Default = 800)</label><input type="number" id="weapStonePrice" value="800" oninput="calcWeapon()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-rose-400"></div>
             <div><label class="block text-xs text-gray-400 mb-1">Harga 1 Titanium (Default = 16000)</label><input type="number" id="weapTitaniumPrice" value="16000" oninput="calcWeapon()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-rose-400"></div>
             <div><label class="block text-xs text-gray-400 mb-1">Harga 1 Aluminium Alloy (Default = 12000)</label><input type="number" id="weapAlumPrice" value="12000" oninput="calcWeapon()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-rose-400"></div>
             <div><label class="block text-xs text-gray-400 mb-1">Harga 1 Steel Fragment (Default = 8000)</label><input type="number" id="weapSteelPrice" value="8000" oninput="calcWeapon()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-rose-400"></div>
-            <div><label class="block text-xs text-gray-400 mb-1">Target Harga Jual Senjata per Unit</label><input type="number" id="weapSellPrice" value="0" oninput="calcWeapon()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-rose-400 font-bold text-emerald-400" placeholder="0"></div>
+            <div><label class="block text-xs text-gray-400 mb-1">Target Harga Jual Senjata per Unit</label><input type="number" id="weapSellPrice" value="300000" oninput="calcWeapon()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-rose-400 font-bold text-emerald-400" placeholder="0"></div>
           </div>
         </div>
 
@@ -1563,18 +1563,18 @@
     function calcWeapon() {
       const type = document.getElementById("weapType").value;
       const qty = parseInt(document.getElementById("weapQty").value) || 1;
-      const stonePrice = parseFloat(document.getElementById("weapStonePrice").value) || 8000;
+      const stonePrice = parseFloat(document.getElementById("weapStonePrice").value) || 800;
       const titaniumPrice = parseFloat(document.getElementById("weapTitaniumPrice").value) || 16000;
       const alumPrice = parseFloat(document.getElementById("weapAlumPrice").value) || 12000;
       const steelPrice = parseFloat(document.getElementById("weapSteelPrice").value) || 8000;
-      const sellPrice = parseFloat(document.getElementById("weapSellPrice").value) || 0;
+      const sellPrice = parseFloat(document.getElementById("weapSellPrice").value) || 300000;
 
       const weap = weaponData[type];
       if (!weap) return;
 
       const totalBatu = weap.totalBatu * qty;
       const totalUmer = weap.umer * qty;
-      const estWaktuMenit = (totalBatu / 125) * 15;
+      const estWaktuMenit = (totalBatu / 250) * 15;
 
       const tTitanium = weap.titanium * qty;
       const tAlum = weap.alum * qty;
