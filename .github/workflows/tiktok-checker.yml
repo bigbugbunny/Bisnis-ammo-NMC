@@ -16,10 +16,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20' # <-- Diperbarui dari '18' ke '20' untuk stabilitas fetch()
+          node-version: '20'
 
       - name: Install Dependencies
-        run: npm install @supabase/supabase-js
+        run: npm install @supabase/supabase-js ws
 
       - name: Run Checker Script
         env:
