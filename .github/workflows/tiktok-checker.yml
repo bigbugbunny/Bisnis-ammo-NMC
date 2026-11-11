@@ -16,7 +16,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20' # <-- Diperbarui dari '18' ke '20' untuk stabilitas fetch()
 
       - name: Install Dependencies
         run: npm install @supabase/supabase-js
@@ -26,5 +26,5 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-          TIKTOK_API_KEY: ${{ secrets.tiktok }}  # <-- Tambahkan baris ini untuk mengambil Secret Euler Stream
+          TIKTOK_API_KEY: ${{ secrets.tiktok }}
         run: node .github/scripts/tiktok-checker.js
