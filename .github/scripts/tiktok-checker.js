@@ -1,4 +1,4 @@
-const SUPABASE_URL = "https://atihbgbpdxvjnqqdik1g.supabase.co";
+const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 const TIKTOK_API_KEY = process.env.TIKTOK_API_KEY;
