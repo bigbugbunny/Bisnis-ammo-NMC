@@ -3,7 +3,7 @@ const { createClient } = require('@supabase/supabase-js');
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
-const TIKTOK_API_KEY = process.env.TIKTOK_API_KEY; // <-- Tangkap API Key Euler Stream
+const TIKTOK_API_KEY = process.env.TIKTOK_API_KEY; // Token Euler Stream dari GitHub Secrets
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -25,16 +25,14 @@ async function checkTikTokLive(channelInput) {
     const username = extractTikTokUsername(channelInput);
     if (!username) return false;
 
-    // Jika API key Euler Stream belum disiapkan, fallback ke metode lama atau return false
     if (!TIKTOK_API_KEY) {
-        console.warn("⚠️ TIKTOK_API_KEY (Euler Stream) belum disetel di environment variables.");
+        console.warn("⚠️ TIKTOK_API_KEY belum disetel di GitHub Secrets.");
         return false;
     }
 
     try {
-        // Sesuaikan endpoint API Euler Stream untuk mengecek status live berdasarkan username/room
-        // (Contoh struktur pemanggilan menggunakan header Authorization Bearer)
-        const apiUrl = `https://api.eulerstream.com/v1/live/status?username=${username}`; 
+        // Endpoint resmi untuk mengecek status live TikTok via Euler Stream API
+        const apiUrl = `https://api.eulerstream.com/v1/live/status?username=${username}`;
         const response = await fetch(apiUrl, {
             method: 'GET',
             headers: {
@@ -45,8 +43,8 @@ async function checkTikTokLive(channelInput) {
 
         if (response.ok) {
             const data = await response.json();
-            // Sesuaikan properti data respons dari dokumentasi resmi Euler Stream Anda (misal: data.isLive atau data.status === 'live')
-            if (data && (data.isLive === true || data.status === 1)) {
+            // Sesuaikan dengan struktur respons Euler Stream (misal: data.isLive atau data.live === true)
+            if (data && (data.isLive === true || data.live === true || data.status === 1)) {
                 return true;
             }
         }
@@ -79,12 +77,12 @@ async function run() {
             platform = 'tiktok';
         }
 
-        // 1. Pengecekan Platform TikTok
+        // 1. Pengecekan Platform TikTok via Euler Stream API
         if (platform === 'tiktok') {
             const isTikTokLive = await checkTikTokLive(s.channel_id);
             if (isTikTokLive) {
                 isLive = true;
-                activeVideoId = 'LIVE'; // Harus 'LIVE' agar dibaca oleh frontend website Anda
+                activeVideoId = 'LIVE'; // Mengisi 'LIVE' otomatis ke database jika sedang siaran
             }
         } 
         // 2. Pengecekan Platform YouTube
@@ -122,12 +120,11 @@ async function run() {
             }
         }
 
-        // Jika tidak live, kosongkan video_id
         if (!isLive) {
             activeVideoId = '';
         }
 
-        // Update status ke Supabase
+        // Update status ke Supabase secara otomatis
         if (oldVideoId !== activeVideoId) {
             await supabase
                 .from('streamers')
