@@ -1,4 +1,4 @@
-const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_URL = "https://atihbgbpdxvjnqqdik1g.supabase.co";
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 const TIKTOK_API_KEY = process.env.TIKTOK_API_KEY;
@@ -53,7 +53,6 @@ async function checkTikTokLive(channelInput) {
 async function run() {
     console.log("🔍 Memeriksa status live YouTube & TikTok otomatis...");
     
-    // Mengambil data streamer langsung via REST API Supabase (Tanpa library Supabase-js yang memicu WebSocket)
     const res = await fetch(`${SUPABASE_URL}/rest/v1/streamers?select=*`, {
         headers: {
             'apikey': SUPABASE_ANON_KEY,
