@@ -185,7 +185,7 @@
       max-width: 1300px;
       margin: 0 auto;
       overflow: hidden;
-      padding: 40px 0;
+      padding: 40px 0 10px 0;
     }
 
     .gallery-track {
@@ -231,6 +231,40 @@
       object-fit: contain;
       background-color: #05070a;
       display: block;
+    }
+
+    /* === STYLE THUMBNAIL PREVIEW GALERI DI BAWAH === */
+    .thumbnail-container {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 15px 10px;
+      max-width: 900px;
+      margin: 10px auto 0 auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(239, 68, 68, 0.4) transparent;
+    }
+    .thumbnail-item {
+      width: 90px;
+      height: 55px;
+      object-fit: cover;
+      border-radius: 10px;
+      cursor: pointer;
+      opacity: 0.4;
+      transform: scale(0.9);
+      transition: all 0.3s ease;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      flex-shrink: 0;
+    }
+    .thumbnail-item:hover {
+      opacity: 0.8;
+    }
+    .thumbnail-item.active-thumb {
+      opacity: 1;
+      transform: scale(1.05);
+      border-color: #ef4444;
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
     }
 
     @media (min-width: 768px) {
@@ -358,6 +392,20 @@
             </div>
           </div>
 
+          <!-- Slide 4 -->
+          <div class="gallery-slide">
+            <div class="w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border-2 border-red-500/60 glass-card p-2">
+              <img src="bg4.png" alt="Dokumentasi 4" class="photo-box rounded-xl">
+            </div>
+          </div>
+
+          <!-- Slide 5 -->
+          <div class="gallery-slide">
+            <div class="w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border-2 border-red-500/60 glass-card p-2">
+              <img src="bg5.png" alt="Dokumentasi 5" class="photo-box rounded-xl">
+            </div>
+          </div>
+
         </div>
 
         <!-- Tombol Navigasi Kiri Kanan -->
@@ -367,6 +415,15 @@
         <button onclick="nextGallerySlide()" class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/80 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition border border-white/20 shadow-2xl z-20 cursor-pointer">
           <i class="fa-solid fa-chevron-right text-base"></i>
         </button>
+      </div>
+
+      <!-- CONTAINER THUMBNAIL FOTO KECIL DI BAWAH YANG BISA DIGESER -->
+      <div class="thumbnail-container" id="thumbnailContainer">
+        <img src="bg1.png" alt="Thumb 1" class="thumbnail-item active-thumb" onclick="scrollToSlide(0)">
+        <img src="bg2.png" alt="Thumb 2" class="thumbnail-item" onclick="scrollToSlide(1)">
+        <img src="bg3.png" alt="Thumb 3" class="thumbnail-item" onclick="scrollToSlide(2)">
+        <img src="bg4.png" alt="Thumb 4" class="thumbnail-item" onclick="scrollToSlide(3)">
+        <img src="bg5.png" alt="Thumb 5" class="thumbnail-item" onclick="scrollToSlide(4)">
       </div>
     </section>
 
@@ -1004,9 +1061,10 @@
       }, 500);
     }
 
-    // Gallery Carousel Script
+    // Gallery Carousel Script dengan Thumbnail & Urutan Pertama
     const galleryTrack = document.getElementById('galleryTrack');
     const gallerySlides = galleryTrack.querySelectorAll('.gallery-slide');
+    const thumbnails = document.querySelectorAll('.thumbnail-item');
     let galleryIndex = 0;
 
     function updateActiveSlide() {
@@ -1028,11 +1086,20 @@
       });
 
       galleryIndex = closestIndex;
+      
       gallerySlides.forEach((slide, index) => {
         if (index === galleryIndex) {
           slide.classList.add('active-center');
         } else {
           slide.classList.remove('active-center');
+        }
+      });
+
+      thumbnails.forEach((thumb, index) => {
+        if (index === galleryIndex) {
+          thumb.classList.add('active-thumb');
+        } else {
+          thumb.classList.remove('active-thumb');
         }
       });
     }
@@ -1064,8 +1131,9 @@
       nextGallerySlide();
     }, 5000);
 
+    // MENGATUR AGAR SAAT HALAMAN DIBUKA, FOTO UTAMA YANG MUNCUL ADALAH URUTAN PERTAMA (INDEX 0)
     window.addEventListener('load', () => {
-      scrollToSlide(gallerySlides.length - 1);
+      scrollToSlide(0);
     });
 
     // Rain Canvas Script
