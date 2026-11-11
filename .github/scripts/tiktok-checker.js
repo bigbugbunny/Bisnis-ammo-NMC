@@ -3,6 +3,7 @@ const { createClient } = require('@supabase/supabase-js');
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
+const TIKTOK_API_KEY = process.env.TIKTOK_API_KEY; // <-- Tangkap API Key Euler Stream
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -19,32 +20,39 @@ function extractTikTokUsername(input) {
     return clean;
 }
 
-// Cek status live TikTok menggunakan API Publik JSON TikTok
+// Cek status live TikTok menggunakan Euler Stream API
 async function checkTikTokLive(channelInput) {
     const username = extractTikTokUsername(channelInput);
     if (!username) return false;
 
+    // Jika API key Euler Stream belum disiapkan, fallback ke metode lama atau return false
+    if (!TIKTOK_API_KEY) {
+        console.warn("⚠️ TIKTOK_API_KEY (Euler Stream) belum disetel di environment variables.");
+        return false;
+    }
+
     try {
-        const apiUrl = `https://www.tiktok.com/node/share/user/@${username}`;
+        // Sesuaikan endpoint API Euler Stream untuk mengecek status live berdasarkan username/room
+        // (Contoh struktur pemanggilan menggunakan header Authorization Bearer)
+        const apiUrl = `https://api.eulerstream.com/v1/live/status?username=${username}`; 
         const response = await fetch(apiUrl, {
+            method: 'GET',
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-                'Accept': 'application/json, text/plain, */*'
+                'Authorization': `Bearer ${TIKTOK_API_KEY}`,
+                'Accept': 'application/json'
             }
         });
 
         if (response.ok) {
             const data = await response.json();
-            const userInfo = data?.seoUserInfo?.userInfo;
-            
-            // Jika roomStruct status bernilai 1, akun sedang LIVE
-            if (userInfo && userInfo.roomStruct && userInfo.roomStruct.status === 1) {
+            // Sesuaikan properti data respons dari dokumentasi resmi Euler Stream Anda (misal: data.isLive atau data.status === 'live')
+            if (data && (data.isLive === true || data.status === 1)) {
                 return true;
             }
         }
         return false;
     } catch (err) {
-        console.error(`Gagal cek TikTok @${username}:`, err.message);
+        console.error(`Gagal cek TikTok @${username} via Euler Stream:`, err.message);
         return false;
     }
 }
