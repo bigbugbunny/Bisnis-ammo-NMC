@@ -20,6 +20,7 @@ function extractTikTokUsername(input) {
     return clean;
 }
 
+// Cek status live TikTok menggunakan Euler Stream API dengan Debug Log
 async function checkTikTokLive(channelInput) {
     const username = extractTikTokUsername(channelInput);
     if (!username) return false;
@@ -41,9 +42,14 @@ async function checkTikTokLive(channelInput) {
 
         if (response.ok) {
             const data = await response.json();
-            if (data && (data.isLive === true || data.live === true || data.status === 1)) {
+            // Cetak isi respons mentah ke log GitHub Actions
+            console.log(`🔍 Respon API Euler Stream untuk @${username}:`, JSON.stringify(data));
+            
+            if (data && (data.isLive === true || data.live === true || data.status === 1 || data.is_live === true || data.roomInfo)) {
                 return true;
             }
+        } else {
+            console.log(`⚠️ API Euler Stream mengembalikan status ${response.status} untuk @${username}`);
         }
         return false;
     } catch (err) {
@@ -55,7 +61,6 @@ async function checkTikTokLive(channelInput) {
 async function run() {
     console.log("🔍 Memeriksa status live YouTube & TikTok otomatis...");
     
-    // Mengambil data dari tabel streamers sesuai database Supabase Anda
     const { data: streamers, error } = await supabase
         .from('streamers')
         .select('*');
