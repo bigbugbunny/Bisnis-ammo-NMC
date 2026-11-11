@@ -1,11 +1,7 @@
-const { createClient } = require('@supabase/supabase-js');
-
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 const TIKTOK_API_KEY = process.env.TIKTOK_API_KEY;
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 function extractTikTokUsername(input) {
     if (!input) return '';
@@ -57,14 +53,20 @@ async function checkTikTokLive(channelInput) {
 async function run() {
     console.log("🔍 Memeriksa status live YouTube & TikTok otomatis...");
     
-    const { data: streamers, error } = await supabase
-        .from('streamers')
-        .select('*');
+    // Mengambil data streamer langsung via REST API Supabase (Tanpa library Supabase-js yang memicu WebSocket)
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/streamers?select=*`, {
+        headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+        }
+    });
 
-    if (error) {
-        console.error("Error database Supabase:", error.message);
+    if (!res.ok) {
+        console.error("Error database Supabase:", await res.text());
         return;
     }
+
+    const streamers = await res.json();
 
     if (!streamers || streamers.length === 0) {
         console.log("Tidak ada data streamer ditemukan di tabel streamers.");
@@ -128,12 +130,18 @@ async function run() {
             activeVideoId = '';
         }
 
-        // Update status ke Supabase secara otomatis
+        // Update status ke Supabase via REST API
         if (oldVideoId !== activeVideoId) {
-            await supabase
-                .from('streamers')
-                .update({ video_id: activeVideoId })
-                .eq('id', s.id);
+            await fetch(`${SUPABASE_URL}/rest/v1/streamers?id=eq.${s.id}`, {
+                method: 'PATCH',
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=minimal'
+                },
+                body: JSON.stringify({ video_id: activeVideoId })
+            });
             console.log(`✨ ${s.name} status diperbarui: ${isLive ? 'LIVE 🟢' : 'OFF 🔴'}`);
         } else {
             console.log(`- ${s.name} tetap: ${isLive ? 'LIVE' : 'OFF'}`);
