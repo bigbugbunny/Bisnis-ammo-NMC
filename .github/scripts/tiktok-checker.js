@@ -5,10 +5,10 @@ const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 const TIKTOK_API_KEY = process.env.TIKTOK_API_KEY;
 
-// Menonaktifkan fitur realtime agar tidak mencari WebSocket di Node.js
+// Menggunakan opsi kosong agar Supabase tidak memanggil Realtime/WebSocket sama sekali
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: { persistSession: false },
-    realtime: { enabled: false }
+    realtime: false
 });
 
 function extractTikTokUsername(input) {
