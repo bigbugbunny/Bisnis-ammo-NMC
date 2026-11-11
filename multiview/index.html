@@ -6,14 +6,14 @@
     <title>Multiview Keluarga - Triad Community</title>
 
     <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3LHJZKK7Y8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3LHJZKK7Y8"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
-  gtag('config', 'G-3LHJZKK7Y8');
-</script>
+      gtag('config', 'G-3LHJZKK7Y8');
+    </script>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -387,34 +387,34 @@
 
             let liveCount = 0;
 
+            // Muat ulang data terbaru dari Supabase agar status database tersinkronisasi
+            try {
+                const { data } = await supabaseClient.from('streamers').select('*');
+                if (data) {
+                    streamers = data.map(item => ({
+                        id: String(item.id),
+                        name: item.name,
+                        platform: item.platform ? item.platform.toLowerCase() : 'youtube',
+                        channelId: item.channel_id,
+                        manualVideoId: item.video_id || '',
+                        isLive: false,
+                        videoId: '',
+                        viewers: 0
+                    }));
+                }
+            } catch (err) {
+                console.error("Gagal sinkronisasi data:", err);
+            }
+
             for (let s of streamers) {
-                // 1. Pengecekan Khusus Platform TikTok
+                // 1. Pengecekan Platform TikTok (Membaca langsung dari kolom video_id database hasil background checker)
                 if (s.platform === 'tiktok') {
-                    const username = extractTikTokUsername(s.channelId);
-                    let isTikTokActive = false;
-
                     if (s.manualVideoId && s.manualVideoId.trim().toUpperCase() === 'LIVE') {
-                        isTikTokActive = true;
-                    } else if (username) {
-                        try {
-                            const res = await fetch(`https://www.tiktok.com/oembed?url=https://www.tiktok.com/@${username}`);
-                            if (res.ok) {
-                                const liveRes = await fetch(`https://www.tiktok.com/node/share/user/@${username}`);
-                                if (liveRes.ok) {
-                                    const data = await liveRes.json();
-                                    const room = data?.seoUserInfo?.userInfo?.roomStruct;
-                                    if (room && room.status === 1) {
-                                        isTikTokActive = true;
-                                    }
-                                }
-                            }
-                        } catch (e) {
-                            console.error("Gagal cek live TikTok:", e);
-                        }
+                        s.isLive = true;
+                        liveCount++;
+                    } else {
+                        s.isLive = false;
                     }
-
-                    s.isLive = isTikTokActive;
-                    if (isTikTokActive) liveCount++;
                     continue;
                 }
 
