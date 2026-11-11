@@ -604,21 +604,24 @@
                         <div class="bg-gray-950/90 px-4 py-2.5 border-b border-slate-800 flex justify-between items-center text-xs">
                             <div class="flex items-center gap-3">
                                 <span class="font-bold text-white flex items-center gap-2">
-                                    <i class="fa-brands fa-tiktok text-tiktokColor"></i> ${streamer.name} (TikTok Live)
+                                    <i class="fa-brands fa-tiktok text-tiktokColor"></i> ${streamer.name} (TikTok Live Player)
                                 </span>
                             </div>
                             <button onclick="toggleStream('${streamer.id}')" class="text-gray-400 hover:text-orangeAccent transition cursor-pointer">
                                 <i class="fa-solid fa-xmark text-sm"></i>
                             </button>
                         </div>
-                        <div class="flex-1 w-full bg-black relative flex flex-col items-center justify-center p-6 text-center">
-                            <div class="w-16 h-16 rounded-2xl bg-tiktokColor/20 border border-tiktokColor/40 text-tiktokColor flex items-center justify-center text-2xl mb-4 shadow-lg animate-pulse">
+                        <div class="flex-1 w-full bg-gradient-to-br from-slate-950 via-gray-900 to-black relative flex flex-col items-center justify-center p-6 text-center overflow-hidden">
+                            <div class="absolute -top-12 -left-12 w-32 h-32 bg-tiktokColor/10 rounded-full blur-2xl pointer-events-none"></div>
+                            <div class="absolute -bottom-12 -right-12 w-32 h-32 bg-red-600/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                            <div class="w-16 h-16 rounded-2xl bg-tiktokColor/20 border border-tiktokColor/40 text-tiktokColor flex items-center justify-center text-2xl mb-4 shadow-2xl animate-bounce">
                                 <i class="fa-brands fa-tiktok"></i>
                             </div>
-                            <h4 class="text-white font-bold text-sm mb-1">${streamer.name} sedang LIVE di TikTok!</h4>
-                            <p class="text-xs text-gray-400 mb-6 max-w-sm">TikTok melindungi siaran langsungnya dari pemutaran langsung di luar aplikasinya. Klik tombol di bawah untuk membuka siaran live-nya.</p>
-                            <a href="https://www.tiktok.com/@${tiktokUsername}/live" target="_blank" class="px-6 py-3 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center gap-2">
-                                <i class="fa-solid fa-external-link-alt"></i> Buka Live TikTok @${tiktokUsername}
+                            <h4 class="text-white font-black text-sm md:text-base mb-1 tracking-wide">${streamer.name} SEDANG LIVE!</h4>
+                            <p class="text-xs text-gray-400 mb-6 max-w-xs leading-relaxed">Nikmati siaran langsung interaktif langsung di aplikasi/web resmi TikTok.</p>
+                            <a href="https://www.tiktok.com/@${tiktokUsername}/live" target="_blank" class="px-6 py-3 bg-gradient-to-r from-tiktokColor to-red-600 hover:from-pink-600 hover:to-red-500 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all transform hover:scale-105 flex items-center gap-2 border border-pink-500/30">
+                                <i class="fa-solid fa-play"></i> Tonton Live @${tiktokUsername}
                             </a>
                         </div>
                     `;
