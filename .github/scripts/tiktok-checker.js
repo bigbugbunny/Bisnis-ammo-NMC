@@ -5,11 +5,7 @@ const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 const TIKTOK_API_KEY = process.env.TIKTOK_API_KEY;
 
-// Menggunakan opsi kosong agar Supabase tidak memanggil Realtime/WebSocket sama sekali
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-    auth: { persistSession: false },
-    realtime: false
-});
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 function extractTikTokUsername(input) {
     if (!input) return '';
