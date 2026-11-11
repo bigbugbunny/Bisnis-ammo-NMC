@@ -118,7 +118,7 @@
         <!-- Form Panel Kontrol Admin -->
         <div id="admin-form-section" class="glass-card rounded-2xl p-6 shadow-2xl border border-red-950/40 hidden space-y-4">
             <div class="text-xs text-orange-400 font-bold flex items-center gap-2 pb-2 border-b border-slate-800">
-                <i class="fa-solid fa-shield-halved"></i> Panel Kontrol Admin (Management Anggota)
+                <i class="fa-solid fa-shield-halved"></i> Panel Kontrol Admin (Management Anggota & Penyesuaian Foto)
             </div>
             <form onsubmit="addNewMember(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
@@ -130,8 +130,12 @@
                     <input type="text" id="input-role" placeholder="Contoh: MEMBER" required class="w-full bg-darkBg/90 border border-slate-700 px-3.5 py-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-orangeAccent">
                 </div>
                 <div>
-                    <label class="block text-[10px] text-gray-400 mb-1 uppercase font-semibold">URL Foto / Poster</label>
-                    <input type="url" id="input-avatar" placeholder="https://i.imgur.com/..." required class="w-full bg-darkBg/90 border border-slate-700 px-3.5 py-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-orangeAccent">
+                    <label class="block text-[10px] text-gray-400 mb-1 uppercase font-semibold">Pilih File Foto ( Max 1 - 2Mb )</label>
+                    <input type="file" id="input-file" accept="image/*" class="w-full bg-darkBg/90 border border-slate-700 px-3 py-2 rounded-xl text-xs text-white focus:outline-none focus:border-orangeAccent file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-semibold file:bg-red-700 file:text-white hover:file:bg-red-600 cursor-pointer">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-gray-400 mb-1 uppercase font-semibold">Atau URL Gambar / Link</label>
+                    <input type="url" id="input-avatar" placeholder="https://..." class="w-full bg-darkBg/90 border border-slate-700 px-3.5 py-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-orangeAccent">
                 </div>
                 <div>
                     <label class="block text-[10px] text-gray-400 mb-1 uppercase font-semibold">YouTube Channel ID</label>
@@ -141,9 +145,33 @@
                     <label class="block text-[10px] text-gray-400 mb-1 uppercase font-semibold">Link TikTok (Opsional)</label>
                     <input type="url" id="input-tiktok" placeholder="https://tiktok.com/@akun" class="w-full bg-darkBg/90 border border-slate-700 px-3.5 py-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-orangeAccent">
                 </div>
-                <div class="flex items-end">
-                    <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold rounded-xl text-xs transition shadow flex items-center justify-center gap-2 cursor-pointer">
-                        <i class="fa-solid fa-plus"></i> Simpan Data
+
+                <!-- Opsi Penyesuaian Foto (Zoom & Posisi) -->
+                <div class="sm:col-span-2 lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-950/60 p-4 rounded-xl border border-slate-800">
+                    <div>
+                        <label class="block text-[10px] text-gray-400 mb-1 uppercase font-semibold">Atur Zoom Foto (<span id="zoom-val">100</span>%)</label>
+                        <input type="range" id="input-zoom" min="100" max="250" value="100" oninput="updatePreviewStyle()" class="w-full accent-orange-500 cursor-pointer">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-gray-400 mb-1 uppercase font-semibold">Posisi Vertikal Foto (<span id="pos-val">0</span>px)</label>
+                        <input type="range" id="input-position" min="-100" max="100" value="0" oninput="updatePreviewStyle()" class="w-full accent-orange-500 cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Preview Box Lebih Besar & Jelas -->
+                <div class="sm:col-span-2 lg:col-span-3 flex items-center gap-4 bg-slate-950/40 p-4 rounded-xl border border-slate-800">
+                    <div class="w-32 h-40 rounded-xl overflow-hidden bg-black border border-slate-700 shrink-0 relative shadow-lg">
+                        <img id="preview-img" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-full h-full object-cover transition-all" style="transform: scale(1); object-position: center 0px;">
+                    </div>
+                    <div class="text-xs text-gray-300 space-y-1">
+                        <p class="font-black text-white uppercase tracking-wider text-sm">Preview Ukuran Kartu Anggota</p>
+                        <p class="text-gray-400">Geser slider Zoom dan Posisi Vertikal di atas untuk melihat langsung hasil penyesuaian foto sebelum disimpan ke database.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-end sm:col-span-2 lg:col-span-3">
+                    <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold rounded-xl text-xs transition shadow flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider">
+                        <i class="fa-solid fa-plus"></i> Simpan Data Anggota
                     </button>
                 </div>
             </form>
@@ -198,8 +226,48 @@
 
         let rosterMembers = [];
         let isAdmin = sessionStorage.getItem('triad_is_admin') === 'true';
+        let uploadedBase64Image = '';
 
         if (isAdmin) showAdminPanelUI();
+
+        // Event Listener untuk File Upload dan URL Input agar Preview Langsung Muncul
+        document.getElementById('input-file').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedBase64Image = e.target.result;
+                    document.getElementById('preview-img').src = uploadedBase64Image;
+                    document.getElementById('input-avatar').value = ''; // kosongkan kolom URL
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('input-avatar').addEventListener('input', function(event) {
+            const urlVal = event.target.value.trim();
+            if (urlVal) {
+                uploadedBase64Image = ''; // kosongkan file upload
+                document.getElementById('input-file').value = ''; // reset file input
+                document.getElementById('preview-img').src = urlVal;
+            } else {
+                document.getElementById('preview-img').src = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+            }
+        });
+
+        function updatePreviewStyle() {
+            const zoom = document.getElementById('input-zoom').value;
+            const pos = document.getElementById('input-position').value;
+            
+            document.getElementById('zoom-val').innerText = zoom;
+            document.getElementById('pos-val').innerText = pos;
+
+            const img = document.getElementById('preview-img');
+            if (img) {
+                img.style.transform = `scale(${zoom / 100})`;
+                img.style.objectPosition = `center ${pos}px`;
+            }
+        }
 
         function showPopup(title, message, type = 'warning', showInput = false, onOkCallback = null) {
             const modal = document.getElementById('custom-modal');
@@ -272,6 +340,8 @@
                         avatar: item.avatar,
                         channelId: item.channel_id || '',
                         tiktok: item.tiktok || '',
+                        zoom: item.zoom || 100,
+                        position: item.position || 0,
                         isLive: false,
                         liveVideoId: ''
                     }));
@@ -423,9 +493,16 @@
 
             const name = document.getElementById('input-name').value.trim();
             const role = document.getElementById('input-role').value.trim().toUpperCase();
-            const avatar = document.getElementById('input-avatar').value.trim();
+            let avatar = uploadedBase64Image || document.getElementById('input-avatar').value.trim();
             const channelId = document.getElementById('input-channel').value.trim();
             const tiktok = document.getElementById('input-tiktok').value.trim();
+            const zoom = parseInt(document.getElementById('input-zoom').value);
+            const position = parseInt(document.getElementById('input-position').value);
+
+            if (!avatar) {
+                showPopup("Perhatian", "Harap unggah file foto atau masukkan URL gambar.", "warning");
+                return;
+            }
 
             const newId = name.replace(/[^a-zA-Z0-9]/g, '_');
 
@@ -433,7 +510,16 @@
                 const { error } = await supabaseClient
                     .from('roster')
                     .upsert([
-                        { id: newId, name: name, role: role, avatar: avatar, channel_id: channelId, tiktok: tiktok }
+                        { 
+                            id: newId, 
+                            name: name, 
+                            role: role, 
+                            avatar: avatar, 
+                            channel_id: channelId, 
+                            tiktok: tiktok,
+                            zoom: zoom,
+                            position: position
+                        }
                     ]);
 
                 if (error) throw error;
@@ -441,13 +527,19 @@
                 document.getElementById('input-name').value = '';
                 document.getElementById('input-role').value = '';
                 document.getElementById('input-avatar').value = '';
+                document.getElementById('input-file').value = '';
                 document.getElementById('input-channel').value = '';
                 document.getElementById('input-tiktok').value = '';
+                document.getElementById('input-zoom').value = 100;
+                document.getElementById('input-position').value = 0;
+                uploadedBase64Image = '';
+                document.getElementById('preview-img').src = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+                
                 showPopup("Berhasil", "Data anggota berhasil disimpan.", "success");
                 loadRosterFromSupabase();
             } catch (err) {
                 console.error("Insert roster error:", err);
-                showPopup("Gagal", "Gagal menyimpan data ke database Supabase.", "warning");
+                showPopup("Gagal", "Gagal menyimpan data ke database Supabase (mungkin ukuran file foto terlalu besar).", "warning");
             }
         }
 
@@ -594,12 +686,15 @@
                         </a>
                     ` : '';
 
+                    const cardZoom = member.zoom ? member.zoom / 100 : 1;
+                    const cardPos = member.position ? member.position : 0;
+
                     card.innerHTML = `
                         ${liveBadgeHtml}
                         ${deleteBtnHtml}
                         
                         <div class="relative w-full h-72 bg-darkBg overflow-hidden border-b border-slate-800">
-                            <img src="${member.avatar}" alt="${member.name}" class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
+                            <img src="${member.avatar}" alt="${member.name}" class="w-full h-full object-cover transition duration-500" style="transform: scale(${cardZoom}); object-position: center ${cardPos}px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
                             <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0f172a] to-transparent pointer-events-none"></div>
                         </div>
 
