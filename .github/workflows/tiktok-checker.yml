@@ -2,7 +2,6 @@ name: TikTok Live Auto Checker
 
 on:
   schedule:
-    # Berjalan otomatis setiap 5 menit sekali
     - cron: '*/5 * * * *'
   workflow_dispatch:
 
