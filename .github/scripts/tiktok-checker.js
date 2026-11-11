@@ -3,7 +3,7 @@ const { createClient } = require('@supabase/supabase-js');
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
-const TIKTOK_API_KEY = process.env.TIKTOK_API_KEY; // Token Euler Stream dari GitHub Secrets
+const TIKTOK_API_KEY = process.env.TIKTOK_API_KEY;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -20,7 +20,6 @@ function extractTikTokUsername(input) {
     return clean;
 }
 
-// Cek status live TikTok menggunakan Euler Stream API
 async function checkTikTokLive(channelInput) {
     const username = extractTikTokUsername(channelInput);
     if (!username) return false;
@@ -31,7 +30,6 @@ async function checkTikTokLive(channelInput) {
     }
 
     try {
-        // Endpoint resmi untuk mengecek status live TikTok via Euler Stream API
         const apiUrl = `https://api.eulerstream.com/v1/live/status?username=${username}`;
         const response = await fetch(apiUrl, {
             method: 'GET',
@@ -43,7 +41,6 @@ async function checkTikTokLive(channelInput) {
 
         if (response.ok) {
             const data = await response.json();
-            // Sesuaikan dengan struktur respons Euler Stream (misal: data.isLive atau data.live === true)
             if (data && (data.isLive === true || data.live === true || data.status === 1)) {
                 return true;
             }
@@ -58,12 +55,18 @@ async function checkTikTokLive(channelInput) {
 async function run() {
     console.log("🔍 Memeriksa status live YouTube & TikTok otomatis...");
     
+    // Mengambil data dari tabel streamers sesuai database Supabase Anda
     const { data: streamers, error } = await supabase
         .from('streamers')
         .select('*');
 
-    if (error || !streamers) {
-        console.log("Tidak ada streamer atau terjadi error database.");
+    if (error) {
+        console.error("Error database Supabase:", error.message);
+        return;
+    }
+
+    if (!streamers || streamers.length === 0) {
+        console.log("Tidak ada data streamer ditemukan di tabel streamers.");
         return;
     }
 
@@ -73,7 +76,7 @@ async function run() {
         let activeVideoId = '';
         
         let platform = s.platform ? s.platform.toLowerCase() : '';
-        if (!platform && (s.channel_id.includes('tiktok.com') || s.channel_id.startsWith('@'))) {
+        if (!platform && (s.channel_id.includes('tiktok.com') || s.channel_id.startsWith('@') || s.channel_id === 'maintenance')) {
             platform = 'tiktok';
         }
 
@@ -82,7 +85,7 @@ async function run() {
             const isTikTokLive = await checkTikTokLive(s.channel_id);
             if (isTikTokLive) {
                 isLive = true;
-                activeVideoId = 'LIVE'; // Mengisi 'LIVE' otomatis ke database jika sedang siaran
+                activeVideoId = 'LIVE';
             }
         } 
         // 2. Pengecekan Platform YouTube
